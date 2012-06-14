@@ -1,5 +1,5 @@
 $ cat .gitignore
 
-library/OpenContext/OCConfig-CHANGE.php
+library/OpenContext/OCConfig.php
 
 public/database/oc_media/**/*
