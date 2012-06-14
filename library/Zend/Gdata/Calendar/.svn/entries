@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Calendar
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+ListEntry.php
+file
+
+
+
+add
+
+ListFeed.php
+file
+
+
+
+add
+
+EventEntry.php
+file
+
+
+
+add
+
+EventFeed.php
+file
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+
+EventQuery.php
+file
+
+
+
+add
+

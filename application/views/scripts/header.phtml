@@ -1,0 +1,42 @@
+<?php
+
+
+$host = OpenContext_OCConfig::get_host_config();
+
+
+?>
+
+<div id="headerTop">
+    <div id="headerTopContent">
+        <div id="headerTopLogoArea">
+            <div id="headerTopLogoRow">
+                <div id="headerTopLogoCellImage">
+                    <a href="../" title="Open Context (Home)"><img src="../images/layout/oc-door-logo.png" alt="Open Context Logo"/></a>
+                </div>
+                <div id="headerTopLogoCellText">
+                    <a href="../" title="Open Context (Home)">Open Context</a>
+                </div>
+            </div>
+            <div id="headerTopLogoTagLine">
+                Web-based research data publication
+            </div>
+        </div>
+        
+        <div id="headerMiddleArea">
+        </div>
+
+        <div id="headerSearchArea">
+            <div id="id="headerSearchFormArea">
+                <form method="get" action="<?php echo $host;?>/search/" id="search-form">
+                    <div id="headerSearchInputArea">
+                        <input type='text' name='q' value='Search' size='20' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+                    </div>
+                    <div id="headerSearchButtonArea">
+                        <input id="headerSearchSubmit" type="submit" value="" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>

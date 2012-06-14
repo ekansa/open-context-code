@@ -1,0 +1,21 @@
+<?php
+$numFound = $this->numFound;
+$page = $this->page;
+$offset = $this->offset;
+$requestURI = $this->requestURI;
+$media_count = $this->media_count;
+
+$var_array = $this->facet_counts;
+
+
+$all_array = array("meta"=> array("uri"=>$requestURI,
+                                  "page" =>$page,
+                                  "offset" => $offset,
+                                  "numFound" => $numFound,
+                                  "imageCount" => $media_count),
+                   "vars" =>$var_array
+                   );
+
+echo Zend_Json::encode($all_array);
+
+?>

@@ -1,0 +1,96 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context Shared Vocabularies and Linked Data</title>
+      <link rel="schema.DC" href="http://purl.org/dc/terms" />
+      <meta name="DC.title" content="About Open Context" />
+      <meta name="DC.created" content="September 1, 2011" />
+      <meta name="DC.date" content="September 1, 2011" />
+      <meta name="DC.creator" content="Open Context Editors" />
+      
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <h2 style="text-align:center;">Shared Vocabularies and Linked Data</h2>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Open Context links to other authoritative data providers that use "<a href="http://en.wikipedia.org/wiki/Linked_Data" title="Wikipedia overview">linked data</a>" approaches to publishing relevant shared vocabularies and taxonomies. These links enable Open Context content to be searched and retrieved according to shared concepts defined and curated by communities of experts. One can search and query content in Open Context using these shared terminology systems, or one can search and query content using terminology idiosyncratic to a specific project. One can even use both shared, standard vocabularies and project-specific terminologies in searches and queries at the same time.
+		    </p>
+		    <p class="bodyText">Linking to shared vocabularies often requires some expertise, judgment and effort. In the process of publishing data, Open Context's editorial team reviews datasets and contributions to authoritative taxonomic standards as appropriate. We try to identify key areas where standard vocabularies can make Open Context data easier to use. As our editorial team expands and as we learn of other appropriate taxonomies, we sometime reindex older datasets to reference appopriate standards. 
+		    </p>
+                </div>
+            </div>
+            <div id="about_submenu" class="rounded-corners">
+                    <p class="bodyText"><em>Linked Data and Open Context:</em></p>
+                    <ul class="bodyText">
+			<li><a href=''>Overview of Linked Data and Open Context</a></li>
+			<li><a href=''>Using Open Context's API with Linked Data</a></li>
+		    </ul>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+        
+        <br/>
+        <div style="margin:10px;">
+            <h3>Shared Vocabularies Used in Open Context</h3>
+	      
+	    <p class="bodyText">Open Context currently links to the following shared vocabularies:</p>
+		<ul class="bodyText">
+		    <li><p class="bodyText"><em>Encyclopedia of Life:</em> Open Context editors link biological remains, ecofacts, and other items in Open Context that have biological taxonomic descriptions to the <a href='http://www.eol.org'>Encyclopedia of Life</a>. Use of Encyclopedia of Life URIs to identify bioloical taxa enables easy comparision of data from multiple projects.</p></li>
+		    <li><p class="bodyText"><em>Pleiades Gazetteer:</em> Open Context editors link certain relevant types of artifacts to the <a href='http://pleiades.stoa.org'>Pleiades Gazetteer</a>. Pleiades is mostly relevant to Classics, and most items in Open Context linked to Pleiades place-entities are coins with legible mint-marks.</p></li>
+		</ul>
+	    
+	</div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

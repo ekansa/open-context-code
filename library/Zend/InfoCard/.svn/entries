@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/InfoCard
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Xml
+dir
+
+
+
+add
+
+Adapter
+dir
+
+
+
+add
+
+Cipher.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Cipher
+dir
+
+
+
+add
+
+Claims.php
+file
+
+
+
+add
+

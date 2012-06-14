@@ -1,0 +1,137 @@
+
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context People and Staff</title>
+      <link rel="schema.DC" href="http://purl.org/dc/terms" />
+      <meta name="DC.title" content="Open Context People and Staff" />
+      <meta name="DC.created" content="June 1, 2010" />
+      <meta name="DC.date" content="April 10, 2011" />
+      <meta name="DC.creator" content="Open Context Editors" />
+      
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+    <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+   <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <h2 style="text-align:center;">The People Behind Open Context</h2>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Open Context is maintained and administered by a dedicated staff with the
+                    <a href="http://www.alexandriaarchive.org/">Alexandria Archive Institute</a>, a not-for-profit organization.
+                    Primary field datasets are, by their nature, less heavily "polished" than monographs or journal
+                    publications. Nevertheless, we believe editorial and review processes are needed to provide at least a
+                    minimum level of vetting for contributions. The AAI staff, led by Dr. Sarah Whitcher Kansa (Executive
+                    Director), has editorial control over Open Context and performs this function to make sure that Open
+                    Context only publishes datasets from credentialed researchers working on properly permitted projects
+                    or professionally curated collections.
+                    </p>
+                    <p class="bodyText">In addition, Open Context is under ongoing active software development. The AAI staff
+                    coordinates collaboration with the <a href="http://isd.berkeley.edu/">Information and Service Design (ISD) Program</a>
+                    at the <a href="http://ischool.berkeley.edu/">UC Berkeley School of Information</a>. The ISD Program, directed by
+                    Eric Kansa (ISD Executive Director, I-School Adjunct Professor), is responsible for continued software development.</p>
+                </div>
+            </div>
+            <div id="about_submenu" class="rounded-corners">
+                    <p class="bodyText"><em>More About Open Context:</em></p>
+                    <?php echo OpenContext_NavMenus::AboutNavMenu("people", $host); ?>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+	<div style="margin:10px;">
+	    <h3>Open Context Editorial Staff:</h3>
+                    <ul class="bodyText">
+                        <li><a href="http://www.alexandriaarchive.org/people_swk.php">Sarah Kansa</a>, Executive Editor</li>
+                        <li><a href="http://www.alexandriaarchive.org/people_fd.php">Francis Deblauwe</a>, Assistant Editor</li>
+                    </ul>
+	    <br/>
+	    <h3>Open Context Editorial Board:</h3>
+	    <p class="bodyText">Under the chairmanship of the Executive Editor, the Editorial Board assists the Executive Editor in
+	    developing editorial policies and procedures, in soliciting datasets to be considered for publication in
+	    Open Context, and in recommending reviewers for projects that request peer review.
+	    The Editorial Board also assists with the annual review of the Editorial Policies
+	    and the performance of the editorial staff.</p>
+                    <ul class="bodyText">
+			<li><a href="http://2hzaurtpu.site.aplus.net/faculty01.asp">Levent Atici</a>, Department of Anthropology, University of Nevada, Las Vegas</li>
+                        <li><a href="http://csanet.org/pers/nevita.html">Harrison Eiteljorg, II</a>, Center for the Study of Architecture, Bryn Mawr College</li>
+                        <li><a href="http://www.microcommons.org/foster/">Catherine P. Foster</a>, MicroCommons and Bade Museum</li>
+			<li><a href="http://sebastianheath.com/">Sebastian Heath</a>, American Numismatic Society and Institute for the Study of the Ancient World, New York University</li>
+			<li><a href="http://www.medicalheritage.org/?page_id=796">Lori Jahnke</a>, Medical Heritage Library, The College of Physicians of Philadelphia and the University of Pennsylvania</li>
+			<li>Eric Kansa, Open Context and UC Berkeley</li>
+			<li><a href="http://las.depaul.edu/ant/People/Faculty/MoragKerselPhD.asp">Morag Kersel</a>, DePaul University</li>
+			<li>Sannie Osborn, U.S. Army Corps of Engineers</li>
+			<li><a href="http://berkeley.academia.edu/BenjaminPorter">Benjamin Porter</a>, University of California, Berkeley</li>
+			<li><a href="http://oi.uchicago.edu/pdf/08-09_Rowan.pdf">Yorke Rowan</a>, University of Chicago</li>
+			<li><a href="http://www.anth.uconn.edu/faculty/smith/">Alexia Smith</a>, University of Connecticut</li>
+			<li><a href="http://www.iusb.edu/~socanth/wells.shtml">Joshua Wells</a>, Indiana University, South Bend</li>
+                    </ul>
+            <br/>
+            <h3>Open Context Developers (Active):</h3>
+                <ul class="bodyText">
+                    <li><a href="http://isd.ischool.berkeley.edu/person/ekansa">Eric Kansa</a>, Project Lead</li>
+                    <li><a href="http://www.jwhitaker.info/">Jeremy Whitaker</a>, Technology Consultant, New Product Development. <br/>Research and modeling of future service systems
+
+</li>
+		    <li><a href="http://www.alexandriaarchive.org/peopleaffiliates.php">John Ward</a>, Consulting Developer</li>
+                </ul>
+	    <br/>
+	    <h3>Open Context Developers (Alumni):</h3>
+                <ul class="bodyText">
+                    <li><a href="http://www.alexandriaarchive.org/peopleaffiliates.php">John Ward</a>, Lead Developer (May - December 2008)</li>
+                    <li><a href="http://www.ischool.berkeley.edu/people/students/sarahvanwart">Sarah van Wart</a>, <em>Penelope</em> Developer, I-School MIMS student</li>
+                    <li><a href="http://people.ischool.berkeley.edu/~mohit.ed/">Mohit Gupta</a>, <em>Omeka plugin</em> Developer, I-School MIMS student</li>
+                    <li><a href="http://www.ischool.berkeley.edu/people/students/noahkersey">Noah Kersey</a>, <em>User-Experience, widgets</em> Developer, I-School MIMS student</li>
+                    <li><a href="http://people.ischool.berkeley.edu/~gvaswani/">Gopal Vaswani</a>, <em>Web-services, database</em> Developer, I-School MIMS student</li>
+                </ul>
+        </div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Gapps/Extension
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Quota.php
+file
+
+
+
+add
+
+Name.php
+file
+
+
+
+add
+
+EmailList.php
+file
+
+
+
+add
+
+Nickname.php
+file
+
+
+
+add
+
+Login.php
+file
+
+
+
+add
+

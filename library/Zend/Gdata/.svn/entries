@@ -1,0 +1,268 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Gbase
+dir
+
+
+
+add
+
+Exif.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Entry.php
+file
+
+
+
+add
+
+Feed.php
+file
+
+
+
+add
+
+Exif
+dir
+
+
+
+add
+
+Calendar.php
+file
+
+
+
+add
+
+Gapps.php
+file
+
+
+
+add
+
+Extension.php
+file
+
+
+
+add
+
+Media.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+App.php
+file
+
+
+
+add
+
+Calendar
+dir
+
+
+
+add
+
+Gapps
+dir
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+
+Docs.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Media
+dir
+
+
+
+add
+
+Spreadsheets.php
+file
+
+
+
+add
+
+App
+dir
+
+
+
+add
+
+YouTube.php
+file
+
+
+
+add
+
+Kind
+dir
+
+
+
+add
+
+Docs
+dir
+
+
+
+add
+
+Spreadsheets
+dir
+
+
+
+add
+
+Query.php
+file
+
+
+
+add
+
+YouTube
+dir
+
+
+
+add
+
+ClientLogin.php
+file
+
+
+
+add
+
+Geo.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+AuthSub.php
+file
+
+
+
+add
+
+Photos.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+HttpClient.php
+file
+
+
+
+add
+
+Gbase.php
+file
+
+
+
+add
+
+Geo
+dir
+
+
+
+add
+
+Photos
+dir
+
+
+
+add
+

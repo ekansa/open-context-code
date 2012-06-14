@@ -1,0 +1,37 @@
+<?php
+
+//header('Content-type: application/kml+xml', true);
+
+$host = "http://opencontext";
+$requestURI = $this->requestURI;
+echo $requestURI."<br/>";
+
+$atom_facet_uri = $host.(str_replace(".kml", ".atom", $requestURI)); // uri for the atom version of the facet feed
+echo $atom_facet_uri."<br/><br/>".chr(13).chr(13);
+
+$atom_string = file_get_contents($atom_facet_uri);
+//echo $atom_string."<br/><br/>".chr(13).chr(13);
+
+//$atom_string = "<feed><title>Open Context Example</title></feed>";
+
+
+$atomXML = new DOMDocument();
+$atomXML->loadXML($atom_string);
+//echo $atomXML->saveXML();
+
+//$xpath = new DomXPath($atomXML);
+//$result = $xpath->query('/feed/title');
+//echo var_dump($result);
+
+//$title_1 = $result->nodeValue;
+//echo $title_1;
+//$atomSimple->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
+$atomSimple->registerXPathNamespace("georss", "http://www.georss.org/georss");
+$atomSimple->registerXPathNamespace("kml", "http://www.opengis.net/kml/2.2");
+
+$atomSimple = simplexml_import_dom($atomXML);
+$title = $atomSimple->xpath("/feed/title");
+echo var_dump($title);
+
+echo $atomSimple->asXML();
+?>

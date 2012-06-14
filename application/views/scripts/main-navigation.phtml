@@ -1,0 +1,105 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();
+
+/*
+$requestParams = $this->requestParams;
+
+if($requestParams["controller"] == "about"){
+    $navTab = "about";
+}
+else{
+    $navTab = false;
+}
+*/
+
+$activeTab = "about";
+
+$navTabArray = array("index"=> array("uri"=>"/",
+                                      "name"=>"Home",
+                                      "title"=> "Open Context Home Page, map and timeline interface",
+                                      "active"=>true),
+                      "about"=> array("uri"=>"/about/",
+                                      "name"=>"About",
+                                      "title"=> "Background, uses, guide for contributors, web services overview",
+                                      "active"=>true),
+                      "projects"=> array("uri"=>"/projects/",
+                                      "name"=>"Projects",
+                                      "title"=> "Summary of datasets in Open Context",
+                                      "active"=>true),
+                      "browse"=> array("uri"=>"/sets/",
+                                       "name"=>"Browse",
+                                       "title"=> "Search and browse through locations, contexts, finds, etc.",
+                                       "active"=>true),
+                      "lightbox"=> array("uri"=>"/lightbox/",
+                                         "name"=>"Lightbox",
+                                         "title"=> "Search and browse through images linked to Open Context records",
+                                         "active"=>true),
+                      "tables"=> array("uri"=>"/tables/",
+                                       "name"=>"Tables",
+                                       "title"=> "Tabular data formated for easy download",
+                                       "active"=> true),
+                      "search"=> array("uri"=>"/search/",
+                                       "name"=> "Search",
+                                       "title"=> "Global search of all content, policies, and other documentation",
+                                        "active"=> true),
+                      "details"=> array("uri"=>"/details/",
+                                       "name"=> "Details",
+                                       "title"=> "Use the Browse or Lightbox feature and select an item for detailed view",
+                                        "active"=> false),
+                      "accounts"=> array("uri"=>"/auth/",
+                                       "name"=> "My Account",
+                                       "title"=> "Manage your password and notification settings",
+                                        "active"=> true)
+                      );
+
+
+    if($activeTab  == "search"){
+        unset($navTabArray ["details"]);
+    }
+    elseif($activeTab  == "details"){
+        unset($navTabArray ["search"]);
+    }
+    else{
+        unset($navTabArray ["details"]); 
+    }
+
+    unset($navTabArray["index"]);
+
+    $dom = new DOMDocument("1.0", "utf-8");
+    $dom->formatOutput = true;
+    $root = $dom->createElement("div");
+    $root->setAttribute("id", "headerNavTabs");
+    $dom->appendChild($root);
+    
+    foreach($navTabArray  as $tab => $tabData){
+        
+        $element = $dom->createElement("div");
+        if($tab == $activeTab){
+            $element->setAttribute("class", "headerNavTabCurrent");
+        }
+        else{
+            $element->setAttribute("class", "headerNavTabLink");
+        }
+        $elementA = $dom->createElement("a");
+        $elementA->setAttribute("href", $host.$tabData["uri"]);
+        $elementA->setAttribute("title", $tabData["title"]);
+        $elementAtext = $dom->createTextNode($tabData["name"]);
+        $elementA->appendChild($elementAtext);
+        $element->appendChild($elementA);
+        $root->appendChild($element);
+    }
+    
+    /*
+    $output = str_replace('<?xml version="1.0"?>', '', $root->saveXML());
+    */
+    $output = $dom->saveXML($root);
+
+?>
+
+
+<div id="headerNav">
+    <div id="headerNavContent">
+        <?php echo $output; ?>
+    </div>
+</div>

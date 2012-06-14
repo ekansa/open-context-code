@@ -1,0 +1,126 @@
+<?php
+
+
+
+
+
+$metadata = OpenContext_unAPI::get_space_metadata($this->itemURI);
+if(!$metadata){
+    header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+    exit;
+}
+
+
+if(!$this->metaFormat){
+
+//header('', TRUE, 300);
+header($_SERVER["SERVER_PROTOCOL"]." 300 Multiple Choices");
+header("Content-type: application/xml");
+
+echo '<?xml version="1.0" encoding="UTF-8"?>'.chr(13);    
+echo '
+<formats id="'.$this->itemURI.'">
+<format name="oai_dc" type="application/xml" docs="http://www.openarchives.org/OAI/2.0/oai_dc.xsd" />
+<format name="mods" type="application/xml" docs="http://www.loc.gov/mods/" />
+</formats>
+
+';
+}
+elseif($this->metaFormat == "oai_dc"){
+    
+    
+    header("Content-type: application/xml");
+    
+    echo '<?xml version="1.0" encoding="UTF-8"?>'.chr(13);
+    echo '
+    <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">'.chr(13);
+    
+    foreach($metadata as $key=>$valueArray){
+        foreach($valueArray as $actValue){
+            echo "<dc:".$key.">".$actValue."</dc:".$key.">".chr(13);
+        }
+    }
+    
+     echo '</oai_dc:dc>';
+    
+}
+elseif($this->metaFormat == "mods"){
+    
+    
+    header("Content-type: application/xml");
+    
+    echo '<?xml version="1.0" encoding="UTF-8"?>'.chr(13);
+    echo '<modsCollection xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="3.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.loc.gov/mods/v3"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd">'.chr(13);
+    
+    echo '<mods>'.chr(13);
+    echo '<titleInfo>'.chr(13);
+    echo '<title>'.$metadata["title"][0].'</title>'.chr(13);
+    echo '</titleInfo>'.chr(13);
+    
+    echo '<originInfo>'.chr(13);
+    echo '<publisher>Open Context</publisher>'.chr(13);
+    echo '<dateIssued>'.$metadata["date"][0].'</dateIssued>'.chr(13);
+    echo '</originInfo>'.chr(13);
+    
+    echo '<location>'.chr(13);
+    echo '<url>'.$metadata['identifier'][0].'</url>'.chr(13);
+    echo '</location>'.chr(13);
+    
+    echo '<identifier>'.$metadata['identifier'][0].'</identifier>'.chr(13); 
+    
+    if(array_key_exists('contributor', $metadata)){
+        
+        foreach($metadata['contributor'] as $name){
+            $nameArray = OpenContext_unAPI::name_seperate($name);
+            echo '<name>'.chr(13);
+            echo '<namePart type="given">'.$nameArray["given"].'</namePart>'.chr(13);
+            echo '<namePart type="family">'.$nameArray["family"].'</namePart>'.chr(13);
+            echo '<role>'.chr(13);
+            echo '<roleTerm type="text">author</roleTerm>'.chr(13); 
+            echo '</role>'.chr(13); 
+            echo '</name>'.chr(13);
+        }
+    }
+    
+    if(array_key_exists('creator', $metadata)){
+        
+        foreach($metadata['creator'] as $name){
+            $nameArray = OpenContext_unAPI::name_seperate($name);
+            echo '<name>'.chr(13);
+            echo '<namePart type="given">'.$nameArray["given"].'</namePart>'.chr(13);
+            echo '<namePart type="family">'.$nameArray["family"].'</namePart>'.chr(13);
+            echo '<role>'.chr(13);
+            echo '<roleTerm type="text">editor</roleTerm>'.chr(13); 
+            echo '</role>'.chr(13); 
+            echo '</name>'.chr(13);
+        }
+    }
+    
+    if(array_key_exists('subject', $metadata)){
+        
+        foreach($metadata['subject'] as $subject){
+            echo '<subject>'.chr(13);
+            echo '<topic>'.$subject.'</topic>'.chr(13);
+            echo '</subject>'.chr(13);
+        }
+    }
+    
+    
+    echo '<typeOfResource>online system or service</typeOfResource>'.chr(13);
+    echo '<genre>Web site</genre>'.chr(13);
+    echo '</mods>'.chr(13);
+    echo '</modsCollection>'.chr(13);
+    }
+else{
+    header($_SERVER["SERVER_PROTOCOL"]." 406 Not Acceptable");
+}
+
+
+?>

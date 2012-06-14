@@ -1,0 +1,51 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Exif
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Entry.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Feed.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Extension
+dir
+
+
+
+add
+

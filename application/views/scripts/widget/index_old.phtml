@@ -1,0 +1,138 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();
+
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW" />
+      <title>Open Context Widget Creation</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <script type="text/javascript" src="/js/prototype-1.6.0.3.js"></script>
+      <script>
+	function genCode(){
+	  var pid=$('url').value.split("/").last()
+	  if (pid!="[YOUR_ID]"){
+		var handle_url="<?php echo $host; ?>/js/demo_widget.js"
+		var oc_url="<?php echo $host; ?>/widget/show?id="+pid+"&amp;callback=handleCallBack&amp; options={}"
+		var code='<div id="oc_widget"></div>'+'\n';
+		code+='<script type="text/javascript" src="'+handle_url+'"> </'+'script>'+'\n'
+		code+='<script type="text/javascript" src="'+oc_url+'"> </'+'script>'+'\n'
+		$('code_area').innerHTML=code.escapeHTML()
+		}
+	}
+      </script>
+      
+    </head>
+    
+<body>
+    
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("details"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <p class="subHeader" align="left" style="font-size:14px;">Get an Open Context Widget</p>
+                <div style="width:500px;font-family:arial;font-size:12px; margin-left:30px;">
+		<div style="padding:8px 8px 4px 8px;background:#d4e7ff;border:1px solid #89beff;">
+		<div style="margin-bottom:5px;">
+		    
+		    <?php
+		    
+		    if(!$this->id){
+		    
+		    ?>
+			<label><strong>Enter URL : </strong></label>
+			<input id="url" "type="text" size="45" style="color:#c7c7c7;" value="http://opencontext.org/persons/[YOUR_ID]"
+			onfocus="if(this.value=='http://opencontext.org/persons/[YOUR_ID]'){this.value=''}this.setStyle({color:'#383838'});" 
+			onblur="if(this.value==''){this.value='http://opencontext.org/persons/[YOUR_ID]';this.setStyle({color:'#c7c7c7'});}"
+			/>
+		    
+		    <?php
+		    }//end if no id
+		    else{
+		    
+		    
+		    ?>
+			<label><strong>URL for <?php echo $this->name; ?>: </strong></label>
+			<input id="url" "type="text" size="45" style="color:#c7c7c7;" value="http://opencontext.org/persons/[YOUR_ID]"
+			onfocus="if(this.value=='http://opencontext.org/persons/[YOUR_ID]'){this.value=''}this.setStyle({color:'#383838'});" 
+			onblur="if(this.value==''){this.value='http://opencontext.org/persons/[YOUR_ID]';this.setStyle({color:'#c7c7c7'});}"
+			/>
+			
+			
+		    <?php
+		    }
+		    //end else
+		    
+		    ?>
+		    
+			<input type="button" value="Generate code" onclick="genCode()"/>
+		</div>
+		<div style=" "><a href="#" onclick="$('help_div').toggle()">Help?</a></div>
+		<div id="help_div" style="display:none">
+			<div style="margin:0px;padding:5px;background:#f4f9ff;">
+				<ul style="margin:0px;">
+					<li><strong>How to get your URL?</strong> 
+					</li>
+					<li><strong>How can I use the widget?</strong> Copy the widget's code and paste it into the source code of the webpage where you would like
+					to show this widget. The widget will automatically draw current data from Open Context to display
+					on your webpage.
+					</li>
+				</ul>
+			</div>
+		</div>
+		</div>
+		<br><br>
+		<span style="font-size:17px;font-weight:bold;">Widget Code</span>
+		<div id="code_area" style="background:#efefe2;border:1px solid #e1e1ce;height:10em;padding:10px;line-height:20px;font-family:courier;font-size:13px;">	
+		</div>
+		<span>COPY this code and paste it at the desired location on your webpage</span>
+		</div>
+            </div>
+            
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+	 </div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,388 @@
+<?php
+
+
+$host = OpenContext_OCConfig::get_host_config();
+$base_hostname = OpenContext_OCConfig::get_host_config(false);
+$baseURI = OpenContext_OCConfig::get_host_config();
+
+$atomFullDoc = new DOMDocument("1.0", "utf-8");
+	
+$root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
+	
+// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+$atomFullDoc->formatOutput = true;
+	
+//$root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+//$root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+//$root->setAttribute("xmlns:arch", "http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd");
+//$root->setAttribute("xmlns:oc", "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
+$root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+$root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+	
+$atomFullDoc->appendChild($root);
+
+
+// Feed Title 
+$feedTitle = $atomFullDoc->createElement("title");
+$feedTitleText = $atomFullDoc->createTextNode("Open Context Tables");
+$feedTitle->appendChild($feedTitleText);
+$root->appendChild($feedTitle);
+
+
+// Prepare the feed's subtitle
+$page = $this->page;
+$numFound = $this->totalTableCount;
+$resultsPerPage = $this->resultsPerPage;
+
+// Display the number of items found and handle paging. 
+$first = (($page - 1) * $resultsPerPage) + 1;
+$last = $page * $resultsPerPage;
+
+// make sure the last page, which will usually contain fewer than 10 items, displays the correct number of items.
+if ($numFound < $last) {
+   $subTitleText = 'Tables ' . $first . ' to ' . $numFound . ' out of ' . $numFound . ' tables'; 
+} else {
+    $subTitleText = 'Tables ' . $first . ' to ' . $last . ' out of ' . $numFound . ' tables';
+}
+
+$feedSubtitle = $atomFullDoc->createElement("subtitle");
+$feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
+$feedSubtitle->appendChild($feedSubtitleText);
+$root->appendChild($feedSubtitle);
+
+
+// Feed updated element (as opposed to the entry updated element)
+$feedUpdated = $atomFullDoc->createElement("updated");
+$updatedTime = $this->lastUpdated;
+
+// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+$feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($updatedTime)));
+// Append the text node the updated element
+$feedUpdated->appendChild($feedUpdatedText);
+// Append the updated node to the root element
+$root->appendChild($feedUpdated);
+
+$totalResults = $atomFullDoc->createElement('opensearch:totalResults');
+$totalResultsText = $atomFullDoc->createTextNode($numFound);
+$totalResults->appendChild($totalResultsText);
+$root->appendChild($totalResults);
+
+$startIndex = $atomFullDoc->createElement('opensearch:startIndex');
+$startIndexText = $atomFullDoc->createTextNode($first);
+$startIndex->appendChild($startIndexText);
+$root->appendChild($startIndex);
+
+$itemsPerPage = $atomFullDoc->createElement('opensearch:itemsPerPage');
+$itemsPerPageText = $atomFullDoc->createTextNode($resultsPerPage);
+$itemsPerPage->appendChild($itemsPerPageText);
+$root->appendChild($itemsPerPage);
+
+
+
+$linkURI = $host . "/tables/.atom";
+
+// feed (self) link element
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "self");
+$feedLink->setAttribute("href", $linkURI);
+$root->appendChild($feedLink);
+
+// feed license link element
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "license");
+$feedLink->setAttribute("type", "text/html");
+$feedLink->setAttribute("href", "http://creativecommons.org/licenses/by/3.0/");
+$root->appendChild($feedLink);
+
+
+
+
+// feed (HTML representation) link element
+$feedHTML_URI = $host."/tables/";
+//$facetURI = str_replace("facets/.atom", "facets.atom", $facetURI);
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "alternate");
+$feedLink->setAttribute("type", "application/xhtml+xml");
+$feedLink->setAttribute("href", $feedHTML_URI);
+$root->appendChild($feedLink);
+
+
+
+//prepare the first link
+$feedFirstLink = $atomFullDoc->createElement("link");
+$feedFirstLink->setAttribute("rel", "first");
+// remove any existing page number
+$firstURI = preg_replace('/(\?|&)page=\d*/', '', $linkURI);
+// append a '(?|&)page=1'
+if (strpos($firstURI,'?')) {
+    $firstURI = $firstURI . '&page=1';
+} else {
+    $firstURI = $firstURI . '?page=1';
+}
+
+$feedFirstLink->setAttribute("href", $firstURI);
+$root->appendChild($feedFirstLink);
+
+
+
+
+// create last link
+$lastPage = $this->lastPage;
+$feedLastLink = $atomFullDoc->createElement('link');
+$feedLastLink->setAttribute('rel', 'last');
+// remove any page number from the URI so we can replace it with the last page.
+$lastURI = preg_replace('/(\?|&)page=\d*/', '', $linkURI);
+if (strpos($lastURI,'?')) {
+    if($lastPage>0){
+      $lastURI = $lastURI . '&page=' . $lastPage;
+    }
+} else {
+   if($lastPage>0){
+      $lastURI = $lastURI . '?page=' . $lastPage;
+   }
+}
+$feedLastLink->setAttribute('href', $lastURI);
+$root->appendChild($feedLastLink);
+
+
+
+// create previous link
+
+if ($page > 1) {
+    $previous = $page - 1;
+    
+    if(stristr($firstURI, "page=")){
+      $previousURI = preg_replace('/page=\d*/', 'page=' . $previous , $firstURI);
+    }
+    else{
+      if(stristr($firstURI, "?")){
+	 $previousURI = $firstURI."&page=".$previous;
+      }
+      else{
+	 $previousURI = $firstURI."?page=".$previous;
+      }
+    }
+    $previousLink = $atomFullDoc->createElement('link');
+    $previousLink->setAttribute('rel', 'previous');
+    $previousLink->setAttribute('href', $previousURI);
+    $root->appendChild($previousLink);    
+}
+
+// create next link
+//get page number and add 1; check to see that page + 1 is not greater than $lastPage
+if ($page < $lastPage) {
+    $next = $page + 1;
+    if(stristr($firstURI, "page=")){
+      $nextURI = preg_replace('/page=\d*/', 'page=' . $next , $firstURI);
+    }
+    else{
+      if(stristr($firstURI, "?")){
+	 $nextURI = $firstURI."&page=".$next;
+      }
+      else{
+	 $nextURI = $firstURI."?page=".$next;
+      }
+    }
+    
+    $nextLink = $atomFullDoc->createElement('link');
+    $nextLink->setAttribute('rel', 'next');
+    $nextLink->setAttribute('href', $nextURI);
+    $root->appendChild($nextLink);
+}
+
+
+
+$feedId = $atomFullDoc->createElement("id");
+$feedIdText = $atomFullDoc->createTextNode($linkURI);
+$feedId->appendChild($feedIdText);
+$root->appendChild($feedId);
+
+$tables = $this->tables;
+if(count($tables)>0){
+   foreach($tables as $table){
+      $entry = $atomFullDoc->createElement("entry");
+      $entryTitle = $atomFullDoc->createElement("title");
+      $entryTitleText = $atomFullDoc->createTextNode($table['table_name']);
+      $entryTitle->appendChild($entryTitleText);
+      $entry->appendChild($entryTitle);
+      
+      $tableURL = $host.'/tables/'.OpenContext_TableOutput::tableID_toURL($table['cache_id']);
+      $entryID = $atomFullDoc->createElement("id");
+      $entryIDText = $atomFullDoc->createTextNode($tableURL);
+      $entryID->appendChild($entryIDText);
+      $entry->appendChild($entryID);
+      
+      $selfLink = $atomFullDoc->createElement("link");
+      $selfLink->setAttribute("rel", "alternate");
+      $selfLink->setAttribute("type", "application/xhtml+xml");
+      $selfLink->setAttribute("href", $tableURL);
+      $entry->appendChild($selfLink);
+      
+      $csvLink = $atomFullDoc->createElement("link");
+      $csvLink->setAttribute("rel", "alternate");
+      $csvLink->setAttribute("type", "text/csv");
+      $csvLink->setAttribute("href", $tableURL.".csv");
+      $entry->appendChild($csvLink);
+      
+      $jsonLink = $atomFullDoc->createElement("link");
+      $jsonLink->setAttribute("rel", "alternate");
+      $jsonLink->setAttribute("type", "application/json");
+      $jsonLink->setAttribute("href", $tableURL.".json");
+      $entry->appendChild($jsonLink);
+      
+      
+      //Publication / creation time Format it in RFC 3339 format. Store it in a text node
+      $entryPub = $atomFullDoc->createElement("published");
+      $entryPubText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($table['created_on'])));
+      $entryPub->appendChild($entryPubText);
+      $entry->appendChild($entryPub);
+      
+      //Update time Format it in RFC 3339 format. Store it in a text node
+      $entUpdate = $table['updated'];
+      if($entUpdate == "0000-00-00 00:00:00"){
+	 $entUpdate = $table['created_on'];
+      }
+      $entryUp = $atomFullDoc->createElement("updated");
+      $entryUpText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($entUpdate)));
+      $entryUp->appendChild($entryUpText);
+      $entry->appendChild($entryUp);
+      
+      
+      //prepare data for contributor / author information
+      $numRecords = $table['num_records'];
+      $table_metadata_all = Zend_Json::decode($table['metadata']);
+      $table_metadata = $table_metadata_all['meta'];
+      unset($table_metadata_all);
+      
+      $table_metadata = OpenContext_TableOutput::noid_check($table['cache_id'], $table_metadata);
+      
+      $creatorArray = array();
+      foreach($table_metadata["creators"] as $creator => $num){
+	  $creatorArray[] = $creator;
+      }
+      
+      $projectArray = array();
+      foreach($table_metadata["projects"] as $project){
+	  $projectArray[] = $project;
+      }
+      $contribArray = array();
+      $contribArrayShow = array();
+      $jjj=0;
+      foreach($table_metadata["person_links"] as $subkey => $subvalue){
+	  
+	 
+	  $bigContributor = false;
+	  $contribOK = false;
+	  if($subvalue >= ($numRecords/4)){
+	      $contribOK = true;
+	      $bigContributor = true;
+	  }
+	  elseif((count($contribArray)<= 10)&&($subvalue >= ($numRecords * .05 ))){
+	      //the top 10 ranked persons on a long list of conributors, even if they contributed only 5% of the records
+	      $contribOK = true;
+	  }
+	  else{
+	      $contribOK = false;
+	  }
+	  
+	  $contribArray[] = $subkey;
+	  if($contribOK){
+	      $contribArrayShow[] = $subkey;
+	  }
+	  $jjj++;
+      }
+      
+      if(count($contribArrayShow)< count($contribArray)){
+	  $contribArrayShow[] = (count($contribArray) - count($contribArrayShow))." Others";
+      }
+      
+      foreach($creatorArray as $creator){
+	 $entryCreator = $atomFullDoc->createElement("author");
+	 $entryName = $atomFullDoc->createElement("name");
+	 $entryNameText = $atomFullDoc->createTextNode($creator);
+	 $entryName->appendChild($entryNameText);
+	 $entryCreator->appendChild($entryName);
+	 $entry->appendChild($entryCreator);
+      }
+      
+      foreach($contribArrayShow as $contrib){
+	 $entryContrib = $atomFullDoc->createElement("contributor");
+	 $entryName = $atomFullDoc->createElement("name");
+	 $entryNameText = $atomFullDoc->createTextNode($contrib);
+	 $entryName->appendChild($entryNameText);
+	 $entryContrib->appendChild($entryName);
+	 $entry->appendChild($entryContrib);
+      }
+      
+      if(array_key_exists("noid", $table_metadata)){
+	 $archiveID = $table_metadata["noid"];
+	 $table_metadata["noid"] = "ark:/".$archiveID;
+	 //echo var_dump($table_metadata["noid"]);
+     }
+     else{
+	 $archiveID = false;
+     }
+      
+      $citation = array("contributors" => $contribArrayShow,
+			"creators" => $creatorArray,
+			"generator" => $table_metadata["TabCreator"],
+			"projects" => $projectArray,
+			"date" => date("Y", strtotime($table_metadata["TabCreated"])),
+			"title" => $table_metadata["table_name"],
+			"archive" => $archiveID,
+			"uri" => $tableURL);
+      
+      $citationString = implode(", ", $citation["contributors"])."\n";
+      $citationString .= $citation["date"]." '".$citation["title"]."' From projects: ".implode(", ", $citation["projects"]).". ";
+      $citationString .= "Led by: ".implode(", ", $citation["creators"]).". Table generated by: ".$citation["generator"].". Open Context. ";
+      $citationString .= "(".$citation["uri"].")\n ";
+      if($archiveID != false){
+	 $citationString .= "California Digital Library Archival Identifier, (ark:/".$archiveID.")";
+      }
+      
+      //prepare data for the summary of the entry
+      $currentTab = $table['table_num'];
+      $recsPerTable = $table['recs_per_table'];
+      $totalTab = $table['total_tabs'];
+      $tableMin = (($currentTab -1 ) * $recsPerTable) + 1;
+      $tableMax = $currentTab * $recsPerTable;
+      if($tableMax > $numRecords){
+	 $tableMax = $numRecords;
+      }
+      $table_Part_Of = "This table is part ".$currentTab." of ".$totalTab.", containing ".$tableMin." to ".$tableMax." of ".$numRecords ." total records.";
+      
+      $summary = $table['description']." \n";
+      
+      if($totalTab>1){
+	 $summary .= $table_Part_Of." \n\n";
+      }
+      
+      $summary .= "----CITATION:----\n";
+      $summary .= $citationString;
+      
+      $entrySummary = $atomFullDoc->createElement("summary");
+      $entrySummaryText = $atomFullDoc->createTextNode($summary);
+      $entrySummary->appendChild($entrySummaryText);
+      $entry->appendChild($entrySummary);
+      
+      if($archiveID != false){
+	 $archiveLink = $atomFullDoc->createElement("link");
+	 $archiveLink->setAttribute("rel", "archival");
+	 $archiveLink->setAttribute("type", "application/xhtml+xml");
+	 $archiveLink->setAttribute("href", "http://n2t.net/ezid/id/ark:/".$archiveID);
+	 $entry->appendChild($archiveLink);
+      }
+      
+      
+      $root->appendChild($entry);
+   }
+}
+
+$resultString = $atomFullDoc->saveXML();
+
+header('Content-type: application/atom+xml', true);
+
+echo $resultString;
+
+
+?>

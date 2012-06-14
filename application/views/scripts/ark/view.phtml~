@@ -1,0 +1,37 @@
+<?php
+
+
+/*$canping = $this->canping;
+echo $canping;
+
+$uuid_query = $this->uuid_query;
+echo $uuid_query;
+
+$spatialItemTrue = $this->spatialItemTrue;
+echo $spatialItemTrue;
+*/
+
+
+$spatialItem = $this->spatialItem;
+if ($spatialItem) {
+header("Content-type: application/xml");
+    echo $spatialItem->saveXML();
+} else {
+
+echo "You're terrible.";
+
+}
+
+
+
+
+
+
+
+
+
+ 
+ //print_r($this->_request->getParam('space_uuid'));
+// $this->space_uuid = $this->_request->getParam($this->space_uuid);
+
+?>

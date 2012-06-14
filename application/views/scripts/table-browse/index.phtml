@@ -1,0 +1,555 @@
+<?php
+
+// used to help create hyperlinks; set to current hostname.
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+$auth = Zend_Auth::getInstance();
+if (!$auth->hasIdentity()){
+    $displayName = false;
+}
+else{
+    $identity = $auth->getIdentity();
+    $displayName = $identity->name;
+}
+
+$requestURI = $this->requestURI;
+$request_array = explode('?', $requestURI, 2);
+//array explode  ( string $delimiter  , string $string  [, int $limit  ] )
+
+if (substr_compare($request_array[0], '/' , -1)) {  // if the uri doesn't end in a slash (minus query parameters), 
+    $request_array[0] = $request_array[0] . '/';  // add one
+}
+
+
+if (isset($request_array[1])) { // if there are query parameters,
+    $request_array[1] = "?" . $request_array[1];  // prepend a '?' to the set of parameters since we exploded on the '?' to get this string. 
+    //echo $request_array[1]; // for testing
+} else {
+    $request_array[1] = null;
+}
+$requestParams = $this->requestParams;
+
+
+$numFound = $this->numFound;
+$facets = $this->facets;
+$docs = $this->docs;
+
+
+
+$filter_message = "(View is not filtered)";
+$filter_output = $filter_message;
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host);
+
+$facet_fields = $facets["facet_fields"];
+$facet_queries = $facets["facet_queries"];
+$extendedFacets = true; //show more available facets 
+
+
+//do advanced search interface
+if(substr_count($requestURI, "advanced=true")>0){
+    $advanced = true;
+}
+else{
+    $advanced = false;
+}
+
+
+$facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $facet_fields, $facet_queries, $requestParams, $request_array, $host, $advanced);
+
+
+
+
+$googleURI = "";
+$facetAtomURI = "";
+$openSearchURI = "";
+
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
+
+
+
+if(!isset($requestParams["q"])){
+    
+    $checkParam = $requestParams;
+    unset($checkParam["page"]);
+    unset($checkParam["recs"]);
+    unset($checkParam["sort"]);
+    
+    if(count($checkParam)>3){
+        $searchMessage = "Search this set of tables";
+    }
+    else{
+        $searchMessage = "Search all tables";
+    }
+    
+    $full_link = $host.$requestURI;
+    $full_link  = str_replace("&", "&amp;", $full_link );
+    $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
+
+    $fulltext = '';
+    $fulltext .= '<div style="display:table;">';
+    $fulltext .= '<div style="display:table-row; width:100%;">';
+    $fulltext .= '<div style="display:table-cell; text-align:left;" class="bodyText">';
+    $fulltext .= 'Or, type a search term in the box below (works like Google):';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
+    $fulltext .= '<div style="display:table-row; width:100%;">';
+    $fulltext .= '<div style="display:table-cell; text-align:left; vertical-align:middle; padding-left:4px;"> ';
+    $fulltext .='<input style="background-color:#FBF7EC;" name="q" type="text" id="q_string" size="25" maxlength="100" class="bodyText" alt="'.$searchMessage.'" onchange="textSearch()" />'.chr(13);
+    $fulltext .= '</div>';
+    $fulltext .= '<div style="display:table-cell; text-align:right; vertical-align:middle; " > ';
+    //$fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
+    $fulltext .= '<a title="'.$searchMessage.'" href="javascript:textSearch();"><img src="http://static.alexandriaarchive.org/images/general/searchButtonSmall.png" alt="Search icon"/></a>';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    
+    
+    
+    //$fulltext .='</form>';
+}
+else{
+    $fulltext = "";
+}
+
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <title><?php echo 'Open Context Search: ('.$numFound.' Items Showing)'; ?></title>
+        <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+        <link href="<?php echo $host; ?>/components/css/browse" rel="stylesheet" type="text/css" /> 
+        <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo $this->facetURI_Atom; ?>" />
+        <link rel="alternate" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->currentAtom; ?>" />
+        
+        <link rel="first" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->firstPage_XHTML; ?>" />
+        <?php
+            if($this->prevPage_XHTML != false){
+                echo '<link rel="prev" type="application/atom+xml" title="Atom feed of results" href="'.$this->prevPage_XHTML.'" />'.chr(13);
+            }
+            if($this->nextPage_XHTML != false){
+                echo '<link rel="next" type="application/atom+xml" title="Atom feed of results" href="'.$this->nextPage_XHTML.'" />'.chr(13);
+            }
+        ?>
+        
+        <link rel="last" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->lastPage_XHTML; ?>" />
+        <link rel="search" type="application/opensearchdescription+xml" href="<?php echo $host."/search/search/.xml"; ?>" title="Open Context Open Search Service" />
+        <script src="../js/advance_browse/advance_browse.js" type="text/javascript"></script>
+        <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+        
+        <style type="text/css">
+        
+            div.controlCell {
+                display:table-cell; text-align:center; vertical-align:middle;
+            }
+            div.resultCell {
+                display: table-cell;
+                text-align: left;
+                padding-left: 4px;
+                padding-right: 4px;
+                padding-top:8px;
+                padding-bottom:12px;
+            }
+            
+            div.colorRow {
+                display:table-row;
+                background-color: #fffdbe;
+            }
+            div.whiteRow {
+                display:table-row;
+            }
+            
+            .highlight
+            {
+            background: #CEDAEB;
+            color: #000000;
+            }
+            
+            .highlight_important
+            {
+            background: #F8DCB8;
+            color: #000000;
+            }
+            .snippet
+            {
+            color: #707070;
+            }
+            
+        
+        </style>
+        
+        
+        <script type="text/javascript">
+        <!--
+        
+        <?php
+        
+        echo "var baseURI = '".$host.$requestURI."'; \n";
+        echo "var contextBase = '".$host.$request_array[0]."'; \n";
+        echo "var paramterBase = '".$request_array[1]."'; \n";
+        
+        if(isset($requestParams["q"])){
+            //echo "var OSfeedURI = 'http://opencontext.org/sets/.atom?q=".urlencode($requestParams["q"])."'; \n";
+            echo "var OSfeedURI = 'http://core.tdar.org/search/rss?query=".urlencode($requestParams["q"])."'; \n";
+        }
+        else{
+            echo "var OSfeedURI = false; \n";
+        }
+        
+        echo chr(13).chr(13);
+        
+        $activeTaxaValue = OpenContext_FacetOutput::active_taxon_value($requestParams); //for local taxonomies
+        echo "var activeTaxaValue = '".$activeTaxaValue."'; \n";
+        
+        echo chr(13);
+        $activeRelationValue = OpenContext_FacetOutput::active_taxon_value($requestParams, false); //for linked data relations
+        echo "var activeRelationValue = '".$activeRelationValue."'; \n";
+        
+        ?>
+        
+        -->
+        </script>
+        
+        <script type="text/javascript">
+        <!--
+            
+     window.onload = function(){
+        ConvertRowsToLinks("item_list");
+      }
+      
+      function ConvertRowsToLinks(xTableId){
+
+        var rows = document.getElementById(xTableId).getElementsByClassName("colorRow");
+   
+        for(i=0; i < rows.length; i++){
+          var link = rows[i].getElementsByTagName("a")
+          if(link.length == 1){
+            rows[i].onclick = new Function("document.location.href='" + link[0].href + "'");
+            rows[i].onmouseover = new Function("this.style.cursor = 'pointer'");
+            rows[i].onmouseout = new Function("this.style.cursor = 'default'");
+          }
+        }
+
+      }
+      
+      
+      function openList(listId){
+            var displayControl = listId + "control";
+            var displayStatus = document.getElementById(listId).style.display;
+            if( displayStatus == "none"){
+                document.getElementById(listId).style.display = "";
+                document.getElementById(displayControl).innerHTML = "<em>(Hide list below)</em>";
+            }
+            else{
+                document.getElementById(listId).style.display = "none";
+                document.getElementById(displayControl).innerHTML = "More...";
+            }
+      
+      }
+
+
+
+        google.load("feeds", "1");
+
+    function initialize() {
+        /*
+        if(OSfeedURI != false){
+            var feed = new google.feeds.Feed(OSfeedURI);
+            //feed.setResultFormat(google.feeds.Feed.XML_FORMAT);
+            feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
+            
+            feed.load(function(result) {
+              if (!result.error) {
+                var OSnamespace = "http://a9.com/-/spec/opensearchrss/1.0/";
+                var AtomNamespace = "http://www.w3.org/2005/Atom";
+                
+                var feedNode = result.xmlDocument.getElementsByTagNameNS(AtomNamespace, "feed");
+                //alert(feedNode.length);
+                
+                var osCountResult = result.xmlDocument.getElementsByTagNameNS("*", "totalResults");
+                //alert(osCountResult[0].textContent);
+                
+                var countContainer = document.getElementById("osCount");
+                countContainer.appendChild(document.createTextNode("(First " + result.feed.entries.length + " of "+ osCountResult[0].textContent + ")"));
+                
+                var container = document.getElementById("feed"); 
+                for (var i = 0; i < result.feed.entries.length; i++) {
+                  var entry = result.feed.entries[i];
+                  var div = document.createElement("div");
+		  var alink = document.createElement("a");
+                  alink.appendChild(document.createTextNode(entry.title));
+		  alink.setAttribute('href', entry.link);
+		  div.appendChild(alink);
+                  container.appendChild(div);
+                }
+              }
+            });
+        }
+        */
+    }
+    google.setOnLoadCallback(initialize);
+
+
+
+      -->
+        </script>
+    </head>
+    <body>
+        
+    <div id="oc_logo">
+	<a href="<?php echo $host;?>" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" /></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" />
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" />
+    </div>
+    
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='New Search' size='30' onfocus="if(this.value=='New Search')this.value='';" onblur="if(this.value=='')this.value='New Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("tables"); ?> 
+    
+    
+        
+<!--
+BEGIN Container for main page content
+--> 
+    <div id="main_page"> 
+        <!--Begin code for showing available facets-->
+        <div id="main_content">
+            <div id="left_cont">
+                <div id="filter_options" class="bodyText">
+                    <p class="bodyText"><strong>Click on one of the links below to further limit your search results.</strong></p>
+                        <?php echo  $fulltext; ?>
+                        <?php echo $facet_output; ?>
+                            
+                    <br/>
+                    <p>Get summary in <a href="<?php echo $facetAtomURI; ?>">Atom</a></p>
+                </div>
+                
+                
+            </div>
+            <div id="right_cont">   
+                <div id="selected_filters" class="rounded-corners" >
+                    <p class="subHeader">Open Context has <strong><?php echo $numFound; ?></strong> tables, filtered by the following criteria:</p>
+                    <div class="bodyText"><?php echo $filter_output; ?></div>
+                    
+                    <p class="tinyText" style="text-align:right;">Last Updated: <em><?php echo date("F j, Y, g:i a", strtotime($this->lastUpdate)); ?></em></p>
+                    <br/>
+                    <!--
+                    <p class="tinyText" style="text-align:left;"><strong>Note: </strong>This page lists tables you can download as CSV (comma separated value) files for use in spreadsheet or database applications. Some tables contain data originating from different projects and collections. These different projects may have worked under different assumptions and methodologies. In such cases, data comparisons may involve complications. In working with multiple sets of data, you should exercise your best critical judgment as a researcher and examine available dataset documentation and related publications to help inform your interpretations.</p>
+                    -->
+                    <p class="tinyText" style="text-align:left;"><strong>Note: </strong>This page lists tables you can download as CSV (comma separated value) files for use in spreadsheet or database applications. However, not all Open Context analytic data are found in these tables. For comprehensive search and queries of analytic data click the <a href="../sets/">browse tab</a> above. To browse images, click the <a href="../lightbox/">lightbox</a> tab above.</p>
+                </div>
+                        
+                <br />
+                <br />
+                
+                <?php 
+                /*
+                Add paging controls
+                */
+                if($this->firstPage_XHTML != $this->currentXHTML){
+                    //not page 1
+                    $first_control = '<a href="'.$this->firstPage_XHTML.'">';
+		    $first_control .= '<img src="/images/atom_results/left_button_last.gif" alt="first page" border="0" />';
+		    $first_control .= '</a>'; 
+                }
+                else{
+                    //we're on the first page
+                    $first_control = '<img src="/images/atom_results/left_button_last_deact.gif" alt="first page" border="0" />'.chr(13);
+                }
+                if($this->prevPage_XHTML != false){
+                    //previous page exists
+                    $prev_control = '<a href="'.$this->prevPage_XHTML.'">';
+		    $prev_control .= '<img src="/images/atom_results/left_button.gif" alt="first page" border="0" />';
+		    $prev_control .= '</a>';
+                }
+                else{
+                    //no previous page
+                    $prev_control = '<img src="/images/atom_results/left_button_deact.gif" alt="first page" border="0" />'.chr(13);
+                }
+                if($this->nextPage_XHTML != false){
+                    $next_control = '<a href="'.$this->nextPage_XHTML.'">';
+		    $next_control .= '<img src="/images/atom_results/right_button.gif" alt="next page" border="0" />';
+		    $next_control .= '</a>';
+                }
+                else{
+                    $next_control = '<img src="/images/atom_results/right_button_deact.gif" alt="previous page" border="0" />'.chr(13);
+                }
+                if($this->lastPage_XHTML != $this->currentXHTML){
+                    $last_control = '<a href="'.$this->lastPage_XHTML.'">';
+		    $last_control .= '<img src="/images/atom_results/right_button_last.gif" alt="last page" border="0" />';
+		    $last_control .= '</a>';
+                }
+                else{
+                    $last_control = '<img src="/images/atom_results/right_button_last_deact.gif" alt="previous page" border="0" />'.chr(13);
+                }
+                ?>
+                
+                <div id="result_head">
+                    <div style="display:table; width:100%;">
+                        <div class="whiteRow">
+                            <div class="controlCell">
+                                <?php echo $first_control; ?>
+                            </div>
+                            <div class="controlCell">
+                                <?php echo $prev_control; ?>
+                            </div>
+                            <div style="display:table-cell; text-align:center; vertical-align:middle;" class="bodyText">
+                                <strong>Results: </strong>
+                                <?php
+                                $toNumber = $this->number_recs + $this->offset;
+                                if($toNumber  > $numFound ){
+                                    $toNumber  = $numFound; 
+                                }
+                                
+                                echo ($this->offset + 1)." to ".$toNumber." of ".$numFound." results";
+                                
+                                ?>
+                            </div>
+                            <div class="controlCell">
+                                <?php echo $next_control; ?>
+                            </div>
+                            <div class="controlCell">
+                                <?php echo $last_control; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+    
+                <?php //echo $result_output; ?>
+                
+                <?php 
+                    if(count($docs)>0){
+                ?>
+                    <div id="item_list" class="bodyText" >
+                    
+                <?php
+                        $iii = 0;
+                        foreach($docs as $doc){
+                            
+                            if($iii&1){
+                                $rowClass = "colorRow"; // "#fffdbe";
+                            }
+                            else{
+                                $rowClass = "whiteRow"; // "#FFFFFF";
+                            }
+                            $iii++;
+                            
+                ?>
+                            <div class="<?php echo $rowClass; ?>" >
+                                
+                                <div class="resultCell" style="vertical-align:middle;">
+                                    
+                                    <a href="<?php echo $doc["href"]; ?>">
+                                        <img src="<?php echo OpenContext_ProjectAtomJson::class_icon_lookup($doc["item_class"]); ?>" alt="<?php echo $doc["item_class"]; ?>" />
+                                    </a>
+                                
+                                </div>
+                                <div class="resultCell">
+                                    <strong>Table Label: </strong><br/>
+                                    <a href="<?php echo $doc["href"]; ?>"><?php echo str_replace("_", " ", $doc["item_label"]); ?></a>
+                                </div>
+                                <div class="resultCell">
+                                    <strong>Project: </strong><br/>
+                                    <?php echo $doc["project_name"]; ?>
+                                </div>
+                                <div class="resultCell">
+                                    <strong>Table Description:</strong>
+                                    <?php
+    
+                                        $itemUUID = $doc["uuid"];
+                                        if($doc["item_type"] == "table"){
+                                            $itemObj = New Table;
+                                            $itemObj->getByID($itemUUID);
+                                            $metadataString = $itemObj->metadata;
+                                            $metadata = Zend_Json::decode($metadataString);
+                                            $string = "<div>".$metadata["meta"]["table_description"]."</div>";
+                                            unset($metadata);
+                                            unset($metadataString);
+                                        }
+                                        
+                                        
+                                        $termHighlight = new termHighlight;
+                                        $termHighlight->xmlString = $string;
+                                        $termHighlight->addMarkup = true;
+                                        if(isset($requestParams['q'])){
+                                            $termHighlight->searchString = $requestParams['q'];
+                                        }
+                                        $termHighlight->XMLsnippet();
+                                        $termHighlight->generateSnippet();
+                                        echo "<div class='snippet'>...".$termHighlight->snippet."...</div>";
+                                        
+                                        
+                                    ?>
+                                </div>
+                            </div>
+                <?php
+                        }//end loop through documents
+                ?>
+                
+                <?php
+                
+                        $feed_link = '<div class="container_a">'.chr(13);
+                        $feed_link .= '<div class="container_l"><p class="tinyText">Get results as an Atom Feed: <br/><a href="'.$host.'/about/services">(About web services)</a></p></div>'.chr(13);
+                        $feed_link .= '<div class="container_r"><a href="'.$this->currentAtom.'"><img border="0" src="http://validator.w3.org/feed/images/valid-atom.png" alt="[Valid Atom 1.0]" title="Atom 1.0 feed"/></a></div>'.chr(13);
+                        $feed_link .= '</div>'.chr(13);
+                        echo $feed_link;
+                    
+                    }//end case with documents found
+                ?>
+                <?php //echo var_dump($requestParams)."<br/><br/>"; ?>
+                
+            </div>
+        </div>
+                    
+   
+        <!--
+        END of div container for placing main page content
+        -->
+        <div id="bottom_cont">  
+          <br /> 
+          <br /> 
+        </div> 
+        <!--
+        END Code for showing the database-like content
+        -->
+   
+     </div>
+    <br />
+    
+        <div id="footer"> 
+            <div id="w3c_val_logo"> 
+              <a href="http://validator.w3.org/check?uri=referer"> 
+                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
+              </a> 
+            </div>     
+        </div>
+   
+     </div>
+    </body>
+</html>    

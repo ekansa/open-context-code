@@ -1,0 +1,162 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Login to Open Context</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+      
+      <style type="text/css">
+      dl {
+	margin-bottom:50px;
+	}
+	
+	dl dt {
+		float:left;
+		font-weight:bold;
+		margin-right:10px;
+		margin-top:10px;
+		padding:5px;
+		width:100px;
+	}
+	
+	dl dd {
+		margin:2px 0;
+		padding:10px 0;
+		text-align: right;
+		vertical-align: top;
+		line-height:95%;
+	}
+	#registerUser {
+	    margin-left: 20%;
+	}
+	dl.zend_form{
+	    margin-left:30px;
+	    width: 50%;
+	    background-color:#fffdbe;
+	    border-width: thin;
+	    border-style: solid;
+	    border-color: #D7D7D7;
+	    padding:10px;
+	}
+	dl.zend_form dd ul.errors {
+	    list-style: none;
+	    padding: 0;
+	    margin: 0;
+	}
+	dl.zend_form dd ul.errors li {
+	    text-align: right;
+	    padding: 5px;
+	    font-style:italic;
+	    font-size: 12px;
+	    color: #666666;
+	}
+	dd p.fieldDescription {
+	    text-align: right;
+	}
+      </style>
+      
+    </head>
+    
+<body>
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("accounts"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <p class="pageName" align="center">Register as an Open Context User</p>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Open Context is a free, open access resource for the electronic
+                    publication of primary field research from archaeology and related disciplines.
+                    While no login is required to access and use Open Context content, a login is required to use
+                    certain special features offered by Open Context that involve user-description and annotation of content.</p>
+		    
+		    <p class="bodyText">If you already have an account with Open Context, you may login <a title='Open Context Login Page' href='<?php echo $host; ?>/auth/login'>here</a>.
+                    If you want to create a new user account, please complete the form below.</p>
+		    
+                </div>
+		
+		<div style="margin:10px;">
+		    <br/>
+		    <?php
+		    
+			if(!$this->emailExists){
+			//do the following if no emailExists
+		    ?>
+		    <p class="subHeader"><strong>Please Complete the Following to Register:</strong></p>
+		    <p class="bodyText">Once you have successfully completed this form, you will receive an email with instructions to confirm your registration.
+		    <em>Please note</em>: all Open Context passwords are encyrpted prior to storage.</p>
+		    <div class="bodyText">
+		    	
+		    <?php echo $this->form; ?>
+		    <!-- end form box -->
+		    
+		    </div>
+		    <?php
+		    
+			}
+			else{
+			    echo '<p class="subHeader"><strong>A User with this Email is Already Registered</strong></p>';
+			    echo '<p class="bodyText">The email: <span style="font-family:\'Courier New\', Monospace;">'.$this->email.'</span>
+			    is already associated with a registered user. If you are this user, please login. If you have forgotten your password, please follow
+			    this link to reset it.</p>';
+			}
+		    
+		    ?>
+		    
+		</div>
+            </div>
+            <div id="about_submenu" style="background-color:#EDEDED;" class="rounded-corners">
+                    <p class="subHeader">Why Have an Open Context User Account?</p>
+                    <p class="bodyText">While no login is required to use or download existing data tables,
+                    user accounts let you make your own custom selections of data for download.</p>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+        
+        <br/>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

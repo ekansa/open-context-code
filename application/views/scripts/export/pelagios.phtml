@@ -1,0 +1,61 @@
+<?php
+
+$data = $this->data;
+if(count($data["records"])>0){
+    header('Content-type: text/n3; charset="UTF-8"', true);
+    
+    echo "<http://opencontext.org/export/pelagios> ";
+    echo "<http://purl.org/dc/terms/title> ";
+    echo "\"Open Context Pelagios Annotations (Last Updated: ".date("Y-m-d", strtotime($data["lastUpdated"])).")\" .".chr(13);
+    
+    echo "<http://opencontext.org/export/pelagios> ";
+    echo "<http://creativecommons.org/ns#License> ";
+    echo "<http://creativecommons.org/publicdomain/zero/1.0/> .".chr(13);
+    
+    foreach($data["records"] as $record){
+        //first publish the label
+        echo "<".$record["ocURI"]."> ";
+        echo "<http://purl.org/dc/terms/title> ";
+        echo "\"".$record["ocLabel"]."\" .".chr(13);
+        
+        // #origin annotation
+        if($record["ConcordiaType"] == "origin"){
+             echo "<".$record["ocURI"]."#concordiaOrigin> ";
+        }
+        else{
+             echo "<".$record["ocURI"]."#concordiaRelated> ";
+        }
+        
+        echo "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ";
+        echo "<http://www.openannotation.org/ns/Annotation> .".chr(13);
+        
+        // body of the origin annotation
+        if($record["ConcordiaType"] == "origin"){
+             echo "<".$record["ocURI"]."#concordiaOrigin> ";
+        }
+        else{
+             echo "<".$record["ocURI"]."#concordiaRelated> ";
+        }
+        echo "<http://www.openannotation.org/ns/hasBody> ";
+        echo "<".$record["PleiadesOriginURI"]."> .".chr(13);
+        
+        //target of the origin annotation
+        if($record["ConcordiaType"] == "origin"){
+             echo "<".$record["ocURI"]."#concordiaOrigin> ";
+        }
+        else{
+             echo "<".$record["ocURI"]."#concordiaRelated> ";
+        }
+        echo "<http://www.openannotation.org/ns/hasTarget> ";
+        echo "<".$record["ocURI"]."> .".chr(13);
+        
+    }//end loop through the data
+
+}
+else{
+    echo "<h1>Crap! A problem! </h1>";
+    echo print_r($data);
+}
+
+?>
+

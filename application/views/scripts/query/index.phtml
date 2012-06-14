@@ -1,0 +1,172 @@
+<?php
+
+// used to help create hyperlinks; set to current hostname.
+//$host = "http://ishmael.ischool.berkeley.edu";
+//$host = "http://opencontext";
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+// get the facet counts 
+$facet_fields = $this->facet_fields;
+
+$facetAtomURI = "";
+$openSearchURI = "";
+$googleURI = "" ;
+$facetAtomURI = "";
+$fulltext = "";
+$filter_output = ""; 
+$facet_output = "";
+
+$numFound = $this->numFound; 
+
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <title><?php echo 'Open Context Browse: ('.$numFound.' Items Showing)'; ?></title> 
+        <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+        <link href="/css/opencontext_browse.css" rel="stylesheet" type="text/css" />
+        <link href="/css/atomresults.css" rel="stylesheet" type="text/css" />
+        <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+        <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo $facetAtomURI; ?>" />
+        <link rel="search" type="application/opensearchdescription+xml" href="<?php echo $openSearchURI; ?>" title="Open Context Web Search" />
+        <script type="text/javascript">
+        /***********************************************
+        * Simple Tree Menu-  Dynamic Drive DHTML code library (www.dynamicdrive.com)
+        * This notice MUST stay intact for legal use
+        * Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+        ***********************************************/
+        
+        /***********************************************
+        *testing new stylesheet
+        ***********************************************/
+        </script>
+        <!--
+        <script type="text/javascript" src="/js/simpletreemenu.js" ></script>
+        <link rel="stylesheet" type="text/css" href="/css/simpletree.css" />
+        -->
+        <script type="text/javascript">
+        
+            function textSearch(){
+               
+               
+               var dom_act_uri = document.getElementById('act_uri');
+               var dom_qstring = document.getElementById('q_string');
+               
+               var acr_uri  = dom_act_uri.value;
+               var q_string = dom_qstring.value;
+               var amp_char = String.fromCharCode(38);
+               
+               q_string = escape(q_string);
+               
+               if (acr_uri.indexOf("?")>0){
+                    acr_uri = acr_uri + amp_char + "q=" + q_string; 
+               }
+               else{
+                    acr_uri = acr_uri + "?q=" + q_string; 
+               }
+               
+               //alert(acr_uri);
+               
+               window.location = acr_uri;
+            }
+        
+        </script>
+    </head>
+    <body>
+        
+    <div id="oc_logo">
+	<a href="<?php echo $host;?>/sets/" title="Home (Browse)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_main_nav">
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="<?php echo $host;?>/about/" title="Learn more about Open Context">About</a></div>
+        <div class="sides"></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="<?php echo $host;?>/projects/" title="Summary of Projects in Open Context">About</a></div>
+        <div class="sides"></div>
+        <div class="act_nav"><a href="<?php echo $host;?>/sets/" title="Explore data">Browse</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">Media</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">Tables</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Browse to get details of items">Details</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">My Account</span></div>
+    </div>
+    
+    
+        
+<!--
+BEGIN Container for main page content
+--> 
+    <div id="main_page"> 
+        <!--Begin code for showing available facets-->
+        <div id="main_content">
+            <div id="left_cont">
+                <div id="filter_options" class="bodyText">
+                    <p class="bodyText"><strong>Click on one of the links below to further limit your view of items in Open Context.</strong></p>
+                        <?php echo  $fulltext; ?>
+                    <br/>
+                        <?php echo $facet_output; ?>
+                            
+                    <br/>
+                    <p>View in <a href="<?php echo $googleURI; ?>">GoogleEarth</a></p>
+                    <p>Get in <a href="<?php echo $facetAtomURI; ?>">Atom</a></p>
+                </div>
+            </div>
+            <div id="right_cont">   
+                <div id="selected_filters">
+                    <p class="subHeader">Open Context currently has <strong><?php echo $numFound; ?></strong> items, filtered by the following criteria:</p>
+                    <p class="bodyText"><?php echo $filter_output; ?></p>
+                    <form action="<?php echo $host."/tables/add"; ?>" method="post">
+                        <input type="submit" value="make table" />
+                    </form>
+                </div>
+                        
+                <br />
+                <br />
+                        
+                <?php echo Zend_Json::encode($facet_fields); ?>
+            </div>
+                    
+   
+        <!--
+        END of div container for placing main page content
+        -->
+        <div id="bottom_cont"> 
+          <br /> 
+          <br /> 
+        </div> 
+        <!--
+        END Code for showing the database-like content
+        -->
+   
+     </div>
+    <br />
+    
+        <div id="footer"> 
+            <div id="w3c_val_logo"> 
+              <a href="http://validator.w3.org/check?uri=referer"> 
+                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
+              </a> 
+            </div>     
+        </div>
+   
+     </div>
+    </body>
+</html>    

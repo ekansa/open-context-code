@@ -1,0 +1,139 @@
+<?php
+
+
+$host = "http://opencontext.org";
+
+
+$output = '
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context 503 Server Down</title> 
+      <link href="http://static.alexandriaarchive.org/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="http://static.alexandriaarchive.org/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="http://static.alexandriaarchive.org/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="http://static.alexandriaarchive.org/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="http://static.alexandriaarchive.org/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+    <div id="oc_logo">
+	<a href="http://opencontext.org" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <!--
+   
+   -->
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <div id="oc_main_nav">
+  <div class="act_nav_l"></div>
+
+  <div class="act_nav">
+    Home
+  </div>
+  <div class="act_nav_r"></div>
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    About
+  </div>
+
+  <div class="n_act_nav_r"></div>
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    Projects
+  </div>
+  <div class="n_act_nav_r"></div>
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    Browse
+  </div>
+  <div class="n_act_nav_r"></div>
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    Lightbox
+  </div>
+  <div class="n_act_nav_r"></div>
+
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    Tables
+  </div>
+  <div class="n_act_nav_r"></div>
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    Search
+  </div>
+  <div class="n_act_nav_r"></div>
+  <div class="n_act_nav_l"></div>
+  <div class="n_act_nav">
+    My Account
+  </div>
+  <div class="n_act_nav_r"></div>
+</div>
+        
+	
+
+    
+        <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <p class="pageName" align="center">Server Restoration is in Progress: Open Context is Currently Offline</p>
+                
+                <div style="margin:10px;">
+                    
+		    <div style="margin-left: auto; margin-right: auto; text-align:center;">
+			<img src="http://static.alexandriaarchive.org/images/general/under_construction_sign.jpg" title="No school like the old school" alt="Construction graphic" />
+			<p class="tinyText">Yes, the picture has an old-school look, but at least it\'s not animated.</p>
+		    </div>
+		    
+		    <div id=\'downMessage\' class=\'bodyText\'>
+			<p>On early Sunday, April 17th the web hosting service managing Open Context\'s server experienced a severe hardware failure. We are in the processs of configuring a new server, and migrating all software and data to the new machine.</p>
+			<p><strong>Please note however that all Open Context data is SAFELY INTACT in multiple off-site backups</strong>. We hope to have Open Context\'s server fully restored to normal functionality by Monday, April 25.</p>
+			<p>Given this unexpected interruption in service, our team is moving ahead with plans to upgrade Open Context\'s query and browse features with additional support for linked data, new geospatial search services, and greater support for different hierarchic taxonomies. When we restore Open Context to full functionality, we hope to have these upgrades in place. The new server will also have significantly more memory and a faster processor and will provide better overall performance for Open Context.
+			</p>
+			
+		
+		</div>
+		    
+                </div>
+            </div>
+	    <!--
+           
+	    -->
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+	<div style="margin:10px; ">
+	    
+	</div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>
+';
+
+header('HTTP/1.1 503 Service Unavailable');
+header('Retry-After: '.date('D, d M Y H:i:s \G\M\T', strtotime("2011/04/23")));
+echo $output;
+
+?>

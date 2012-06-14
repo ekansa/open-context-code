@@ -1,0 +1,254 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/YouTube/Extension
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Statistics.php
+file
+
+
+
+add
+
+Age.php
+file
+
+
+
+add
+
+MediaGroup.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Link.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Racy.php
+file
+
+
+
+add
+
+Hometown.php
+file
+
+
+
+add
+
+Relationship.php
+file
+
+
+
+add
+
+Movies.php
+file
+
+
+
+add
+
+Position.php
+file
+
+
+
+add
+
+Gender.php
+file
+
+
+
+add
+
+Occupation.php
+file
+
+
+
+add
+
+Company.php
+file
+
+
+
+add
+
+Location.php
+file
+
+
+
+add
+
+NoEmbed.php
+file
+
+
+
+add
+
+MediaContent.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Private.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Hobbies.php
+file
+
+
+
+add
+
+Books.php
+file
+
+
+
+add
+
+ReleaseDate.php
+file
+
+
+
+add
+
+Username.php
+file
+
+
+
+add
+
+Music.php
+file
+
+
+
+add
+
+Control.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+State.php
+file
+
+
+
+add
+
+Token.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Description.php
+file
+
+
+
+add
+
+Status.php
+file
+
+
+
+add
+
+Duration.php
+file
+
+
+
+add
+
+School.php
+file
+
+
+
+add
+

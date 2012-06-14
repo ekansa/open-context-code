@@ -1,0 +1,135 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/YouTube
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+VideoFeed.php
+file
+
+
+
+add
+
+VideoQuery.php
+file
+
+
+
+add
+
+MediaEntry.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+SubscriptionEntry.php
+file
+
+
+
+add
+
+SubscriptionFeed.php
+file
+
+
+
+add
+
+PlaylistVideoEntry.php
+file
+
+
+
+add
+
+PlaylistVideoFeed.php
+file
+
+
+
+add
+
+ContactEntry.php
+file
+
+
+
+add
+
+ContactFeed.php
+file
+
+
+
+add
+
+PlaylistListEntry.php
+file
+
+
+
+add
+
+UserProfileEntry.php
+file
+
+
+
+add
+
+PlaylistListFeed.php
+file
+
+
+
+add
+
+CommentEntry.php
+file
+
+
+
+add
+
+CommentFeed.php
+file
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+
+VideoEntry.php
+file
+
+
+
+add
+

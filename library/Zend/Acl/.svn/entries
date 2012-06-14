@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Acl
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Role
+dir
+
+
+
+add
+
+Assert
+dir
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Resource
+dir
+
+
+
+add
+
+Role.php
+file
+
+
+
+add
+
+Resource.php
+file
+
+
+
+add
+

@@ -1,0 +1,128 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Gapps
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Error.php
+file
+
+
+
+add
+
+UserEntry.php
+file
+
+
+
+add
+
+UserFeed.php
+file
+
+
+
+add
+
+UserQuery.php
+file
+
+
+
+add
+
+Query.php
+file
+
+
+
+add
+
+EmailListEntry.php
+file
+
+
+
+add
+
+EmailListFeed.php
+file
+
+
+
+add
+
+NicknameEntry.php
+file
+
+
+
+add
+
+EmailListRecipientEntry.php
+file
+
+
+
+add
+
+NicknameFeed.php
+file
+
+
+
+add
+
+EmailListQuery.php
+file
+
+
+
+add
+
+EmailListRecipientFeed.php
+file
+
+
+
+add
+
+NicknameQuery.php
+file
+
+
+
+add
+
+EmailListRecipientQuery.php
+file
+
+
+
+add
+
+ServiceException.php
+file
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+

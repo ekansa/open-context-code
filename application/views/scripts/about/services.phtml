@@ -1,0 +1,713 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+$OAI_url = $host."/oai/request";
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context Web Services Documentation</title>
+      <link rel="schema.DC" href="http://purl.org/dc/terms" />
+      <meta name="DC.title" content="Open Context Web Services Documentation" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="April 16, 2012" />
+      <meta name="DC.creator" content="Open Context Editors" />
+      
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+	  <style type="text/css">
+		li.rec-item {
+			padding-bottom:6px;
+		}
+		div.rec-code {
+			font-family:courier;
+			padding-bottom:5px;
+		}
+	  </style>
+    </head>
+    
+<body>
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
+    
+    
+    <div id="main">
+        
+    <div id="pageTop">
+        <div id="pageIntro">
+            <h2 style="text-align:center;">Open Context RESTful Web-Services Documentation</h2>
+            <br/>
+            <p class="bodyText">Open Context provides a simple web services to get content expressed in
+            XHTML (for human use in browsers), the supported Atom Syndication Format (plus GeoRSS extensions),
+	    JSON (Javascript Object Notation), and KML (the format used by GoogleEarth). The Atom-based web services
+	    provide a powerful set of query options to request items from a collection. Query parameters include: geographic,
+            chronological, descriptive (based on how items are described), and social (based on relations
+            between people and organizations and items from a collection). All the results of queries are
+            expressed as Atom feeds, an open format representing one of the most widely deployed and supported
+            standards on the Web. By expressing query results in Atom (and JSON or KML), Open Context collections can be easily
+            recombined with collections from Flickr in innovative mashups, or with news items from journalists
+            or bloggers, or even displayed in personal profile in Facebook. 
+            </p>
+            <p class="bodyText">You can make queries to Open Context with queries
+            specified in a number of dimensions as indicated in Table 1 below. Note, a very similar web-service
+            is available for images. Simply replace 'sets' with 'lightbox' to get image items.
+            </p>
+            <div>
+                <div style='float:left; width:15%; padding-top:6px; padding-left:5px; text-align:center;'>
+                    <a href='http://www.openarchives.org/' title='Learn more about OAI-PMH'>
+                        <img border='0' src='/images/general/oai_logo.gif' alt='OAI-PMH Logo' />
+                    </a>
+                </div>
+                <div style='float:right; width:80%; margin-left:5px;'>
+                    <p class="bodyText">In addition to the services described below, Open Context is registered in
+                    the <a href="http://www.openarchives.org/Register/BrowseSites?viewRecord=http://opencontext.org/oai/request">OAI database</a> of conforming repositories. Open Context's OAI-PMH (Ver. 2) service is
+                    located at: <a href="<?php echo $OAI_url; ?>"><?php echo $OAI_url; ?></a> (Note: Add OAI-PMH parameters)
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="about_submenu" class="rounded-corners">
+                <p class="bodyText"><em>More About Open Context:</em></p>
+                <?php echo OpenContext_NavMenus::AboutNavMenu("services", $host); ?>
+        </div>
+        <div id="pageTopEnd">
+            <br/>
+        </div>
+    </div>
+    
+    <br/>
+    
+<div style="margin:5px;">
+    <h3><em>Table 1: Query Parameters to Retrieve <strong>Sets</strong> of Items</em></h3>
+<table width="90%" border="1" style="border-color:#000000; border-style:solid; border-width:thin;" cellpadding="4" cellspacing="0">
+	<col width="37"/>
+	<col width="97"/>
+	<col width="122"/>
+	<tr valign="top">
+		<th width="14%">
+			<p><font face="Arial, sans-serif"><font size="2">Parameter</font></font></p>
+		</th>
+		<th width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Possible Values</font></font></p>
+		</th>
+		<th width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">Description</font></font></p>
+		</th>
+	</tr>
+	<tr valign="top">
+		<th width="14%">
+			<p style="font-weight: normal"><font face="Arial, sans-serif"><font size="2">(Context
+			path)</font></font></p>
+		</th>
+		<th width="38%">
+			<p style="font-weight: normal; text-align:left;"><font face="Arial, sans-serif"><font size="2">Slash
+			separated values of URL-encoded text. Use two pipe characers ('||') for OR terms.</font></font></p>
+		</th>
+		<th width="48%">
+			<p style="font-weight: normal; text-align:left;"><font face="Arial, sans-serif"><font size="2">This
+			represents spatial containment &#8220;paths&#8221; with larger
+			locations and objects containing nested (child) locations and
+			objects.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/Turkey/Domuztepe/I/Lot+1704">http://opencontext.org/sets/Turkey/Domuztepe/I/Lot+1704</a>
+			 retrieves items from inside Lot 1704 at Domuztepe, Operation I.</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/Jordan/Petra+Great+Temple/Propylaeum||Temple?cat=Animal%20Bone">http://opencontext.org/sets/Jordan/Petra+Great+Temple/Propylaeum||Temple?cat=Animal%20Bone</a>
+			 retrieves items from inside the Petra Great Temple Propylaeum OR from Temple contexts.</em></p>
+		</th>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">q</font></font></p>
+		</td>
+		<td width="38%">
+			<p style="text-align:left;"><font face="Arial, sans-serif"><font size="2">URL-encoded
+			text</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This works like
+			Google's search, and performs a full-text search of Open Context.
+			Multiple text values can be passed to this, or you can search for
+			an exact phrase by placing the phrase in quotes. </font></font>
+			</p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?q=gold">http://opencontext.org/sets/?q=gold</a>
+			 retrieves items with "gold" somewhere in their description.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">bBox</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Comma separated
+			list of 4 numbers representing decimal degree coordinates (WGS84
+			datum).</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2"><font color="#000000"><span style="font-style: normal"><span style="font-weight: normal">These
+			four arguments are used together to form a quadrant of the earth's
+			surface for locating data.</span></span></font>  The first two
+			numbers represent the coordinates of the south-west corner of the
+			bounding box, while the last two numbers represent the coordinates
+			of the north-east corner of the bounding box. </font></font>
+			</p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a rel="nofollow" href="http://opencontext.org/sets/?bBox=30,30,50,50">http://opencontext.org/sets/?bBox=30,30,50,50</a>
+			 retrieves items located in the region bound by the coordinates: 30E, 30N to 50E, 50N (very roughly southwest Asia).</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">proj</font></font></p>
+		</td>
+		<td width="38%">
+			<p style="text-align:left;"><font face="Arial, sans-serif"><font size="2">URL-encoded
+			text. Use two pipe characers ('||') for OR terms.</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters by the names of projects / collections. Limit of 128
+			characters.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?proj=Domuztepe+Excavations">http://opencontext.org/sets/?proj=Domuztepe+Excavations</a>
+			 retrieves items from the "Domuztepe Excavations" project.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">cat</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters content by its general category (&#8220;animal bone&#8221;,
+			&#8220;small finds&#8221;, etc.)</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?cat=Small+Find">http://opencontext.org/sets/?cat=Small+Find</a>
+			 retrieves items described by the general category "Small Finds".</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?cat=Animal+Bone||Shell||Human+Bone">http://opencontext.org/sets/?cat=Animal+Bone||Shell||Human+Bone</a>
+			 retrieves items under the general category of "Animal Bone", "Shell", or "Human Bone".</em></p>
+		</td>
+	</tr>
+	<tr id="query-taxa" valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">taxa[]</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text. Use this parameter
+			to query for desciptive properties and hierarchic taxonomies. These properties can be simple variable-value pairs, or deeper
+			hierarchical taxonomies with nodes seperated by two colons ('::'). Numeric values can be proceeded
+			by 'URL-encoded  '&gt;', '&gt;=', '&lt;', or '&lt;='  to make
+			range queries.) Use two pipe characters ('||') for OR terms.</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter is
+			for querying the descriptive properties and hierarchic taxonomies used by data contributors.
+			For the most part, descriptive properties in Open Context have a very "flat" hierarchy, and are simply variable /
+			value pairs, expressed as 'taxa[]={variable}::{value}', where 2 colons ('::') seperate the variable from the value.
+			A deeper taxonomic tree can be queried as follows 'taxa[]={node}::{node}::{node}'.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example A: <a href="http://opencontext.org/sets/?cat=Small+Find&amp;taxa%5B%5D=Object">http://opencontext.org/sets/?cat=Small+Find&amp;taxa%5B%5D=Object</a>
+			 retrieves items described by the general category "Small Finds", and described by the property "Object" (a variable).</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example B: <a href="http://opencontext.org/sets/?cat=Small+Find&amp;taxa%5B%5D=Object::Lamp">http://opencontext.org/sets/?cat=Small+Find&amp;taxa%5B%5D=Object::Lamp</a>
+			 retrieves items described by the general category "Small Finds", and described by the property "Object" (variable), "Lamp" (value).</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example C: <a href="http://opencontext.org/sets/?proj=Domuztepe+Excavations&amp;taxa%5B%5D=Fragment+Length+%28mm%29::%3E%3D116,%3C174">http://opencontext.org/sets/?proj=Domuztepe+Excavations&amp;taxa%5B%5D=Fragment+Length+%28mm%29%3E%3D116,%3C174</a>
+			 retrieves items from the "Domuztepe Excavations" project, described by the property "Fragment Length (mm)" (variable), with values ranging from 116 to 174.</em></p>
+		</td>
+	</tr>
+	<tr id="query-rel" valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">rel[]</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text. Use this parameter
+			to query Open Context using URI-identified concepts. Use two pipe characters ('||') for OR terms.</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter is
+			for querying Open Context using URI-identified concepts. Please note, Open Context does not (yet) have a triple-store nor is this parameter used for SPARQL. This parameter is simply used to query Open Context for subjects (URI-identifed documents describing individual locations and objects) based on very simple relations to URI identified concepts. In 'Linked Data' terms, the items returned in a query are the 'subjects' while the 'predicate' and 'object' (or 'target') are expressed as URI identified concepts seperated by 2 colons ('::') according to this template: 'rel[]={URI identified predicate}::{URI identified object}'.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example A: <a href="http://opencontext.org/sets/?rel%5B%5D=http%3A%2F%2Fgawd.atlantides.org%2Fterms%2Forigin">http://opencontext.org/sets/?rel%5B%5D= http%3A%2F%2Fgawd.atlantides.org%2Fterms%2Forigin</a>
+			 retrieves items with a predicate 'has origin place', using the Concordia Vocabulary and identified by the URI: http://gawd.atlantides.org/terms/origin</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example B: <a href="http://opencontext.org/sets/?rel%5B%5D=http%3A%2F%2Fgawd.atlantides.org%2Fterms%2Forigin%3A%3Ahttp%3A%2F%2Fpleiades.stoa.org%2Fplaces%2F520985">http://opencontext.org/sets/?rel%5B%5D=http%3A%2F%2Fgawd.atlantides.org%2Fterms%2Forigin:: http%3A%2F%2Fpleiades.stoa.org%2Fplaces%2F520985</a>
+			 retrieves items with a predicate 'has origin place' and the object / target place 'Byzantium', identified the URI: http://pleiades.stoa.org/places/520985</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example C: <a href="http://opencontext.org/sets/?rel[]=http%3A%2F%2Fpurl.org%2FNET%2Fbiol%2Fns%23term_hasTaxonomy::http%3A%2F%2Feol.org%2Fpages%2F328699||http%3A%2F%2Feol.org%2Fpages%2F11021570">http://opencontext.org/sets/?rel[]=http%3A%2F%2Fpurl.org%2FNET%2Fbiol%2Fns%23term_hasTaxonomy:: http%3A%2F%2Feol.org%2Fpages%2F328699|| http%3A%2F%2Feol.org%2Fpages%2F11021570</a>
+			 retrieves items with a predicate 'has biological taxonomy' and the object / target taxa as 'Bos taurus' OR 'Bos primigenius' (from the Encyclopedia of Life)</em></p>
+		</td>
+	</tr>
+	<tr id="query-targURI" valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">targURI</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text. Use this parameter
+			to query Open Context using URI-identified concepts of the object / target entities of a relationship. Use two pipe characters ('||') for OR terms.</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter is
+			for querying Open Context using URI-identified concepts where the predicate relationship is not known or does not matter. It works according to this template: 'targURI={URI identified object}'.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example:  <a href="http://opencontext.org/sets/?targURI=http%3A%2F%2Fpleiades.stoa.org%2Fplaces%2F520985">http://opencontext.org/sets/?targURI=http%3A%2F%2Fpleiades.stoa.org%2Fplaces%2F520985</a>
+			 retrieves items with any kind of relationship with the object / target place 'Byzantium', identified the URI: http://pleiades.stoa.org/places/520985</em></p>
+		</td>
+	</tr>
+	<tr id="query-props" valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">(DEPRECATED) prop[*]</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text
+			(variable names within the square brackets)</font></font></p>
+			<p><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text
+			(values for the parameter represent values for the variable
+			indicated in the square brackets. Numeric values can be proceeded
+			by 'URL-encoded  '&gt;', '&gt;=', '&lt;', or '&lt;='  to make
+			range queries.) Use two pipe characers ('||') for OR terms.</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2"><strong>NOTE:</strong> This parameter is deprecated. Open Context will still resolve queries using this parameter, but the preferred parameter for querying descriptive properties is "taxa[]", described above.</font></font></p>
+			<p><font face="Arial, sans-serif"><font size="2">This parameter is
+			for querying descriptive properties. Properties are variable /
+			value pairs in Open Context, and they represent the how data
+			providers describe their observations. The name of the variable is
+			indicated in the square bracket, and the corresponding value for
+			the property is indicated by the value assigned to this parameter.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example A: <a href="http://opencontext.org/sets/?cat=Small+Find&amp;prop%5BObject%5D=Lamp">http://opencontext.org/sets/?cat=Small+Find&amp;prop%5BObject%5D=Lamp</a>
+			 retrieves items described by the general category "Small Finds", and described by the property "Object" (variable), "Lamp" (value).</em></p>
+			<p class="bodyText" style="text-align:left;"><em>Example B: <a href="http://opencontext.org/sets/?proj=Domuztepe+Excavations&amp;prop%5BFragment+Length+%28mm%29%5D=%3E%3D116,%3C174">http://opencontext.org/sets/?proj=Domuztepe+Excavations&amp;prop%5BFragment+Length+%28mm%29%5D=%3E%3D116,%3C174</a>
+			 retrieves items from the "Domuztepe Excavations" project, described by the property "Fragment Length (mm)" (variable), with values ranging from 116 to 174.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">person</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">URL-encoded text </font></font>
+			</p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters content by individual people and organizations associated
+			with the content (authors, observers, analysts, etc.). Use two pipe characers ('||') for OR terms.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?proj=Domuztepe+Excavations&amp;person=Elizabeth+Carter">http://opencontext.org/sets/?proj=Domuztepe+Excavations&amp;person=Elizabeth+Carter</a>
+			 retrieves items from the "Domuztepe Excavations" project, associated with the person, Elizabeth Carter.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">t-start</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Numeric value</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters content by date, with t-start being the earliest date
+			limit.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?t-start=-1500&amp;t-end=500">http://opencontext.org/sets/?t-start=-1500&amp;t-end=500</a>
+			 retrieves items from Open Context with dates ranging from 1500 BCE to 500 CE.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">t-end</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Numeric value</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters content by date, with t-end being the latest date limit.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example (as above): <a href="http://opencontext.org/sets/?t-start=-1500&amp;t-end=500">http://opencontext.org/sets/?t-start=-1500&amp;t-end=500</a>
+			 retrieves items from Open Context with dates ranging from 1500 BCE to 500 CE.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">tag[]</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Note the square bracket in the tag parameter means that this parameter can take be used multiple times and take multiple values. Values for this parameter are expressed as URL-encoded text</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters content by a user-generated tag. Use two pipe characers ('||') for OR terms.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?tag%5B%5D=weaving+tools">http://opencontext.org/sets/?tag%5B%5D=weaving+tools</a>
+			 retrieves items from Open Context tagged with "weaving tools".</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">image</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">true</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			filters content by links to images. When the value for this parameter is true, only items associated with images are retrieved.</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/?image=true">http://opencontext.org/sets/?image=true</a>
+			 retrieves items from Open Context associated with images.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">sort</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">"label", "cat", "context", "proj", "created", "updated". (defaults to ascending order. ':desc' changes to descending order)</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			changes the sort-order of search result items retrieved from Open Context. By default, Open Context sorts search results
+			by "interestingness". More interesting items have more description and more links to associated media (images, documents, etc.). By default, these more richly described items are ranked higher in searches. To change sort order, add the "sort" parameter to queries as follows:</font></font></p>
+			<ul class="bodyText" style="text-align:left;">
+			<li><em><a href='http://opencontext.org/sets/Jordan/?proj=Petra+Great+Temple+Excavations&amp;cat=Animal+Bone&amp;sort=label' title='Example sorting by Label'>Label</a></em> sort by item label or name.</li>
+			<li><em><a href='http://opencontext.org/sets/Jordan/?proj=Petra+Great+Temple+Excavations&amp;cat=Animal+Bone&amp;sort=created' title='Example sorting by Publication time'>Created</a></em> sort by item publication / creation time.</li>
+			<li><em><a href='http://opencontext.org/sets/Jordan/?proj=Petra+Great+Temple+Excavations&amp;cat=Animal+Bone&amp;sort=updated:desc' title='Example sorting by Update time, descending order'>Updated</a></em> sort by item update time (edits, changes) in descending order.</li>
+			<li><em><a href='http://opencontext.org/sets/Jordan/?proj=Petra+Great+Temple+Excavations&amp;sort=cat' title='Example sorting by Category'>Cat</a></em> sort by item category ("animal bone", "small find", "locus", etc.).</li>
+			<li><em><a href='http://opencontext.org/sets/Jordan/?sort=context' title='Example sorting by Context'>Context</a></em> sort by spatial context.</li>
+			<li><em><a href='http://opencontext.org/sets/?bBox=30,30,50,50&amp;sort=proj' title='Example sorting by Project'>Project</a></em> sort by project.</li>
+			</ul>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">recs</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Positive integer values, ranging from 1 to 50</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">This parameter
+			changes the number of items displayed from a query. By default, Open Context shows 10 items from queries on locations and objects, and 18 thumbnails for image searches.
+			Note: many queries return many more results than can be displayed at once. Use the "page" parameter described below to page through long sets of query results.
+			</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/Turkey/?recs=50">http://opencontext.org/sets/Turkey/?recs=50</a>
+			 displays the first 50 search results for items in Turkey.</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="14%">
+			<p style="text-align:center;"><font face="Arial, sans-serif"><font size="2">page</font></font></p>
+		</td>
+		<td width="38%">
+			<p><font face="Arial, sans-serif"><font size="2">Positive integer values</font></font></p>
+		</td>
+		<td width="48%">
+			<p><font face="Arial, sans-serif"><font size="2">Open Context often returns large numbers of items from queries. Because it is not feasible to display hundreds or thousands of
+			of results at once, large sets of results are delivered in different "pages". Open Context returns search results using the Atom Syndication Format (see below). This
+			Atom representation has link elements pointing to different pages of search results.
+			</font></font></p>
+			<p class="bodyText" style="text-align:left;"><em>Example: <a href="http://opencontext.org/sets/Turkey/?recs=50&amp;page=2">http://opencontext.org/sets/Turkey/?recs=50&amp;page=2</a>
+			 displays the second page of search results for items in Turkey (50 items per page).</em></p>
+		</td>
+	</tr>
+</table>
+</div>
+
+<p style="margin-bottom: 0in"><br/>
+</p>
+<div style="margin:5px;">
+<p class="bodyText">Query results are provided both in
+summary form and as a list of individual records that match your
+query criteria. Currently, the user interface of Open Context
+provides both a summary and list of individual records (in the XHTML
+representation). To be more specific, the summary form is a list of
+&#8220;facets&#8221; that describe  the overall characteristics of a
+query result set. These facets can be retrieved in the Atom
+Syndication Format or in KML. Individual records of query results can
+be retrieved in Atom. See table 2 below for examples.</p>
+<p><br/></p>
+</div>
+
+<div style="margin:5px;">
+<h3><em>Table 2: Query Result Representations</em></h3>
+<table width="90%" border="1" style="border-color:#000000; border-style:solid; border-width:thin;" cellpadding="4" cellspacing="0">
+	<col width="73"/>
+	<col width="574"/>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">XHTML</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/sets">http://opencontext.org/sets</a>			</font></font>
+			</p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2"><font face="Arial, sans-serif"><font size="2">(XHTML
+			version, showing available facets on the left)</font></font></font></font></p>
+		</td>
+	</tr>
+	<tr id="atom-facets" valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">Atom (facets /
+			summary)</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/sets/facets/.atom">http://opencontext.org/sets/facets/.atom</a>
+			</font></font>
+			</p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(Atom feed of
+			facets that summarize overall characteristics of the query result
+			set. Geo-spatial facets have locational information expressed in
+			GeoRSS. In this case, because there are no query parameters in
+			this request, this returns a summary of all Open Context content)
+			<br/><br/><em>Example of "facet feed" data
+			<a href='http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=http:%2F%2Fopencontext.org%2Fsets%2Ffacets%2FJordan||Israel||Palestinian%2BAuthority.atom&amp;sll=37.0625,-95.677068&amp;sspn=45.197878,92.021484&amp;ie=UTF8&amp;ll=31.672083,35.540771&amp;spn=3.052508,5.751343&amp;z=8' title='View contexts mapped in Google'>visualized in Google Maps</a>.</em>
+			</font></font></p>
+			
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">JSON (facets /
+			summary)</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/sets/facets/.json">http://opencontext.org/sets/facets/.json</a>
+			</font></font>
+			</p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(JSON expression of
+			facets that summarize overall characteristics of the query result
+			set. Geo-spatial facets have locational information and chronological expressed in
+			as &#8220;geoLat&#8221;, &#8220;geoLong&#8221;, &#8220;timeBegin&#8221; and &#8220;timeEnd&#8221; elements.
+			These can be further processed for use with the <a href='http://code.google.com/p/timemap/'>Timemap.js</a> library.
+			<br/><br/>In this case, because there are no query parameters in
+			this request, this returns a summary of all Open Context content)</font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">KML (facets /
+			summary)</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/sets/facets/.kml">http://opencontext.org/sets/facets/.kml</a></font></font></p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(KML of the
+			geo-spatial facets that summarize overall characteristics of the
+			query result set. In this case, because there are no query
+			parameters in this request, this returns a summary of all Open
+			Context content. Only geo-spatial facets are provided in this
+			representation, since other types of facets don't make
+			visualization sense in applications like Google Earth.)</font></font></p>
+		</td>
+	</tr>
+	<tr id="atom-results" valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">Atom (individual
+			records)</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/sets/.atom">http://opencontext.org/sets/.atom</a></font></font></p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(Atom feed of
+			individual records resulting from a query. Open Search extensions
+			provide a summary of the number of results and feed &#8211; paging
+			(implementation of  Atom feed paging is forthcoming). All items
+			have location information expressed in GeoRSS. The Atom
+			&#8220;link&#8221;-element with the attribute &#8220;rel='self' &#8221;
+			points to the Atom representation of that specific record and its
+			full ArchaeoML expression.</font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">JSON (individual
+			records and facets)</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/sets/.json">http://opencontext.org/sets/.json</a></font></font></p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(As a convenience for developers
+			who want to create their own search portal for Open Context or a sub-set of Open Context content,
+			we offer a JSON represntation with comprehensive faceted search information and result information.
+			As with the JSON-facets service above, geo-spatial facets have lat / lon point data as well as time range data. These can be further
+			processed for use with the <a href='http://code.google.com/p/timemap/'>Timemap.js</a> library.)</font></font></p>
+			<p class="bodyText">Note: Open context also offers a <a href='http://en.wikipedia.org/wiki/JSON#JSONP' title='Link to a Wikipedia discussion'>JSON/P</a> ("JSON with Padding") representation.
+			JSON/P is a useful workaround for "cross domain problems". It lets third-parties create web-pages using Open Context data without having those data first go to their server, and then to clients.
+			To make JSON/P requests, simply add the parameter "callback" with its value set to the name of the function that you want to use to "pad" the JSON data. Here is an example:
+			<a href='http://opencontext.org/sets/.json?callback=loadit' title='JSON/P example'>http://opencontext.org/sets/.json?callback=loadit</a> (JSON padded within a function called "loadit").
+			</p>
+			<p class="bodyText"><em>Plain JSON Examples: <a href='http://bade.psr.edu/content/tell-en-nasbeh-database' title='Link to working example of this service'>Bade Museum Website</a> (uses the Open Context JSON service);
+			<a href='http://alexandriaarchive.org/bonecommons/datasets' title='Link to working example of this service'>BoneCommons- Datasets</a> (uses the Open Context JSON service)
+			</em></p>
+			<p class="bodyText"><em>JSONP Examples: <a href='http://visiblepast.net/see/archives/591' title='Link to working example of this service'>Visible Past</a> (uses the Open Context JSONP service)
+			</em></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">Atom Feed of Projects</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/projects/.atom">http://opencontext.org/projects/.atom</a></font></font></p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(Open Context provides an Atom+GeoRSS feed of summary descriptions of all projects
+			and collections. The feed is sorted by date of publication in descending order. This feed most closely parallels more familiar applications of
+			the Atom Syndication format.)</font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">Atom Feed of All Content</font></font></p>
+		</td>
+		<td width="574">
+			<p style="margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/all/.atom">http://opencontext.org/all/.atom</a></font></font></p>
+			<p style="margin-bottom: 0in"><br/>
+			</p>
+			<p><font face="Arial, sans-serif"><font size="2">(Open Context provides this update-time sorted
+			(most recent first) feed provides a comprehensive list of all Open Context content.
+			Digital archives can use this paged feed to retrieve all resources relevant to data
+			curation from Open Context.)</font></font></p>
+		</td>
+	</tr>
+</table>
+</div>
+<p style="margin-bottom: 0in"><br/>
+</p>
+<p style="margin-bottom: 0in"><br/>
+</p>
+
+
+<div style="margin:5px;">
+<h3>Full Data on Individual Items:</h3>
+<p class="bodyText">A full XML representation of each
+location and object item is available. Here are some examples on how
+to retrieve these representations of Open Context resources:</p>
+<p style="margin-bottom: 0in"><br/>
+</p>
+<h4><em>Table 3: XHTML Web Page and Atom
+Representations</em></h4>
+<table width="90%" border="1" style="border-color:#000000; border-style:solid; border-width:thin;" cellpadding="4" cellspacing="0">
+	<col width="73"/>
+	<col width="574"/>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">XHTML</font></font></p>
+		</td>
+		<td width="574">
+			<p><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/subjects/E54B6571-265E-45C1-054D-C272E8515E8D">http://opencontext.org/subjects/E54B6571-265E-45C1-054D-C272E8515E8D</a></font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">Atom (+ ArchaeoML)</font></font></p>
+		</td>
+		<td width="574">
+			<p><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/subjects/E54B6571-265E-45C1-054D-C272E8515E8D.atom">http://opencontext.org/subjects/E54B6571-265E-45C1-054D-C272E8515E8D.atom</a></font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="73">
+			<p><font face="Arial, sans-serif"><font size="2">ArchaeoML (XML)</font></font></p>
+		</td>
+		<td width="574">
+			<p><font face="Arial, sans-serif"><font size="2"><a href="http://opencontext.org/subjects/E54B6571-265E-45C1-054D-C272E8515E8D.xml">http://opencontext.org/subjects/E54B6571-265E-45C1-054D-C272E8515E8D.xml</a></font></font></p>
+		</td>
+	</tr>
+</table>
+</div>
+
+
+<br/>
+<div style="margin:5px;" id="reconcile">
+<h3>Entity Reconciliation Service (IN TESTING)</h3>
+<p class="bodyText">Open Context is currently <strong>alpha-testing</strong> an entity reconciliation service (see this
+<a href="http://wiki.freebase.com/wiki/Reconciliation">definition from Freebase</a>). One can use Open Context's service to
+look up Web identifiers for certain concepts linked by Open Context. By doing so, you can precisely 
+
+Currently, Open Context's reconciliation service
+only supports look-ups to find <a href="http://eol.org">Encyclopedia of Life</a> (EOL) identifiers for biological taxa.
+However, we will shortly offer additional options for reconciling terms against certain concepts used to describe material
+culture as well.</p>
+<p class="bodyText">Unless you are a programmer, it is easiest to use <a href="http://code.google.com/p/google-refine/">Google Refine</a>
+to use this reconciliation service. Google Refine is an open source data review and editing tool that also has powerful features
+to use Web-APIs. It can be used to work with Open Context's reconciliation service as described below:</p>
+<h4>Procedure (in Google Refine)</h4>
+						<ol class="bodyText">
+							<li class="rec-item">Click on the column with biological taxa terms to select it.
+							Create a column for the EOL identifiers of taxa by <em>Add Column By Fetching URLs... </em>
+							</li>
+							<li class="rec-item">In the expression field, write:<br/>
+							<div class="rec-code">
+								&quot;http://opencontext.org/sets/reconciliation/.json?rel=http%3A%2F%2Fpurl.org%2FNET%2Fbiol%2Fns%23term_hasTaxonomy&amp;rq=&quot; + escape(value, "url")
+							</div>
+							The adove expression will get a list of possible EOL identifiers for biological taxa, ranked from most
+							commonly used to the least commonly used.
+							</li>
+							<li class="rec-item">Completing the step above will populate this new column with JSON data (a
+							"machine-readable" data format) from Open Context. You'll need to process these results further
+							with the <em>Edit Cells > Transform...</em> command.
+							</li>
+							<li class="rec-item">In the expression field, write:<br/>
+								<div class="rec-code">
+								value.parseJson()[&quot;reconResults&quot;][0][&quot;uri&quot;]
+								</div>
+								The above expression generates a link to an EOL Web page representing
+								the mostly likely match to the taxonomic term in your dataset.
+							</li>
+							<li class="rec-item"><strong>Check the results!</strong> This is a <em>semi-automated</em> approach. You'll need
+							to check to make sure the results make sense and reference appropriate EOL pages.
+							</li>
+						</ol>
+<p class="bodyText">One can also take advantage of Open Context's powerful index and add additional filters and query parameters to
+further constrain the search for relevant identifers. For example, a query to get a Web identifier for a biological taxon associated
+with the term "sheep" can be limited by a geographic bounding box as follows:</p>
+<div class="bodyText rec-code">
+	http://opencontext.org/sets/reconciliation/.json?rel=http%3A%2F%2Fpurl.org%2FNET%2Fbiol%2Fns%23term_hasTaxonomy&amp;bBox=30,30,50,50&amp;rq=sheep
+</div>
+
+
+<p class="bodyText">Please note! This reconciliation service needs testing and evaluation. We welcome feed-back to improve our
+efforts (<a href='mailto:skansa@alexandriaarchive.org' title='Email the editor, Sarah Kansa'>contact the Editor</a>).</p>
+
+</div>
+
+
+
+
+    <div id="bottom">
+    </div>
+    
+    </div>
+
+    
+</body>
+</html>

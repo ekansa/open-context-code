@@ -1,0 +1,86 @@
+
+<?php
+$requestURI = $this->requestURI;
+$host = OpenContext_OCConfig::get_host_config();
+header('HTTP/1.0 503 Service Unavailable');
+header('Retry-After: '.OpenContext_UserMessages::httpEndDate());
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context Service Not Available</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+    <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+   <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("browse"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <p class="pageName" align="center">Upgrade in Progress: This Feature is Currently Offline</p>
+                
+                <div style="margin:10px;">
+                    
+		    <div style="margin-left: auto; margin-right: auto; text-align:center;">
+			<img src="http://static.alexandriaarchive.org/images/general/under_construction_sign.jpg" title="No school like the old school" alt="Construction graphic" />
+			<p class="tinyText">Yes, the picture has an old-school look, but at least it's not animated.</p>
+		    </div>
+		    
+		    <?php echo OpenContext_UserMessages::getSolrDownMessage(); ?>
+		    
+                </div>
+            </div>
+            <div id="about_submenu" class="rounded-corners">
+                    <p class="bodyText"><em>More About Open Context:</em></p>
+                    <?php echo OpenContext_NavMenus::AboutNavMenu("index", $host); ?>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+	<div style="margin:10px; ">
+	    
+	</div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

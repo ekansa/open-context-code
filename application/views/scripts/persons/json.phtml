@@ -1,0 +1,16 @@
+<?php
+
+  
+$json_string = $this->json_string;
+
+//echo $this->feedURI;
+header('Cache-Control: no-cache, must-revalidate');
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Content-type: application/json', true);
+echo $json_string;
+
+
+
+
+?>
+

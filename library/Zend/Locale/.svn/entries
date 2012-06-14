@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Locale
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Data.php
+file
+
+
+
+add
+
+Math.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Data
+dir
+
+
+
+add
+
+Math
+dir
+
+
+
+add
+
+Format.php
+file
+
+
+
+add
+

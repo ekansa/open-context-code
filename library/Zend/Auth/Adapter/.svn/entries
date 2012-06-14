@@ -1,0 +1,79 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Auth/Adapter
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Http
+dir
+
+
+
+add
+
+DbTable.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+OpenId.php
+file
+
+
+
+add
+
+Http.php
+file
+
+
+
+add
+
+Digest.php
+file
+
+
+
+add
+
+Interface.php
+file
+
+
+
+add
+
+Ldap.php
+file
+
+
+
+add
+
+InfoCard.php
+file
+
+
+
+add
+

@@ -1,0 +1,100 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Spreadsheets
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+SpreadsheetEntry.php
+file
+
+
+
+add
+
+SpreadsheetFeed.php
+file
+
+
+
+add
+
+WorksheetEntry.php
+file
+
+
+
+add
+
+ListEntry.php
+file
+
+
+
+add
+
+WorksheetFeed.php
+file
+
+
+
+add
+
+ListFeed.php
+file
+
+
+
+add
+
+ListQuery.php
+file
+
+
+
+add
+
+CellEntry.php
+file
+
+
+
+add
+
+CellFeed.php
+file
+
+
+
+add
+
+DocumentQuery.php
+file
+
+
+
+add
+
+CellQuery.php
+file
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+

@@ -1,0 +1,81 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();   
+
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <title>Open Context: Tables</title> 
+    <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+    <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+    <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+  </head>
+    
+  <body>
+    <div id="oc_logo"><a href="<?php echo $host; ?>"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a></div>
+    <div id="oc_tagline">	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img></div>
+    <div id="oc_beta"><img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img></div>
+    <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("tables"); ?>
+
+    <div id="main" style="width:95%;overflow:hidden;">
+
+      <!-- LEFT HAND COLUMN-->
+      <div id="table_left_page" style="width:73%;">
+        <div class="metadata">
+          <p class="heading" style="font-weight:bold;padding:0px;margin:9px 0px 2px 0px;">Open Context Help with Downloadable Tables</p>
+          
+	  <p class="description">
+	    <br/>
+	    <br/>
+	    <a name="download" ></a>
+	    <strong>Downloading Data</strong><br/>
+            Open Context provides features for downloading data in tables to use with applications like MS-Excel or Open Office. To download data,
+	    you can select an existing table <a href="../tables/" title="View downloadable tables">(click here)</a>. You can also use
+	    the <a href="../sets/" title="Query and search Open Context">Browse</a> feature to select a custom set of data, and then generate a
+	    table to download. Please note that generating a new table from a large selection of data may take a few minutes.
+	  </p>
+	  <p class="description">  
+	    Open Context enables retrieval of data pooled from many different projects and collections. This is intended to facilitate comparative
+	    research. However, the projects published in Open Context may have worked under different
+            assumptions and methodologies. In such cases, data comparisons may involve complications.
+            This may be the case even if projects and collections used the same descriptive terminology.
+            In working with multiple sets of data, you should exercise your best
+	    critical judgment as a researcher and examine available dataset documentation and related publications to help
+	    inform your interpretations.
+          </p>
+	  
+	  <p class="description">
+	    <br/>
+	    <br/>
+	    <a name="formats" ></a>
+	    <strong>Data Formats</strong><br/>
+	      Some data relating to the records in this table may depend upon
+              complex structures that cannot be easily represented in a table format. If you need data fully expressing such complex structures,
+	      download the XML representations of these data. To learn how to do this, please read the <a href='<?php echo $host; ?>/about/services/'
+              title='Methods for retrieving machine-readable data'>web-services documentation</a>.
+	  </p>
+	  
+	  
+	  <p class="bodyText">
+            <strong>Note: </strong>
+	    Some tables contain data originating from different projects and collections. These different projects may have worked under different
+            assumptions and methodologies. In such cases, data comparisons may involve complications.
+            This may be the case even if projects and collections used the same descriptive terminology.
+            In working with multiple sets of data, you should exercise your best
+	    critical judgment as a researcher and examine available dataset documentation and related publications to help
+	    inform your interpretations.
+          </p>
+        </div> 
+        
+      </div>
+
+      
+      </div>
+  </body>
+</html>

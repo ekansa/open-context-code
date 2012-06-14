@@ -1,0 +1,50 @@
+<?php
+
+
+//echo htmlentities($this->solr_out);
+$XML = false;
+
+$XML = $this->XML;
+
+if ($XML) {
+
+    $doc = new DOMDocument();
+
+    $useragent = @$_SERVER['HTTP_USER_AGENT'];
+
+    if(strstr($useragent,"MSIE")){
+        $doc->load("xsl/defaultSpatial.xsl");
+    }    
+    else{
+        $doc->load("xsl/defaultSpatial_rdfa.xsl");
+    }
+    
+    
+    $proc = new XSLTProcessor();
+    $xslt = $proc->importStylesheet($doc);
+    $archaeoMLDoc = new DomDocument();
+    $archaeoMLDoc->loadXML($XML->asXML());
+    $output = $proc->transformToXML($archaeoMLDoc);
+    
+    if(!strstr($useragent,"MSIE")){
+        header('Content-type: application/xhtml+xml', true);
+    }
+    else{
+        header('Content-type: text/html; charset=utf-8	', true);
+        //header('Content-type: application/xhtml+xml', true);
+        $XMLprefix = '<?xml version="1.0" encoding="utf-8"?>';
+        $output = str_replace($XMLprefix, "", $output);
+    }
+    
+    echo $output;
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+
+
+
+?>

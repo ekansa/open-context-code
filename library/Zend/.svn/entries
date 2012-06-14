@@ -1,0 +1,597 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend
+https://svn.ischool.berkeley.edu/opencontext
+
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Dom
+dir
+
+
+
+add
+
+File
+dir
+
+
+
+add
+
+Log
+dir
+
+
+
+add
+
+Session
+dir
+
+
+
+add
+
+Request
+dir
+
+
+
+add
+
+Form.php
+file
+
+
+
+add
+
+Dojo
+dir
+
+
+
+add
+
+Loader.php
+file
+
+
+
+add
+
+Service
+dir
+
+
+
+add
+
+Soap
+dir
+
+
+
+add
+
+Feed
+dir
+
+
+
+add
+
+Config
+dir
+
+
+
+add
+
+Pdf
+dir
+
+
+
+add
+
+Debug.php
+file
+
+
+
+add
+
+OpenId
+dir
+
+
+
+add
+
+Validate.php
+file
+
+
+
+add
+
+Http
+dir
+
+
+
+add
+
+Ldap
+dir
+
+
+
+add
+
+Gdata
+dir
+
+
+
+add
+
+Controller
+dir
+
+
+
+add
+
+Paginator
+dir
+
+
+
+add
+
+Db
+dir
+
+
+
+add
+
+Cache.php
+file
+
+
+
+add
+
+Currency
+dir
+
+
+
+add
+
+TimeSync
+dir
+
+
+
+add
+
+Translate
+dir
+
+
+
+add
+
+Memory.php
+file
+
+
+
+add
+
+Json.php
+file
+
+
+
+add
+
+Locale
+dir
+
+
+
+add
+
+Uri
+dir
+
+
+
+add
+
+Acl
+dir
+
+
+
+add
+
+Auth
+dir
+
+
+
+add
+
+Server
+dir
+
+
+
+add
+
+Log.php
+file
+
+
+
+add
+
+Session.php
+file
+
+
+
+add
+
+View
+dir
+
+
+
+add
+
+Layout
+dir
+
+
+
+add
+
+Date
+dir
+
+
+
+add
+
+Test
+dir
+
+
+
+add
+
+Dojo.php
+file
+
+
+
+add
+
+Mail
+dir
+
+
+
+add
+
+Filter
+dir
+
+
+
+add
+
+InfoCard
+dir
+
+
+
+add
+
+Mime
+dir
+
+
+
+add
+
+Feed.php
+file
+
+
+
+add
+
+Config.php
+file
+
+
+
+add
+
+Registry.php
+file
+
+
+
+add
+
+Pdf.php
+file
+
+
+
+add
+
+Measure
+dir
+
+
+
+add
+
+Console
+dir
+
+
+
+add
+
+Captcha
+dir
+
+
+
+add
+
+Form
+dir
+
+
+
+add
+
+OpenId.php
+file
+
+
+
+add
+
+XmlRpc
+dir
+
+
+
+add
+
+Wildfire
+dir
+
+
+
+add
+
+Gdata.php
+file
+
+
+
+add
+
+Ldap.php
+file
+
+
+
+add
+
+Loader
+dir
+
+
+
+add
+
+Paginator.php
+file
+
+
+
+add
+
+Db.php
+file
+
+
+
+add
+
+Currency.php
+file
+
+
+
+add
+
+TimeSync.php
+file
+
+
+
+add
+
+Translate.php
+file
+
+
+
+add
+
+Text
+dir
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Acl.php
+file
+
+
+
+add
+
+Locale.php
+file
+
+
+
+add
+
+Uri.php
+file
+
+
+
+add
+
+Auth.php
+file
+
+
+
+add
+
+Validate
+dir
+
+
+
+add
+
+View.php
+file
+
+
+
+add
+
+Date.php
+file
+
+
+
+add
+
+Layout.php
+file
+
+
+
+add
+
+Cache
+dir
+
+
+
+add
+
+Search
+dir
+
+
+
+add
+
+Memory
+dir
+
+
+
+add
+
+Mail.php
+file
+
+
+
+add
+
+Json
+dir
+
+
+
+add
+
+Version.php
+file
+
+
+
+add
+
+InfoCard.php
+file
+
+
+
+add
+
+Filter.php
+file
+
+
+
+add
+
+Rest
+dir
+
+
+
+add
+
+Mime.php
+file
+
+
+
+add
+

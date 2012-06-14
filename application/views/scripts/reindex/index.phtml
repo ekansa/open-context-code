@@ -1,0 +1,76 @@
+<?php
+ini_set("memory_limit", "2048M");
+// set maximum execution time to no limit
+ini_set("max_execution_time", "0");
+
+
+//echo $this->facet_atom;
+$result = $this->allResults;
+
+if(!$result){
+    $item_name = $this->name;
+    $uuid = $this->uuid;
+    
+    echo "<em>".$item_name."</em> (".$uuid.") reindexed.";
+}
+else{
+    
+    $item_count = 1;
+    $total_count = count($result);
+    $db_params = OpenContext_OCConfig::get_db_config();
+    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+	
+    $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+    
+    foreach($result as $act_result){
+	
+	$uuid = $act_result["uuid"];
+        
+	$sql = 'SELECT space.xml_full, space.space_label
+                FROM space
+                WHERE space.uuid = "'.$uuid.'" ';
+        
+        $result_item = $db->fetchAll($sql, 2);
+            
+        if($result_item){
+            
+            echo "<br/>Indexing: <b>".$result_item[0]["space_label"]."</b> (".$uuid." ".$item_count." of ".$total_count.") ";
+            
+            $atom_string = $result_item[0]["xml_full"];
+            
+            if(strlen($atom_string)<1){
+                $atom_string = file_get_contents("http://testing.opencontext.org/subjects/".$uuid.".atom");
+                echo "<br/> http://testing.opencontext.org/subjects/".$uuid.".atom";
+                echo " External atom retrieved ";
+            }
+            
+            $atom_string = str_replace('http://www.opencontext.org/database/space.php?item=', 'http://www.opencontext.org/subjects/', $atom_string);
+            $atom_string = str_replace('http://ishmael.ischool.berkeley.edu/subjects/', 'http://www.opencontext.org/subjects/', $atom_string);
+                
+            
+            $atomXML = simplexml_load_string($atom_string);
+            
+            $solrDocument = OpenContext_SolrIndexer::reindex_item($atomXML);
+	    $solr->addDocument($solrDocument);
+	    echo " DONE!";
+            
+            if ((($item_count % 100 == 0))||($item_count == $total_count)) {
+		//echo "Number is divisible";
+                $commit_mess = $solr->commit();
+		echo "<br/><b>COMMIT</b>".(var_dump($commit_mess))."<br/>";
+	    }
+            unset($solrDocument);
+	}
+        
+	$item_count++;
+    }//end loop through all results
+    
+    $db->closeConnection();
+    
+}//end case to loop through all results
+
+
+
+?>
+
+

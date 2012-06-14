@@ -1,0 +1,156 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();   
+$header=array('Table name', 'Description','Created by', 'Date of Creation', 'No. of Records', 'Link to Original Query');
+$tableHEADER='';
+foreach ($header as $hd){
+  //$tableHEADER.="<th><nobr>".$hd."</nobr></td>";
+  $tableHEADER.="<th>".$hd."</th>";
+  }
+  
+  
+  
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <title>Open Context: Tables</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom feed: Open Context Data Tables" href="../tables/.atom" />
+    <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+    <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+    <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+  </head>
+    
+  <body>
+    <div id="oc_logo"><a href="<?php echo $host; ?>"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a></div>
+    <div id="oc_tagline">	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img></div>
+    <div id="oc_beta"><img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img></div>
+    <div id="oc_top_search">
+
+	<form method="get" action="../sets/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+    <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("tables"); ?>
+
+    <div id="main" style="width:900px;overflow:hidden;">
+
+      <!-- LEFT HAND COLUMN-->
+      <div id="table_left_page" style="width:94%;">
+        <div class="metadata">
+          <p class="heading" style="font-weight:bold;padding:0px;margin:9px 0px 2px 0px;">Open Context Tables</p>
+	  <br/>
+	  <!--
+	  <div style="display:table-row;">
+            <div style="display:table-cell; vertical-align:middle"><img src="/images/general/under_construction_sign_sm.jpg" alt="restoration logo"/></div>
+	    <div style="display:table-cell; vertical-align:middle; padding:5px;" class="description" ><strong>Following a sever hardware failure, we have migrated Open Context to a new server but this feature is currently disabled. Table download features will be restored shortly.</strong>
+	    </div>
+	  -->
+	  </div>
+          <p class="description">
+            This feature enables you to get data from Open Context in form of a table (.csv format)
+	    to use with applications like MS-Excel or Open Office. Tables available for download are listed below. We will shortly provide a
+            feature where users can select datasets in Open Context to download as tables.
+          </p>
+          <p class="bodyText">
+            <strong>Note: </strong>
+	    Some tables contain data originating from different projects and collections. These different projects may have worked under different
+            assumptions and methodologies. In such cases, data comparisons may involve complications.
+            This may be the case even if projects and collections used the same descriptive terminology.
+            In working with multiple sets of data, you should exercise your best
+	    critical judgment as a researcher and examine available dataset documentation and related publications to help
+	    inform your interpretations.
+          </p>
+        </div> 
+        <?php echo $this->paginationControl($this->all_tables, 'Sliding', 'tables/pagination_control.phtml'); ?>
+        <div class="table_data" style="border:1px solid #dddddd;overflow:auto;">
+          <table cellpadding="0px" cellspacing="0px">
+            <thead><tr><?php echo $tableHEADER ?></tr></thead>
+            <tbody>
+            <?php
+            $iii = 0;
+            
+            foreach($this->all_tables as $table){
+                
+                echo '<tr style="background-color:';
+                
+                if($iii&1){
+                    echo "#fffdbe";
+                }
+                else{
+                    echo "#FFFFFF";
+                }
+                echo '">';
+                $iii++;
+		
+		
+		$table['cache_id'] = OpenContext_TableOutput::tableID_toURL($table['cache_id']);
+		
+		$tableName = $table['table_name'];
+		if(strlen($tableName)<1){
+		  $tableName = "[Not labeled]";
+		}
+                echo '<td><a href="'.$host.'/tables/'.$table['cache_id'].'">'.$tableName.'</a></td>';
+                echo '<td>'.$table['description'];
+                
+                if($table['current'] == 'no' ){
+                  //echo "<br/><em>(Open Context has been updated since this table was created. This table is archived and no longer current.)</em>";  
+                  echo "<br/><br/><em>(Archived, no longer current)</em>";
+                }
+                
+                echo '</td>';
+                echo '<td>'.$table['created_by'].'</td>';
+                echo '<td>'.$table['created_on'].'</td>';
+                echo '<td>'.$table['num_records'].'</td>';
+		
+		$qLink = htmlentities($table['set_uri']);
+		if(!stristr($qLink, $host)){
+		  $qLink = $host.$qLink;
+		}
+		else{
+		  $qLink = str_replace('http://opencontext.org/createtab/setfields', $host.'/sets', $qLink);
+		}
+		
+                echo '<td><a href="'.$qLink.'" title="Re-run original query used to create this table">'.$qLink.'</a>';
+                
+                if($table['current'] == 'no' ){
+                  echo "<br/><br/><em><strong>Note: </strong>Open Context has been updated since this table was created. Click the link above to get more current data, or click the link for this table to see archived data.</em>";  
+                }
+                
+                echo '</td>';
+                echo '</tr>'.chr(13);
+            
+            }//end loop
+            ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT HAND COLUMN
+      <div id ="table_right_page" style="width:20%">
+        <div id="panel">
+          <div class="panel_heading">Help:</div>
+          <div class="panel_content">
+            <ul style="margin:0px;padding:0px">
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">How do I download data?</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">What data formats available?</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">How can I use this data?</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      -->
+      
+    </div>
+  </body>
+</html>

@@ -1,0 +1,292 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();
+$numPages = 0;
+$numFound = 0;
+$numRecsToGet = $this->numRecsToGet;
+$act_url = ""; $SetMetaURI = ""; $set_uri = $this->set_uri;
+
+
+
+
+
+//Give most recent table links
+$db_params = OpenContext_OCConfig::get_db_config();
+$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+$db->getConnection();
+$select = $db->select()
+    ->from(array('t' => 'dataset'),
+    array('cache_id', 'table_name'))
+    ->limit(0, 5)
+    ->order('created_on DESC');
+/*  
+$sql = $select->__toString();
+echo "$sql\n";
+*/
+
+$stmt = $select->query();
+$result = $stmt->fetchAll();
+$otherTabs = "";
+foreach($result as $row){
+    $otherTabs .= '<li style="margin-left:0px;list-style-position:inside;"><a href="'.$host.'/tables/'.$row['cache_id'].'" title="View additional data">'.$row['table_name'].'</a></li>'.chr(13);
+}
+
+
+
+
+
+
+
+
+if(!$set_uri)
+  $display_url = "(Copy a faceted browse URL)";
+else{
+  $display_url = $set_uri;
+  $act_url = str_replace("/sets", "/createtab/tablepopulate", $set_uri);
+  }
+
+$table_fields = $this->table_fields;
+$js_array_fields = "";
+
+if(!$table_fields)
+  $metadata = "Metadata information will appear after you hit continue ";
+else{
+  $numFound = $table_fields["meta"]["numFound"]; //total number of records to be exported
+  $SetMetaURI = $table_fields["meta"]["uri"];
+  $SetMetaURI = str_replace("/sets", "/createtab/setfields", $SetMetaURI);//~~DO we need this? The uri already appears in this form. 
+  $SetMetaURI = $host.$SetMetaURI;
+  if(round(($numFound / $numRecsToGet),0) < ($numFound / $numRecsToGet))
+    $numPages = round(($numFound / $numRecsToGet),0) + 1;
+  else
+    $numPages = round(($numFound / $numRecsToGet),0);
+
+  $metadata = "<div class='heading'>Table Metadata :</div>";
+  $metadata.= "<div class='section'>Total data items found : ".$numFound."</div>";
+  $metadata.= "<ul><div class='section'>Contributors :</div>";
+  foreach($table_fields["meta"]["person_links"] as $person => $val){
+    if($val>($numFound*.5))
+      $metadata .= "<li>".$person."</li>";
+    }
+  $metadata .= "</ul>";
+  
+  $metadata .= "<ul><div class='section'>Creators:</div>";
+  foreach($table_fields["meta"]["creators"] as $person => $val){
+    $metadata .= "<li>".$person."</li>";
+    }  
+  $metadata .= "</ul>";
+
+  $js_array_fields = "var table_fields = Array();".chr(13);
+  
+  $var_counter = 0;
+  foreach($table_fields['contexts'] as $variable_name ){
+    $variable_name = str_replace("'", "\'", $variable_name);
+    $js_array_fields .= " table_fields[".$var_counter."] = '".$variable_name."'; ".chr(13);
+    $var_counter++;
+    }
+  foreach($table_fields['table_fields'] as $variable_name ){
+    $variable_name = str_replace("'", "\'", $variable_name);
+    $js_array_fields .= " table_fields[".$var_counter."] = '".$variable_name."'; ".chr(13);
+    $var_counter++;
+    }
+  }
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <title>Open Context: Create a Table</title> 
+    <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+    <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+    <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript" src="/js/prototype-1.6.0.2.js"> </script>
+    <script type="text/javascript">
+      var UserName = '<?php echo $this->displayName; ?>';
+      var ocHost = '<?php echo $host; ?>';
+      var allrecordsURI = '<?php echo $host; ?>' + '/createtab/allrecords';
+      var numFound = <?php echo $numFound; ?>;
+      var SetMetaURI = '<?php echo $SetMetaURI; ?>';
+      var setURI = '<?php echo $act_url; ?>';
+      var numPages = <?php echo $numPages; ?>;
+      var pageCount = 1;
+      //var pzone = $("progress_zone");
+      var tablename='';
+      var tabledes='';
+      var numRecsToGet = <?php echo $numRecsToGet; ?>;
+      <?php echo $js_array_fields; ?>
+
+      function genTable(data){
+        //progress_zone.innerHTML = "<strong>Page "+ pageCount +" of " + numPages + "</strong>";
+        tname=data.getElementsByClassName("tname")[0].value;
+        tdes=data.getElementsByClassName("tdes")[0].value; 
+        ttags=document.getElementById('ttagsid').value;
+        //alert(tname);
+        var pzone=$("progress_zone");
+        pzone.setStyle({display:'block'});
+        addRecords(pageCount);
+        }
+	
+      function addRecords(pageNumber){
+        //alert(pageNumber);
+        var ajax_params='';
+        var pzone=$("progress_zone");
+        pzone.childElements()[0].innerHTML="Processing batch <b>"+ pageNumber+"</b> of <b>"+ numPages + "</b>";
+        var action_uri = setURI+'&page='+pageNumber + '&recs=' + numRecsToGet;
+        if (pageNumber==numPages){
+          ajax_params={recsetURI: action_uri, setTotal: numFound, recsSize: numRecsToGet, setMetaURI: SetMetaURI, page: pageNumber, username: UserName ,tname:tname,tdes:tdes,ttags:ttags};
+        }
+        else{
+          ajax_params={recsetURI: action_uri, setTotal: numFound, recsSize: numRecsToGet, setMetaURI: SetMetaURI, page: pageNumber, username: UserName ,tname:tname,tdes:tdes,ttags:ttags};
+          //ajax_params={recsetURI: action_uri, setMetaURI: SetMetaURI, page: pageNumber, username: UserName};
+        }
+        var myAjax=new Ajax.Request(allrecordsURI,
+            { 
+            method: 'get', 
+            parameters: ajax_params,
+            onComplete: viewNewRecs,
+            onFailure: function(){alert("failure")},
+            });
+        }
+
+      function viewNewRecs(response){
+	//alert(response.responseText);
+        var pzone=$("progress_zone");
+        if(parseInt(numPages)==0)
+          w='100%';
+        else{
+          w=(pageCount/parseInt(numPages))*100;
+          w=w.toString()+'%';
+          }
+        pzone.childElements()[1].setStyle({width:w});
+        var ajax_response = (response.responseText).evalJSON();
+        pzone.childElements()[2].innerHTML="Records :<b>"+ ajax_response.totalRecs + "</b> of total <b>" + numFound + " processed.</b>"; 
+        var linkView = '';
+
+        if(ajax_response.totalRecs >= numFound){
+          if(typeof(ajax_response.already_exists)!==undefined)
+            pzone.childElements()[3].innerHTML="The table for these data is ready :<a href='/tables/"+ajax_response.DoneID+"'>View data</a>";
+          else
+            pzone.childElements()[3].innerHTML="<a href='/tables/"+ajax_response.DoneID+"'>View generated data</a>";
+          }
+        else{  
+          pageCount=pageCount+1;
+          addRecords(pageCount);
+          }
+        }
+    </script>
+  </head>
+    
+  <body>
+    <div id="oc_logo"><a href="<?php echo $host; ?>"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a></div>
+    <div id="oc_tagline"><img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img></div>
+    <div id="oc_beta"><img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img></div>
+    
+    <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("tables"); ?>
+    
+    <div id="main" style="height:615px;">
+      <!-- LEFT HAND COLUMN-->
+      <div id="table_left_page" style="width:94%;">
+        <div>
+          <p class="heading" style="font-weight:bold;">Export a Custom Data Table from Open Context</p>
+          <p class="description">
+            This feature enables you to get data from Open Context in form of a table (.csv format)
+	    to use with applications like MS-Excel or Open Office. The URL below represents the data you selected for table export. Press the "Continue" button to process these records
+	    into a downloadable table. For large selections of data, this may take a few minutes.
+          </p>
+          <p class="description">
+           Tables can aggregate content from many projects, or a specifically-selected subset of data from one project. As such they often represent "secondary research"
+           that builds upon the work of the original data creators.
+           When you export data to a table, you will be asked to describe the table and supply some key words. Your name: <strong>"<?php echo $this->displayName; ?>"</strong>,
+           will be associated with this table and the descriptions that you supply.  
+        </p>
+          <br/>
+        </div>
+
+      <div style="width:66%;">
+        <div class="box">
+          <div style="margin-bottom:5px;">
+            <form action="<?php echo $host."/createtab/newtable"; ?>" method="post" >
+              <label style="font-size:14px;">URL : </label>
+		<input id="url" type="text" size="44" style="color:#c7c7c7;" value="<?php echo $display_url; ?>" name="setURI"
+		      onfocus="if(this.value=='<?php echo $display_url; ?>'){this.value=''}this.setStyle({color:'#383838'});"
+		      onblur="if(this.value==''){this.value='<?php echo $display_url; ?>';this.setStyle({color:'#c7c7c7'});}"
+              />
+              <input align="right" type="submit" value="Continue" />
+            </form>
+          </div>
+        </div>
+        
+        <div class="metadata_info">
+          <?php echo $metadata; ?>
+          <?php if ($table_fields):?>
+            <div id="user_def_metadata" style='text-align:left;border-top:1px solid gray;margin-top:20px;padding:10px;'>
+              <div style="clear:both;">
+                <div style="float:left;width:90px;">Table Name</div><div style="float:left;"><input class="tname" type="text"/></div>
+            </div>
+              <div style="clear:both;">
+                <div style="float:left;width:90px;">Table Description</div><div style="float:left;"><input class="tdes" type="text" size=45/></div>
+              </div>
+              <div style="clear:both;">
+                <div style="float:left;width:90px;">Table Tags</div><div style="float:left;"><input class="ttagcl" id="ttagsid" type="text" size=40/></div>
+                <div style="clear:both;margin:0px 0px 0px 90px">Multiple tags must be separated by space between them.</div>
+              </div>
+              <br/>
+              <div style="clear:both;margin:5px 0px 0px 90px;">
+                <input type='button' value='Generate table' onclick="genTable($('user_def_metadata'));"/>
+              </div>
+            </div>
+          <?php endif?>
+        </div>
+        
+        <div id="progress_zone">
+          <div class="load_status"></div>
+          <div class="progress_bar">&nbsp;</div>
+          <div class="records"></div>
+          <div class="table_id" style="text-align:right;"></div> 
+        </div>
+	
+      </div>
+      
+	<br/>
+	<br/>
+	<p class="bodyText">
+	    <strong>Note: </strong>
+	    Please be aware if you selected data from different projects
+	    or collections, you may be selecting data gathered under different underlying assumptions and methodologies. In
+	    such cases, comparisons may involve complications. This may be the case even if selected projects and collections use the same
+	    descriptive terminology. In working with multiple sets of data, you should exercise your best
+	    critical judgment as a researcher and examine available dataset documentation and related publications to help
+	    inform your interpretations.
+	  </p>
+      </div>
+
+      <!-- RIGHT HAND COLUMN
+      <div id ="table_right_page">
+        <div id="panel">
+          <div class="panel_heading">Recently created tables:</div>
+          <div class="panel_content">
+            <ul style="margin:0px;padding:0px">
+              <?php echo $otherTabs; ?>
+            </ul>
+          </div>
+        </div>
+        <div id="panel">
+          <div class="panel_heading">Help:</div>
+          <div class="panel_content">
+            <ul style="margin:0px;padding:0px">
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">How do I download data?</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">What data formats available?</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">How can I use this data?</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      -->
+
+    </div>
+  </body>
+</html>

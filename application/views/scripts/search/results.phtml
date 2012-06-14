@@ -1,0 +1,297 @@
+<?php
+
+// used to help create hyperlinks; set to current hostname.
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+$requestParams = $this->requestParams;
+
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host); //html version of search filter
+$fixedParams = $requestParams;
+$fixedParams["action"] = "index";
+$host = OpenContext_OCConfig::get_host_config();
+$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
+
+$filters = "";
+$firstLoop = true;
+if(count($summaryObj)<1){
+    $filters = "[None]";
+}//case without filters
+else{
+    foreach($summaryObj as $filter){
+        
+        $filter['value'] = str_replace("&#8220; ", "'", $filter['value']);
+        $filter['value'] = str_replace(" &#8221;", "'", $filter['value']);
+        $actFilter = $filter['filter'].": ".$filter['value'];
+        if($firstLoop){
+            $filters = $actFilter;
+        }
+        else{
+             $filters .= "; ".$actFilter;
+        }
+    $firstLoop = false;
+    }//end loop
+}//case with filters
+
+
+    $docs = $this->docs;
+
+
+
+    $atomFullDoc = new DOMDocument("1.0", "utf-8");
+    $root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
+                    
+    // add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+    $atomFullDoc->formatOutput = true;
+                    
+    $root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+    $root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+    $root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+    $root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+            
+    $atomFullDoc->appendChild($root);
+            
+            
+    // Feed Title 
+    $feedTitle = $atomFullDoc->createElement("title");
+    $feedTitleText = $atomFullDoc->createTextNode("Open Context Query Results");
+    $feedTitle->appendChild($feedTitleText);
+    $root->appendChild($feedTitle);
+            
+    // Prepare the feed's subtitle
+    $offset = $this->offset;
+    $numFound = $this->numFound;
+    $resultsPerPage = $this->number_recs;
+    
+    // Display the number of items found and handle paging. 
+    $first = $offset + 1;
+    $last = $offset + $resultsPerPage;
+	
+    // make sure the last page, which will usually contain fewer than 10 items, displays the correct number of items.
+    if ($numFound < $last) {
+       $subTitleText = 'Items ' . $first . ' to ' . $numFound . ' out of ' . $numFound . ' items'; 
+    } else {
+        $subTitleText = 'Items ' . $first . ' to ' . $last . ' out of ' . $numFound . ' items';
+    }
+    
+    $subTitleText .= ". Sorted by: ".$this->sorting; 
+    $subTitleText .= ". Filtered by -- ".$filters; 
+    
+    $feedSubtitle = $atomFullDoc->createElement("subtitle");
+    $feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
+    $feedSubtitle->appendChild($feedSubtitleText);
+    $root->appendChild($feedSubtitle);
+	
+    
+    // Feed published element (as opposed to the entry updated element)
+    $feedPublished = $atomFullDoc->createElement("published");
+    // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+    $feedPublishedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastPublished)));
+    $feedPublished->appendChild($feedPublishedText); 
+    //$root->appendChild($feedPublished);
+    
+    // Feed updated element (as opposed to the entry published element)
+    $feedUpdated = $atomFullDoc->createElement("updated");
+    //$updatedTime = OpenContext_OCConfig::last_update();
+    // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+    $feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastUpdate)));
+    $feedUpdated->appendChild($feedUpdatedText); 
+    $root->appendChild($feedUpdated);
+	
+    $totalResults = $atomFullDoc->createElement('opensearch:totalResults');
+    $totalResultsText = $atomFullDoc->createTextNode($numFound);
+    $totalResults->appendChild($totalResultsText);
+    $root->appendChild($totalResults);
+	
+    $startIndex = $atomFullDoc->createElement('opensearch:startIndex');
+    $startIndexText = $atomFullDoc->createTextNode($first);
+    $startIndex->appendChild($startIndexText);
+    $root->appendChild($startIndex);
+	
+    $itemsPerPage = $atomFullDoc->createElement('opensearch:itemsPerPage');
+    $itemsPerPageText = $atomFullDoc->createTextNode($resultsPerPage);
+    $itemsPerPage->appendChild($itemsPerPageText);
+    $root->appendChild($itemsPerPage);
+	
+    // prepare link elements
+    
+    // feed (self) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "self");
+    $feedLink->setAttribute("href", $this->currentAtom);
+    $root->appendChild($feedLink);
+    
+    // feed license link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "license");
+    $feedLink->setAttribute("type", "text/html");
+    $feedLink->setAttribute("href", "http://creativecommons.org/licenses/by/3.0/");
+    $root->appendChild($feedLink);
+	
+    // feed (facets) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "http://opencontext.org/about/services#atom-facets");
+    $feedLink->setAttribute("type", "application/atom+xml");
+    $feedLink->setAttribute("href", $this->facetURI_Atom);
+    $root->appendChild($feedLink);
+	
+	
+    // feed (HTML representation) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "alternate");
+    $feedLink->setAttribute("type", "application/xhtml+xml");
+    $feedLink->setAttribute("href", $this->currentXHTML);
+    $root->appendChild($feedLink);
+    
+    // feed (JSON representation) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "alternate");
+    $feedLink->setAttribute("type", "application/json");
+    $feedLink->setAttribute("href", $this->currentJSON);
+    $root->appendChild($feedLink);
+    
+	
+        
+    //prepare the first link
+    $feedFirstLink = $atomFullDoc->createElement("link");
+    $feedFirstLink->setAttribute("rel", "first");
+    $feedFirstLink->setAttribute("href", $this->firstPage_Atom);
+    $feedFirstLink->setAttribute("type", "application/atom+xml");
+    $root->appendChild($feedFirstLink);
+	
+        
+    // create last link
+    $feedLastLink = $atomFullDoc->createElement('link');
+    $feedLastLink->setAttribute('rel', 'last');
+    $feedLastLink->setAttribute('href', $this->lastPage_Atom);
+    $feedLastLink->setAttribute("type", "application/atom+xml");
+    $root->appendChild($feedLastLink);
+
+    //previous page link
+    if($this->prevPage_Atom != false){
+        $previousLink = $atomFullDoc->createElement('link');
+        $previousLink->setAttribute('rel', 'previous');
+        $previousLink->setAttribute('href', $this->prevPage_Atom);
+        $previousLink->setAttribute("type", "application/atom+xml");
+        $root->appendChild($previousLink);    
+    }
+    
+    //next page link
+    if($this->nextPage_Atom != false){
+        $nextLink = $atomFullDoc->createElement('link');
+        $nextLink->setAttribute('rel', 'next');
+        $nextLink->setAttribute('href', $this->nextPage_Atom);
+        $nextLink->setAttribute("type", "application/atom+xml");
+        $root->appendChild($nextLink);    
+    }
+
+    //add feed id, use current link
+    $feedId = $atomFullDoc->createElement("id");
+    $feedIdText = $atomFullDoc->createTextNode($this->currentAtom);
+    $feedId->appendChild($feedIdText);
+    $root->appendChild($feedId);
+    
+    
+    foreach($docs as $doc){
+        
+        $entry = $atomFullDoc->createElement("entry");
+        
+        
+        //id element
+        $entryId = $atomFullDoc->createElement("id");
+        $entryIdText = $atomFullDoc->createTextNode($doc["href"]);
+        $entryId->appendChild($entryIdText);
+        $entry->appendChild($entryId);
+        
+        
+        //prepare the title
+        if(!is_array($doc["item_class"])){
+            $title = $doc["project_name"].": ".$doc["item_label"]." (".$doc["item_class"].")";
+        }
+        else{
+             $title = $doc["project_name"].": ".$doc["item_label"]." (".(implode(", ", $doc["item_class"])).")";
+        }
+        $entryTitle = $atomFullDoc->createElement("title");
+        $entryTitleText = $atomFullDoc->createTextNode($title);
+        $entryTitle->appendChild($entryTitleText);
+        $entry->appendChild($entryTitle);
+        
+        
+        // Feed published element (as opposed to the entry updated element)
+        $entryPublished = $atomFullDoc->createElement("published");
+        // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+        $entryPublishedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($doc["pub_date"])));
+        $entryPublished->appendChild($entryPublishedText); 
+        $entry->appendChild($entryPublished);
+        
+        // Feed updated element (as opposed to the entry published element)
+        $entryUpdated = $atomFullDoc->createElement("updated");
+        // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+        $entryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($doc["update"])));
+        $entryUpdated->appendChild($entryUpdatedText); 
+        $entry->appendChild($entryUpdated);
+        
+        //link element, self being Atom
+        $entryLink = $atomFullDoc->createElement("link");
+        $entryLink->setAttribute("rel", "self");
+        $entryLink->setAttribute("type", "application/atom+xml");
+        $entryLink->setAttribute("href", $doc["href"].".atom");
+        $entry->appendChild($entryLink);
+        
+        //link alternate element, alternate being XHTML
+        $entryLink = $atomFullDoc->createElement("link");
+        $entryLink->setAttribute("rel", "alternate");
+        $entryLink->setAttribute("type", "application/xhtml+xml");
+        $entryLink->setAttribute("href", $doc["href"]);
+        $entry->appendChild($entryLink);
+        
+        
+        if(is_array($doc["creator"])){
+            $authors = $doc["creator"];
+        }
+        else{
+            $authors = array($doc["creator"]);
+        }
+        foreach($authors as $author){
+            $entryAuthor = $atomFullDoc->createElement("author");
+            $entryAuthorName = $atomFullDoc->createElement("name");
+            $entryAuthorNameText = $atomFullDoc->createTextNode($author);
+            $entryAuthorName->appendChild($entryAuthorNameText);
+            $entryAuthor->appendChild($entryAuthorName); 
+            $entry->appendChild($entryAuthor);
+        }//end loop through authors
+        
+        
+        
+        $summaryText = $title.", identified by the following search parameters -- ".$filters;
+        $entrySum = $atomFullDoc->createElement("summary");
+        $entrySumText = $atomFullDoc->createTextNode($summaryText);
+        $entrySum->appendChild($entrySumText); 
+        $entry->appendChild($entrySum);
+        
+        
+        $root->appendChild($entry);
+        
+    }//end loop through entries
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //We're done! Now print the results
+    
+    $resultString = $atomFullDoc->saveXML();
+	
+    // Note: simpleXML will add a 'default:' prefix to the XHTML content.  We don't want this, so remove it.
+    //$resultString = str_replace('default:', '' , $resultString);
+    
+    header('Content-Type: application/atom+xml; charset=utf-8');
+    //header('Content-type: application/atom+xml', true);
+    echo $resultString;
+
+?>

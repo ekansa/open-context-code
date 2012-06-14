@@ -1,0 +1,156 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Extension
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+AttendeeType.php
+file
+
+
+
+add
+
+OpenSearchStartIndex.php
+file
+
+
+
+add
+
+Who.php
+file
+
+
+
+add
+
+AttendeeStatus.php
+file
+
+
+
+add
+
+OpenSearchItemsPerPage.php
+file
+
+
+
+add
+
+Recurrence.php
+file
+
+
+
+add
+
+When.php
+file
+
+
+
+add
+
+Reminder.php
+file
+
+
+
+add
+
+ExtendedProperty.php
+file
+
+
+
+add
+
+OriginalEvent.php
+file
+
+
+
+add
+
+Transparency.php
+file
+
+
+
+add
+
+Where.php
+file
+
+
+
+add
+
+RecurrenceException.php
+file
+
+
+
+add
+
+OpenSearchTotalResults.php
+file
+
+
+
+add
+
+EntryLink.php
+file
+
+
+
+add
+
+FeedLink.php
+file
+
+
+
+add
+
+Rating.php
+file
+
+
+
+add
+
+EventStatus.php
+file
+
+
+
+add
+
+Comments.php
+file
+
+
+
+add
+
+Visibility.php
+file
+
+
+
+add
+

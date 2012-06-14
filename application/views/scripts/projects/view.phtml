@@ -1,0 +1,65 @@
+<?php
+
+  //header('Content-type: application/xml', true);
+  
+  //echo var_dump($this->result);
+$atom = $this->xml_string;
+
+//echo $this->feedURI;
+//echo $atom;
+
+
+if ($atom) {
+
+    $doc = new DOMDocument();
+//$doc->resolveExternals = TRUE;
+    $doc->substituteEntities = TRUE;
+    //$doc->load("xsl/defaultProject.xsl");
+    
+    $useragent = @$_SERVER['HTTP_USER_AGENT'];
+    
+    //$doc->load("xsl/defaultSpatial_rdfa.xsl");
+    
+    if(strstr($useragent,"MSIE")){
+        $doc->load("xsl/defaultProject_rdfa_ie.xsl");
+    }    
+    else{
+        $doc->load("xsl/defaultProject_rdfa.xsl");
+    }
+    
+    $proc = new XSLTProcessor();
+    $xslt = $proc->importStylesheet($doc);
+    $atomDoc = new DomDocument();
+    
+    $atomDoc->loadXML($atom);
+
+    $output = $proc->transformToXML($atomDoc);
+
+    if(!strstr($useragent,"MSIE")){
+        header('Content-type: application/xhtml+xml', true);
+    }
+    else{
+        header('Content-type: text/html; charset=utf-8	', true);
+        //header('Content-type: application/xhtml+xml', true);
+        $XMLprefix = '<?xml version="1.0" encoding="utf-8"?>';
+        $output = str_replace($XMLprefix, "", $output);
+    }
+    
+    echo $output;
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+
+
+
+
+
+
+
+
+?>
+

@@ -1,0 +1,409 @@
+
+<?php
+
+function showProblem($key, $problems, $manyErrors, $offset = true){
+    
+    $output = "";
+    
+    if($problems != false){
+	if((array_key_exists($key, $problems)) && !$manyErrors){
+	   
+	    $output = "<span class='tinyText' style='color:#660000; background-color:#FFFFCC;'>".$problems[$key]."</span>";
+	 
+	    if($offset){
+		$output = "<p>".$output."</p>";		
+	    }
+	}
+    }
+    
+    return $output;
+}
+
+
+function radioChecked($key, $valueKey, $badRequest){
+    $output = "";
+    
+    if($badRequest != false){
+	if(array_key_exists($key, $badRequest)){
+	    if($badRequest[$key] == $valueKey){
+		$output = 'checked="checked"';
+	    }
+	}
+    }
+    
+    return $output;
+}
+
+function make_radio_inputs($key, $numFieldsValues, $badRequest){
+    
+    $output = "";
+    foreach($numFieldsValues[$key] as $valueKey => $viewText){
+	$radioChecked = radioChecked($key, $valueKey, $badRequest);
+	$output .= '<input name="'.$key.'" type="radio" value="'.$valueKey.'" '.$radioChecked.' /> '.$viewText.' <br/>'.chr(13);
+    }
+    
+    return $output;
+}
+
+
+
+
+function showFormValues($key, $badRequest){
+    $goodValues = array("name" => "(Your name)",
+			"email" => "(Valid email)",
+			"phone" => "(Phone number)",
+			"projname" => "(Project Name)",
+			"num_years" => "",
+			"num_sets" => "",
+			"num_tabs" => "",
+			"comment" => "If you have additional comments about your project's data, or if you have questions for Open Context's editors, please type them here.",
+			"rlicense" => "(Other Creative Commons License",
+			"restrict_com" => "To help us better understand legal and licensing issues faced by researchers, please describe why you believe a more restrictive license is required for your content.");
+    
+    $output = "";
+    if(array_key_exists($key, $goodValues)){
+	$output = $goodValues[$key];
+    }
+    if($badRequest != false){
+	if(array_key_exists($key, $badRequest)){
+	    $output = $badRequest[$key];
+	}
+    }
+    
+    return $output;
+}
+
+
+
+
+$host = OpenContext_OCConfig::get_host_config();
+
+$problems = $this->problems;
+$badRequest = $this->badRequests;
+$numFieldsValues = $this->numFieldsValues;
+
+$errorIntro = "";
+
+if($problems != false){   
+    $errorIntro = "<div style='background-color:#FFFFCC; padding:10px;'>".chr(13);
+    $errorIntro .= "<class='bodyText' style='color:#660000;'><strong>We're sorry! We cannot process this form as completed. ";
+    $errorIntro .= "Please fix the errors indicated below and resubmit this form.</strong></p>".chr(13);
+    $errorIntro .= "</div>".chr(13);
+}
+
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context: Estimate Publication Costs</title>
+      <link rel="schema.DC" href="http://purl.org/dc/terms" />
+      <meta name="DC.title" content="Open Context: Estimate Publication Costs" />
+      <meta name="DC.created" content="June 1, 2010" />
+      <meta name="DC.date" content="January 30, 2011" />
+      <meta name="DC.creator" content="Open Context Editors" />
+      
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+    <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <h2 style="text-align:center;">Estimating Costs for Publishing with Open Context</h2>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Open Context is primarily suited for publishing datasets that come from spreadsheets and relational databases, as well as relating digital media files (images, video, etc.) to records in those datasets. Open Context's main emphasis is to support data dissemination relating to excavations and the analysis of collections (zooarchaeological, ceramic, lithic, osteological, paleoethnobotanical, etc.).</p>
+<p class="bodyText">
+Although Open Context has geospatial search features, it does not have full-featured GIS capabilities. For the most part, Open Context would offer rich search and retrieval functions based on the descriptions (metadata) of GIS data. Open Context's current capabilities are useful for sharing GIS datasets, but Open Context would not act as an online analytical tool for GIS data. Similar limitations apply to CAD data, remote sensing data, 3D data, and other specialized datasets. For certain very specialized datasets (especially large datasets from highly specialized instrumentation), we may recommend alternatives to Open Context, since long-term curation of these data may require specialized expertise not currently available at the California Digital Library. Please contact <a href='mailto:publish@opencontext.org' title='Email the Editor'>Open Context editors</a> to make inquiries about specialized datatypes. While Open Context does not support Web-based analysis of some more specialized forms of data, through support of the <a href='http://www.cdlib.org/' title='University of California, CDL'>California Digital Library</a>, Open Context can help researchers archive and preserve most common forms of documentation.
+</p>
+<p class="bodyText"><strong>NSF Grant Seekers:</strong> The form provided below will help you prepare to meet your data sharing requirements. This form will help you budget appropriately for data sharing and it will generate text you can use for the "Data Management Plan" section of your NSF proposal. Once you successfully complete this form, you will receive an email with a budget estimate and language to add to your Data Management Plan. This language will include a description of interoperability, access, and archiving issues that help determine the scientific value of shared data. Please note, completing this form does not imply or constitute a binding agreement.
+</p>
+
+<?php echo $errorIntro; ?>
+
+                </div>
+            </div>
+            <div id="about_submenu" class="rounded-corners">
+                    <p class="bodyText"><em>More About Open Context:</em></p>
+                    <?php echo OpenContext_NavMenus::AboutNavMenu("estimate", $host); ?>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+        
+        <br/>
+        <div style="margin:10px;">
+	    
+	    <h3 style="padding-left:15px; font-size:1em;">Dataset Publication and Archiving Cost Estimation Form</h3>
+	    <form method="post" action="<?php echo $host."/about/results"; ?>">
+	    <div style="margin:5px;background-color:#F2F2F2;padding:5px;">
+
+	    
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Project Contact Information:</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding-top:5px; padding-bottom:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+		<table style='width:80%;'>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right; margin-top:6px;'>Name:
+			</td>
+			<td class="bodyText"><input name="name" type="text" value="<?php echo showFormValues("name", $badRequest); ?>" style="width:90%;"/>
+			<?php echo showProblem("name", $problems, false, true); ?> 
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right; margin-top:6px;'>Email:
+			</td>
+			<td class="bodyText"><input name="email" type="text" value="<?php echo showFormValues("email", $badRequest); ?>" style="width:90%;"/>
+			<?php echo showProblem("email", $problems, false, true); ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right; margin-top:6px;'>Phone:
+			</td>
+			<td class="bodyText" ><input name="phone" type="text" value="<?php echo showFormValues("phone", $badRequest); ?>" style="width:90%;"/>
+			<?php echo showProblem("phone", $problems, false, true); ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right; margin-top:6px;'>Project Name:
+			</td>
+			<td class="bodyText" ><input name="projname" type="text" value="<?php echo showFormValues("projname", $badRequest); ?>" style="width:90%;"/>
+			<?php echo showProblem("projname", $problems, false, true); ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Is this a doctoral dissertation grant? (Check if 'yes')
+			</td>
+			<td class="bodyText" ><input name="diss" type="checkbox" value="true" <?php echo radioChecked("diss", "true", $badRequest); ?> /><em>(Receives a 25% discount)</em>
+			</td>
+		    </tr>
+		</table>
+		
+	    </div>
+	    <br/>
+	    <br/>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Project Database Size and Complexity:</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding-top:5px; padding-bottom:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+		<table style='width:85%;'>
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Duration of Proposed Project (Years): 
+			</td>
+			<td class="bodyText"><input name="num_years" type="text" value="<?php echo showFormValues("num_years", $badRequest); ?>" style="width:20%;"/>
+			    <?php echo showProblem("num_years", $problems, false, false); ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Estimated Number of Specialists Datasets (zooarchaeology, lithic analysis, etc.):
+			</td>
+			<td class="bodyText"><input name="num_sets" type="text" value="<?php echo showFormValues("num_sets", $badRequest); ?>" style="width:20%;"/>
+			    <?php echo showProblem("num_sets", $problems, false, false); ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Estimated Total Number of Tables (for data to be published from relational databases and spreadsheets):
+			</td>
+			<td class="bodyText" ><input name="num_tabs" type="text" value="<?php echo showFormValues("num_tabs", $badRequest); ?>" style="width:20%;"/>
+			    <?php echo showProblem("num_tabs", $problems, false, false); ?>
+			</td>
+		    </tr>
+		    <!--
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Estimated Total Number of Fields / Columns (for data to be published)
+			</td>
+			<td class="bodyText" ><input name="num_fields" type="text" value="" style="width:20%;"/>
+			</td>
+		    </tr>
+		    -->
+		</table>
+		
+	    </div>
+            <br/>
+	    <br/>
+	    
+	    
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Project Media Size and Complexity</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+		<p class="bodyText">(1) Number of Image Files: <?php echo showProblem("num_images", $problems, false, false); ?><br/>
+		    
+		    <?php echo make_radio_inputs("num_images", $numFieldsValues, $badRequest); ?>
+		    <!--
+		    <input name="num_images" type="radio" value="0" /> None <br/>
+		    <input name="num_images" type="radio" value="100"/>1-100<br/>
+		    <input name="num_images" type="radio" value="1000"/>100-1000<br/>
+		    <input name="num_images" type="radio" value="5000"/>1000-5000<br/>
+		    <input name="num_images" type="radio" value="20000"/>5000-20000<br/>
+		    <input name="num_images" type="radio" value="40000"/>20000+<br/>
+		    -->
+		</p>
+		<p class="bodyText">(2) Number of Audio and Video Files:  <?php echo showProblem("num_vids", $problems, false, false); ?><br/>
+		    
+		    <?php echo make_radio_inputs("num_vids", $numFieldsValues, $badRequest); ?>
+		    <!--
+		    <input name="num_vids" type="radio" value="0"/>None<br/>
+		    <input name="num_vids" type="radio" value="25"/>1-25<br/>
+		    <input name="num_vids" type="radio" value="100"/>25-100<br/>
+		    <input name="num_vids" type="radio" value="500"/>100-500<br/>
+		    <input name="num_vids" type="radio" value="1000"/>500+<br/>
+		    -->
+		</p>
+		<p class="bodyText">(3) Number of Documents (<em>HTML, text, PDF</em>):  <?php echo showProblem("num_docs", $problems, false, false); ?><br/>
+		    <?php echo make_radio_inputs("num_docs", $numFieldsValues, $badRequest); ?>
+		    <!--
+		    <input name="num_docs" type="radio" value="0"/>None<br/>
+		    <input name="num_docs" type="radio" value="10"/>1-10<br/>
+		    <input name="num_docs" type="radio" value="50"/>10-50<br/>
+		    <input name="num_docs" type="radio" value="100"/>50+<br/>
+		    -->
+		</p>
+		<p class="bodyText">(4) Number of GIS layers (<em>By default, GIS data will be accessioned into Open Context as digital objects, i.e. data files that are available for retrieval but not "live" for dynamic analyses or visualizations. If you require more sophisticated Web-based interactions with GIS data, please contact Open Context editors to discuss special arrangements</em>):  <?php echo showProblem("num_gis", $problems, false, false); ?><br/>
+		    <?php echo make_radio_inputs("num_gis", $numFieldsValues, $badRequest); ?>
+		    <!--
+		    <input name="num_gis" type="radio" value="0"/>None<br/>
+		    <input name="num_gis" type="radio" value="5"/>1-5<br/>
+		    <input name="num_gis" type="radio" value="10"/>5-10<br/>
+		    <input name="num_gis" type="radio" value="50"/>10-50<br/>
+		    <input name="num_gis" type="radio" value="100"/>50+<br/>
+		    -->
+		</p>
+		<p class="bodyText">(5) Number of Other Specialized Datasets (<em>We consider specialized datasets to be those data not typically managed and used in spreadsheet or database applications such as: CADD, remote sensing, 3D point clouds, photogrammetric, etc. By default, these data will be accessioned into Open Context as digital objects, i.e. data files that are available for retrieval but for interactions requiring live-processing of these types of data. Please note: researchers must identify and use appropriate metadata standards needed to document these specialized forms of data.</em>):  <?php echo showProblem("num_other", $problems, false, false); ?><br/>
+		    <?php echo make_radio_inputs("num_other", $numFieldsValues, $badRequest); ?>
+		    <!--
+		    <input name="num_other" type="radio" value="0"/>None<br/>
+		    <input name="num_other" type="radio" value="5"/>1-5<br/>
+		    <input name="num_other" type="radio" value="10"/>5-10<br/>
+		    <input name="num_other" type="radio" value="50"/>10-50<br/>
+		    <input name="num_other" type="radio" value="100"/>50+<br/>
+		    -->
+		</p>
+	    </div>
+	    <br/>
+	    <br/>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Additional Comments</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+	    <textarea name="comment" cols="60" rows="6"><?php echo stripslashes(showFormValues("comment", $badRequest)); ?>
+			</textarea>
+	    
+	    </div>
+	    <br/>
+            <br/>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;"><strong>Planning for Copyright Licensing</strong></p>
+	    <p class="bodyText">Unlike most journals, Open Context does not require authors to transfer copyright for publication. Contributors therefor retain rights to use their content in venues other than Open Context. However, to help insure the legal interoperability of content, Open Context requires contributors to either dedicate their content to the public domain, or to license their content using a Creative Commons license. Note that copyright and licensing issues are largely independent of scholarly citation and attribution. <em>Professional standards dictate that all users properly cite data contributors even for public domain content, especially for scholarly uses.</em> This professional norm of conduct works independently of the copyright status of content.</p>
+	    
+	     <p class='bodyText'><span style='text-decoration:underline;'>Note:</span> Researchers working in collaborative projects need to determine and agree upon publication rights in advance of submitting content to Open Context. Open Context holds contributors responsible for determining that they have the needed rights to publish all materials. For more background on managing copyright and intellectual property issues, especially with regard to stakeholder communities, please <a href='../about/intellectual-property' title='Data Management and IP'>click here</a>.</p>
+	    
+	    <p class="bodyText">Please select from the copyright and license options below:  <?php echo showProblem("license", $problems, false, false); ?></p>
+	    <table style='width:90%; padding:5px; margin-left:10px;
+			border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding:5px;
+			border-collapse:collapse;' >
+		<tr>
+		    <td><input name="license" type="radio" value="cc0" <?php echo radioChecked("license", "cc0", $badRequest); ?> />
+		    </td>
+		    <td class="bodyText">CC-0 (Public Domain)
+		    </td>
+		    <td class="bodyText">If I choose to publish with Open Context, I plan to waive all copyright and other intellectual property rights on my content and dedicate my content to the public domain by using the Creative Commons-Zero (public domain) declaration. Legal experts believe that this choice maximizes scientific interoperability and potential for reuse. While not legally required, citation is expected through norms of professional conduct.
+		    </td>
+		</tr>
+		<tr style='background-color:#F8F8F8; '>
+		    <td><input name="license" type="radio" value="by" <?php echo radioChecked("license", "by", $badRequest); ?> />
+		    </td>
+		    <td class="bodyText">CC-By (Attribution)
+		    </td>
+		    <td class="bodyText">If I choose to publish with Open Context, I plan to license my content under a Creative Commons-Attribution License. This license allows others to:<br/>
+		    <ul>
+			<li>to copy, distribute and transmit the work</li>
+			<li>to adapt the work</li>
+		    </ul>
+		    These permissions apply under the condition that others attribute your work in the manner specified by Open Context (which is proper citation). 
+		    </td>
+		</tr>
+		<tr>
+		    <td><input name="license" type="radio" value="other" <?php echo radioChecked("license", "other", $badRequest); ?> />
+		    </td>
+		    <td class="bodyText">Other
+		    </td>
+		    <td class="bodyText">Because of special circumstances (such as applicable laws, organizational policies, or ethical concerns regarding community stakeholder claims), my content should have greater restrictions on reuse. If I choose to publish with Open Context, I will need to use the following more restrictive license:
+		    </td>
+		</tr>
+		<tr>
+		    <td></td>
+		    <td></td>
+		    <td><input name="rlicense" type="text" value="<?php echo showFormValues("rlicense", $badRequest); ?>" style='width:70%;'/>
+		    </td>
+		</tr>
+		<tr>
+		    <td></td>
+		    <td></td>
+		    <td>
+			<textarea name="restrict_com" cols="50" rows="4"><?php echo stripslashes(showFormValues("restrict_com", $badRequest)); ?>
+			</textarea>
+		    </td>
+		</tr>
+	    </table>
+	    <br/>
+	    <br/>
+	    <div style='padding:20px; text-align:right;'><input type="submit" value="Submit" />
+	    </div>
+	    </div>
+	    </form>
+	    <?php //echo var_dump($problems); ?>
+	</div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

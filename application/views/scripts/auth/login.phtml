@@ -1,0 +1,129 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Login to Open Context</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("accounts"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            
+            <div id="pageIntro">
+                <div class="bodyText" style="text-align:center;
+                background-color:#fffdbe;
+                border-width: thin;
+                border-style: solid;
+                border-color: #D7D7D7;
+                margin-top:25px;
+                margin-left:18%;
+                margin-right:18%;
+                padding-bottom:10px;
+                ">
+                <p class="pageName">Enter Open Context Login Credentials</p>
+                <?php if(!empty($this->message)) :?>
+                    <div id="message">
+                    <?php echo $this->escape($this->message);?>
+                    </div>
+                <?php endif; ?>
+                
+                <form action="<?php echo $this->baseUrl ?>/auth/login" method="post">
+                    <div style="width:90%; text-align:right; padding:10px;">
+                        <label style="padding:10px;" for="username">Username (email address)</label>
+                        <input type="text" name="username" value=""/>
+                    </div>
+                    <div style="width:90%; text-align:right; padding:10px;">
+                        <label style="padding:10px;" for="password">Password</label>
+                        <input type="password" name="password" value=""/>
+                    </div>
+                    <div id="formbutton">
+                    <div style="width:90%; text-align:right;"><input type="submit" name="login" value="Login" /></div>
+                    </div>
+                </form>
+        
+            </div>
+                <br/>
+                <br/>
+                <p class="subHeader" style="margin-left:10px;">About Open Context's Login</p>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Open Context is a free, open access resource for the electronic
+                    publication of primary field research from archaeology and related disciplines.
+                    While no login is required to access and use Open Context content, you need to login to use
+                    certain special features offered by Open Context.</p>
+		    <p class="bodyText">Your log-in will expire when you end your current browsing session.</p> 
+                    <br/>
+                    <p class="bodyText"><em>Please note: </em>We do not keep tracking data about individual user interactions.
+                    This is the case even if you login. However, usage data will be recorded and publicly available for certain actions such as tagging in Open Context.
+                    Please see our <a href='<?php echo $host; ?>/about/privacy' title='Open Context Privacy Policy'>privacy policy</a> for more information.
+                </div>
+            </div>
+            <div id="about_submenu" style="background-color:#EDEDED;" class="rounded-corners">
+                    <p class="subHeader" align="center">Not Yet an Open Context User?</p>
+                        <p class="bodyText">Please register to get a free user account with Open Context by completing the <a title='New User Registration' href='<?php echo $host; ?>/auth/register'>form here</a>.</p>
+                    <br/>
+                    <p class="subHeader" align="center">Lost or Your Forgot Password?</p>
+                        <p class="bodyText">You can reset your Open Context password by <a title='Password Reset' href='<?php echo $host; ?>/auth/password-reset'>clicking here</a>.</p>
+                    <br/>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+                
+    <div id="bottom">
+    </div>
+	
+</div>
+
+</body>
+</html>
+

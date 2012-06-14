@@ -1,0 +1,65 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Captcha
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Figlet.php
+file
+
+
+
+add
+
+ReCaptcha.php
+file
+
+
+
+add
+
+Base.php
+file
+
+
+
+add
+
+Word.php
+file
+
+
+
+add
+
+Adapter.php
+file
+
+
+
+add
+
+Image.php
+file
+
+
+
+add
+
+Dumb.php
+file
+
+
+
+add
+

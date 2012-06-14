@@ -1,0 +1,107 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Filter/Word
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Separator
+dir
+
+
+
+add
+
+UnderscoreToCamelCase.php
+file
+
+
+
+add
+
+CamelCaseToUnderscore.php
+file
+
+
+
+add
+
+DashToUnderscore.php
+file
+
+
+
+add
+
+UnderscoreToDash.php
+file
+
+
+
+add
+
+UnderscoreToSeparator.php
+file
+
+
+
+add
+
+CamelCaseToDash.php
+file
+
+
+
+add
+
+DashToCamelCase.php
+file
+
+
+
+add
+
+SeparatorToCamelCase.php
+file
+
+
+
+add
+
+CamelCaseToSeparator.php
+file
+
+
+
+add
+
+SeparatorToDash.php
+file
+
+
+
+add
+
+DashToSeparator.php
+file
+
+
+
+add
+
+SeparatorToSeparator.php
+file
+
+
+
+add
+

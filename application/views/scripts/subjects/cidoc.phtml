@@ -1,0 +1,63 @@
+<?php
+
+function getXSL($itemClass){
+    $classArray = array("Coin" => "xsl/cidocObject.xsl",
+                    "Pottery" => "xsl/cidocObject.xsl",
+                    "Glass" => "xsl/cidocObject.xsl",
+                    "Groundstone" => "xsl/cidocObject.xsl",
+                    "Small Find" => "xsl/cidocObject.xsl",
+                    "Arch. Element" => "xsl/cidocObject.xsl",
+                    "Objects" => "xsl/cidocObject.xsl",
+                    "Animal Bone" => "xsl/cidocBio.xsl",
+                    "Shell" => "xsl/cidocBio.xsl",
+                    "Non Diag. Bone" => "xsl/cidocBio.xsl",
+                    "Human Bone" => "xsl/cidocBio.xsl"
+                    );
+
+    if(array_key_exists($itemClass, $classArray)){
+        return $classArray[$itemClass];
+    }
+    else{
+        return "xsl/cidocContext.xsl";
+    }
+
+}
+
+
+//echo htmlentities($this->solr_out);
+$XML = false;
+$itemClass = $this->itemClass;
+$XML = $this->XML;
+
+
+
+
+if ($XML) {
+
+    $doc = new DOMDocument();
+
+    $useragent = @$_SERVER['HTTP_USER_AGENT'];
+
+    
+    $doc->load(getXSL($itemClass));
+   
+    $proc = new XSLTProcessor();
+    $xslt = $proc->importStylesheet($doc);
+    $archaeoMLDoc = new DomDocument();
+    $archaeoMLDoc->loadXML($XML->asXML());
+    $output = $proc->transformToXML($archaeoMLDoc);
+
+    //header('Content-type: text; charset=utf-8', true);
+    header('Content-type: application/rdf+xml; charset=utf-8', true);
+    echo $output;
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+
+
+
+?>

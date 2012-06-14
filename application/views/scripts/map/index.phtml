@@ -1,0 +1,292 @@
+<?php
+
+// used to help create hyperlinks; set to current hostname.
+//$host = "http://ishmael.ischool.berkeley.edu";
+//$host = "http://opencontext";
+$host = OpenContext_OCConfig::get_host_config();
+$GMapURI = OpenContext_OCConfig::get_google_api();
+$GMapURI = "http://maps.google.com/maps?file=api&v=2&key=".$GMapURI;
+
+
+define ('HOST', $host);
+
+
+
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <title><?php echo 'Open Context Map View'; ?></title> 
+        <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+        <link href="/css/opencontext_browse.css" rel="stylesheet" type="text/css" />
+        <link href="/css/atomresults.css" rel="stylesheet" type="text/css" />
+        <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+        <link href="/css/timemap.css" type="text/css" rel="stylesheet"/> 
+        
+        <script src="<?php echo $GMapURI; ?>" type="text/javascript"></script> 
+        <script type="text/javascript" src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js"></script>
+ 
+        <style type="text/css">
+
+div#timemap {
+padding: 1em;
+}
+div#timelinecontainer{
+width: 100%;
+height: 30%;
+}
+
+div#timeline{
+ width: 100%;
+ height: 100%;
+ font-size: 10px;
+ background: #CCCCCC;
+ border-color: #D7D7D7;
+border-width: thin;
+border-style: solid;
+}
+
+div#mapcontainer {
+ width: 100%;
+ height: 70%;
+ border-color: #D7D7D7;
+border-width: thin;
+border-style: solid;
+}
+
+#timemap {
+    height: 600px;
+}
+
+div#map {
+ width: 100%;
+ height: 100%;
+ background: #EEEEEE;
+}
+
+div.infotitle {
+    font-size: 14px;
+    font-weight: bold;
+    width: 200px;
+}
+div.infodescription {
+    font-size: 14px;
+    font-style: italic;
+    width: 200px;
+}
+
+        </style>
+        
+        <script src="/js/timemap/timemap_full.pack.js" type="text/javascript"></script>
+        <script src="/js/timemap/oc.js" type="text/javascript"></script>
+        <script src="/js/timemap/manipulation.js" type="text/javascript"></script>
+        <script src="/js/timemap/loaders/json.js" type="text/javascript"></script>
+        <script type="text/javascript">
+    
+            var tm;
+            var timeMapURL = "<?php echo $host; ?>/map/start/.json";
+            
+            function onLoad(){
+                
+                onLoadTM();
+                
+            }
+            
+            
+            function onLoadTM() {
+                
+                // add new interval
+                SimileAjax.DateTime.addInterval('TFK', 25000);
+                SimileAjax.DateTime.addInterval('TFH', 250);
+                SimileAjax.DateTime.addInterval('TENK', 10000);
+                SimileAjax.DateTime.addInterval('FTK', 5000);
+                SimileAjax.DateTime.addInterval('FHK', 500);
+                SimileAjax.DateTime.addInterval('HNDK', 100000);
+                
+                var zones1 = [
+                        {   
+                            start:    "-250000",
+                            end:      "-10000",
+                            magnify:  1,
+                            unit:     Timeline.DateTime.TENK
+                        },
+                        {   
+                            start:    "-9999",
+                            end:      "-4000",
+                            magnify:  1,
+                            unit:     Timeline.DateTime.MILLENNIUM
+                        },
+                        {   
+                            start:    "-3999.999",
+                            end:      "1000",
+                            magnify:  8,
+                            unit:     Timeline.DateTime.TFH
+                        },
+
+                        {   
+                            start:    "1000.001",
+                            end:      "2050",
+                            magnify:  8,
+                            unit:     Timeline.DateTime.CENTURY
+                        }
+                    ];
+                var zones2 = [
+                        {   
+                            start:    "-250000",
+                            end:      "-30000",
+                            magnify:  3,
+                            unit:     Timeline.DateTime.TFK
+                        },
+                        {   
+                            start:    "-29999.999",
+                            end:      "-10000",
+                            magnify:  4,
+                            unit:     Timeline.DateTime.TENK
+                        },
+                        {   
+                            start:    "-9999.999",
+                            end:      "2050",
+                            magnify:  5,
+                            unit:     Timeline.DateTime.FTK
+                        }
+                    ];
+                
+                
+                tm = TimeMap.init({
+                    mapId: "map",               // Id of map div element (required)
+                    timelineId: "timeline",     // Id of timeline div element (required)
+                    scrollTo: "-500",
+                    options: {
+                        eventIconPath: "/js/timemap/images/"
+                    },
+                    datasets: [
+                        {
+                            title: "Open Context",
+                            id: "ocData",
+                            theme: "red",
+                            type: "json_string",
+                            options: {
+                                url: timeMapURL
+                            }
+                        }
+                    ],
+                     // need to make the bands in this verbose manner to set max/min dates
+                  
+                    
+                        bands: [
+                            Timeline.createHotZoneBandInfo({
+                                eventSource:    false,
+                                width:          "75%",
+                                intervalUnit:   Timeline.DateTime.FHK,
+                                intervalPixels: 65,
+                                zones:          zones1
+                            }),
+                            Timeline.createHotZoneBandInfo({
+                                eventSource:    false,
+                                width:          "25%",
+                                intervalUnit:   Timeline.DateTime.TENK,
+                                intervalPixels: 85,     
+                                layout:         'overview',
+                                zones:          zones2
+                            })
+                        ]
+                    
+                    /*
+                    bandIntervals: [
+                        Timeline.DateTime.MILLENNIUM, 
+                        Timeline.DateTime.TENK,
+                        Timeline.DateTime.FDK
+                    ]
+                    */
+                    
+                } );
+            
+            }
+        </script>
+	
+  </head>
+
+  <body onload="onLoad();" onmousemove="" onunload="GUnload();">
+
+        
+    </head>
+    <body>
+        
+    <div id="oc_logo">
+	<a href="<?php echo $host;?>/about/" title="Home (Browse)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_main_nav">
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="<?php echo $host;?>/about/" title="Learn more about Open Context">About</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="<?php echo $host;?>/projects/" title="Summary of Projects in Open Context">Projects</a></div>
+        <div class="sides"></div>
+        <div class="act_nav"><a href="<?php echo $host;?>/sets/" title="Explore data">Browse</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="<?php echo $host;?>/lightbox/" title="Browse images">Lightbox</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">Tables</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Browse to get details of items">Details</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">My Account</span></div>
+    </div>
+    
+    
+        
+<!--
+BEGIN Container for main page content
+--> 
+    <div id="main_page"> 
+        <!--Begin code for showing available facets-->
+        <div id="main_content">
+            
+            <p class='bodyText' id='doneNote'>Loading Timemap...</p>            
+            <div id="timemap">
+                <div id="timelinecontainer">
+                  <div id="timeline"></div>
+                </div>
+                <div id="mapcontainer">
+                  <div id="map"></div>
+                </div>
+            </div>
+
+
+   
+        <!--
+        END of div container for placing main page content
+        -->
+        <div id="bottom_cont"> 
+          <br /> 
+          <br /> 
+        </div> 
+        <!--
+        END Code for showing the database-like content
+        -->
+   
+     </div>
+    <br />
+    
+        <div id="footer"> 
+            <div id="w3c_val_logo"> 
+              <a href="http://validator.w3.org/check?uri=referer"> 
+                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
+              </a> 
+            </div>     
+        </div>
+   
+     </div>
+    </body>
+</html>    

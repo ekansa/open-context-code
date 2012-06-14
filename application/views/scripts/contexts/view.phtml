@@ -1,0 +1,61 @@
+<?php
+
+
+$atom = $this->atom;
+if ($atom) {
+
+    $doc = new DOMDocument();
+
+    $doc->load("xsl/contextsSpatial.xsl");
+
+    $proc = new XSLTProcessor();
+
+    $xslt = $proc->importStylesheet($doc);
+
+    $atomDoc = new DomDocument();
+
+    $atomDoc->loadXML($atom->asXML());
+
+    echo $proc->transformToXML($atomDoc);
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+
+
+/*
+ 
+ $dom = new domDocument();
+ $dom->load($xsl_sheet);
+ $proc = new xsltprocessor;
+ $xsl = $proc->importStylesheet($dom);
+
+ $document = new DomDocument();
+ $document->loadXML($spatial_item_atom_xml);
+
+ echo  $proc->transformToXml($document); 
+ 
+*/
+//echo "not atom";
+
+//if ($this->spatialItem) {
+    //echo " and yup";
+    
+//}
+
+
+
+
+
+
+
+
+ 
+ //print_r($this->_request->getParam('uuid'));
+// $this->uuid = $this->_request->getParam($this->uuid);
+
+?>
+

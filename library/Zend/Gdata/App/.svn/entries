@@ -1,0 +1,156 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/App
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+BaseMediaSource.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+HttpException.php
+file
+
+
+
+add
+
+FeedSourceParent.php
+file
+
+
+
+add
+
+LoggingHttpClientAdapterSocket.php
+file
+
+
+
+add
+
+FeedEntryParent.php
+file
+
+
+
+add
+
+MediaFileSource.php
+file
+
+
+
+add
+
+MediaSource.php
+file
+
+
+
+add
+
+MediaEntry.php
+file
+
+
+
+add
+
+Entry.php
+file
+
+
+
+add
+
+BadMethodCallException.php
+file
+
+
+
+add
+
+Feed.php
+file
+
+
+
+add
+
+InvalidArgumentException.php
+file
+
+
+
+add
+
+Base.php
+file
+
+
+
+add
+
+Extension.php
+file
+
+
+
+add
+
+Util.php
+file
+
+
+
+add
+
+AuthException.php
+file
+
+
+
+add
+
+CaptchaRequiredException.php
+file
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+
+IOException.php
+file
+
+
+
+add
+

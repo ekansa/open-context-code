@@ -1,0 +1,319 @@
+<?php
+
+
+
+
+// the number of results per page. Note: the actual number of results per page is set in the controller as an argument to the solr query.
+// the resulstPerPage variable helps us calculate the link and opensearch elements
+$resultsPerPage = $this->number_recs;
+$requestParams =$this->requestParams;
+$host = OpenContext_OCConfig::get_host_config();
+$base_hostname = OpenContext_OCConfig::get_host_config(false);
+$baseURI = OpenContext_OCConfig::get_host_config();
+$requestURI = $this->requestURI;
+$request_array = explode('?', $requestURI, 2);
+
+$atomFullDoc = new DOMDocument("1.0", "utf-8");
+	
+$root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
+	
+// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+$atomFullDoc->formatOutput = true;
+	
+$root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+$root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+$root->setAttribute("xmlns:arch", "http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd");
+$root->setAttribute("xmlns:oc", "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
+$root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+$root->setAttribute("xmlns:kml", "http://www.opengis.net/kml/2.2");
+$root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+//xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+//$root->setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
+	
+$atomFullDoc->appendChild($root);
+
+
+// Feed Title 
+$feedTitle = $atomFullDoc->createElement("title");
+$feedTitleText = $atomFullDoc->createTextNode("Open Context Query Results");
+$feedTitle->appendChild($feedTitleText);
+$root->appendChild($feedTitle);
+
+
+// Prepare the feed's subtitle
+$offset = $this->offset;
+$numFound = $this->numFound;
+
+/* for testing
+if (isset($offset)) {
+    echo 'offset: ';
+    echo $offset;
+    echo '<br/>';  
+}
+*/
+
+
+// Display the number of items found and handle paging. 
+$first = $offset + 1;
+$last = $offset + $resultsPerPage;
+
+// make sure the last page, which will usually contain fewer than 10 items, displays the correct number of items.
+if ($numFound < $last) {
+   $subTitleText = 'items ' . $first . ' to ' . $numFound . ' out of ' . $numFound . ' items'; 
+} else {
+    $subTitleText = 'items ' . $first . ' to ' . $last . ' out of ' . $numFound . ' items';
+}
+//echo $subTitleText;
+/*
+$filterArray = OpenContext_FacetOutput::active_filter_object($requestParams, $request_array, $host);
+if(count($filterArray)>0){
+    $subTitleText .= " FILTERED BY- ";
+    $ff=0;
+    foreach($filterArray as $filterItem){
+	if($ff>0){
+	    $subTitleText .= ", ";    
+	}
+	$subTitleText .= "'".$filterItem["filter"]."': '".$filterItem["value"]."'";
+	$ff++;
+    }
+}
+*/
+
+$feedSubtitle = $atomFullDoc->createElement("subtitle");
+$feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
+$feedSubtitle->appendChild($feedSubtitleText);
+$root->appendChild($feedSubtitle);
+
+
+// Feed updated element (as opposed to the entry updated element)
+$feedUpdated = $atomFullDoc->createElement("updated");
+$updatedTime = OpenContext_OCConfig::last_update();
+// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+$feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($updatedTime)));
+// Append the text node the updated element
+$feedUpdated->appendChild($feedUpdatedText);
+// Append the updated node to the root element
+$root->appendChild($feedUpdated);
+
+$totalResults = $atomFullDoc->createElement('opensearch:totalResults');
+$totalResultsText = $atomFullDoc->createTextNode($numFound);
+$totalResults->appendChild($totalResultsText);
+$root->appendChild($totalResults);
+
+$startIndex = $atomFullDoc->createElement('opensearch:startIndex');
+$startIndexText = $atomFullDoc->createTextNode($first);
+$startIndex->appendChild($startIndexText);
+$root->appendChild($startIndex);
+
+$itemsPerPage = $atomFullDoc->createElement('opensearch:itemsPerPage');
+$itemsPerPageText = $atomFullDoc->createTextNode($resultsPerPage);
+$itemsPerPage->appendChild($itemsPerPageText);
+$root->appendChild($itemsPerPage);
+
+// prepare link element
+$requestURI = $this->requestURI;
+
+$linkURI = $baseURI . $requestURI;
+$linkURI = str_replace("[", "%5B", $linkURI);
+$linkURI = str_replace("]", "%5D", $linkURI);
+
+// feed (self) link element
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "self");
+$feedLink->setAttribute("href", $linkURI);
+$root->appendChild($feedLink);
+
+// feed license link element
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "license");
+$feedLink->setAttribute("type", "text/html");
+$feedLink->setAttribute("href", "http://creativecommons.org/licenses/by/3.0/");
+$root->appendChild($feedLink);
+
+// feed (facets) link element
+$facetURI = $linkURI;
+$facetURI = str_replace("/sets","/sets/facets", $linkURI);
+//$facetURI = str_replace("facets/.atom", "facets.atom", $facetURI);
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "http://opencontext.org/about/services#atom-facets");
+$feedLink->setAttribute("type", "application/atom+xml");
+$feedLink->setAttribute("href", $facetURI);
+$root->appendChild($feedLink);
+
+
+// feed (HTML representation) link element
+$feedHTML_URI = str_replace(".atom","", $linkURI);
+//$facetURI = str_replace("facets/.atom", "facets.atom", $facetURI);
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "alternate");
+$feedLink->setAttribute("type", "application/xhtml+xml");
+$feedLink->setAttribute("href", $feedHTML_URI);
+$root->appendChild($feedLink);
+
+
+
+//prepare the first link
+$feedFirstLink = $atomFullDoc->createElement("link");
+$feedFirstLink->setAttribute("rel", "first");
+// remove any existing page number
+$firstURI = preg_replace('/(\?|&)page=\d*/', '', $linkURI);
+// append a '(?|&)page=1'
+if (strpos($firstURI,'?')) {
+    $firstURI = $firstURI . '&page=1';
+} else {
+    $firstURI = $firstURI . '?page=1';
+}
+
+$feedFirstLink->setAttribute("href", $firstURI);
+$root->appendChild($feedFirstLink);
+//echo $firstURI;
+//exit;
+
+
+
+// create last link
+$feedLastLink = $atomFullDoc->createElement('link');
+$feedLastLink->setAttribute('rel', 'last');
+// remove any page number from the URI so we can replace it with the last page.
+$lastURI = preg_replace('/(\?|&)page=\d*/', '', $linkURI);
+
+// calculate the number of pages
+$lastPage = intval($numFound/$resultsPerPage);
+// if there's a remainder, add a page. For example, 13 items should result in two pages.
+if ($numFound % $resultsPerPage) {
+    $lastPage = $lastPage + 1;
+}
+
+if (strpos($lastURI,'?')) {
+    if($lastPage>0){
+      $lastURI = $lastURI . '&page=' . $lastPage;
+    }
+} else {
+   if($lastPage>0){
+      $lastURI = $lastURI . '?page=' . $lastPage;
+   }
+}
+
+$feedLastLink->setAttribute('href', $lastURI);
+
+$root->appendChild($feedLastLink);
+
+//echo $lastURI;
+
+//exit;
+
+// get the page number from the controller; we'll use this to create the 'previous' and 'next' links
+$page = $this->page;
+
+// if there is no page number in the URI, we're on page 1, so set page number accrordingly
+if (!$page) {
+    $page = 1;
+    // update the linkURI so the previous and next links will be correct
+    if (strpos($linkURI,'?')) {
+        $linkURI = $linkURI . '&page=1';
+    } else {
+        $linkURI = $linkURI . '?page=1';
+    }
+}
+
+// create previous link
+
+if ($page > 1) {
+    $previous = $page - 1;
+    $previousURI = preg_replace('/page=\d*/', 'page=' . $previous , $linkURI);
+    //echo $previousURI;
+    $previousLink = $atomFullDoc->createElement('link');
+    $previousLink->setAttribute('rel', 'previous');
+    $previousLink->setAttribute('href', $previousURI);
+    $root->appendChild($previousLink);    
+}
+
+// create next link
+//get page number and add 1; check to see that page + 1 is not greater than $lastPage
+if ($page < $lastPage) {
+    $next = $page + 1;
+    $nextURI = preg_replace('/page=\d*/', 'page=' . $next , $linkURI);
+    $nextLink = $atomFullDoc->createElement('link');
+    $nextLink->setAttribute('rel', 'next');
+    $nextLink->setAttribute('href', $nextURI);
+    $root->appendChild($nextLink);
+}
+
+$feedId = $atomFullDoc->createElement("id");
+$feedIdText = $atomFullDoc->createTextNode($linkURI);
+$feedId->appendChild($feedIdText);
+$root->appendChild($feedId);
+
+
+if($numFound>0){
+   $docs_array = $this->docs_array;
+   
+   $contentFragment = $atomFullDoc->createDocumentFragment();
+   
+   if ($docs_array) {
+      $idArray = array();
+      foreach ($docs_array as $docArray) {
+	 $idArray[] = $docArray["uuid"];
+      }
+      
+      $itemEntries = new SubjectsEntries;
+      $idEntryArray = $itemEntries->getByIDArray($idArray);
+      
+      //echo $itemEntries->sql;
+      
+      foreach($idEntryArray as $itemUUID => $atomEntry){
+	 
+	 if(strlen($atomEntry)<10){
+	    $spaceItem = New Subject;
+	    $spaceItem->getByID($itemUUID);
+	    if(strlen($spaceItem->atomEntry)<10){
+	       $spaceItem->solr_getArchaeoML();
+	       $fixed_ArchaeoML = $spaceItem->archaeoML_update($spaceItem->archaeoML);
+	       $spaceItem->archaeoML_update($fixed_ArchaeoML);
+	       $spaceItem->kml_in_Atom = true; // it doesn't validate, but it is really useful
+	       $fullAtom = $spaceItem->DOM_spatialAtomCreate($spaceItem->newArchaeoML);
+	       $spaceItem->update_atom_entry();
+	       
+	       //echo var_dump($spaceItem);
+	    }
+	    //echo var_dump($spaceItem);
+	    $doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $spaceItem->atomEntry);
+	    $contentFragment->appendXML($doc);  // $atom_content from short atom entry
+	    unset($spaceItem);
+	 }
+	 else{
+	    $doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $atomEntry);
+	    $contentFragment->appendXML($doc);  // $atom_content from short atom entry
+	 }
+	 
+	 unset($itemEntries);
+	 //add KML time span data
+	 /*
+	 $kmlTime = $doc->createElement("kml:TimeSpan");
+	 $kmlBegin = $kmlTime->createElement("kml:begin", $docArray["begin"]);
+	 $kmlEnd = $kmlTime->createElement("kml:end", $docArray["end"]);
+	 $kmlTime->appendChild($kmlBegin);
+	 $kmlTime->appendChild($kmlEnd);
+	 $contentFragment->appendChild($kmlTime);
+	 $contentFragment->formatOutput = true;
+	 */
+       }
+	   
+     
+       $root->appendChild($contentFragment);
+       
+   }
+}
+
+$resultString = $atomFullDoc->saveXML();
+
+// Note: simpleXML will add a 'default:' prefix to the XHTML content.  We don't want this, so remove it.
+$resultString = str_replace('default:', '' , $resultString);
+
+
+header('Content-type: application/atom+xml', true);
+
+echo $resultString;
+
+
+?>

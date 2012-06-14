@@ -1,0 +1,842 @@
+<?php
+// since this is running on a live server, turn off error reporting; otherwise, feeds won't work if there is a 'notice.'
+error_reporting(0);
+
+$host = OpenContext_OCConfig::get_host_config();
+// get the context depth - we need this to help us get georss for the different contexts.
+$context_depth = $this->context_depth;
+$requestURI = $this->requestURI;
+$solrParams = $this->solrParams;
+$extendfacets = $this->extendedFacets;
+$unfold_vals = $this->unfold_vals;
+//$secondQuery = $this->secondQuery;
+//echo $secondQuery." <br/><br/>";
+//$query = $this->solrQuery;
+//$queryString = $this->queryString;
+//$sResponse = $this->sResponse;
+//echo $queryString." <br/><br/>";
+
+//$solrqTerm = $solrParams["fq"];
+//echo $query." <br/>";
+//echo $solrqTerm ." <br/><br/>";
+
+//echo var_dump($sResponse)."<br/><br/>";
+//echo var_dump($extendfacets);
+//echo var_dump($unfold_vals);
+//echo var_dump($solrParams);
+
+
+
+// Get the request URI and separate the context path from the rest of the query parameters
+$request_array = explode('?', $requestURI, 2);
+//array explode  ( string $delimiter  , string $string  [, int $limit  ] )
+
+// Note: verify that this is the behaviour we want before uncommenting
+//if (substr_compare($request_array[0], '/' , -1)) {  // if the uri doesn't end in a slash (minus query parameters), add one
+   // $request_array[0] = $request_array[0] . '/';  
+//}
+
+
+if (isset($request_array[1])) { // if there are query parameters,
+    $request_array[1] = "?" . $request_array[1];  // prepend a '?' to the set of parameters since we exploded on the '?' to get this string. 
+    //echo $request_array[1]; // for testing
+} else {
+    $request_array[1] = null;
+}
+
+
+// This is used to create 'link' and 'id' elements later - we need to make sure to add a '?' or '&' appropriately when adding new parameters 
+if ($request_array[1]) {
+    $qprefix = '&';
+} else {
+    $qprefix = '?';
+}
+
+
+
+
+$atomFullDoc = new DOMDocument("1.0", "utf-8");
+	
+$root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
+	
+// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+$atomFullDoc->formatOutput = true;
+
+// Note: these aren't needed unless we decide to add elements in these namespaces to the document.
+$root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+$root->setAttribute("xmlns:kml", "http://www.opengis.net/kml/2.2");
+
+
+//$root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+//$root->setAttribute("xmlns:arch", "http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd");
+//$root->setAttribute("xmlns:oc", "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
+//$root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+//$root->setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
+	
+$atomFullDoc->appendChild($root);
+
+// Feed Title 
+$feedTitle = $atomFullDoc->createElement("title");
+$feedTitleText = $atomFullDoc->createTextNode("Open Context Facets");
+$feedTitle->appendChild($feedTitleText);
+$root->appendChild($feedTitle);
+
+
+// Feed Subtitle
+// get the number of items found
+$numFound = $this->numFound;
+$subTitleText = $numFound . ' items found';
+$feedSubtitle = $atomFullDoc->createElement("subtitle");
+$feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
+$feedSubtitle->appendChild($feedSubtitleText);
+$root->appendChild($feedSubtitle);
+
+
+// Feed updated element (as opposed to the entry updated element)
+$feedUpdated = $atomFullDoc->createElement("updated");
+// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+$feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));
+// Append the text node the updated element
+$feedUpdated->appendChild($feedUpdatedText);
+// Append the updated node to the root element
+$root->appendChild($feedUpdated);
+
+// prepare link element
+$requestURI = $this->requestURI;
+
+$linkURI = $host . $requestURI;
+
+$linkURI = str_replace("]", "%5D", $linkURI);
+$linkURI = str_replace("[", "%5B", $linkURI);
+
+// feed (self) link element
+$feedLink = $atomFullDoc->createElement("link");
+$feedLink->setAttribute("rel", "self");
+$feedLink->setAttribute("href", $linkURI);
+$root->appendChild($feedLink);
+
+// KML (alternate) link element
+$kmlLink = str_replace(".atom", ".kml", $linkURI);
+$googLink = $atomFullDoc->createElement("link");
+$googLink->setAttribute("rel", "alternate");
+$googLink->setAttribute("type", "application/vnd.google-earth.kml+xml");
+$googLink->setAttribute("href", $kmlLink);
+$root->appendChild($googLink);
+
+
+
+$resultsURI = str_replace('/facets', '', $linkURI);
+
+// feed related element
+$resultsLink = $atomFullDoc->createElement("link");
+$resultsLink->setAttribute("rel", "alternate");
+$resultsLink->setAttribute("href", $resultsURI);
+$root->appendChild($resultsLink);
+
+
+$HTMLURI = str_replace('.atom', '', $resultsURI);
+$HTMLURI = str_replace('sets//', 'sets/', $HTMLURI);
+// link to html version
+$HTMLLink = $atomFullDoc->createElement("link");
+
+$HTMLLink->setAttribute("href", $HTMLURI);
+$HTMLLink->setAttribute("rel", "related");
+$HTMLLink->setAttribute("type", "text/html");
+$root->appendChild($HTMLLink);
+
+
+$feedId = $atomFullDoc->createElement("id");
+$feedIdText = $atomFullDoc->createTextNode($linkURI);
+$feedId->appendChild($feedIdText);
+$root->appendChild($feedId);
+
+
+
+
+
+
+
+
+
+// get the facet counts 
+$facet_counts = $this->facet_counts;
+$facet_fields = $this->facet_fields;
+$facet_queries = $this->facet_queries;
+
+
+
+
+
+
+
+// if there are multiple locations in the facet feed, this associative array will contain item_labels as keys and georss:points as values
+$labelPointArray = $this->labelPointArray;
+if ($labelPointArray) {
+    //echo var_dump($labelPointArray);
+}
+
+// if there's just one location in the facet feed, there'll be value for georssPoint
+$georssPoint = $this->georssPoint;
+//echo var_dump($secondRawResponse->asXML());
+if ($georssPoint) {
+    //echo var_dump($georssPoint);
+    //echo $georssPoint;
+}
+
+
+//added by Eric, this gets date ranges for different contexts
+$labelTimeArray = $this->labelTimeArray;
+//echo var_dump($labelTimeArray);
+
+
+$author = $atomFullDoc->createElement("author");
+$authorName = $atomFullDoc->createElement("name");
+$authorNameText = $atomFullDoc->createTextNode("Open Context");
+$authorName->appendChild($authorNameText);
+
+
+/* ENTRIES */
+foreach ($facet_fields as $facet_cat => $value_array) {
+    if ($value_array) { // make sure there are facets
+        foreach ($value_array as $facet => $count) {
+            if (($facet_cat != 'time_start') && ($facet_cat != 'time_end') && ($facet_cat != 'geo_lat') && ($facet_cat != 'geo_long')) {
+    
+            // create entry element
+            $entry = $atomFullDoc->createElement("entry");
+
+            // the entry link element
+            $entrySelfLink = $atomFullDoc->createElement("link");
+            $entryResultsLink = $atomFullDoc->createElement("link");
+            $entryHTMLLink = $atomFullDoc->createElement("link");
+            
+            // Feed updated element (as opposed to the entry updated element)
+            $entryUpdated = $atomFullDoc->createElement("updated");
+            // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+            $entryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));
+            // Append the text node the updated element
+            $entryUpdated->appendChild($entryUpdatedText);
+            // Append the updated node to the root element
+            $entry->appendChild($entryUpdated);
+
+            $entryTitle = $atomFullDoc->createElement("title");
+            $entryTitleText = $atomFullDoc->createTextNode($facet);
+            $entryTitle->appendChild($entryTitleText);
+            $entry->appendChild($entryTitle);
+            
+            $entryAuthor = $atomFullDoc->createElement("author");
+            $entryAuthorName = $atomFullDoc->createElement("name");
+            $entryNameText = $atomFullDoc->createTextNode("Open Context (Generated)");
+            $entryAuthorName->appendChild($entryNameText);
+            $entryAuthor->appendChild($entryAuthorName);
+            $entry->appendChild($entryAuthor);
+            
+            // create the category element, but don't assign an attribute value yet
+            $category = $atomFullDoc->createElement("category");
+            /*
+             // feed (self) link element
+             $entryLink = $atomFullDoc->createElement("link");
+            $entryLink->setAttribute("rel", "self");
+            $entryLink->setAttribute("href", $linkURI);
+            $entry->appendChild($entryLink);
+
+            $feedId = $atomFullDoc->createElement("id");
+            $feedIdText = $atomFullDoc->createTextNode($linkURI);
+            $feedId->appendChild($feedIdText);
+            $root->appendChild($feedId);
+             
+            */
+ 
+
+            /*                           */   
+            /* Specific Facet Categories */
+            /*                           */
+            
+            /* Context */    
+            if (preg_match('/^def_context_/', $facet_cat)) {
+                // set the facet category appropriately
+                $category->setAttribute("term", "context");
+            
+                // create georss element
+                $georssFragment = $atomFullDoc->createDocumentFragment();
+            
+                if ($georssPoint) {
+                    // this a workaround for http://bugs.php.net/bug.php?id=44773
+                    $georssPoint = str_replace('<georss:point>', '<georss:point xmlns:georss="http://www.georss.org/georss">', $georssPoint);
+                    $georssFragment->appendXML($georssPoint);
+                } else {
+                     $georssString = $labelPointArray[$facet];
+                     // this a workaround for http://bugs.php.net/bug.php?id=44773
+                     $georssString = str_replace('<georss:point>', '<georss:point xmlns:georss="http://www.georss.org/georss">', $georssString);
+                     $georssFragment->appendXML($georssString);
+                }
+                
+                
+                $entry->appendChild($georssFragment);
+                
+                //*********************************************************************
+                //this next section of code adds KML time ranges to context entries
+                //the KML namespace is declared for the root, feed element
+                $time_range_array = $labelTimeArray[$facet];
+                $timespan_element = $atomFullDoc->createElement('kml:TimeSpan');
+                
+                $kml_timespan = $entry->appendChild($timespan_element);
+                $begin_element = $atomFullDoc->createElement('kml:begin', $time_range_array["begin"]);
+                $end_element = $atomFullDoc->createElement('kml:end', $time_range_array["end"]);
+                
+                $kml_timespan->appendChild($begin_element);
+                $kml_timespan->appendChild($end_element);
+                //********************************************************************
+            
+            
+                // Prepare to create appropriate 'link' and 'id' elements by getting the base URI without the Atom
+                // remove the .atom so we can re-append after adding to the context path
+                $request_array[0] = str_replace('.atom', '' , $request_array[0]); 
+                // make sure it ends in a slash
+                $request_array[0] = $request_array[0] . '/';
+                // remove any extra slashes 
+                $request_array[0] = str_replace('//', '/' , $request_array[0]);
+                
+                // Set the URI for the facet feed for this facet
+                $act_linkURI = str_replace("]", "%5D", $request_array[1]);
+                $act_linkURI = str_replace("[", "%5B", $act_linkURI);
+                
+                $entryURI = $host . $request_array[0] . urlencode($facet) . '.atom' . $act_linkURI;
+                $entryURI = str_replace('sets//', 'sets/', $entryURI);
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                
+                // KML (alternate) link element
+                $ent_kmlLink = str_replace(".atom", ".kml", $entryURI);
+                $ent_googLink = $atomFullDoc->createElement("link");
+                $ent_googLink->setAttribute("rel", "alternate");
+                $ent_googLink->setAttribute("type", "application/vnd.google-earth.kml+xml");
+                $ent_googLink->setAttribute("href", $ent_kmlLink);
+                $entry->appendChild($ent_googLink);
+                
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                $entryHTMLURI  = str_replace('sets//', 'sets/', $entryHTMLURI);
+                $entryResultsURI  = str_replace('sets//', 'sets/', $entryResultsURI);
+            
+            /* Project */
+            } elseif ($facet_cat == 'project_name') { 
+                // set entry category attribute
+                $category->setAttribute("term", "project");
+                // set the facet uri for this facet
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'proj='.  urlencode($facet);
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+            
+            /* Category */
+            } elseif ($facet_cat == 'item_class') {
+                $category->setAttribute('term', 'category');
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'cat='.  urlencode($facet);
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+            
+            /* User Tag */     
+            } elseif ($facet_cat == 'user_tag') {
+                $category->setAttribute('term', 'user tag');
+                // to avoid duplicate tag[] parameters, don't make a link if the facet is already in the 
+                 if (strstr($request_array[1], ('tag[]=' . urlencode($facet)))) {
+
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI;
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                } else {
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'tag%5B%5D='.  urlencode($facet);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                }
+            /* Tag Creator */    
+            } elseif ($facet_cat == 'tag_creator_name') {
+                $category->setAttribute('term', 'tag creator');
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'tagger='.  urlencode($facet);
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+            /* Variable */
+            } elseif (preg_match('/^variable_/', $facet_cat)) {
+                $category->setAttribute('term', 'variable');
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'prop%5B'.  urlencode($facet) . '%5D';
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+            /* Value */
+            } elseif (preg_match('/_var_/', $facet_cat)) {
+                $category->setAttribute('term', 'value');
+                //$entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . '=' . urlencode($facet);
+                $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI .  '=' . urlencode($facet);
+                $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+            /* Related Person */
+            } elseif ($facet_cat == 'person_link') {
+                $category->setAttribute('term', 'related person');
+                 $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'person='.  urlencode($facet);
+                 $entryURI = str_replace('facets//', 'facets/', $entryURI);
+                 $entryResultsURI = str_replace('facets/', '', $entryURI);
+                $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+            } //elseif ($facet_cat == 'time_end' || $facet_cat == 'time_start'){  // match but don't do anything
+            //} 
+           /*
+            } elseif  ($facet_cat == 'time_start'){
+                $category->setAttribute('term', 'date range');
+                if (strstr($request_array[1], 't-start')) {
+                     $entryURI = $host . $request_array[0] . '.atom' . preg_replace('/t\-start=\-?\d*//*', 't-start='. $facet, $request_array[1]);
+                } else {
+                     $entryURI = $host . $request_array[0] . '.atom' . $request_array[1] . $qprefix . 't-start='.  urlencode($facet);
+                }
+            } elseif ($facet_cat == 'time_end') {
+                $category->setAttribute('term', 'date range');
+                if (strstr($request_array[1], ('t-end'))) {
+                    $entryURI = $host . $request_array[0] . '.atom' . preg_replace('/t\-end=\-?\d*//*', 't-end='. $facet, $request_array[1]);
+                } else {
+                    $entryURI = $host . $request_array[0] . '.atom' . $request_array[1] . $qprefix . 't-end='.  urlencode($facet);
+                }
+            }*/
+                    
+            $entryHTMLURI  = str_replace('sets//', 'sets/', $entryHTMLURI);
+            $entryResultsURI  = str_replace('sets//', 'sets/', $entryResultsURI);
+            
+            /*************************/
+
+            // Do the following to all entries regardless of facet category
+            $entry->appendChild($category);
+            
+            $entrySelfLink->setAttribute("href",  $entryURI);
+            $entrySelfLink->setAttribute("rel", "self"); 
+            
+            $entryHTMLLink->setAttribute("href",  $entryHTMLURI);
+            $entryHTMLLink->setAttribute("rel", "related");
+
+            $entryResultsLink->setAttribute("href", $entryResultsURI);
+            $entryResultsLink->setAttribute("rel", "alternate");
+        
+            $entry->appendChild($entrySelfLink);
+            $entry->appendChild($entryHTMLLink);
+            $entry->appendChild($entryResultsLink);
+            // TODO: add alternate links: 1) the results feed 2) the html version of the facets and results
+            
+            $entryId = $atomFullDoc->createElement("id");
+            $entryIdText = $atomFullDoc->createTextNode($entryURI);
+            $entryId->appendChild($entryIdText);
+            $entry->appendChild($entryId);    
+                
+            
+            // add the facet count as XHTML content
+            $content = $atomFullDoc->createElement("content");
+            $content->setAttribute("type","xhtml");       
+            $contentDiv = $atomFullDoc->createElement("div");
+            $contentDiv->setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+     
+            $span = $atomFullDoc->createElement("span");
+            $span->setAttribute("class", "facetcount");
+            $spanText = $atomFullDoc->createTextNode($count);
+            $span->appendChild($spanText);
+            
+            
+            $contentDiv->appendChild($span);
+            
+            if (preg_match('/^def_context_/', $facet_cat)) {
+                if ($count < 2) {
+                    $contentText = ' item contained within this context';
+                } else {
+                    $contentText = ' items contained within this context';
+                }
+              
+              //$contentText .= " Facet facts: ".$labelTimeArray[$facet];
+                
+            } else {
+                 if ($count < 2) {
+                    $contentText = ' item contained in this category';
+                 } else {
+                    $contentText = ' items contained in this category';
+                 }
+            } 
+            
+            $contentText = $atomFullDoc->createTextNode($contentText);
+            
+            $contentDiv->appendChild($contentText);
+            
+            
+            $content->appendChild($contentDiv);
+            
+            $entry->appendChild($content);
+            
+            $root->appendChild($entry);
+            
+            
+            
+            }
+            
+        /*echo $facet_cat; // category
+        echo '<br/>'; 
+        echo $facet; // facet
+        echo '<br/>';
+        //echo $request_array[0];
+        //echo '<br/>';
+        echo $count; // count
+        echo '<br/>';
+        */}
+    }
+}
+
+// Todo: make sure to handle facet queries as well as fields
+// Entry:
+/*atomCategory -> "projects / collections"(facets for different projects or collections)
+			 or "categories"("Animal Bones", "Sites", "Areas", "Small Finds", etc.). 
+			or "tags" (facets for user-generated tags)
+			or "media" (facets for presence/absence of various media)
+			or "variables" (facets for variables)
+			etc.
+			Categories for feeds should be defined in the feedcategory.xsd scheme.
+*/
+
+/*
+        & atomContent?  -> facet count into XHTML - add attribute count content  
+			<span class="facetcount">11</span> results (this will look like "11 results" in a feedreader, but the integer
+			11 can be easily accessed programatically)           
+ 
+ 
+*/
+
+
+/*
+        & atomId -> uri of link to facet        
+*/
+
+
+/*
+       & atomLink* -> uri of link to facet - plus additional link to results feed 
+*/
+
+/*
+    & atomTitle  -> the value of the specific facet (Example "Domuztepe Excavations", "weaving tools", etc.)
+    & atomUpdated -> for now, use timestamp
+*/
+  
+  
+/* Create entries for facet queries */  
+  
+$facet_queries = $this->facet_queries;
+//echo count(array_values($facet_queries));
+
+// make sure there are values for media facets before displaying the 'Items with Media' label and looping through keys and values
+    foreach ($facet_queries as $facet => $count) {
+        if ($count > 0) { // only display the facet if its count is at least 1.
+            
+            // create entry element
+            $entry = $atomFullDoc->createElement("entry");
+
+            // the entry link element
+            $entrySelfLink = $atomFullDoc->createElement("link");
+            $entryResultsLink = $atomFullDoc->createElement("link");
+            $entryHTMLLink = $atomFullDoc->createElement("link");
+            
+            // Feed updated element (as opposed to the entry updated element)
+            $entryUpdated = $atomFullDoc->createElement("updated");
+            // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+            $entryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));
+            // Append the text node the updated element
+            $entryUpdated->appendChild($entryUpdatedText);
+            // Append the updated node to the root element
+            $entry->appendChild($entryUpdated);
+            
+
+            //$entryTitle = $atomFullDoc->createElement("title");
+            //$entryTitleText = $atomFullDoc->createTextNode($facet);
+            //$entryTitle->appendChild($entryTitleText);
+            //$entry->appendChild($entryTitle);
+            
+            $act_linkURI = str_replace("]", "%5D", $request_array[1]);
+            $act_linkURI = str_replace("[", "%5B", $act_linkURI);
+            
+            $entryTitle = $atomFullDoc->createElement("title");
+            
+            if ($facet == 'image_media_count:[1 TO *]') {
+                $entryTitleText = $atomFullDoc->createTextNode('Images');
+                if (strstr($request_array[1], 'image=true')) {
+                    $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI;
+                    $entryResultsURI = str_replace('facets/', '', $entryURI);
+                    $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                } else {
+                    $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'image=true';
+                    $entryResultsURI = str_replace('facets/', '', $entryURI);
+                    $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                }
+            } elseif ($facet == 'diary_count:[1 TO *]') {
+                $entryTitleText = $atomFullDoc->createTextNode('Diary');
+                if (strstr($request_array[1], 'diary=true')) {
+                    $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI;
+                    $entryResultsURI = str_replace('facets/', '', $entryURI);
+                    $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                } else {
+                    $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'diary=true';
+                    $entryResultsURI = str_replace('facets/', '', $entryURI);
+                    $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                }
+            } elseif ($facet == 'other_binary_media_count:[1 TO *]') {
+                $entryTitleText = $atomFullDoc->createTextNode('Other Binary Media');
+                if (strstr($request_array[1], 'other=true')) {
+                    $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI;
+                    $entryResultsURI = str_replace('facets/', '', $entryURI);
+                    $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                } else {
+                    $entryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . 'other=true';
+                    $entryResultsURI = str_replace('facets/', '', $entryURI);
+                    $entryHTMLURI = str_replace('.atom', '', $entryResultsURI);
+                }
+            }
+            
+            $entryHTMLURI  = str_replace('sets//', 'sets/', $entryHTMLURI);
+            $entryResultsURI  = str_replace('sets//', 'sets/', $entryResultsURI);
+    
+            $entryTitle->appendChild($entryTitleText);
+            $entry->appendChild($entryTitle);
+            
+            // create the category element, but don't assign an attribute value yet
+            $category = $atomFullDoc->createElement("category");
+            // set the facet category appropriately
+            $category->setAttribute("term", "items with media");
+            $entry->appendChild($category);
+            
+            $entrySelfLink->setAttribute("href",  $entryURI);
+            $entrySelfLink->setAttribute("rel", "self"); 
+
+            
+            $entryHTMLLink->setAttribute("href",  $entryHTMLURI);
+            $entryHTMLLink->setAttribute("rel", "related");
+         
+            $entryResultsLink->setAttribute("href", $entryResultsURI);
+            $entryResultsLink->setAttribute("rel", "alternate");
+            
+            
+
+            // create appropriate link
+            $entry->appendChild($entrySelfLink);
+            $entry->appendChild($entryHTMLLink);
+            $entry->appendChild($entryResultsLink);
+            
+            $entryId = $atomFullDoc->createElement("id");
+            $entryIdText = $atomFullDoc->createTextNode($entryURI);
+            $entryId->appendChild($entryIdText);
+            $entry->appendChild($entryId);    
+                
+            
+            $entryAuthor = $atomFullDoc->createElement("author");
+            $entryAuthorName = $atomFullDoc->createElement("name");
+            $entryNameText = $atomFullDoc->createTextNode("Open Context (Generated)");
+            $entryAuthorName->appendChild($entryNameText);
+            $entryAuthor->appendChild($entryAuthorName);
+            $entry->appendChild($entryAuthor);
+            
+            // add the facet count as XHTML content
+            $content = $atomFullDoc->createElement("content");
+            $content->setAttribute("type","xhtml");       
+            $contentDiv = $atomFullDoc->createElement("div");
+            $contentDiv->setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+     
+            $span = $atomFullDoc->createElement("span");
+            $span->setAttribute("class", "facetcount");
+            $spanText = $atomFullDoc->createTextNode($count);
+            $span->appendChild($spanText);
+            
+            
+            $contentDiv->appendChild($span);
+            
+            // Display correct text after facet count span          
+            if ($count < 2) {
+                $contentText = ' item contained in this category';
+            } else {
+                $contentText = ' items contained in this category';
+            }
+            
+            
+            $contentText = $atomFullDoc->createTextNode($contentText);
+            
+            $contentDiv->appendChild($contentText);
+            
+            
+            
+            
+            
+            $content->appendChild($contentDiv);
+            
+            $entry->appendChild($content);
+            
+            //code specifically to handle date ranges 
+            $date_range_array = OpenContext_DateRange::make_date_range_facets($facet_fields["time_start"], $facet_fields["time_end"]);        
+            //echo var_dump($date_range_array);
+            //exit;
+            
+
+            
+            
+            
+            
+            
+            
+            
+            $root->appendChild($entry);
+            
+
+    }
+}
+
+            /* Handle Date Ranges Separately */
+            /*************************/
+
+            /* Since we may need to modify $qprefix as we prepare the date uris, save it as the separate variable, $date_qprefix. Then we can use   $qprefix later when we process uris for media */
+            //$date_qprefix = $qprefix;
+
+            $num_date_ranges = count($date_range_array);
+
+            $iii=0;
+            //if ($num_date_ranges) {
+            //echo "<h2>Date Range</h2>";
+            //}
+            
+            
+            $act_linkURI = str_replace("]", "%5D", $request_array[1]);
+            $act_linkURI = str_replace("[", "%5B", $act_linkURI);
+            
+            while($iii < $num_date_ranges){
+                $act_range = $date_range_array[$iii];
+                
+                // if the date query parameters are already in the URI, don't add them again
+                if (strpos($request_array[1], $act_range["uri_param"])) {
+                   $dateFacetEntryURI = $host . $request_array[0] . '.atom' . $act_linkURI ;
+                } else {
+                    $dateFacetEntryURI = $host . $request_array[0] . '.atom' . $act_linkURI . $qprefix . $act_range["uri_param"]; 
+                }
+                
+                // URIs for related links    
+                $dateFacetEntryResultsURI = str_replace('facets/', '', $dateFacetEntryURI);
+                $dateFacetEntryHTMLURI = str_replace('.atom', '', $dateFacetEntryResultsURI);
+                //echo $entryURI;
+                //echo '<br/>';
+                //echo $act_range['display'];
+                //echo '<br/>';
+                //echo $act_range['count'];
+                //echo '<br/>';
+                
+                
+                $dateFacetEntry = $atomFullDoc->createElement('entry');
+                
+
+            
+                // Feed updated element (as opposed to the entry updated element)
+                $dateFacetEntryUpdated = $atomFullDoc->createElement("updated");
+                // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+                $dateFacetEntryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));
+                // Append the text node the updated element
+                $dateFacetEntryUpdated->appendChild($dateFacetEntryUpdatedText);
+                // Append the updated node to the root element
+                $dateFacetEntry->appendChild($dateFacetEntryUpdated);
+                
+
+                
+                $dateFacetEntryTitle = $atomFullDoc->createElement("title");
+                $dateFacetEntryTitleText = $atomFullDoc->createTextNode($act_range['display']);
+                $dateFacetEntryTitle->appendChild($dateFacetEntryTitleText);
+                $dateFacetEntry->appendChild($dateFacetEntryTitle);
+                
+                
+                $entryAuthor = $atomFullDoc->createElement("author");
+                $entryAuthorName = $atomFullDoc->createElement("name");
+                $entryNameText = $atomFullDoc->createTextNode("Open Context (Generated)");
+                $entryAuthorName->appendChild($entryNameText);
+                $entryAuthor->appendChild($entryAuthorName);
+                $dateFacetEntry->appendChild($entryAuthor);
+                
+                
+                
+                
+                $dateFacetEntrycategory = $atomFullDoc->createElement("category");
+                $dateFacetEntrycategory->setAttribute('term', 'date range');
+                $dateFacetEntry->appendChild($dateFacetEntrycategory);
+                
+                
+                
+                
+                                // the entry link element
+                $dateFacetEntrySelfLink = $atomFullDoc->createElement("link");
+                $dateFacetEntryResultsLink = $atomFullDoc->createElement("link");
+                $dateFacetEntryHTMLLink = $atomFullDoc->createElement("link");
+                
+                $dateFacetEntrySelfLink->setAttribute("href",  $dateFacetEntryURI);
+                $dateFacetEntrySelfLink->setAttribute("rel", "self"); 
+            
+                $dateFacetEntryHTMLLink->setAttribute("href",  $dateFacetEntryHTMLURI);
+                $dateFacetEntryHTMLLink->setAttribute("rel", "related");
+
+                $dateFacetEntryResultsLink->setAttribute("href", $dateFacetEntryResultsURI);
+                $dateFacetEntryResultsLink->setAttribute("rel", "alternate");
+            
+                // create appropriate link
+                $dateFacetEntry->appendChild($dateFacetEntrySelfLink);
+                $dateFacetEntry->appendChild($dateFacetEntryHTMLLink);
+                $dateFacetEntry->appendChild($dateFacetEntryResultsLink);          
+            
+                    
+                
+                $dateFacetEntryId = $atomFullDoc->createElement("id");
+                $dateFacetEntryIdText = $atomFullDoc->createTextNode($dateFacetEntryURI);
+                $dateFacetEntryId->appendChild($dateFacetEntryIdText);
+                $dateFacetEntry->appendChild($dateFacetEntryId);    
+                
+            
+                // add the facet count as XHTML content
+                $dateFacetEntryContent = $atomFullDoc->createElement("content");
+                $dateFacetEntryContent->setAttribute("type","xhtml");       
+                $dateFacetEntryContentDiv = $atomFullDoc->createElement("div");
+                $dateFacetEntryContentDiv->setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+        
+                $dateFacetEntrySpan = $atomFullDoc->createElement("span");
+                $dateFacetEntrySpan->setAttribute("class", "facetcount");
+                $dateFacetEntrySpanText = $atomFullDoc->createTextNode($act_range['count']);
+                $dateFacetEntrySpan->appendChild($dateFacetEntrySpanText);
+            
+            
+                $dateFacetEntryContentDiv->appendChild($dateFacetEntrySpan);
+                
+                if ($act_range['count'] < 2) {
+                    $dateFacetEntryContentText = ' item contained in this category';
+                } else {
+                    $dateFacetEntryContentText = ' items contained in this category';
+                }
+                
+                $dateFacetEntryContextText = $atomFullDoc->createTextNode($dateFacetEntryContentText);
+                
+                $dateFacetEntryContentDiv->appendChild($dateFacetEntryContextText);
+                
+                $dateFacetEntryContent->appendChild($dateFacetEntryContentDiv);
+            
+                $dateFacetEntry->appendChild($dateFacetEntryContent);
+                
+                $root->appendChild($dateFacetEntry);
+                //echo $atomFullDoc->saveXML();
+                //echo '<a href="' . $host . $request_array[0] . '.atom' . $date_qprefix . $act_range["uri_param"] .'">'.$act_range["display"].'</a>: '.$act_range["count"].'<br/>';}
+            
+                $iii++;
+
+            }
+  
+//echo $atomFullDoc->saveXML();
+
+
+$atomFullDocString = $atomFullDoc->saveXML();
+
+//remove redundant georss namespace declaration - this is the completion of the workaround for http://bugs.php.net/bug.php?id=44773  
+$atomFullDocString = str_replace('<georss:point xmlns:georss="http://www.georss.org/georss">', '<georss:point>', $atomFullDocString);  
+
+//remove redunctant georss namespace declaration in entries
+//<entry xmlns:georss="http://www.georss.org/georss">
+$atomFullDocString = str_replace('<entry xmlns:georss="http://www.georss.org/georss">', '<entry>', $atomFullDocString);  
+
+
+header('Content-type: application/atom+xml', true);  
+print $atomFullDocString;  

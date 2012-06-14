@@ -1,0 +1,37 @@
+<?php
+
+//header('Content-type: application/xml', true);
+  
+$atom = $this->xml_string;
+
+//echo $this->feedURI;
+//echo $atom;
+
+//$atom = false;
+
+//$coins = "ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&amp;rft.type=dataset&amp;rft.title=Open%20Context%20Projects%20and%20Collections&amp;rft.date=2006-03-01&amp;rft.creator=Sarah%20Whitcher%20Kansa&amp;rft.subject=archaeology&amp;rft.subject=dataset&amp;rft.subject=excavation&amp;rft.subject=survey&amp;rft.subject=data&amp;rft.subject=field%20research&amp;rft.subject=collections&amp;rft.format=XML&amp;rft.format=Text%2FHTML&amp;rft.format=.jpg&amp;rft.format=.gif&amp;rft.coverage=Near%20East&amp;rft.language=eng&amp;rft.publisher=Open%20Context&amp;rft.rights=&amp;rft.source=Open%20Context&amp;rft.rights=Creative%20Commons%20Attribution%203&amp;rft_id=http%3A%2F%2Fwww.opencontext.org%2Fprojects%2F";
+
+if ($atom) {
+
+    $doc = new DOMDocument();
+
+    $doc->load("xsl/defaultAllProjects.xsl");
+
+    $proc = new XSLTProcessor();
+
+    $xslt = $proc->importStylesheet($doc);
+
+    $atomDoc = new DomDocument();
+    
+    $atomDoc->loadXML($atom);
+
+
+    echo $proc->transformToXML($atomDoc);
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+?>

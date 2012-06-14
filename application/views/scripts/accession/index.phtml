@@ -1,0 +1,77 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();    
+    
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context: Add New Data</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      
+      
+    </head>
+    
+<body>
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_main_nav">
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../about" title="Learn more about Open Context">About</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../projects/" title="Summary of datasets in Open Context">Projects</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../sets/" title="Explore data">Browse</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../lightbox/" title="Browse images">Lightbox</a></div>
+        <div class="sides"></div>
+        <div class="act_nav"><span title="Coming soon">Tables</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Browse to get details of items">Details</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">My Account</span></div>
+    </div>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <p class="subHeader" align="left" style="font-size:14px;">Add new data to Open Context</p>
+            </div>
+        </div>
+            
+        <div id="pageTopEnd">
+	<p class='bodyText'>Select a URI for the feed of data you'd like to add to Open Context.</p>
+	
+        <p><input type='text' id='addURI' maxlength='500' size='100'></input>
+	   <input type='button' onclick='javascript:beginadding()' value='Add data' /> 
+	</p>
+	
+	<p class='tinyText'>The feed needs to contain entries that point have or point to ArchaeoML document resources.
+	Usually, the feeds will be generated from data POSTed and PUT to Open Context's Atompub server.</p>
+	
+	<br/>
+            </div>
+        </div>
+        
+	 </div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

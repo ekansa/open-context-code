@@ -1,0 +1,434 @@
+<?php
+
+
+$requestURI = $this->requestURI;
+$requestParams = $this->requestParams;
+$request_array = explode('?', $requestURI, 2);
+$host = OpenContext_OCConfig::get_host_config();
+define ('HOST', $host);
+
+/*
+ $this->view->OCData = $OCData;
+ $this->view->GenPolys = $genPolys;
+*/
+$OCData = $this->OCData;
+$genPolys = $this->GenPolys;
+$comp = $this->comp;
+$pointArray = $this->pointArray;
+
+//var_dump($pointArray);
+
+
+$kmlFullDoc = new DOMDocument("1.0", "utf-8");
+$root = $kmlFullDoc->createElementNS("http://www.opengis.net/kml/2.2", "kml");
+$gxNS = $kmlFullDoc->createAttribute("xmlns:gx");
+$gxNSText = $kmlFullDoc->createTextNode("http://www.google.com/kml/ext/2.2");
+$gxNS->appendChild($gxNSText);
+$root->appendChild($gxNS);
+$openSearchNS = $kmlFullDoc->createAttribute("xmlns:opensearch");
+$openSearchNSText = $kmlFullDoc->createTextNode("http://a9.com/-/spec/opensearch/1.1/");
+$openSearchNS->appendChild($openSearchNSText);
+$root->appendChild($openSearchNS);
+$kmlFullDoc->appendChild($root);
+
+$totalResults = $kmlFullDoc->createElement('opensearch:totalResults');
+$totalResultsText = $kmlFullDoc->createTextNode($OCData["numFound"]);
+$totalResults->appendChild($totalResultsText);
+$root->appendChild($totalResults);
+
+
+$kmlDocument = $kmlFullDoc->createElement("Document");
+$root->appendChild($kmlDocument);
+
+$doPercent = false;
+if($OCData != false){
+
+
+   $filter_output = "<p>Selection Criteria:</p>".chr(13);
+   $filter_output .= "<table style='border: 1px solid #C7C7C7; border-collapse:collapse;'>".chr(13);
+   $i=0;
+   
+   $contextFilter = "";
+   $compMessage = "Height represents the number of search results found in different contexts.";
+   $perCentMessage = "";
+   
+   foreach($OCData["summary"] as $actFilter){
+      
+      $cleanValue = str_replace("||", " OR ", $actFilter["value"]);
+      if(substr_count($actFilter["filter"], "Contained in")>0){
+		 $contextFilter = "View of search results in: ".$cleanValue;
+      }
+      
+      if ( $i&1 ){
+		 $color = "";
+      }
+      else{
+		  $color = "background-color: #F7F7F7";
+      }
+      
+      $filter_output .= "<tr style='$color'>".chr(13);
+      $filter_output .= "<td style='padding:4px; border: 1px solid grey;'><em>".$actFilter["filter"].":</em></td>".chr(13);
+      $filter_output .= "<td style='padding:4px; border: 1px solid grey;'>".$cleanValue."</td>".chr(13);
+      $filter_output .= "</tr>".chr(13);
+      
+      if($comp != false){
+		 //if(stristr($actFilter["filter"],"variable")){
+		 if(true){
+			if( stristr($comp, "prop::") ||  stristr($comp, "taxa") || stristr($comp, "rel")){
+			   
+			   $propKey = str_replace("prop::","",$comp);
+			   $propKey = str_replace("taxa::","",$propKey);
+			   $propKey = str_replace("rel::","",$propKey);
+			   $propKey = str_replace("taxa","",$propKey);
+			   $propKey = str_replace("rel","",$propKey);
+			   $itemsMessage = "<strong>ALL</strong>";
+			   $propValShow = "";
+			   $doPercent = true;
+			   $perCentMessage = "<em>".$cleanValue."</em>";
+			   if(substr_count($propKey, "::")>0){
+				  $propArray = explode("::", $propKey);
+				  $propKey = $propArray[0];
+				  $propVal = $propArray[1];
+				  $propVal = str_replace("||", " OR ", $propVal);
+				  $propValShow = ": with the value ".$propVal;
+				  $itemsMessage = "";
+				  $doPercent = false;
+				  $numerator = str_replace($propKey." with value: ", "", $cleanValue);
+				  
+				  $perCentMessage = "<em>".$cleanValue."</em> <strong>VERSUS</strong> <em>".$propKey.$propValShow."</em>";
+			   }
+			   $compMessage = "Height represents the portion of <em>".$cleanValue."</em> as compared with ".$itemsMessage." items with the property <em>'".$propKey.$propValShow."'</em>.<br/><br/>";
+			  
+			}
+		 }
+      }
+      
+   $i++;
+   }
+   $filter_output .= "</table>";
+
+   //look at data
+   $lookPos = $this->lookPos;
+   $lookAt = $kmlFullDoc->createElement("LookAt");
+   
+   
+   $lookAtLon = $kmlFullDoc->createElement("longitude");
+   $lookAtLonText = $kmlFullDoc->createTextNode($lookPos["lon"]);
+   $lookAtLon->appendChild($lookAtLonText);
+   $lookAt->appendChild($lookAtLon);
+   
+   $lookAtLat = $kmlFullDoc->createElement("latitude");
+   $lookAtLatText = $kmlFullDoc->createTextNode($lookPos["lat"]);
+   $lookAtLat->appendChild($lookAtLatText);
+   $lookAt->appendChild($lookAtLat);
+   
+   $lookAtAlt = $kmlFullDoc->createElement("altitude");
+   $lookAtAltText = $kmlFullDoc->createTextNode($lookPos["maxAlt"]*.25);
+   $lookAtAlt->appendChild($lookAtAltText);
+   $lookAt->appendChild($lookAtAlt);
+   
+   $lookAtAltMode = $kmlFullDoc->createElement("altitudeMode");
+   $lookAtAltModeText = $kmlFullDoc->createTextNode("clampToGround");
+   $lookAtAltMode->appendChild($lookAtAltModeText);
+   $lookAt->appendChild($lookAtAltMode);
+   
+   $lookAtRange = $kmlFullDoc->createElement("range");
+   $lookAtRangeText = $kmlFullDoc->createTextNode($lookPos["range"]*3);
+   $lookAtRange->appendChild($lookAtRangeText);
+   $lookAt->appendChild($lookAtRange);
+   
+   $lookAtTilt = $kmlFullDoc->createElement("tilt");
+   $lookAtTiltText = $kmlFullDoc->createTextNode("45");
+   $lookAtTilt->appendChild($lookAtTiltText);
+   $lookAt->appendChild($lookAtTilt);
+   
+   $lookAtHead = $kmlFullDoc->createElement("heading");
+   $lookAtHeadText = $kmlFullDoc->createTextNode("300");
+   $lookAtHead->appendChild($lookAtHeadText);
+   $lookAt->appendChild($lookAtHead);
+   
+   $timespan = $kmlFullDoc->createElement("gx:TimeSpan");
+   $time_begin = $kmlFullDoc->createElement("gx:begin");
+   $time_begin_val = $kmlFullDoc->createTextNode($lookPos["minTime"]);
+   $time_begin->appendChild($time_begin_val);
+   $timespan->appendChild($time_begin);
+   $time_end = $kmlFullDoc->createElement("gx:end");
+   $time_end_val = $kmlFullDoc->createTextNode($lookPos["maxTime"]);
+   $time_end->appendChild($time_end_val);
+   $timespan->appendChild($time_end);
+   $lookAt->appendChild($timespan);
+   
+   $kmlDocument->appendChild($lookAt);
+   
+   $networkLink = $kmlFullDoc->createElement("NetworkLink");
+   $netName = $kmlFullDoc->createElement("name");
+   $netNameText = $kmlFullDoc->createTextNode("OpenContext Summary of: ".$contextFilter);
+   $netName->appendChild($netNameText);
+   $networkLink->appendChild($netName);
+   $netLinkDes = $kmlFullDoc->createElement("description");
+   
+   
+   $indItemLink = OpenContext_GoogleEarth::makeFeatureAnchor(str_replace("sets/facets/", "sets/", $requestURI));
+   $indItemLink = str_replace("sets/facets/", "sets/", $indItemLink);
+   
+   if(!$comp){
+      $percentLink = OpenContext_GoogleEarth::makePercentLink($requestParams); //make a link to percentage view
+   }
+   else{
+      $percentLink = false;
+   }
+   
+   $desText = "<table>".chr(13);
+   $desText .= "<tr>".chr(13);
+   $desText .= "<td><a href='http://opencontext.org/about/' title='About Open Context'><img src='http://opencontext.org/images/general/OC_logo_tiny.png'/></a></td>".chr(13);
+   $desText .= "<td>Summarized search results of <strong>".$OCData["numFound"]."</strong> items</td>".chr(13);
+   $desText .= "</tr>".chr(13);
+   $desText .= "<tr>".chr(13);
+   $desText .= "<td><a href='".$indItemLink."' type='application/vnd.google-earth.kml+xml' >View individual items</a></td>".chr(13);
+   $desText .= "<td>You are currently viewing summarized search results. ".$compMessage." To see individual finds, click the link to the left.</td>".chr(13);
+   $desText .= "</tr>".chr(13);
+   
+   if($percentLink != false){
+      $desText .= "<tr>".chr(13);
+      $desText .= "<td><a href='".$percentLink["link"]."' type='application/vnd.google-earth.kml+xml' >Percentage View</a></td>".chr(13);
+      $desText .= "<td>Click the link to the left to visualize these results as a percentage of all items described by <strong>'".$percentLink["comp"]."'</strong>.</td>".chr(13);
+      $desText .= "</tr>".chr(13);
+      
+   }
+   
+   $desText .= "</table><br/>".chr(13);
+   $desText .= $filter_output;
+   
+   $netLinkDesText = $kmlFullDoc->createCDATASection($desText);
+   $netLinkDes->appendChild($netLinkDesText);
+   $networkLink->appendChild($netLinkDes);
+   $netLinkLink = $kmlFullDoc->createElement("Link");
+   $netLinkLinkHref = $kmlFullDoc->createElement("href");
+   $netLinkLinkHrefText = $kmlFullDoc->createTextNode($host.$requestURI);
+   $netLinkLinkHref->appendChild($netLinkLinkHrefText);
+   $netLinkLink->appendChild($netLinkLinkHref);
+   $networkLink->appendChild($netLinkLink);
+   //$kmlDocument->appendChild($networkLink);
+   
+   $kmlDocument->appendChild($netName);
+   $kmlDocument->appendChild($netLinkDes);
+   
+   if(array_key_exists("default_context_path", $requestParams)){
+      $default_context_path = $requestParams["default_context_path"];
+      $contextDepth = substr_count($default_context_path, "/");
+   }
+   else{
+      $contextDepth = 0;
+   }
+   
+   $i=1;
+   
+   foreach($OCData["facets"]["context"] as $actContext){
+      
+      
+      $actKey = $actContext["href"]; 
+      $actPolyData = $genPolys[$actKey];
+      
+      //create a new KML placemark
+      $placemark = $kmlFullDoc->createElement("Placemark");
+      $placemarkID = $kmlFullDoc->createAttribute("id");
+      $placemarkIDText = $kmlFullDoc->createTextNode($contextDepth."_".$i);
+      $placemarkID->appendChild($placemarkIDText);
+      $placemark->appendChild($placemarkID);
+      
+      //add a name for the placemark
+      $placeName = $kmlFullDoc->createElement("name");
+      $placeNameText = $kmlFullDoc->createTextNode($actContext["name"]);
+      $placeName->appendChild($placeNameText);
+      $placemark->appendChild($placeName);
+      
+      
+      //make a URI that would work as a 'Feature Anchor' in GoogleEarth
+      $actURI = OpenContext_GoogleEarth::makeFeatureAnchor($actContext["facet_href"]);
+      
+      //add a description to the placemark
+      
+      $des_number = " This context has <strong>".$actContext["count"]."</strong> item(s), <br/>";
+      if($actPolyData["cntTotal"] != false){
+		 //$doPercent = false;
+		 if($doPercent){
+			$des_number = " This context has <strong>".round(($actContext["count"] / $actPolyData["cntTotal"])*100,0)."%</strong> (".$actContext["count"]." of ".$actPolyData["cntTotal"].") ".$perCentMessage.", <br/>";
+		 }
+		 else{
+			$ratio = OpenContext_GoogleEarth::makeRatio($actContext["count"], $actPolyData["cntTotal"]);
+			if($actPolyData["cntTotal"]<1){
+			   $showTotal = 0;
+			}
+			else{
+			   $showTotal = $actPolyData["cntTotal"];
+			}
+			$des_number = " This context has a ratio of <strong>".$ratio."</strong> (".$actContext["count"]." to ".$showTotal.") for ".$perCentMessage.", <br/>";
+		 }
+      }
+      
+      
+      if(($actContext["geoTime"]["timeBegin"] ==0)&&($actContext["geoTime"]["timeEnd"] == 0)){
+	 $human_read = "(not available)";
+	 $doTime = false;
+      }
+      else{
+	  $human_read = OpenContext_DateRange::bce_ce_note($actContext["geoTime"]["timeBegin"])." to ".OpenContext_DateRange::bce_ce_note($actContext["geoTime"]["timeEnd"]);
+	  $doTime = true;
+      }
+      
+      $desText = "<table>".chr(13);
+      $desText .= "<tr>".chr(13);
+      $desText .= "<td style='padding:2px;'><img src='http://opencontext.org/images/item_view/project_icon.jpg'/></td>".chr(13);
+      $desText .= "<td>".$des_number." within this time range: ".$human_read."</td>".chr(13);
+      $desText .= "</tr>".chr(13);
+      
+      //add some text indicating that this location is approximated
+      if($pointArray[$actKey]>1){
+		 $desText .= "<tr>".chr(13);
+		 $desText .= "<td style='text-align:right;'>&nbsp;</td>".chr(13);
+		 $desText .= "<td><strong>Note:</strong> The precise location of this context is approximated.</td>".chr(13);
+		 $desText .= "</tr>".chr(13);
+      }
+      
+      $desText .= "</table><br/>".chr(13);
+      $desText .= $filter_output;
+      $desText .= "<br/><a href='".$actURI."' type='application/vnd.google-earth.kml+xml' >Explore this context</a> (Google Earth)<br/>";
+	  
+	  $browserURI = str_replace("facets/", "", $actContext["facet_href"]);
+	  $browserURI = str_replace(".json", "", $browserURI);
+	  $desText .= "<br/><a href='".$browserURI."' >Explore this context</a> (Browser)<br/>";
+      
+      $placeDes = $kmlFullDoc->createElement("description");
+      //$placeDesText = $kmlFullDoc->createTextNode($des_text);
+      $placeDesText = $kmlFullDoc->createCDATASection($desText);
+      $placeDes->appendChild($placeDesText);
+      $placemark->appendChild($placeDes);
+      
+      
+      //add color information to the placemark
+      $place_style = $kmlFullDoc->createElement("Style");
+      $polystyle = $kmlFullDoc->createElement("PolyStyle");
+      $p_color = $kmlFullDoc->createElement("color");
+      $p_color_text = $kmlFullDoc->createTextNode($actPolyData["color"]);
+      $p_color->appendChild($p_color_text);
+      $polystyle->appendChild($p_color);
+      $place_style->appendChild($polystyle);
+      
+      //add label style information
+      $labelstyle = $kmlFullDoc->createElement("LabelStyle");
+      $l_color = $kmlFullDoc->createElement("color");
+      $l_color_text = $kmlFullDoc->createTextNode($actPolyData["color"]);
+      $l_color->appendChild($l_color_text);
+      $labelstyle->appendChild($l_color);
+      $l_mode = $kmlFullDoc->createElement("colorMode");
+      $l_mode_text = $kmlFullDoc->createTextNode("normal");
+      //$l_mode->appendChild($l_mode_text);
+      $labelstyle->appendChild($l_mode);
+      $l_scale = $kmlFullDoc->createElement("scale");
+      $l_scale_text = $kmlFullDoc->createTextNode(".75");
+      $l_scale->appendChild($l_scale_text);
+      $labelstyle->appendChild($l_scale);
+      $place_style->appendChild($labelstyle);
+      //$polystyle->appendChild($labelstyle);
+   
+      
+      //add icon so polygon can be clicked
+      $iconstyle = $kmlFullDoc->createElement("IconStyle");
+      $icon_pict = $kmlFullDoc->createElement("Icon");
+      $icon_plink = $kmlFullDoc->createElement("href");
+      $icon_plink_text = $kmlFullDoc->createTextNode("http://maps.google.com/mapfiles/kml/paddle/purple-circle.png");
+      $icon_plink->appendChild($icon_plink_text);
+      $icon_pict->appendChild($icon_plink);
+      $iconstyle->appendChild($icon_pict);
+      $icon_scale = $kmlFullDoc->createElement("scale");
+      $icon_scale_text = $kmlFullDoc->createTextNode(".6");
+      $icon_scale->appendChild($icon_scale_text);
+      $iconstyle->appendChild($icon_scale);
+      $place_style->appendChild($iconstyle);
+      
+      $placemark->appendChild($place_style);
+      
+      
+      
+      //this is a container for points and polygons assocated with the placemark
+      $multgeometry = $kmlFullDoc->createElement("MultiGeometry");
+      
+      //add a point to the placemark
+      //$point_coords = $contextLons[$i].",".$contextLats[$i].",".$contextHeight[$i];
+      $point = $kmlFullDoc->createElement("Point");
+      $point_altmode = $kmlFullDoc->createElement("altitudeMode");
+      $point_altmode_val = $kmlFullDoc->createTextNode("relativeToGround");
+      $point_altmode->appendChild($point_altmode_val);
+      $point->appendChild($point_altmode);
+      $p_coords = $kmlFullDoc->createElement("coordinates");
+      //$p_coords_text = $kmlFullDoc->createTextNode($point_coords);
+      $p_coords_text = $kmlFullDoc->createTextNode($actPolyData["point"]);
+      $p_coords->appendChild($p_coords_text);
+      $point->appendChild($p_coords);
+      $multgeometry->appendChild($point);
+      
+      //-----------------------------------
+      //add a polygon to the placemark
+      $polygon = $kmlFullDoc->createElement("Polygon");
+      
+      $poly_extrude = $kmlFullDoc->createElement("extrude");
+      $poly_extrude_val = $kmlFullDoc->createTextNode("1");
+      $poly_extrude->appendChild($poly_extrude_val);
+      $polygon->appendChild($poly_extrude);
+   
+      $poly_altmode = $kmlFullDoc->createElement("altitudeMode");
+      $poly_altmode_val = $kmlFullDoc->createTextNode("relativeToGround");
+      $poly_altmode->appendChild($poly_altmode_val);
+      $polygon->appendChild($poly_altmode);
+      
+      $poly_out = $kmlFullDoc->createElement("outerBoundaryIs");
+      $poly_oring = $kmlFullDoc->createElement("LinearRing");
+      $poly_coords = $kmlFullDoc->createElement("coordinates");
+      $poly_coords_text = $kmlFullDoc->createTextNode($actPolyData["poly"]);
+      $poly_coords->appendChild($poly_coords_text);
+      $poly_oring->appendChild($poly_coords);
+      $poly_out->appendChild($poly_oring);
+      $polygon->appendChild($poly_out);   
+      $multgeometry->appendChild($polygon);
+      
+      //add the placemark to the Document element
+      $placemark->appendChild($multgeometry);
+      
+      
+      //add time data
+      if($doTime){
+	 $timespan = $kmlFullDoc->createElement("TimeSpan");
+	 $time_begin = $kmlFullDoc->createElement("begin");
+	 $time_begin_val = $kmlFullDoc->createTextNode($actContext["geoTime"]["timeBegin"]);
+	 $time_begin->appendChild($time_begin_val);
+	 $timespan->appendChild($time_begin);
+	 $time_end = $kmlFullDoc->createElement("end");
+	 $time_end_val = $kmlFullDoc->createTextNode($actContext["geoTime"]["timeEnd"]);
+	 $time_end->appendChild($time_end_val);
+	 $timespan->appendChild($time_end);
+	 $placemark->appendChild($timespan);
+      }
+      
+      //add placemark to whole document
+      $kmlDocument->appendChild($placemark);
+      
+      
+      $i++;
+   }//end loop through contexts
+
+   
+}
+
+//header('Content-type: application/xml', true);
+
+
+header('Content-type: application/vnd.google-earth.kml+xml; charset=UTF-8');
+header("Content-Disposition: attachment; filename=\"OpenContext\"");
+
+
+$kmlFullDoc->formatOutput = true;
+$kmlString = $kmlFullDoc->saveXML();
+
+echo $kmlString;
+
+?>

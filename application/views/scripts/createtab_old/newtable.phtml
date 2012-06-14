@@ -1,0 +1,231 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();
+$numPages = 0;
+$numFound = 0;
+$numRecsToGet = 50;
+
+$act_url = "";
+$SetMetaURI = "";
+$set_uri = $this->set_uri;
+if(!$set_uri){
+    $display_url = "(Copy a faceted browse URL)";
+    $button = '<input type="submit" value="Enter URL" />';
+}
+else{
+    $display_url = $set_uri;
+    $act_url = str_replace("/sets", "/createtab/tablepopulate", $set_uri);
+    $button = '<input type="button" value="Generate table" onclick="genTable()"/>';
+}
+
+$table_fields = $this->table_fields;
+$js_array_fields = "";
+
+if(!$table_fields){
+    $metadata = "<p>(First select a URL from the faceted browse tool)</p>";
+}
+else{
+    $numFound = $table_fields["meta"]["numFound"];
+    $SetMetaURI = $table_fields["meta"]["uri"];
+    $SetMetaURI = str_replace("/sets", "/createtab/setfields", $SetMetaURI);
+    $SetMetaURI = $host.$SetMetaURI;
+    if(round(($numFound / $numRecsToGet),0) < ($numFound / $numRecsToGet)){
+	$numPages = round(($numFound / $numRecsToGet),0) + 1;
+    }
+    else{
+	$numPages = round(($numFound / $numRecsToGet),0);
+    }
+    
+    
+    $metadata = "<p><strong>Create Table of: ".$numFound." items</strong></p>";
+    $metadata .= "<p>Contributors</p><ul>";
+    foreach($table_fields["meta"]["person_links"] as $person => $val){
+	if($val>($numFound*.5)){
+	    $metadata .= "<li><em>".$person."</em></li>";
+	}
+    }
+    $metadata .= "</ul>";
+    
+    $js_array_fields = "var table_fields = Array();".chr(13);
+    
+    $var_counter = 0;
+    foreach($table_fields['contexts'] as $variable_name ){
+	$js_array_fields .= " table_fields[".$var_counter."] = '".$variable_name."'; ".chr(13);
+	$var_counter++;
+    }
+    foreach($table_fields['table_fields'] as $variable_name ){
+	$js_array_fields .= " table_fields[".$var_counter."] = '".$variable_name."'; ".chr(13);
+	$var_counter++;
+    }
+    
+    
+}
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context: Create a Table</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      
+      <!--
+      <script type="text/javascript" src="/js/prototype-1.6.0.2.js"  />
+      <script type="text/javascript" src="/js/utils.js" />
+      <script type="text/javascript" src="/js/json2.js" />
+      <script type="text/javascript" src="/js/dojoroot/dojo/dojo.js" djConfig="parseOnLoad: true" />
+      -->
+      <script type="text/javascript" src="/js/prototype-1.6.0.2.js"></script>
+      <script type="text/javascript" src="/js/json2.js"></script>
+      <script type="text/javascript" src="/js/dojoroot/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
+      
+      <script type="text/javascript">        
+            dojo.require("dojo.parser");
+	    dojo.require("dojo.data.ItemFileWriteStore");
+	    dojo.require("dijit.ProgressBar");
+      </script>
+      <script type="text/javascript">
+	
+	var UserName = 'Guest';
+	var ocHost = '<?php echo $host; ?>';
+	var allrecordsURI = '<?php echo $host; ?>' + '/createtab/allrecords';
+	var numFound = <?php echo $numFound; ?>;
+	var SetMetaURI = '<?php echo $SetMetaURI; ?>';
+	var setURI = '<?php echo $act_url; ?>';
+	var numPages = <?php echo $numPages; ?>;
+	var pageCount = 1;
+	var numRecsToGet = <?php echo $numRecsToGet; ?>;
+	<?php echo $js_array_fields; ?>
+	
+	function genTable(){
+	    //alert(setURI);
+	    var progress_zone = dojo.byId("progress_zone");
+	    progress_zone.innerHTML = "<strong>Page "+ pageCount +" of " + numPages + "</strong>";
+	    addRecords(pageCount);
+	}
+	
+	function addRecords(pageNumber){
+    
+	    var progress_zone = dojo.byId("progress_zone");
+	    
+	    var action_uri = setURI+'&page='+pageNumber + '&recs=' + numRecsToGet;
+	    //alert(action_uri);
+	    //progress_zone.innerHTML = "<strong>Page "+ pageCount +" of " + numPages + " continuing with: " + action_uri + "</strong>" + progress_zone.innerHTML;
+	    var myAjax = new Ajax.Request(allrecordsURI,
+		{ method: 'post', parameters: {
+		    recsetURI: action_uri,
+		    setMetaURI: SetMetaURI,
+		    page: pageNumber,
+		    username: UserName,
+		    },
+		onComplete: viewNewRecs }
+	    );
+	    
+	}
+	
+	function viewNewRecs(response){
+	    
+            alert(response.responseText);
+            var progress_zone = dojo.byId("progress_zone");
+	    var newObjects = dojo.fromJson(response.responseText);
+	    var linkView = '';
+	    
+	    if(newObjects.totalRecs >= numFound){
+		linkView = ' <a href="'+ ocHost + '/tables/' + newObjects.DoneID + '">View finished table</a>';
+	    }
+	    
+	    progress_zone.innerHTML = "<strong>Finished Page "+ newObjects.DonePage +" of " + numPages + ", total records added: " + newObjects.totalRecs + "</strong>" + linkView;
+	    
+	    pageCount = pageCount + 1 ;
+	    if(pageCount <= numPages){
+		addRecords(pageCount);
+	    }
+	    else{
+		 progress_zone.innerHTML = "<strong>DONE after Page "+ pageCount +" of " + numPages + "</strong>" + newTable;
+	    }
+	}
+	
+	
+      </script>
+      
+    </head>
+    
+<body>
+  <div id="oc_logo">
+	<a href="<?php echo $host; ?>"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_main_nav">
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../about" title="Learn more about Open Context">About</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../projects/" title="Summary of datasets in Open Context">Projects</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../sets/" title="Explore data">Browse</a></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><a href="../lightbox/" title="Browse images">Lightbox</a></div>
+        <div class="sides"></div>
+        <div class="act_nav"><span title="Coming soon">Tables</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Browse to get details of items">Details</span></div>
+        <div class="sides"></div>
+        <div class="n_act_nav"><span title="Coming soon">My Account</span></div>
+    </div>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <p class="subHeader" align="left" style="font-size:14px;">Get a Data Table from Open Context</p>
+                <div style="width:500px;font-family:arial;font-size:12px; margin-left:30px;">
+		<div style="padding:8px 8px 4px 8px;background:#d4e7ff;border:1px solid #89beff;">
+		<div style="margin-bottom:5px;">
+			<label><strong>Enter URL : </strong></label>
+			<form action="<?php echo $host."/createtab/newtable"; ?>" method="post" >
+			<input id="url" "type="text" size="45" style="color:#c7c7c7;" value="<?php echo $display_url; ?>" name="setURI"/>
+			<?php echo $button; ?>
+			</form>
+		</div>
+		
+		<div id="help_div" style="display:none">
+			<div style="margin:0px;padding:5px;background:#f4f9ff;">
+				<ul style="margin:0px;">
+					<li>How to get your URL?</li>
+					<li>How can I use the widget?</li>
+				</ul>
+			</div>
+		</div>
+		</div>
+		<br/><br/>
+		<span style="font-size:17px;font-weight:bold;">Table Metadata</span>
+		<div id="code_area" style="background:#efefe2;border:1px solid #e1e1ce;height:10em;padding:10px;line-height:20px;font-family:courier;font-size:13px;">	
+		    
+		    <?php echo $metadata; ?>
+		
+		</div>
+		<div id="progress_zone"></div>
+		</div>
+            </div>
+            
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+	 </div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

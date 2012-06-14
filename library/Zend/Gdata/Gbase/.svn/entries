@@ -1,0 +1,86 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Gbase
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+ItemEntry.php
+file
+
+
+
+add
+
+Entry.php
+file
+
+
+
+add
+
+ItemFeed.php
+file
+
+
+
+add
+
+Feed.php
+file
+
+
+
+add
+
+SnippetEntry.php
+file
+
+
+
+add
+
+ItemQuery.php
+file
+
+
+
+add
+
+Query.php
+file
+
+
+
+add
+
+SnippetFeed.php
+file
+
+
+
+add
+
+Extension
+dir
+
+
+
+add
+
+SnippetQuery.php
+file
+
+
+
+add
+

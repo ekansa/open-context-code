@@ -1,0 +1,44 @@
+<?php
+
+//header('Content-type: application/kml+xml', true);
+
+$atomXML = $this->atomXML;
+//echo var_dump($atomXML);
+
+$title = $this->title;
+//echo var_dump($title)."<br/><br/>";
+
+$contextCount = $this->contextCount;
+$contextURIs = $this->contextURIs;    
+$contextNames =	$this->contextNames;
+$contextLats = $this->contextLats;
+$contextLons = $this->contextLons;
+$contextBegin = $this->contextBegin;
+$contextEnd = $this->contextEnd;
+$contextFacCount = $this->contextFacCount;
+
+$maxDistance = $this->maxDistance;
+
+        
+$contextColor = $this->contextColor;
+$contextHeight = $this->contextHeight;
+$contextPolygon = $this->contextPolygon;
+
+echo "There are: ".$contextCount." context(s).<br/><br/>";
+echo "This max distance is: ".$maxDistance."<br/><br/>";
+
+$i=0;
+while($i<$contextCount){
+   
+   echo "Context: ".$contextNames[$i];
+   echo " with ".$contextFacCount[$i]." item(s) ";
+   echo " found at: ".$contextLats[$i]." (lat) ".$contextLons[$i]." (lon)  <br/>";
+   //echo " time range: ".$contextBegin[$i]." - ".$contextEnd[$i];
+   echo " poly: ".$contextPolygon[$i];
+   echo "<br/><br/><br/>";
+   
+   $i++;
+}//end loop through contexts
+
+
+?>

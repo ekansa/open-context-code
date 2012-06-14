@@ -1,0 +1,40 @@
+<?php
+
+  //header('Content-type: application/xml', true);
+  
+  //echo var_dump($this->result);
+$atom = $this->xml_string;
+
+if ($atom) {
+
+    $doc = new DOMDocument();
+
+    $doc->load("xsl/defaultMediaFull.xsl");
+
+    $proc = new XSLTProcessor();
+
+    $xslt = $proc->importStylesheet($doc);
+
+    $atomDoc = new DomDocument();
+    
+    $atomDoc->loadXML($atom);
+
+
+    echo $proc->transformToXML($atomDoc);
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+
+
+
+
+
+
+
+
+?>
+

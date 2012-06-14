@@ -1,0 +1,79 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Calendar/Extension
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+AccessLevel.php
+file
+
+
+
+add
+
+Timezone.php
+file
+
+
+
+add
+
+Hidden.php
+file
+
+
+
+add
+
+Link.php
+file
+
+
+
+add
+
+Color.php
+file
+
+
+
+add
+
+SendEventNotifications.php
+file
+
+
+
+add
+
+QuickAdd.php
+file
+
+
+
+add
+
+WebContent.php
+file
+
+
+
+add
+
+Selected.php
+file
+
+
+
+add
+

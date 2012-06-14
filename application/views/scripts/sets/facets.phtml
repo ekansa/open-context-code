@@ -1,0 +1,309 @@
+<?php
+
+// used to help create hyperlinks; set to current hostname.
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+$requestParams = $this->requestParams;
+
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host); //html version of search filter
+$fixedParams = $requestParams;
+$fixedParams["action"] = "index";
+$host = OpenContext_OCConfig::get_host_config();
+$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
+
+$filters = "";
+$firstLoop = true;
+if(count($summaryObj)<1){
+    $filters = "[None]";
+}//case without filters
+else{
+    foreach($summaryObj as $filter){
+        
+        $filter['value'] = str_replace("&#8220; ", "'", $filter['value']);
+        $filter['value'] = str_replace(" &#8221;", "'", $filter['value']);
+        $actFilter = $filter['filter'].": ".$filter['value'];
+        if($firstLoop){
+            $filters = $actFilter;
+        }
+        else{
+             $filters .= "; ".$actFilter;
+        }
+    $firstLoop = false;
+    }//end loop
+}//case with filters
+
+
+    $atomFullDoc = new DOMDocument("1.0", "utf-8");
+    $root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
+                    
+    // add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+    $atomFullDoc->formatOutput = true;
+                    
+    $root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+    $root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+    $root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+    $root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+    $root->setAttribute("xmlns:kml", "http://www.opengis.net/kml/2.2");
+    
+    $atomFullDoc->appendChild($root);
+            
+            
+    // Feed Title 
+    $feedTitle = $atomFullDoc->createElement("title");
+    $feedTitleText = $atomFullDoc->createTextNode("Open Context Feed of Summarized Query Results (Facets)");
+    $feedTitle->appendChild($feedTitleText);
+    $root->appendChild($feedTitle);
+            
+    // Prepare the feed's subtitle
+    $offset = $this->offset;
+    $numFound = $this->numFound;
+    $resultsPerPage = $this->number_recs;
+    
+    // Display the number of items found and handle paging. 
+    $first = $offset + 1;
+    $last = $offset + $resultsPerPage;
+    
+    
+    $subTitleText = 'Facets available to search ' . $numFound . ' items';
+    $subTitleText .= ". Filtered by -- ".strip_tags($filters); 
+    
+    $feedSubtitle = $atomFullDoc->createElement("subtitle");
+    $feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
+    $feedSubtitle->appendChild($feedSubtitleText);
+    $root->appendChild($feedSubtitle);
+	
+    // Feed updated element (as opposed to the entry published element)
+    $feedUpdated = $atomFullDoc->createElement("updated");
+    //$updatedTime = OpenContext_OCConfig::last_update();
+    // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+    $feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastUpdate)));
+    $feedUpdated->appendChild($feedUpdatedText); 
+    $root->appendChild($feedUpdated);
+	
+    $totalResults = $atomFullDoc->createElement('opensearch:totalResults');
+    $totalResultsText = $atomFullDoc->createTextNode($numFound);
+    $totalResults->appendChild($totalResultsText);
+    $root->appendChild($totalResults);
+	
+    $startIndex = $atomFullDoc->createElement('opensearch:startIndex');
+    $startIndexText = $atomFullDoc->createTextNode($first);
+    $startIndex->appendChild($startIndexText);
+    $root->appendChild($startIndex);
+	
+    $itemsPerPage = $atomFullDoc->createElement('opensearch:itemsPerPage');
+    $itemsPerPageText = $atomFullDoc->createTextNode($resultsPerPage);
+    $itemsPerPage->appendChild($itemsPerPageText);
+    $root->appendChild($itemsPerPage);
+	
+    // prepare link elements
+    
+    // feed (self) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "self");
+    $feedLink->setAttribute("href", $this->facetURI_Atom);
+    $root->appendChild($feedLink);
+    
+    // feed license link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "license");
+    $feedLink->setAttribute("type", "text/html");
+    $feedLink->setAttribute("href", "http://creativecommons.org/licenses/by/3.0/");
+    $root->appendChild($feedLink);
+	
+    // feed (results) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "http://opencontext.org/about/services#atom-results");
+    $feedLink->setAttribute("type", "application/atom+xml");
+    $feedLink->setAttribute("href", $this->firstPage_Atom);
+    $root->appendChild($feedLink);
+	
+	
+    // feed (HTML representation) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "alternate");
+    $feedLink->setAttribute("type", "application/xhtml+xml");
+    $feedLink->setAttribute("href", $this->currentXHTML);
+    $root->appendChild($feedLink);
+    
+    // feed (JSON representation) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "alternate");
+    $feedLink->setAttribute("type", "application/json");
+    $feedLink->setAttribute("href", $this->currentJSON);
+    $root->appendChild($feedLink);
+    
+    // feed (KML representation) link element
+    $feedLink = $atomFullDoc->createElement("link");
+    $feedLink->setAttribute("rel", "alternate");
+    $feedLink->setAttribute("type", "application/vnd.google-earth.kml+xml");
+    $feedLink->setAttribute("href", $this->facetURI_KML);
+    $root->appendChild($feedLink);
+    
+
+    //add feed id, use current link
+    $feedId = $atomFullDoc->createElement("id");
+    $feedIdText = $atomFullDoc->createTextNode($this->facetURI_Atom);
+    $feedId->appendChild($feedIdText);
+    $root->appendChild($feedId);
+    
+    
+    foreach($this->facets as $facetType => $facArray){
+        
+        foreach($facArray as $facet){
+            $entry = $atomFullDoc->createElement("entry");
+            
+            //id element
+            $entryId = $atomFullDoc->createElement("id");
+            $entryIdText = $atomFullDoc->createTextNode(str_replace(".json", ".atom", $facet["facet_href"]));
+            $entryId->appendChild($entryIdText);
+            $entry->appendChild($entryId);
+            
+            
+            //prepare the title
+            $entryTitle = $atomFullDoc->createElement("title");
+            $entryTitleText = $atomFullDoc->createTextNode($facet["name"]);
+            $entryTitle->appendChild($entryTitleText);
+            $entry->appendChild($entryTitle);
+            
+            
+            // Feed published element (as opposed to the entry updated element)
+            $entryPublished = $atomFullDoc->createElement("published");
+            // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+            $entryPublishedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastPublished)));
+            $entryPublished->appendChild($entryPublishedText); 
+            $entry->appendChild($entryPublished);
+            
+            // Feed updated element (as opposed to the entry published element)
+            $entryUpdated = $atomFullDoc->createElement("updated");
+            // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+            $entryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastUpdate)));
+            $entryUpdated->appendChild($entryUpdatedText); 
+            $entry->appendChild($entryUpdated);
+            
+            //link element
+            $entryLink = $atomFullDoc->createElement("link");
+            $entryLink->setAttribute("rel", "alternate");
+            $entryLink->setAttribute("href", $facet["href"]);
+	    $entryLink->setAttribute("type", "application/xhtml+xml");
+            $entry->appendChild($entryLink);
+            
+            //link to results feed
+            $entryLink = $atomFullDoc->createElement("link");
+            $entryLink->setAttribute("rel", "http://opencontext.org/about/services#atom-results");
+            $entryLink->setAttribute("href", str_replace(".json", ".atom", $facet["result_href"]));
+	    $entryLink->setAttribute("type", "application/atom+xml");
+            $entry->appendChild($entryLink);
+            
+            //link to facet feed
+            $entryLink = $atomFullDoc->createElement("link");
+            $entryLink->setAttribute("rel", "self");
+            $entryLink->setAttribute("href", str_replace(".json", ".atom", $facet["facet_href"]));
+	    $entryLink->setAttribute("type", "application/atom+xml");
+            $entry->appendChild($entryLink);
+            
+            //link to results feed
+            $catLink = $atomFullDoc->createElement("category");
+            $catLink->setAttribute("term", $facetType);
+            $entry->appendChild($catLink);
+            
+            //entry author, default to Open Context
+            $entryAuthor = $atomFullDoc->createElement("author");
+            $entryAuthorName = $atomFullDoc->createElement("name");
+            $entryAuthorNameText = $atomFullDoc->createTextNode("Open Context (auto-generated)");
+            $entryAuthorName->appendChild($entryAuthorNameText);
+            $entryAuthor->appendChild($entryAuthorName);
+            $entryAuthorURI = $atomFullDoc->createElement("uri");
+            $entryAuthorURIText = $atomFullDoc->createTextNode($host);
+            $entryAuthorURI->appendChild($entryAuthorURIText);
+            $entryAuthor->appendChild($entryAuthorURI);
+            $entry->appendChild($entryAuthor);
+            
+            //add geospatial facets, if they exist
+	    $doTime = false;
+            if(isset($facet["geoTime"])){
+                $entryGeo = $atomFullDoc->createElement("georss:point");
+                $entryGeoText = $atomFullDoc->createTextNode($facet["geoTime"]["geoLat"]." ".$facet["geoTime"]["geoLong"]);
+                $entryGeo->appendChild($entryGeoText);
+                $entry->appendChild($entryGeo);
+                
+                if(isset($facet["geoTime"]["timeBegin"])){
+                    $doTime = true;
+		    $timeBegin = $facet["geoTime"]["timeBegin"];
+		    if(isset($facet["geoTime"]["timeEnd"])){
+			$timeEnd = $facet["geoTime"]["timeEnd"];
+		    }
+                }
+            }
+            
+            
+            
+            //entry content
+            $content = $atomFullDoc->createElement("content");
+            $content->setAttribute("type", "xhtml");
+            $contentDiv = $atomFullDoc->createElement("div");
+            $contentDiv->setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+            $contentDivSpan = $atomFullDoc->createElement("span");
+            $contentDivSpan->setAttribute("class", "facetcount");
+            $contentDivSpanText = $atomFullDoc->createTextNode($facet["count"]);
+            $contentDivSpan->appendChild($contentDivSpanText);
+            $contentDiv->appendChild($contentDivSpan);
+	    $contentDivText = $atomFullDoc->createTextNode(" items contained in this ".$facetType.". ");
+            $contentDiv->appendChild($contentDivText);
+	    
+	    if($doTime){
+		$contentDivTimeP = $atomFullDoc->createElement("p");
+		$contentDivTimePText = $atomFullDoc->createTextNode("Dating between: ");
+		$contentDivTimeP->appendChild($contentDivTimePText);
+		
+		$contentDivTBSpan = $atomFullDoc->createElement("span");
+		$contentDivTBSpan->setAttribute("class", "timeBegin");
+		$contentDivTBSpanText = $atomFullDoc->createTextNode($timeBegin);
+		$contentDivTBSpan->appendChild($contentDivTBSpanText);
+		$contentDivTimeP->appendChild($contentDivTBSpan);
+		
+		$contentDivTSepSpan = $atomFullDoc->createElement("span");
+		$contentDivTSepSpan->setAttribute("class", "timeSep");
+		$contentDivTSepSpanText = $atomFullDoc->createTextNode(" to ");
+		$contentDivTSepSpan->appendChild($contentDivTSepSpanText);
+		$contentDivTimeP->appendChild($contentDivTSepSpan);
+		
+		$contentDivTESpan = $atomFullDoc->createElement("span");
+		$contentDivTESpan->setAttribute("class", "timeEnd");
+		$contentDivTESpanText = $atomFullDoc->createTextNode($timeEnd);
+		$contentDivTESpan->appendChild($contentDivTESpanText);
+		$contentDivTimeP->appendChild($contentDivTESpan);
+		$contentDiv->appendChild($contentDivTimeP);
+	    }
+	    
+            $content->appendChild($contentDiv);
+            
+            $entry->appendChild($content);
+            
+            
+            $root->appendChild($entry);
+        }
+        
+    }//end loop through entries
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //We're done! Now print the results
+    
+    $resultString = $atomFullDoc->saveXML();
+	
+    // Note: simpleXML will add a 'default:' prefix to the XHTML content.  We don't want this, so remove it.
+    //$resultString = str_replace('default:', '' , $resultString);
+    
+    header('Content-Type: application/atom+xml; charset=utf8');
+    //header('Content-type: application/atom+xml', true);
+    echo $resultString;
+
+?>

@@ -1,0 +1,48 @@
+<?php
+
+$host = OpenContext_OCConfig::get_host_config();
+$requestURI = $this->requestURI;
+
+$requestURI  = str_replace("]", "%5D", $requestURI );
+$requestURI  = str_replace("[", "%5B", $requestURI );
+$requestURI  = str_replace("search/", "", $requestURI );
+$requestURI  = str_replace(".xml", "", $requestURI );
+
+$searchURI = $host.$requestURI;
+if(substr_count($searchURI, "?")>0){
+    $search_suffix = "&amp;q={searchTerms}&amp;bBox={geo:box?}&amp;t-start={time:start?}&amp;t-end={time:end?}";
+    $searchURI .= $search_suffix;
+    $AtomsearchURI = str_replace("/?", ".atom?", $searchURI);
+}
+else{
+    $search_suffix = "?q={searchTerms}&amp;bBox={geo:box?}&amp;t-start={time:start?}&amp;t-end={time:end?}";
+    $searchURI .= $search_suffix;
+    $AtomsearchURI = str_replace("/?", ".atom?", $searchURI);
+}
+
+$AtomsearchURI = str_replace("lightbox.atom", "lightbox/.atom", $AtomsearchURI);
+$xmlStart = '<?xml version="1.0" encoding="UTF-8"?>';
+
+header('Content-type: application/xml', true);
+echo $xmlStart;
+?>
+
+
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/"
+                       xmlns:time="http://a9.com/-/opensearch/extensions/time/1.0/">
+ <ShortName>Open Context</ShortName>
+ <Description>Use the Open Context text search service</Description>
+ <Tags>field research data primary archaeology cultural heritage</Tags>
+ <SyndicationRight>open</SyndicationRight>
+ <Contact>contact@opencontext.org</Contact>
+ <Url type="text/html" 
+      template="<?php echo $searchURI; ?>"/>
+ <Url type="application/atom+xml"
+      template="<?php echo $AtomsearchURI; ?>"/>
+ <OutputEncoding>UTF-8</OutputEncoding>
+ <InputEncoding>UTF-8</InputEncoding>
+ <Attribution>
+       Open Context Copyright 2010, Alexandria Archive Institute, Inc., Some Rights Reserved (Creative Commons Attribution License version 3.0)
+ </Attribution>
+</OpenSearchDescription>

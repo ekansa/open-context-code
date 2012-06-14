@@ -1,0 +1,27 @@
+<?php
+
+//create the right header
+header('Content-Type: text/plain; charset=utf8');
+
+?>
+
+@prefix : <http://opencontext.org/export/pelagios> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:oc a void:Dataset;
+   # Title and description
+   dcterms:title "Open Context";
+   dcterms:description "Publications of research data in archaeology and related fields";
+
+   # License
+   dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/>;
+
+   # Dump file location and serialization format
+   void:dataDump <http://opencontext.org/export/pelagios>;
+   void:feature <http://www.w3.org/ns/formats/N3>;
+
+   # A homepage with information ABOUT the data
+   foaf:homepage <http://opencontext.org/about/>;
+.

@@ -1,0 +1,79 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();   
+$header=array('Table name', 'Description','Created by', 'Date of Creation', 'No. of Records', 'Set URL');
+$tableHEADER='';
+foreach ($header as $hd){
+  $tableHEADER.="<th><nobr>".$hd."</nobr></td>";
+  }
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <title>Open Context: View a Table</title> 
+    <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+    <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+    <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+  </head>
+    
+  <body>
+    <div id="oc_logo"><a href="<?php echo $host; ?>"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a></div>
+    <div id="oc_tagline">	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img></div>
+    <div id="oc_beta"><img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img></div>
+    <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("tables"); ?>
+    <div id="main" style="width:95%;overflow:hidden;">
+
+      <!-- LEFT HAND COLUMN-->
+      <div id="table_left_page" style="width:73%;">
+        <div class="metadata">
+          <p class="heading" style="font-weight:bold;padding:0px;margin:9px 0px 2px 0px;">Open context datasets :</p>
+        </div> 
+        <?php echo $this->paginationControl($this->all_tables, 'Sliding', 'tables/pagination_control.phtml'); ?>
+        <div class="table_data" style="border:1px solid #dddddd;overflow:auto;">
+          <table cellpadding="0px" cellspacing="0px">
+            <thead><?php echo $tableHEADER ?></thead>
+            <tbody>
+            <?php foreach($this->all_tables as $table):?>
+              <tr style="background-color:<?php echo $this->cycle(array("#F0F0F0","#FFFFFF"))->next()?>">
+                  <td><a href="<?php echo $host.'/tables/'.$table['tableID'];?>"><?php echo $table['name']; ?></a></td>
+                  <td><?php echo $table['notes'];?></td>
+                  <td><?php echo $table['creator'];?></td>
+                  <td><?php echo $table['created'];?></td>
+                  <td><?php echo $table['num_recs'];?></td>
+                  <td><a href="<?php echo $host.'/'.$table['set_uri'];?>"><?php echo $host.'/'.$table['set_uri'];?></a></td>
+              </tr>
+            <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT HAND COLUMN-->
+      <div id ="table_right_page" style="width:20%">
+        <div id="panel">
+          <div class="panel_heading">Recently created tables:</div>
+          <div class="panel_content">
+            <ul style="margin:0px;padding:0px">
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">table 1</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">table 2</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">table 3</a></li>
+            </ul>
+          </div>
+        </div>
+        <div id="panel">
+          <div class="panel_heading">Help:</div>
+          <div class="panel_content">
+            <ul style="margin:0px;padding:0px">
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">How do I download data?</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">What data formats available?</a></li>
+              <li style="margin-left:0px;list-style-position:inside;"><a href="#">How can I use this data?</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

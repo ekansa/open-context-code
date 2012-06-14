@@ -1,0 +1,283 @@
+<?php
+
+// used to help create hyperlinks; set to current hostname.
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+$auth = Zend_Auth::getInstance();
+if (!$auth->hasIdentity()){
+    $displayName = false;
+}
+else{
+    $identity = $auth->getIdentity();
+    $displayName = $identity->name;
+}
+
+
+$requestURI = $this->requestURI;
+$request_array = explode('?', $requestURI, 2);
+//array explode  ( string $delimiter  , string $string  [, int $limit  ] )
+
+if (substr_compare($request_array[0], '/' , -1)) {  // if the uri doesn't end in a slash (minus query parameters), 
+    $request_array[0] = $request_array[0] . '/';  // add one
+}
+
+
+if (isset($request_array[1])) { // if there are query parameters,
+    $request_array[1] = "?" . $request_array[1];  // prepend a '?' to the set of parameters since we exploded on the '?' to get this string. 
+    //echo $request_array[1]; // for testing
+} else {
+    $request_array[1] = null;
+}
+$requestParams = $this->requestParams;
+
+
+$numFound = $this->numFound;
+$facets = $this->facets;
+$docs = $this->docs;
+
+$filter_message = "(View is not filtered)";
+$filter_output = $filter_message;
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host);
+
+$facet_fields = $facets["facet_fields"];
+$facet_queries = $facets["facet_queries"];
+$extendedFacets = true; //show more available facets 
+
+
+//do advanced search interface
+if(substr_count($requestURI, "advanced=true")>0){
+    $advanced = true;
+}
+else{
+    $advanced = false;
+}
+
+
+$facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $facet_fields, $facet_queries, $requestParams, $request_array, $host, $advanced);
+
+
+
+
+$googleURI = "";
+$facetAtomURI = "";
+$openSearchURI = "";
+
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <title><?php echo 'Open Context Search: ('.$numFound.' Items Showing)'; ?></title>
+        <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+        <link href="<?php echo $host; ?>/components/css/browse" rel="stylesheet" type="text/css" /> 
+        <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo $this->facetURI_Atom; ?>" />
+        <link rel="alternate" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->currentAtom; ?>" />
+        <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+        <link rel="first" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->firstPage_XHTML; ?>" />
+        <?php
+            if($this->prevPage_XHTML != false){
+                echo '<link rel="prev" type="application/atom+xml" title="Atom feed of results" href="'.$this->prevPage_XHTML.'" />'.chr(13);
+            }
+            if($this->nextPage_XHTML != false){
+                echo '<link rel="next" type="application/atom+xml" title="Atom feed of results" href="'.$this->nextPage_XHTML.'" />'.chr(13);
+            }
+        ?>
+        
+        <link rel="last" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->lastPage_XHTML; ?>" />
+        <link rel="search" type="application/opensearchdescription+xml" href="<?php echo $host."/search/search/.xml"; ?>" title="Open Context Open Search Service" />
+        <script src="<?php echo $host; ?>/components/js/browse" type="text/javascript"></script>
+        
+        <script type="text/javascript">
+        <!--
+        
+        <?php
+        
+        echo "var baseURI = '".$host.$requestURI."'; \n";
+        echo "var contextBase = '".$host.$request_array[0]."'; \n";
+        echo "var paramterBase = '".$request_array[1]."'; \n";
+        
+        echo chr(13).chr(13);
+        
+        $activeTaxaValue = OpenContext_FacetOutput::active_taxon_value($requestParams);
+        echo "var activeTaxaValue = '".$activeTaxaValue."'; \n";
+        
+        ?>
+        
+        -->
+        </script>
+        
+        <script type="text/javascript">
+        <!--
+            
+     window.onload = function(){
+        ConvertRowsToLinks("result_tab");
+      }
+      
+      function ConvertRowsToLinks(xTableId){
+
+        var rows = document.getElementById(xTableId).getElementsByTagName("tr");
+   
+        for(i=0; i < rows.length; i++){
+          var link = rows[i].getElementsByTagName("a")
+          if(link.length == 1){
+            rows[i].onclick = new Function("document.location.href='" + link[0].href + "'");
+            rows[i].onmouseover = new Function("this.style.cursor = 'pointer'");
+            rows[i].onmouseout = new Function("this.style.cursor = 'default'");
+          }
+        }
+
+      }
+      
+      
+      function openList(listId){
+            var displayControl = listId + "control";
+            var displayStatus = document.getElementById(listId).style.display;
+            if( displayStatus == "none"){
+                document.getElementById(listId).style.display = "";
+                document.getElementById(displayControl).innerHTML = "<em>(Hide list below)</em>";
+            }
+            else{
+                document.getElementById(listId).style.display = "none";
+                document.getElementById(displayControl).innerHTML = "More...";
+            }
+      
+      }
+
+      -->
+        </script>
+        
+    <style type="text/css"> 
+        input.searchButton{width:50px;height:50px;border:0;cursor:pointer;background:url('http://static.alexandriaarchive.org/images/general/searchButton.png') no-repeat;}
+
+        input.bigSearch{
+            width: 200px;
+            height: 18px;
+            margin-top: 5px;
+            margin-left: 5px;
+            background-color:#FBF7EC;
+        }
+        
+        
+        
+        #searchHelp{
+            border: thin solid #CCCCCC;
+            padding: 10px;
+            width: 480px;
+            background-color: #F5F5DC;
+            zoom: 1;
+            display: block;
+            margin-left: auto ;
+            margin-right: auto ;
+        }
+        
+    </style> 
+        
+    </head>
+    <body>
+        
+    <div id="oc_logo">
+	<a href="<?php echo $host;?>" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" /></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" />
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" />
+    </div>
+    
+    <!--
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='New Search' size='30' onfocus="if(this.value=='New Search')this.value='';" onblur="if(this.value=='')this.value='New Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   -->
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("search"); ?> 
+    
+    
+        
+<!--
+BEGIN Container for main page content
+--> 
+    <div id="main_page" > 
+        <!--Begin code for showing available facets-->
+        <div id="main_content">
+             
+
+               <div style="margin-top:15px; padding:50px; width:100%;" class="bodyText">
+                    
+                    <div style="width: 480px; margin-left:auto; margin-right:auto;">
+                    <div style="display:table-row;">
+                        
+                        
+                        <div style="display:table-cell; vertical-align:middle; padding:5px; font-size:large; padding-right:20px; width:10%;">
+                            
+                        </div>
+                       
+                        <form method="get" id="searchform" action="">
+                            <div style="display:table-cell; vertical-align:middle; padding:5px;">
+                                <div class="fieldHolder">
+                                    <input type='text' name='q' class='bigSearch' value='Type Search Terms' size='60' onfocus="if(this.value=='Type Search Terms')this.value='';" onblur="if(this.value=='')this.value='Type Search Terms';" />
+                                </div>
+                            </div>
+                            <div style="display:table-cell; vertical-align:middle; padding:5px;">
+                                <input class="searchButton" type="submit" value="" />
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+               </div>
+            
+            <div style="width:100%; margin-bottom:60px; ">
+            <div class="rounded-corners" id="searchHelp" >
+            <p class="subHeader">Searching Open Context</p>
+            <p class="bodyText" id="welcome_text">Open Context has a variety of search tools. The form above lets you run full-text searchs (like Google) of all Open Context content, including Open Context documentation and policies, project descriptions, datasets, linked text documents, and more. If you want to search within datasets only, click the <strong><a href='../sets/'>Browse</a></strong> tab, while the <strong><a href='../lightbox/'>Lightbox</a></strong> tab searches through thousands of images.</p>
+            </div>
+            </div>
+                <br />
+                <br />
+                
+        
+        </div>
+                    
+   
+        <!--
+        END of div container for placing main page content
+        -->
+        <div id="bottom_cont">  
+          <br /> 
+          <br /> 
+        </div> 
+        <!--
+        END Code for showing the database-like content
+        -->
+   
+   
+    <br />
+    
+        <div id="footer"> 
+            <div id="w3c_val_logo"> 
+              <a href="http://validator.w3.org/check?uri=referer"> 
+                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
+              </a> 
+            </div>     
+        </div>
+   
+     </div>
+    </body>
+</html>    

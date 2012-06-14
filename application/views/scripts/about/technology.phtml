@@ -1,0 +1,139 @@
+
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context Technologies</title>
+      <link rel="schema.DC" href="http://purl.org/dc/terms" />
+      <meta name="DC.title" content="Open Context Technologies" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="April 10, 2011" />
+      <meta name="DC.creator" content="Open Context Editors" />
+      
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+    <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <h2 style="text-align:center;">Technologies used in Open Context</h2>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Current development efforts aim to make Open Context easier to adapt
+                    to meet the user experience requirements for different applications and user communities.
+                    To support greater flexibility in interface composition, Open Context development is currently
+                    continuing to implement XML/XSLT technologies. These will allow great flexibility in
+                    customizing content presentation and user interface tools and will enable Open Context to
+                    support rapid prototyping and iterative design techniques typical of user experience
+                    optimization methods. Finally, a major motivation for the XML/XSLT development focus is to
+                    facilitate the creation of simple,
+	    <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a>
+	    web services that will enable machine-to-machine interoperability and facilitate "mashups"
+	    of Open Context content with content from other data sources on the Web. </p>
+                <p class="bodyText">All source code is released under a GNU-GPL version 3 open source license. <a href="http://code.google.com/p/opencontext/">Click here</a>
+                to access the code repository. <em>Note (Sept 1, 2010): We're in the process of migrating software development to GoogleCode,
+		so during this period, source code will be availble but documentation will be sadly sparse. If you have questions or concerns, please contact us
+		through the collaborative tools offered in GoogleCode.</em>
+                </p>
+                </div>
+            </div>
+            <div id="about_submenu" class="rounded-corners">
+                    <p class="bodyText"><em>More About Open Context:</em></p>
+                    <?php echo OpenContext_NavMenus::AboutNavMenu("technology", $host); ?>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+	<div style="margin:10px;">
+	    <p class="bodyText">Open Context is an open source project built with commonplace open source web technologies, including
+	    PHP (using the Zend framework), MySQL, Dojo Ajax, and most recently deployed, Apache-Solr. <a href="http://lucene.apache.org/solr/">Apache-Solr</a>
+	    is used to support Open Context's
+	    faceted search interface and web services. This feature allows users to find items based on more than one dimension and
+	    according to project-specific taxonomies, which is ideal for exploratory browsing. Initially implemented in MySQL,
+	    this faceted browsing feature suffered increasing greater performance problems as Open Context's collection grew.
+	    In order to have more scalable support for faceted navigation, we implemented Apache-Solr, an application that supports very
+	    demanding sites, including the <a href="http://www.archive.org">Internet Archive</a>,
+	    <a href="http://www.netflix.com/">Netflix</a>, and <a href="http://www.cnet.com/">CNET</a>, where it was first developed.
+	    Apache-Solr is gaining popularity in the digital library community,
+	    and cloud-based implementations of Solr can be very scalable. The main challenge in this development effort was finding
+	    ways to implement ArchaeoML's recursive data structures in Solr's fairly "flat" indexing schema.</p>
+	    <p class="bodyText">Open Context's implementation of Solr is very modular, and can be installed on other systems.
+	    We will shortly release a plugin for <a href="http://omeka.org/">Omeka</a>, a small museums collection management
+	    application, that once installed, will give Omeka faceted navigation and web-services like Open Context.</p>
+        
+            <p class="bodyText">Like OCHRE, Open Context now host many different projects, with different methodologies, recording
+	    systems, and temporal and geographic coverage. This wide applicability lowers costs, since a common set of ArchaeoML-based
+	    software and database tools can be used for many projects without any additional software development.While ArchaeoML (see the "<a href="../about/concepts">concepts</a>" page) is very useful for cultural heritage data management and dissemination (and can even see
+	    application in areas as diverse as Public Health and environmental biology), there are many
+	    scenarios where users where may want to work with ArchaeoML content in other applications and systems. Some of these scenarios
+	    include combining ArchaeoML data with data from other collections. Open Context, or any other cultural heritage data system,
+	    cannot always meet the diverse needs of all users. For example, content drawn from Open Context could be far more interesting
+	    to some users when visualized in GoogleEarth along with datasets from other sources. Thus, Open Context implements
+            a variety of powerful <a href="../about/services">web-services</a> to make it easier to work with other systems.</p>
+            
+	    <p class="bodyText">Atom-based Web services represent an important aspect of data portability. They can enable mash-ups use
+	    of cultural heritage content without requiring adherence to complex and difficult semantic frameworks or cumbersome <a href="http://en.wikipedia.org/wiki/SOAP">(WS*/SOAP)</a>
+	    Web services. Atom allows users to incrementally work with richer data structures and semantic markup as they need and
+	    as they have the capacity. When combined with faceted search features such as those offered by Open Context, Atom
+	    implementations can also benefit from sophisticated semantic frameworks that enable more specific and relevant retrieval
+	    of content than possible through keyword text searches. In this regard, the Open Context Atom implementation generates feeds
+	    requested through a sophisticated faceted query interface that accepts many parameters and Boolean operators. This enables
+	    users to take advantage of Open Context's ArchaeoML-based data structures and sophisticated index in order to make search
+	    requests with constraints specified in a number of dimensions.</p>
+            <p class="bodyText">Many such web-services are starting to see wider implementation in the cultural heritage sector.
+	    Several museums and heritage organizations, including the <a href="http://www.nmm.ac.uk/">National Maritime Museum (London)</a>,
+            the <a href="http://www.powerhousemuseum.com/collection/database/">Powerhouse Museum (Sydney)</a> and others implement the
+            <a href="http://www.opensearch.org/Home">Open Search</a> protocol to output keyword search requests as
+	    RSS feeds. One of the first major Atom implementations is in the <a href="http://pleiades.stoa.org/">Pleiades</a> ancient world-mapping project. Pleiades offers a
+	    variety of Atom representations for both query and search results, as well as requests for specific records. The ease of
+	    creating and using Atom-based Web services, coupled with Atom's wide support in popular applications, has generated great
+	    enthusiasm for this content syndication approach.</p>
+    </div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

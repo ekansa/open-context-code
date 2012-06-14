@@ -1,0 +1,22 @@
+<?php
+$numFound = $this->numFound;
+$page = $this->page;
+$offset = $this->offset;
+$requestURI = $this->requestURI;
+
+
+$record_array = $this->recArray;
+$var_array = $this->varArray;
+$pers_array = $this->persArray;
+
+$all_array = array("meta"=> array("uri"=>$requestURI,
+                                  "page" =>$page,
+                                  "offset" => $offset,
+                                  "numFound" => $numFound),
+                   "vars" =>$var_array,
+                   //"pers" =>$pers_array,
+                   "data"=>$record_array);
+
+echo Zend_Json::encode($all_array);
+
+?>

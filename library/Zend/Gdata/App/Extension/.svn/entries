@@ -1,0 +1,184 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/App/Extension
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Element.php
+file
+
+
+
+add
+
+Subtitle.php
+file
+
+
+
+add
+
+Id.php
+file
+
+
+
+add
+
+Summary.php
+file
+
+
+
+add
+
+Link.php
+file
+
+
+
+add
+
+Uri.php
+file
+
+
+
+add
+
+Rights.php
+file
+
+
+
+add
+
+Source.php
+file
+
+
+
+add
+
+Logo.php
+file
+
+
+
+add
+
+Draft.php
+file
+
+
+
+add
+
+Author.php
+file
+
+
+
+add
+
+Person.php
+file
+
+
+
+add
+
+Content.php
+file
+
+
+
+add
+
+Contributor.php
+file
+
+
+
+add
+
+Category.php
+file
+
+
+
+add
+
+Published.php
+file
+
+
+
+add
+
+Name.php
+file
+
+
+
+add
+
+Control.php
+file
+
+
+
+add
+
+Title.php
+file
+
+
+
+add
+
+Text.php
+file
+
+
+
+add
+
+Generator.php
+file
+
+
+
+add
+
+Updated.php
+file
+
+
+
+add
+
+Email.php
+file
+
+
+
+add
+
+Icon.php
+file
+
+
+
+add
+

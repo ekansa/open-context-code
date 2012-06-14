@@ -1,0 +1,3103 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Locale/Data
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+ro.xml
+file
+
+
+
+add
+
+ga.xml
+file
+
+
+
+add
+
+ar_SD.xml
+file
+
+
+
+add
+
+ha_Latn_NE.xml
+file
+
+
+
+add
+
+rw.xml
+file
+
+
+
+add
+
+en_SG.xml
+file
+
+
+
+add
+
+el_POLYTONI.xml
+file
+
+
+
+add
+
+ar_OM.xml
+file
+
+
+
+add
+
+zu.xml
+file
+
+
+
+add
+
+ka_GE.xml
+file
+
+
+
+add
+
+kl.xml
+file
+
+
+
+add
+
+es_PR.xml
+file
+
+
+
+add
+
+gu.xml
+file
+
+
+
+add
+
+zh_MO.xml
+file
+
+
+
+add
+
+sv_SE.xml
+file
+
+
+
+add
+
+mt_MT.xml
+file
+
+
+
+add
+
+vi_VN.xml
+file
+
+
+
+add
+
+da.xml
+file
+
+
+
+add
+
+sr.xml
+file
+
+
+
+add
+
+Translation.php
+file
+
+
+
+add
+
+und.xml
+file
+
+
+
+add
+
+sv.xml
+file
+
+
+
+add
+
+de.xml
+file
+
+
+
+add
+
+kaj_NG.xml
+file
+
+
+
+add
+
+zh_Hant.xml
+file
+
+
+
+add
+
+en_PK.xml
+file
+
+
+
+add
+
+bg_BG.xml
+file
+
+
+
+add
+
+da_DK.xml
+file
+
+
+
+add
+
+ta.xml
+file
+
+
+
+add
+
+is_IS.xml
+file
+
+
+
+add
+
+sw_TZ.xml
+file
+
+
+
+add
+
+ar_LY.xml
+file
+
+
+
+add
+
+ku_Latn_SY.xml
+file
+
+
+
+add
+
+te.xml
+file
+
+
+
+add
+
+lo.xml
+file
+
+
+
+add
+
+ti.xml
+file
+
+
+
+add
+
+xh.xml
+file
+
+
+
+add
+
+aa.xml
+file
+
+
+
+add
+
+bn_IN.xml
+file
+
+
+
+add
+
+el_GR.xml
+file
+
+
+
+add
+
+ar_IQ.xml
+file
+
+
+
+add
+
+fur.xml
+file
+
+
+
+add
+
+am.xml
+file
+
+
+
+add
+
+es_NI.xml
+file
+
+
+
+add
+
+ku_Latn.xml
+file
+
+
+
+add
+
+ig.xml
+file
+
+
+
+add
+
+ar_YE.xml
+file
+
+
+
+add
+
+el.xml
+file
+
+
+
+add
+
+en_UM.xml
+file
+
+
+
+add
+
+en_BE.xml
+file
+
+
+
+add
+
+et.xml
+file
+
+
+
+add
+
+und_ZZ.xml
+file
+
+
+
+add
+
+ak_GH.xml
+file
+
+
+
+add
+
+aa_ET.xml
+file
+
+
+
+add
+
+mn.xml
+file
+
+
+
+add
+
+wal_ET.xml
+file
+
+
+
+add
+
+is.xml
+file
+
+
+
+add
+
+de_AT.xml
+file
+
+
+
+add
+
+mr.xml
+file
+
+
+
+add
+
+ssy.xml
+file
+
+
+
+add
+
+kpe.xml
+file
+
+
+
+add
+
+af_ZA.xml
+file
+
+
+
+add
+
+ku_TR.xml
+file
+
+
+
+add
+
+ku_Latn_IR.xml
+file
+
+
+
+add
+
+yo.xml
+file
+
+
+
+add
+
+uz_Cyrl.xml
+file
+
+
+
+add
+
+es_CO.xml
+file
+
+
+
+add
+
+hy_AM.xml
+file
+
+
+
+add
+
+te_IN.xml
+file
+
+
+
+add
+
+rw_RW.xml
+file
+
+
+
+add
+
+sr_YU.xml
+file
+
+
+
+add
+
+ne.xml
+file
+
+
+
+add
+
+fo.xml
+file
+
+
+
+add
+
+ti_ET.xml
+file
+
+
+
+add
+
+en_NZ.xml
+file
+
+
+
+add
+
+tn_ZA.xml
+file
+
+
+
+add
+
+ha_NG.xml
+file
+
+
+
+add
+
+uz_Latn.xml
+file
+
+
+
+add
+
+lt_LT.xml
+file
+
+
+
+add
+
+sr_Latn_YU.xml
+file
+
+
+
+add
+
+en_ZW.xml
+file
+
+
+
+add
+
+root.xml
+file
+
+
+
+add
+
+ja_JP.xml
+file
+
+
+
+add
+
+ar_SA.xml
+file
+
+
+
+add
+
+wo_SN.xml
+file
+
+
+
+add
+
+ny.xml
+file
+
+
+
+add
+
+zh_Hant_MO.xml
+file
+
+
+
+add
+
+lo_LA.xml
+file
+
+
+
+add
+
+syr_SY.xml
+file
+
+
+
+add
+
+nso_ZA.xml
+file
+
+
+
+add
+
+sr_Cyrl_YU.xml
+file
+
+
+
+add
+
+ka.xml
+file
+
+
+
+add
+
+zh_TW.xml
+file
+
+
+
+add
+
+ne_NP.xml
+file
+
+
+
+add
+
+wo_Latn.xml
+file
+
+
+
+add
+
+ar_KW.xml
+file
+
+
+
+add
+
+ve_ZA.xml
+file
+
+
+
+add
+
+cs.xml
+file
+
+
+
+add
+
+ha_GH.xml
+file
+
+
+
+add
+
+km.xml
+file
+
+
+
+add
+
+gv.xml
+file
+
+
+
+add
+
+sk.xml
+file
+
+
+
+add
+
+ar_SY.xml
+file
+
+
+
+add
+
+gez_ET.xml
+file
+
+
+
+add
+
+syr.xml
+file
+
+
+
+add
+
+ar_LB.xml
+file
+
+
+
+add
+
+ku.xml
+file
+
+
+
+add
+
+so.xml
+file
+
+
+
+add
+
+az_Latn_AZ.xml
+file
+
+
+
+add
+
+ky.xml
+file
+
+
+
+add
+
+el_POLYTON.xml
+file
+
+
+
+add
+
+to_TO.xml
+file
+
+
+
+add
+
+ss.xml
+file
+
+
+
+add
+
+haw_US.xml
+file
+
+
+
+add
+
+zu_ZA.xml
+file
+
+
+
+add
+
+ha.xml
+file
+
+
+
+add
+
+km_KH.xml
+file
+
+
+
+add
+
+es_AR.xml
+file
+
+
+
+add
+
+sw.xml
+file
+
+
+
+add
+
+en_PH.xml
+file
+
+
+
+add
+
+en_US_POSIX.xml
+file
+
+
+
+add
+
+he.xml
+file
+
+
+
+add
+
+az_Cyrl_AZ.xml
+file
+
+
+
+add
+
+aa_DJ.xml
+file
+
+
+
+add
+
+hi.xml
+file
+
+
+
+add
+
+de_DE.xml
+file
+
+
+
+add
+
+nl_NL.xml
+file
+
+
+
+add
+
+ky_KG.xml
+file
+
+
+
+add
+
+so_ET.xml
+file
+
+
+
+add
+
+dv.xml
+file
+
+
+
+add
+
+hu.xml
+file
+
+
+
+add
+
+ar_EG.xml
+file
+
+
+
+add
+
+dz.xml
+file
+
+
+
+add
+
+en_IE.xml
+file
+
+
+
+add
+
+ar_MA.xml
+file
+
+
+
+add
+
+lt.xml
+file
+
+
+
+add
+
+st_ZA.xml
+file
+
+
+
+add
+
+hy.xml
+file
+
+
+
+add
+
+tn.xml
+file
+
+
+
+add
+
+cop_Arab_EG.xml
+file
+
+
+
+add
+
+ps.xml
+file
+
+
+
+add
+
+ee_TG.xml
+file
+
+
+
+add
+
+ig_NG.xml
+file
+
+
+
+add
+
+es_UY.xml
+file
+
+
+
+add
+
+kok.xml
+file
+
+
+
+add
+
+tr.xml
+file
+
+
+
+add
+
+en_AS.xml
+file
+
+
+
+add
+
+af.xml
+file
+
+
+
+add
+
+en_MH.xml
+file
+
+
+
+add
+
+fr_MC.xml
+file
+
+
+
+add
+
+ee.xml
+file
+
+
+
+add
+
+tr_TR.xml
+file
+
+
+
+add
+
+cop_EG.xml
+file
+
+
+
+add
+
+id.xml
+file
+
+
+
+add
+
+tt_RU.xml
+file
+
+
+
+add
+
+en_MP.xml
+file
+
+
+
+add
+
+sh_CS.xml
+file
+
+
+
+add
+
+ha_Arab_NG.xml
+file
+
+
+
+add
+
+ar.xml
+file
+
+
+
+add
+
+en_MT.xml
+file
+
+
+
+add
+
+az_AZ.xml
+file
+
+
+
+add
+
+uz_AF.xml
+file
+
+
+
+add
+
+af_NA.xml
+file
+
+
+
+add
+
+mr_IN.xml
+file
+
+
+
+add
+
+bn_BD.xml
+file
+
+
+
+add
+
+sr_ME.xml
+file
+
+
+
+add
+
+or_IN.xml
+file
+
+
+
+add
+
+sid_ET.xml
+file
+
+
+
+add
+
+mk.xml
+file
+
+
+
+add
+
+eu.xml
+file
+
+
+
+add
+
+zh_Hans_CN.xml
+file
+
+
+
+add
+
+az.xml
+file
+
+
+
+add
+
+ur_IN.xml
+file
+
+
+
+add
+
+it.xml
+file
+
+
+
+add
+
+cop_Arab_US.xml
+file
+
+
+
+add
+
+fr_BE.xml
+file
+
+
+
+add
+
+sr_Cyrl.xml
+file
+
+
+
+add
+
+hy_AM_REVISED.xml
+file
+
+
+
+add
+
+ms.xml
+file
+
+
+
+add
+
+ts_ZA.xml
+file
+
+
+
+add
+
+fa_IR.xml
+file
+
+
+
+add
+
+sr_Latn_ME.xml
+file
+
+
+
+add
+
+es_CL.xml
+file
+
+
+
+add
+
+am_ET.xml
+file
+
+
+
+add
+
+be.xml
+file
+
+
+
+add
+
+pa_IN.xml
+file
+
+
+
+add
+
+cop_US.xml
+file
+
+
+
+add
+
+pa_Guru_IN.xml
+file
+
+
+
+add
+
+uz_Arab_AF.xml
+file
+
+
+
+add
+
+ta_IN.xml
+file
+
+
+
+add
+
+en_BZ.xml
+file
+
+
+
+add
+
+sr_Cyrl_ME.xml
+file
+
+
+
+add
+
+nb.xml
+file
+
+
+
+add
+
+en_VI.xml
+file
+
+
+
+add
+
+so_KE.xml
+file
+
+
+
+add
+
+pa_Guru.xml
+file
+
+
+
+add
+
+sr_Latn.xml
+file
+
+
+
+add
+
+zh_HK.xml
+file
+
+
+
+add
+
+om_ET.xml
+file
+
+
+
+add
+
+en_CA.xml
+file
+
+
+
+add
+
+zh_Hant_TW.xml
+file
+
+
+
+add
+
+th_TH.xml
+file
+
+
+
+add
+
+kam.xml
+file
+
+
+
+add
+
+ku_IQ.xml
+file
+
+
+
+add
+
+wo_Arab_SN.xml
+file
+
+
+
+add
+
+nn.xml
+file
+
+
+
+add
+
+my_MM.xml
+file
+
+
+
+add
+
+nr.xml
+file
+
+
+
+add
+
+fr_CH.xml
+file
+
+
+
+add
+
+ln_CG.xml
+file
+
+
+
+add
+
+so_SO.xml
+file
+
+
+
+add
+
+gv_GB.xml
+file
+
+
+
+add
+
+se_FI.xml
+file
+
+
+
+add
+
+gez.xml
+file
+
+
+
+add
+
+pt_PT.xml
+file
+
+
+
+add
+
+ru.xml
+file
+
+
+
+add
+
+sr_RS.xml
+file
+
+
+
+add
+
+fur_IT.xml
+file
+
+
+
+add
+
+es_DO.xml
+file
+
+
+
+add
+
+ny_MW.xml
+file
+
+
+
+add
+
+ha_Latn_NG.xml
+file
+
+
+
+add
+
+es_HN.xml
+file
+
+
+
+add
+
+so_DJ.xml
+file
+
+
+
+add
+
+se_NO.xml
+file
+
+
+
+add
+
+sr_Latn_RS.xml
+file
+
+
+
+add
+
+ee_GH.xml
+file
+
+
+
+add
+
+tg_TJ.xml
+file
+
+
+
+add
+
+kn.xml
+file
+
+
+
+add
+
+sh.xml
+file
+
+
+
+add
+
+om.xml
+file
+
+
+
+add
+
+kpe_LR.xml
+file
+
+
+
+add
+
+sh_BA.xml
+file
+
+
+
+add
+
+ha_Arab.xml
+file
+
+
+
+add
+
+sl.xml
+file
+
+
+
+add
+
+pa_Arab_PK.xml
+file
+
+
+
+add
+
+kfo.xml
+file
+
+
+
+add
+
+ii_CN.xml
+file
+
+
+
+add
+
+sr_Cyrl_RS.xml
+file
+
+
+
+add
+
+aa_ER_SAAHO.xml
+file
+
+
+
+add
+
+ha_Latn_GH.xml
+file
+
+
+
+add
+
+en_HK.xml
+file
+
+
+
+add
+
+pa_Arab.xml
+file
+
+
+
+add
+
+wo.xml
+file
+
+
+
+add
+
+bo_IN.xml
+file
+
+
+
+add
+
+st.xml
+file
+
+
+
+add
+
+om_KE.xml
+file
+
+
+
+add
+
+hr_HR.xml
+file
+
+
+
+add
+
+wo_Latn_SN.xml
+file
+
+
+
+add
+
+kcg.xml
+file
+
+
+
+add
+
+pt_BR.xml
+file
+
+
+
+add
+
+ar_AE.xml
+file
+
+
+
+add
+
+fr_LU.xml
+file
+
+
+
+add
+
+hr.xml
+file
+
+
+
+add
+
+en_TT.xml
+file
+
+
+
+add
+
+xh_ZA.xml
+file
+
+
+
+add
+
+tg.xml
+file
+
+
+
+add
+
+es_MX.xml
+file
+
+
+
+add
+
+pl.xml
+file
+
+
+
+add
+
+cop.xml
+file
+
+
+
+add
+
+to.xml
+file
+
+
+
+add
+
+lv_LV.xml
+file
+
+
+
+add
+
+pt.xml
+file
+
+
+
+add
+
+ar_QA.xml
+file
+
+
+
+add
+
+ts.xml
+file
+
+
+
+add
+
+en_IN.xml
+file
+
+
+
+add
+
+kl_GL.xml
+file
+
+
+
+add
+
+ia.xml
+file
+
+
+
+add
+
+ku_SY.xml
+file
+
+
+
+add
+
+ak.xml
+file
+
+
+
+add
+
+el_CY.xml
+file
+
+
+
+add
+
+kn_IN.xml
+file
+
+
+
+add
+
+ms_BN.xml
+file
+
+
+
+add
+
+zh_CN.xml
+file
+
+
+
+add
+
+ii.xml
+file
+
+
+
+add
+
+es_VE.xml
+file
+
+
+
+add
+
+ku_Latn_TR.xml
+file
+
+
+
+add
+
+en.xml
+file
+
+
+
+add
+
+as.xml
+file
+
+
+
+add
+
+az_Cyrl.xml
+file
+
+
+
+add
+
+ga_IE.xml
+file
+
+
+
+add
+
+cop_Arab.xml
+file
+
+
+
+add
+
+aa_ER.xml
+file
+
+
+
+add
+
+hu_HU.xml
+file
+
+
+
+add
+
+ml.xml
+file
+
+
+
+add
+
+sl_SI.xml
+file
+
+
+
+add
+
+en_US.xml
+file
+
+
+
+add
+
+ar_BH.xml
+file
+
+
+
+add
+
+iu.xml
+file
+
+
+
+add
+
+zh_Hant_HK.xml
+file
+
+
+
+add
+
+mt.xml
+file
+
+
+
+add
+
+bo_CN.xml
+file
+
+
+
+add
+
+he_IL.xml
+file
+
+
+
+add
+
+ro_RO.xml
+file
+
+
+
+add
+
+cch_NG.xml
+file
+
+
+
+add
+
+zh_Hans_SG.xml
+file
+
+
+
+add
+
+ur.xml
+file
+
+
+
+add
+
+fa.xml
+file
+
+
+
+add
+
+en_JM.xml
+file
+
+
+
+add
+
+az_Latn.xml
+file
+
+
+
+add
+
+en_BW.xml
+file
+
+
+
+add
+
+nb_NO.xml
+file
+
+
+
+add
+
+en_ZA.xml
+file
+
+
+
+add
+
+de_BE.xml
+file
+
+
+
+add
+
+fi.xml
+file
+
+
+
+add
+
+uz.xml
+file
+
+
+
+add
+
+bn.xml
+file
+
+
+
+add
+
+eu_ES.xml
+file
+
+
+
+add
+
+es_GT.xml
+file
+
+
+
+add
+
+gu_IN.xml
+file
+
+
+
+add
+
+ti_ER.xml
+file
+
+
+
+add
+
+dz_BT.xml
+file
+
+
+
+add
+
+ku_Arab.xml
+file
+
+
+
+add
+
+kaj.xml
+file
+
+
+
+add
+
+ko_KR.xml
+file
+
+
+
+add
+
+id_ID.xml
+file
+
+
+
+add
+
+ku_IR.xml
+file
+
+
+
+add
+
+ve.xml
+file
+
+
+
+add
+
+fr_CA.xml
+file
+
+
+
+add
+
+kok_IN.xml
+file
+
+
+
+add
+
+ha_NE.xml
+file
+
+
+
+add
+
+sk_SK.xml
+file
+
+
+
+add
+
+ru_UA.xml
+file
+
+
+
+add
+
+uz_UZ.xml
+file
+
+
+
+add
+
+fi_FI.xml
+file
+
+
+
+add
+
+byn_ER.xml
+file
+
+
+
+add
+
+vi.xml
+file
+
+
+
+add
+
+sid.xml
+file
+
+
+
+add
+
+ln_CD.xml
+file
+
+
+
+add
+
+be_BY.xml
+file
+
+
+
+add
+
+zh.xml
+file
+
+
+
+add
+
+et_EE.xml
+file
+
+
+
+add
+
+wal.xml
+file
+
+
+
+add
+
+ca.xml
+file
+
+
+
+add
+
+es_PA.xml
+file
+
+
+
+add
+
+kcg_NG.xml
+file
+
+
+
+add
+
+gl_ES.xml
+file
+
+
+
+add
+
+es_PE.xml
+file
+
+
+
+add
+
+en_GU.xml
+file
+
+
+
+add
+
+ml_IN.xml
+file
+
+
+
+add
+
+nso.xml
+file
+
+
+
+add
+
+gl.xml
+file
+
+
+
+add
+
+de_CH.xml
+file
+
+
+
+add
+
+sa.xml
+file
+
+
+
+add
+
+kfo_NG.xml
+file
+
+
+
+add
+
+kk.xml
+file
+
+
+
+add
+
+se.xml
+file
+
+
+
+add
+
+it_IT.xml
+file
+
+
+
+add
+
+tig_ER.xml
+file
+
+
+
+add
+
+sr_CS.xml
+file
+
+
+
+add
+
+ko.xml
+file
+
+
+
+add
+
+gez_ER.xml
+file
+
+
+
+add
+
+cy.xml
+file
+
+
+
+add
+
+es_EC.xml
+file
+
+
+
+add
+
+nl_BE.xml
+file
+
+
+
+add
+
+es_PY.xml
+file
+
+
+
+add
+
+or.xml
+file
+
+
+
+add
+
+kw.xml
+file
+
+
+
+add
+
+cy_GB.xml
+file
+
+
+
+add
+
+sq.xml
+file
+
+
+
+add
+
+uz_Arab.xml
+file
+
+
+
+add
+
+sh_YU.xml
+file
+
+
+
+add
+
+sr_Latn_CS.xml
+file
+
+
+
+add
+
+ps_AF.xml
+file
+
+
+
+add
+
+as_IN.xml
+file
+
+
+
+add
+
+zh_Hans.xml
+file
+
+
+
+add
+
+ru_RU.xml
+file
+
+
+
+add
+
+cch.xml
+file
+
+
+
+add
+
+es_ES.xml
+file
+
+
+
+add
+
+mk_MK.xml
+file
+
+
+
+add
+
+ar_DZ.xml
+file
+
+
+
+add
+
+pa.xml
+file
+
+
+
+add
+
+sr_Cyrl_CS.xml
+file
+
+
+
+add
+
+ar_TN.xml
+file
+
+
+
+add
+
+uk_UA.xml
+file
+
+
+
+add
+
+bs_BA.xml
+file
+
+
+
+add
+
+ln.xml
+file
+
+
+
+add
+
+wo_Arab.xml
+file
+
+
+
+add
+
+fil.xml
+file
+
+
+
+add
+
+th.xml
+file
+
+
+
+add
+
+de_LI.xml
+file
+
+
+
+add
+
+es_US.xml
+file
+
+
+
+add
+
+haw.xml
+file
+
+
+
+add
+
+ur_PK.xml
+file
+
+
+
+add
+
+lv.xml
+file
+
+
+
+add
+
+tig.xml
+file
+
+
+
+add
+
+ms_MY.xml
+file
+
+
+
+add
+
+it_CH.xml
+file
+
+
+
+add
+
+en_AU.xml
+file
+
+
+
+add
+
+tt.xml
+file
+
+
+
+add
+
+es_BO.xml
+file
+
+
+
+add
+
+fo_FO.xml
+file
+
+
+
+add
+
+de_LU.xml
+file
+
+
+
+add
+
+byn.xml
+file
+
+
+
+add
+
+pa_PK.xml
+file
+
+
+
+add
+
+uz_Latn_UZ.xml
+file
+
+
+
+add
+
+fa_AF.xml
+file
+
+
+
+add
+
+eo.xml
+file
+
+
+
+add
+
+supplementalData.xml
+file
+
+
+
+add
+
+mn_MN.xml
+file
+
+
+
+add
+
+uz_Cyrl_UZ.xml
+file
+
+
+
+add
+
+gaa_GH.xml
+file
+
+
+
+add
+
+es.xml
+file
+
+
+
+add
+
+ca_ES.xml
+file
+
+
+
+add
+
+zh_SG.xml
+file
+
+
+
+add
+
+dv_MV.xml
+file
+
+
+
+add
+
+ug.xml
+file
+
+
+
+add
+
+yo_NG.xml
+file
+
+
+
+add
+
+uk.xml
+file
+
+
+
+add
+
+ss_ZA.xml
+file
+
+
+
+add
+
+en_NA.xml
+file
+
+
+
+add
+
+my.xml
+file
+
+
+
+add
+
+sr_BA.xml
+file
+
+
+
+add
+
+ku_Latn_IQ.xml
+file
+
+
+
+add
+
+hi_IN.xml
+file
+
+
+
+add
+
+kam_KE.xml
+file
+
+
+
+add
+
+gaa.xml
+file
+
+
+
+add
+
+bg.xml
+file
+
+
+
+add
+
+kw_GB.xml
+file
+
+
+
+add
+
+sa_IN.xml
+file
+
+
+
+add
+
+ja.xml
+file
+
+
+
+add
+
+ar_JO.xml
+file
+
+
+
+add
+
+es_CR.xml
+file
+
+
+
+add
+
+fr_FR.xml
+file
+
+
+
+add
+
+sq_AL.xml
+file
+
+
+
+add
+
+bo.xml
+file
+
+
+
+add
+
+cs_CZ.xml
+file
+
+
+
+add
+
+kpe_GN.xml
+file
+
+
+
+add
+
+sr_Latn_BA.xml
+file
+
+
+
+add
+
+bs.xml
+file
+
+
+
+add
+
+pl_PL.xml
+file
+
+
+
+add
+
+ha_Latn.xml
+file
+
+
+
+add
+
+sv_FI.xml
+file
+
+
+
+add
+
+nn_NO.xml
+file
+
+
+
+add
+
+fr.xml
+file
+
+
+
+add
+
+sw_KE.xml
+file
+
+
+
+add
+
+nr_ZA.xml
+file
+
+
+
+add
+
+nl.xml
+file
+
+
+
+add
+
+kk_KZ.xml
+file
+
+
+
+add
+
+en_GB.xml
+file
+
+
+
+add
+
+sr_Cyrl_BA.xml
+file
+
+
+
+add
+
+es_SV.xml
+file
+
+
+
+add
+

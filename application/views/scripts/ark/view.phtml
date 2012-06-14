@@ -1,0 +1,34 @@
+<?php
+
+
+//echo htmlentities($this->solr_out);
+$atom = false;
+
+$atom = $this->atom;
+
+if ($atom) {
+
+    $doc = new DOMDocument();
+
+    $doc->load("xsl/defaultSpatial.xsl");
+
+    $proc = new XSLTProcessor();
+
+    $xslt = $proc->importStylesheet($doc);
+
+    $atomDoc = new DomDocument();
+
+    $atomDoc->loadXML($atom->asXML());
+
+    echo $proc->transformToXML($atomDoc);
+       
+} else {
+
+    echo "You're killing me.";
+
+}
+
+
+
+
+?>

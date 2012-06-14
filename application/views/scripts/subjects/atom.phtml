@@ -1,0 +1,16 @@
+<?php
+
+header("Content-type: application/atom+xml", true);
+
+$atom = $this->atom;
+if ($atom) {
+    header("Content-type: application/xml");
+    echo $atom->saveXML();
+} else {
+
+
+echo "You're killing me.";
+
+}
+
+?>

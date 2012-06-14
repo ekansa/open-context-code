@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Gdata/Docs
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+DocumentListEntry.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+DocumentListFeed.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+Query.php
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+

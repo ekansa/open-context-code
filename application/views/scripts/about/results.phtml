@@ -1,0 +1,253 @@
+
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+      <title>Open Context: Estimate Publication Costs (Results)</title> 
+      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
+      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
+      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
+      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
+      
+      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+    </head>
+    
+<body>
+    <div id="oc_logo">
+	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
+    </div>
+    
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
+    
+    <div id="main">
+	<div id="pageTop">
+            <div id="pageIntro">
+                <h2 style="text-align:center;">Results of Cost Estimate for Publishing with Open Context</h2>
+                
+                <div style="margin:10px;">
+                    <p class="bodyText">Thank you for completing the cost estimatation form. Based on the data you provided, Open Context
+		    estimates that you should budget about <strong>$<?php echo $this->cost; ?></strong> for publishing your project's content.</p>
+
+<p class="bodyText">
+Please remember that this estimate is based on the assumption that your data are properly documented and prepared for publication. The cost estimate is also based on the assumption that your data will require little cleaning. To help improve data quality, be sure to use appropriate error-correction and validation processes as you collect your data. This will make your own analyses more reliable. It will also facilitate publication and future reuse of research data. For more on data quality and documentation requirements please see <a href='../about/publishing' title='Overview of publishing with Open Context'>About - Publishing</a>. 
+</p>
+
+<p class="bodyText"><strong>Grant Seekers (NSF and Other):</strong> You can use this publication fee estimate to help you plan your project budget. You should also receive an email shortly with this information. <strong>Note: If you don't see this email, check your spam folder!</strong> In addition, the email will contain a description of the special access and archiving features Open Context offers your data. Please feel free to incorporate this text into your "Data Access Plan." Please copy this webpage to your hard drive (bookmarking will not work) as well as the associated email. However, due to the complexities of estimating project complexity, please note that this estimate does not imply or constitute a binding agreement.   
+</p>
+<?php
+if(!$this->mailError){
+    //nothing
+}
+else{
+    echo "<p><strong>".$this->mailError."</strong></p>";
+}
+?>
+                </div>
+            </div>
+            <div id="about_submenu" class="rounded-corners">
+                    <p class="bodyText"><em>More About Open Context:</em></p>
+                    <?php echo OpenContext_NavMenus::AboutNavMenu("publishing", $host); ?>
+            </div>
+            <div id="pageTopEnd">
+                <br/>
+            </div>
+        </div>
+        
+        
+        <br/>
+        <div style="margin:10px;">
+	    
+	    <h3 style="padding-left:15px; font-size:1em;">Dataset Publication and Archiving Cost Estimation Results</h3>
+	    
+	    <div style="margin:5px;background-color:#F2F2F2;padding:5px;">
+
+
+
+
+
+
+
+
+
+
+	    
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Contact Information:</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding-top:5px; padding-bottom:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+		<table style='width:80%;'>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Name:
+			</td>
+			<td class="bodyText"><?php echo $this->name; ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Your Email:
+			</td>
+			<td class="bodyText"><?php echo $this->email; ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Phone:
+			</td>
+			<td class="bodyText" ><?php echo $this->phone; ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Project Name:
+			</td>
+			<td class="bodyText" ><?php echo $this->projname;
+			if($this->diss){
+			    echo " (Doctoral Dissertation / Graduate Student Project)";
+			}
+			?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Publication and Archiving Fee (Estimate):
+			</td>
+			<td class="bodyText" ><strong>$ <?php echo $this->cost;
+			echo "<br/>(Reference ID: ".$this->estimateID.")";
+			?></strong>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:20%; text-align:right;'>Proposed License:
+			</td>
+			<td class="bodyText" ><?php echo $this->license; ?>
+			</td>
+		    </tr>
+		</table>
+		
+	    </div>
+	    <br/>
+	    <br/>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Project Database Size and Complexity:</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding-top:5px; padding-bottom:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+		<table style='width:85%;'>
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Duration of Proposed Project (Years): 
+			</td>
+			<td class="bodyText"><?php
+			
+			$dataArray = $this->dataset;
+			$mediaArray = $this->media;
+			echo $dataArray["num_years"];
+			
+			?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Estimated Number of Specialists Datasets (zooarchaeology, lithic analysis, etc.):
+			</td>
+			<td class="bodyText"><?php echo $dataArray["num_sets"]; ?>
+			</td>
+		    </tr>
+		    <tr>
+			<td class="bodyText" style='width:70%; text-align:right;'>Estimated Total Number of Tables (for data to be published):
+			</td>
+			<td class="bodyText" ><?php echo $dataArray["num_tabs"]; ?>
+			</td>
+		    </tr>
+		</table>
+		
+	    </div>
+            <br/>
+	    <br/>
+	    
+	    
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Project Media Size and Complexity</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+		<p class="bodyText">(1) Number of Image Files: <strong><?php echo $mediaArray["num_images"]; ?></strong><br/>
+		    
+		</p>
+		<p class="bodyText">(2) Number of Audio and Video Files: <strong><?php echo $mediaArray["num_vids"]; ?></strong><br/>
+		    
+		</p>
+		<p class="bodyText">(3) Number of Documents (<em>HTML, text, PDF</em>): <strong><?php echo $mediaArray["num_docs"]; ?></strong><br/>
+		    
+		</p>
+		<p class="bodyText">(4) Number of GIS layers: <strong><?php echo $mediaArray["num_gis"]; ?></strong><br/>
+		    
+		</p>
+		<p class="bodyText">(5) Number of Other Specialized Datasets: <strong><?php echo $mediaArray["num_other"]; ?></strong><br/>
+		</p>
+	    </div>
+	    <br/>
+	    <br/>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Additional Comments</p>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding:5px;
+			margin-left:10px; margin-right:10px;' class='bodyText'>
+	    <p><?php echo $this->comment; ?></p>
+	    </div>
+	    <br/>
+	    <p class="subHeader" style="margin-left:10px;">Language to Include in Grant Applications (NSF or Other)</p>
+	    <p class="tinyText" style="margin-left:10px; margin-right:10px;"><em>Feel free to copy the text below and use or adapt it for the Data Access Plan section required of NSF grant applications. This text may also be useful for grant applications to other agencies and foundations.</em></p>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Short Summary</p>
+	    <p class="bodyText" style="margin-left:10px; margin-right:10px;">Digital content generated by this project will be published in Open Context (http://opencontext.org). Publication in Open Context ensures that the data are freely available and openly licensed so they can be reused and combined with research collections from elsewhere on the Web. All project data will be documented with relevant metadata (&ldquo;information about information&rdquo;), citation information, and a permanent URL to maximize reach and potential for reuse. All content published in Open Context is archived by the California Digital Library (http://www.cdlib.org/), a leader in the preservation of scientific data. These features enhance the quality, discoverability, and interoperability of project data beyond what can be achieved by simply posting data to a website.</p>
+	    <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Additional Details</p>
+	    <ul class="bodyText"  style="margin-left:10px; margin-right:10px;">
+		<li><strong>Deep Linking:</strong> Every item of the project dataset in Open Context will have its own Web Address (URL). This policy of &ldquo;one webpage per potsherd&rdquo; enables very specific referencing and citation of Open Context content. Citation is further encouraged by dynamic generation of suggested citation text, and by support of metadata standards used in Zotero, a popular reference management tool. In addition, deep linking enables Web 2.0 users to tag project content with Delicious or similar folksonomy services or, others can apply sophisticated and more formal Semantic Web standards.</li>
+
+<li><strong>Open Access:</strong> Open Context requires no login to access, download, or copy data into another system. Its stated policy to refrain from monitoring individual user activities is consistent with the American Library Association's code of professional ethics to protect patron rights to privacy, confidentiality, and academic freedom. The absence of a login barrier also allows Open Context content to be fully indexed by commercial search engines, further enhancing discoverability and impact.</li>
+
+<li><strong>Machine-Readable Data and Services:</strong> Open Context data and querying services come in a variety of open and non-proprietary data formats, services, and protocols (Atom, GeoRSS, KML, ArchaeoML/XML, JSON, CSV, OAI-PMH). These measures help ensure that project content can flow into other applications that may visualize it in new ways or combine it with data from other sources.</li>
+
+<li><strong>Open Licensing:</strong> Project data will be released under the Creative Commons (http://creativecommons.org) copyright licenses. These licenses open the door to future research, instruction, and other applications. These standard licenses explicitly grant permissions for reuse of content, provided attribution is given to content producers. To facilitate interoperabity, the licenses are expressed as standard, machine-readable metadata, using the RDFa format. Creative Commons licenses and Open Context's machine-readable data help insure this project's content can be moved to other applications and archives. Because content is not &ldquo;trapped&rdquo; in Open Context, Open Context will enable, not inhibit, future uses of these data as new systems emerge.</li>
+	    </ul>
+	    <br/>
+	    <div style='border-width: thin;
+			border-style: solid;
+			border-color: #D7D7D7; padding:5px;
+			margin-left:5px; margin-right:5px;' class='bodyText'>
+	     <p class="bodyText" style="margin-left:10px; font-variant:small-caps;">Improving Data Quality and Publication</p>
+	     <p class="bodyText" style="margin-left:10px; margin-right:10px;">Please remember that this estimate is based on the assumption that your data are properly documented and prepared for publication. You must also use appropriate technical and documentation standards for specific types of specialized data (for details see: <a href='http://ads.ahds.ac.uk/project/goodguides/g2gp.html' title='Data Standards and Best Practices'>http://ahds.ac.uk/archaeology/creating/guides/</a>). You may want to reference such standards and best practices in your NSF Data Access plan.</p>
+	    <p class="bodyText" style="margin-left:10px; margin-right:10px;">The cost estimate is also based on the assumption that your data will require little cleaning. To help improve data quality, be sure to use appropriate error-correction and validation processes as you collect your data. This will make your own analyses more reliable. It will also facilitate publication and future reuse of research data. For more on data quality and documentation requirements please see: <a href='http://opencontext.org/about/publishing' title='Open Context Publication Help'>About - Publishing</a></p>
+	    </div>
+	    </div>
+	</div>
+	
+	<div id="bottom">
+	</div>
+	
+    </div>
+
+</body>
+</html>

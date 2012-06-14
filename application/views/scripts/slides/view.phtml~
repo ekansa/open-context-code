@@ -1,0 +1,9 @@
+<?php
+
+q = $this->q;
+
+if ($q) {
+    echo $q;
+}
+
+?>

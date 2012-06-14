@@ -1,0 +1,397 @@
+<?php
+// used to help create hyperlinks; set to current hostname.
+
+function URIescape($uri){
+    return str_replace("&", "&amp;", $uri);
+}
+
+
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+$auth = Zend_Auth::getInstance();
+if (!$auth->hasIdentity()){
+    $displayName = false;
+}
+else{
+    $identity = $auth->getIdentity();
+    $displayName = $identity->name;
+}
+
+
+$requestURI = $this->requestURI;
+$request_array = explode('?', $requestURI, 2);
+//array explode  ( string $delimiter  , string $string  [, int $limit  ] )
+
+if (substr_compare($request_array[0], '/' , -1)) {  // if the uri doesn't end in a slash (minus query parameters), 
+    $request_array[0] = $request_array[0] . '/';  // add one
+}
+
+
+if (isset($request_array[1])) { // if there are query parameters,
+    $request_array[1] = "?" . $request_array[1];  // prepend a '?' to the set of parameters since we exploded on the '?' to get this string. 
+    //echo $request_array[1]; // for testing
+} else {
+    $request_array[1] = null;
+}
+
+
+$requestParams = $this->requestParams;
+if(!isset($requestParams["q"])){
+    
+    $checkParam = $requestParams;
+    unset($checkParam["page"]);
+    unset($checkParam["recs"]);
+    unset($checkParam["sort"]);
+    
+    if(count($checkParam)>3){
+        $searchMessage = "Search this set of data";
+    }
+    else{
+        $searchMessage = "Search all analytic data";
+    }
+    
+    $full_link = $host.$requestURI;
+    $full_link  = str_replace("&", "&amp;", $full_link );
+    $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
+
+    /*
+    $fulltext = '<p class="bodyText">Or, type a search term in the box below (works like Google):</p>'.chr(13);
+    //$fulltext .= '<form id="searchbox" name="form4" method="get" action="'.$requestURI.'">'.chr(13);
+    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
+    $fulltext .='<input name="q" type="text" id="q_string" size="30" maxlength="100" class="bodyText" alt="Enter full-text search term(s)" onchange="textSearch()" />'.chr(13);
+    $fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
+    //$fulltext .='</form>';
+    */
+    
+    $fulltext = '';
+    $fulltext .= '<div style="display:table;">';
+    $fulltext .= '<div style="display:table-row; width:100%;">';
+    $fulltext .= '<div style="display:table-cell; text-align:left;" class="bodyText">';
+    $fulltext .= 'Or, type a search term in the box below (works like Google):';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
+    $fulltext .= '<div style="display:table-row; width:100%;">';
+    $fulltext .= '<div style="display:table-cell; text-align:left; vertical-align:middle; padding-left:4px;"> ';
+    $fulltext .='<input style="background-color:#FBF7EC;" name="q" type="text" id="q_string" size="25" maxlength="100" class="bodyText" alt="'.$searchMessage.'" onchange="textSearch()" />'.chr(13);
+    $fulltext .= '</div>';
+    $fulltext .= '<div style="display:table-cell; text-align:right; vertical-align:middle; " > ';
+    //$fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
+    $fulltext .= '<a title="'.$searchMessage.'" href="javascript:textSearch();"><img src="http://static.alexandriaarchive.org/images/general/searchButtonSmall.png" alt="Search icon"/></a>';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    
+}
+else{
+    $fulltext = "";
+}
+
+
+
+$numFound = $this->numFound;
+$facets = $this->facets;
+$docs = $this->docs;
+
+$link_filter_message = "<p>Some data in Open Context uses shared terminology systems published by experts in various fields:</p>";
+$link_filter_message .= "<ul>".chr(13);
+$link_filter_message .= "<li><a href='http://opencontext.org/sets/?rel%5B%5D=http%3A%2F%2Fpurl.org%2FNET%2Fbiol%2Fns%23term_hasTaxonomy'>Browse Items</a> with <strong>biological taxa</strong> (from <a href='http://wwww.eol.org'>Encyclopedia of Life</a>)</li>".chr(13);
+$link_filter_message .= "<li><a href='http://opencontext.org/sets/?rel%5B%5D=http%3A%2F%2Fgawd.atlantides.org%2Fterms%2Forigin'>Browse Items</a> linked to <strong>ancient places</strong> (from <a href='http://pleiades.stoa.org'>Pleaides</a>)</li>".chr(13);
+$link_filter_message .= "<li><a href='../about/concepts#linked-data'><em>More about Linked Data in Open Context</em></a></li>".chr(13);
+$link_filter_message .= "</ul>".chr(13);
+
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host);
+
+
+$facet_fields = $facets["facet_fields"];
+$facet_queries = $facets["facet_queries"];
+$extendedFacets = true; //show more available facets 
+
+
+//do advanced search interface
+if(substr_count($requestURI, "advanced=true")>0){
+    $advanced = true;
+}
+else{
+    $advanced = false;
+}
+
+if($numFound>0){
+    $facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $facet_fields, $facet_queries, $requestParams, $request_array, $host, $advanced);
+}
+else{
+    $facet_output = "(No results to this query, please try other search options)";
+}
+
+
+
+$googleURI = "";
+$facetAtomURI = "";
+$openSearchURI = "";
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <title><?php echo 'Open Context Browse: ('.$numFound.' Items Showing)'; ?></title>
+        <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+        <link href="<?php echo $host; ?>/components/css/browse" rel="stylesheet" type="text/css" /> 
+        <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo URIescape($this->facetURI_Atom); ?>" />
+        <link rel="alternate" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->currentAtom); ?>" />
+        
+        <link rel="first" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->firstPage_XHTML); ?>" />
+        <?php
+            if($this->prevPage_XHTML != false){
+                echo '<link rel="prev" type="application/atom+xml" title="Atom feed of results" href="'.URIescape($this->prevPage_XHTML).'" />'.chr(13);
+            }
+            if($this->nextPage_XHTML != false){
+                echo '<link rel="next" type="application/atom+xml" title="Atom feed of results" href="'.URIescape($this->nextPage_XHTML).'" />'.chr(13);
+            }
+        ?>
+        
+        <link rel="last" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->lastPage_XHTML); ?>" />
+        <link rel="search" type="application/opensearchdescription+xml" href="<?php echo $openSearchURI; ?>" title="Open Context Web Search" />
+        <script src="<?php echo $host; ?>/components/js/browse" type="text/javascript"></script>
+        
+        <script type="text/javascript">
+        <!--
+        
+        function makeGeoTile(id, link, count, swLat, swLon, neLat, nwLon){
+            this.id = id;
+            this.link = link;
+            this.count = count;
+            this.swLat;
+            this.swLon;
+            this.neLat;
+            this.nwLon;
+        }
+        
+        
+        <?php
+        
+        echo "var baseURI = '".$host.$requestURI."'; \n";
+        echo "var contextBase = '".$host.$request_array[0]."'; \n";
+        echo "var paramterBase = '".$request_array[1]."'; \n";
+        
+        echo chr(13).chr(13);
+        
+        $activeTaxaValue = OpenContext_FacetOutput::active_taxon_value($requestParams); //for local taxonomies
+        echo "var activeTaxaValue = '".$activeTaxaValue."'; \n";
+        
+        echo chr(13);
+        $activeRelationValue = OpenContext_FacetOutput::active_taxon_value($requestParams, false); //for linked data relations
+        echo "var activeRelationValue = '".$activeRelationValue."'; \n";
+        
+        if(is_array($this->geoTileFacets)){
+            echo chr(13);
+            echo "var geoTiles = new Array(); \n";
+            $ti = 0;
+            foreach($this->geoTileFacets as $tileFacet){
+                $id = $tileFacet["linkQuery"];
+                $link = $tileFacet["href"];
+                $tileCount = $tileFacet["count"];
+                $geoBounding = implode(",", $tileFacet["geoBounding"]);
+                echo "geoTiles[$ti] = new makeGeoTile('$id', '$link', $tileCount, $geoBounding); \n";
+                $ti++;
+            }
+
+        }
+        
+        
+        ?>
+        
+        
+        -->
+        </script>
+        
+        <script type="text/javascript">
+        <!--
+            
+     window.onload = function(){
+        ConvertRowsToLinks("result_tab");
+      }
+      
+      function ConvertRowsToLinks(xTableId){
+
+        var rows = document.getElementById(xTableId).getElementsByTagName("tr");
+   
+        for(i=0; i < rows.length; i++){
+          var link = rows[i].getElementsByTagName("a")
+          if(link.length == 1){
+            rows[i].onclick = new Function("document.location.href='" + link[0].href + "'");
+            rows[i].onmouseover = new Function("this.style.cursor = 'pointer'");
+            rows[i].onmouseout = new Function("this.style.cursor = 'default'");
+          }
+        }
+
+      }
+      
+      
+      function openList(listId){
+            var displayControl = listId + "control";
+            var displayStatus = document.getElementById(listId).style.display;
+            if( displayStatus == "none"){
+                document.getElementById(listId).style.display = "";
+                document.getElementById(displayControl).innerHTML = "<em>(Hide list below)</em>";
+            }
+            else{
+                document.getElementById(listId).style.display = "none";
+                document.getElementById(displayControl).innerHTML = "More...";
+            }
+      
+      }
+
+      -->
+        </script>
+    </head>
+    <body>
+        
+    <div id="oc_logo">
+	<a href="<?php echo $host;?>" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" /></a>
+    </div>
+    <div id="oc_tagline">
+	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" />
+    </div>
+    <div id="oc_beta">
+	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" />
+    </div>
+    
+    <!--
+    <div id="oc_top_search">
+	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
+	<div id="search_box">
+	<input type='text' name='q' class='tinyText' value='New Search' size='30' onfocus="if(this.value=='New Search')this.value='';" onblur="if(this.value=='')this.value='New Search';" />
+	</div>
+	<div id="search_cntrl">
+	    <input class="oc_top_sbutton" type="submit" value="" />
+	</div>
+	</form>
+    </div>
+   -->
+   
+   <!-- 
+    Navigation tabs
+    -->    
+    <?php echo OpenContext_NavMenus::GeneralNavMenu("browse"); ?> 
+    
+    
+        
+<!--
+BEGIN Container for main page content
+--> 
+    <div id="main_page"> 
+        <!--Begin code for showing available facets-->
+        <div id="main_content">
+            <div id="left_cont">
+                <div id="filter_options" class="bodyText">
+                    <p class="bodyText"><strong>Click on one of the links below to further limit your view of <em>analytic data</em> in Open Context.</strong></p>
+                        <?php echo  $fulltext; ?>
+                    <br/>
+                        <?php echo $facet_output; ?>
+                    <br/>
+                        <?php
+                        
+                        $pelagios = New PelagiosV2;
+                        $pelagios->initialize($requestParams);
+                        $pelagios->getRelated();
+                        $pelagios->displayPelagiosData();
+                        
+                        echo $pelagios->HTMLoutput;
+                        
+                        ?>
+                    <br/>
+                    <p>View in <a href="<?php echo URIescape($this->facetURI_KML); ?>">GoogleEarth</a></p>
+                    <p>Get in <a href="<?php echo URIescape($this->facetURI_Atom); ?>">Atom</a></p>
+                    <br/>
+                        <?php echo $link_filter_message; ?>
+                </div>
+            </div>
+            <div id="right_cont">   
+                <div id="selected_filters" class="rounded-corners" >
+                    <p class="subHeader">Open Context currently has <strong><?php echo $numFound; ?></strong> items, filtered by the following criteria:</p>
+                    <div class="bodyText"><?php echo $filter_output; ?>
+                    </div>
+                    
+                    <div style="text-align:right;">
+                    <?php
+                    
+                    $tableMax = OpenContext_OCConfig::get_maxExport();
+                    if($numFound <= $tableMax && $displayName != false){
+                        echo "<br/>";
+                        echo '<p class="tinyText">'.$displayName.', <a href="'.$host.'/createtab/export-table?setURI='.urlencode($host.$requestURI).'">click here</a> to export these search results to a table.</p>';
+                       
+                       /*
+                        echo '<form action="'.$host.'/createtab/export-table" method="post">
+                                <input type="hidden" value="'.$host.$requestURI.'" name="setURI" />
+                                <input type="submit" value="Export to table" />
+                                </form>';
+                       */
+                    }
+                    elseif($numFound > 0 && $numFound > $tableMax && $displayName != false){
+                        echo "<br/>";
+                        echo '<p class="tinyText">'.$displayName.', please filter your selection to '.$tableMax.' items or less in order to export data to a table.</p>';
+                    }
+                    elseif($numFound > 0 && $numFound <= $tableMax && !$displayName){
+                        echo "<br/>";
+                        echo '<p class="tinyText">Please <a href="'.$host.'/auth/" title="User Account Options">login</a> to export this custom selection of data to a table.</p>';
+                    }
+                    
+                    ?>
+                    </div>
+                    <?php
+                    
+                    if($numFound >0){
+                    
+                    ?>
+                    
+                    <p class="tinyText" style="text-align:right;">Last Updated: <em><?php echo date("F j, Y, g:i a", strtotime($this->lastUpdate)); ?></em></p>
+                    <p class="tinyText" style="text-align:right;">
+                        <?php
+                        echo '<a href="http://maps.google.com/?q='.urlencode($this->facetURI_KML).'">View a map summary</a>';
+                        ?>
+                    </p>
+                    <?php
+                    }//end case of search results above zero ?>
+                </div>
+                        
+                <br />
+                <br />
+                        
+                <?php
+                echo $this->result_output;
+                ?>
+                
+            </div>
+                    
+   
+        <!--
+        END of div container for placing main page content
+        -->
+        <div id="bottom_cont">  
+          <br /> 
+          <br /> 
+        </div> 
+        <!--
+        END Code for showing the database-like content
+        -->
+   
+     </div>
+    <br />
+    
+        <div id="footer"> 
+            <div id="w3c_val_logo"> 
+              <a href="http://validator.w3.org/check?uri=referer"> 
+                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
+              </a> 
+            </div>     
+        </div>
+   
+     </div>
+    </body>
+</html>    
