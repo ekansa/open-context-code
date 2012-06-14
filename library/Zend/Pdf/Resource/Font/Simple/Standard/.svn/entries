@@ -1,0 +1,114 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Pdf/Resource/Font/Simple/Standard
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+CourierOblique.php
+file
+
+
+
+add
+
+CourierBold.php
+file
+
+
+
+add
+
+CourierBoldOblique.php
+file
+
+
+
+add
+
+ZapfDingbats.php
+file
+
+
+
+add
+
+TimesRoman.php
+file
+
+
+
+add
+
+TimesBold.php
+file
+
+
+
+add
+
+Helvetica.php
+file
+
+
+
+add
+
+Symbol.php
+file
+
+
+
+add
+
+HelveticaBold.php
+file
+
+
+
+add
+
+HelveticaOblique.php
+file
+
+
+
+add
+
+HelveticaBoldOblique.php
+file
+
+
+
+add
+
+TimesItalic.php
+file
+
+
+
+add
+
+Courier.php
+file
+
+
+
+add
+
+TimesBoldItalic.php
+file
+
+
+
+add
+

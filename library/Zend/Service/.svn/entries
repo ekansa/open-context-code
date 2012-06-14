@@ -1,0 +1,184 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Service
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+StrikeIron.php
+file
+
+
+
+add
+
+Yahoo
+dir
+
+
+
+add
+
+ReCaptcha.php
+file
+
+
+
+add
+
+Delicious
+dir
+
+
+
+add
+
+Akismet.php
+file
+
+
+
+add
+
+SlideShare
+dir
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Nirvanix.php
+file
+
+
+
+add
+
+Amazon
+dir
+
+
+
+add
+
+Audioscrobbler.php
+file
+
+
+
+add
+
+Technorati.php
+file
+
+
+
+add
+
+Simpy.php
+file
+
+
+
+add
+
+Abstract.php
+file
+
+
+
+add
+
+StrikeIron
+dir
+
+
+
+add
+
+ReCaptcha
+dir
+
+
+
+add
+
+Nirvanix
+dir
+
+
+
+add
+
+Technorati
+dir
+
+
+
+add
+
+Flickr.php
+file
+
+
+
+add
+
+Simpy
+dir
+
+
+
+add
+
+Yahoo.php
+file
+
+
+
+add
+
+Delicious.php
+file
+
+
+
+add
+
+SlideShare.php
+file
+
+
+
+add
+
+Flickr
+dir
+
+
+
+add
+
+Amazon.php
+file
+
+
+
+add
+

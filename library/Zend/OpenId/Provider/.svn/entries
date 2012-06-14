@@ -1,0 +1,44 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/OpenId/Provider
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+User.php
+file
+
+
+
+add
+
+Storage
+dir
+
+
+
+add
+
+Storage.php
+file
+
+
+
+add
+
+User
+dir
+
+
+
+add
+

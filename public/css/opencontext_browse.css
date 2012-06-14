@@ -1,0 +1,260 @@
+@charset "utf-8";
+/* CSS Document */
+
+#namelayer {
+	position:absolute;
+	width:516px;
+	height:22px;
+	z-index:3;
+	left: 277px;
+	top: 75px;
+}
+#toptabs {
+	position:absolute;
+	width:792px;
+	height:29px;
+	z-index:1;
+	left: 2px;
+	top: 94px;
+}
+#main_page {
+	position:relative;
+	z-index:2;
+	top: 30px;
+	width: 791px;
+	min-height:400px;
+	top:120px;
+	background-color: #FfFfFf;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	margin-left: 5px;
+}
+#main_content{
+	position:relative;
+	width:791px;
+	z-index:1;
+	top:6px;
+	min-height:400px;
+}
+#left_cont{
+	float: left;
+	width:28%;
+	z-index:6;
+	left:3px;
+	top:6px;
+	min-height:400px;
+	margin-bottom: 10px;
+}
+#right_cont{
+	float: right;
+	margin-right: 8px;
+	width:70%;
+	z-index:6;
+	left:3px;
+	top:6px;
+	min-height:400px;
+	margin-bottom: 10px;
+}
+#filter_options {
+	position:relative;
+	z-index:2;
+	left: 10px;
+	top: 10px;
+	border: thin solid #CCCCCC;
+	padding: 4px;
+	background-color: #FFFFFF;
+}
+#selected_filters {
+	position:relative;
+	top: 10px;
+	left: 20px;
+	z-index:2;
+	border: thin solid #CCCCCC;
+	padding: 4px;
+	width: 490px;
+	background-color: #F5F5DC;
+	zoom: 1;
+	display: block;
+}
+#result_head {
+	position:relative;
+	z-index:2;
+	top: 10px;
+	left: 20px;
+	border: thin solid #CCCCCC;
+	padding: 4px;
+	width: 490px;
+	background-image: url(/images/atom_results/result_head_back.jpg);
+}
+#item_list {
+	position:relative;
+	z-index:2;
+	top: 9px;
+	left: 20px;
+	border: thin solid #CCCCCC;
+	padding: 4px;
+	width: 490px;
+	background-color: #FFFFFF;
+}
+li.facetSub{
+	list-style-type:none; 
+	margin-left:-20px; 
+	margin-top:3px;
+}
+ul.facetSubList{
+	margin-left:-21px;
+}
+li.facetListItem{
+	list-style-type:circle;
+}
+li.subListItem{
+	list-style-type:circle;
+}
+li.facetListInput{
+	display:table-row; 
+	vertical-align:middle;
+	list-style-type:none;
+	position:relative;
+	left:-20px;
+}
+li.facetListInputSub{
+	display:table-row; 
+	vertical-align:middle;
+	list-style-type:none;
+}
+span.facet_count{
+	color: #000000;
+	margin-left: 2px;
+	text-indent: 9px;
+	text-decoration: none;
+}
+input.deActCheck{
+	display: none;
+}
+input.ActCheck{
+	display:table-cell;
+	position:relative;
+	margin-left:-18px;
+}
+span.inputLabel{
+	display:table-cell; 
+	vertical-align:middle; 
+	color:#4F0101;
+	padding-left:2px;
+}
+a.hideLink{
+	display: none;
+}
+span.hideSpan{
+	display: none;
+}
+tr.item_rows {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+tinyText.small {line-height: 105%}
+#bottom_cont{
+	clear: both;
+	width:100%;
+	z-index:6;
+	height:10px;
+}
+#footer {
+	position: relative;
+	margin-top: 50px;
+	width:792px;
+	height:50px;
+	z-index:4;
+	left: 0px;
+	top: 200px;
+	background-color: #460A0A;
+	display: table-cell;
+    	vertical-align: middle
+}
+#w3c_val_logo {
+	float:left;
+	z-index:5;
+	left: 10px;
+	margin-top: 2px;
+	margin-left: 4px;
+	display: table-cell;
+    	vertical-align: middle;
+}
+#all_lic{
+	float:left;
+	width: 60%;
+	height: 32px;
+	margin-top: 2px;
+	margin-left: 10px;
+	background-color: #CCCCCC;
+	padding: 2px;
+	display: table-cell;
+    	vertical-align: middle;
+}
+#lic_pict{
+	float: left;
+	height: 40px;
+	margin-top: 1px;
+}
+#licarea{
+	float: left;
+	margin-left: 10px;
+	height: 32px;
+	width: 70%;
+	text-align: center;
+}
+div.filter_list{
+	display:table;
+	width:94%; 
+	align:center;
+	border-collapse:collapse;
+	margin-left:3%;
+	margin-right:3%;
+}
+div.filter_Ncell{
+	display:table-cell;
+	vertical-align:middle;
+	align:right;
+	width:22px;
+}
+div.filter_BNcell{
+	display:table-cell;
+	vertical-align:middle;
+	align:right;
+	width:22px;
+}
+div.filter_Tcell{
+	display:table-cell;
+	padding-left:4px;
+	padding-right:4px;
+	vertical-align:middle;
+	width:20%;
+}
+div.filter_Vcell{
+	display:table-cell;
+	padding-left:4px;
+	padding-right:4px;
+	vertical-align:middle;
+}
+div.filter_Rcell{
+	display:table-cell;
+	padding-left:4px;
+	padding-right:4px;
+	width: 28px;
+	vertical-align:middle;
+	align:right;
+}
+
+div.filter_Brow{
+	display:table-row;
+	border: 1px solid white;
+	background-color:#F5F5F5;
+	padding-top:1px;
+	padding-bottom:2px;
+}
+div.filter_row{
+	display:table-row;
+	padding-top:1px;
+	padding-bottom:2px;
+}

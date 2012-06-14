@@ -1,0 +1,72 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Search/Lucene/Analysis/Analyzer/Common
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Text
+dir
+
+
+
+add
+
+TextNum
+dir
+
+
+
+add
+
+Utf8Num
+dir
+
+
+
+add
+
+Utf8
+dir
+
+
+
+add
+
+Text.php
+file
+
+
+
+add
+
+TextNum.php
+file
+
+
+
+add
+
+Utf8Num.php
+file
+
+
+
+add
+
+Utf8.php
+file
+
+
+
+add
+

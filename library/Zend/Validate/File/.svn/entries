@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Validate/File
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Size.php
+file
+
+
+
+add
+
+Extension.php
+file
+
+
+
+add
+
+FilesSize.php
+file
+
+
+
+add
+
+ImageSize.php
+file
+
+
+
+add
+
+Upload.php
+file
+
+
+
+add
+
+Count.php
+file
+
+
+
+add
+

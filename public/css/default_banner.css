@@ -1,0 +1,170 @@
+@charset "utf-8";
+/* CSS Document */
+
+#oc_logo {
+	position:absolute;
+	width:165px;
+	height:87px;
+	z-index:1;
+	left: 10px;
+	top: 5px;
+}
+#oc_tagline {
+	position:absolute;
+	width:353px;
+	height:34px;
+	z-index:1;
+	left: 225px;
+	top: 35px;
+}
+#oc_beta {
+	position:absolute;
+	width:73px;
+	height:46px;
+	z-index:1;
+	left: 700px;
+	top: 25px;
+}
+#oc_top_search {
+	position:absolute;
+	height:46px;
+	z-index:1;
+	left: 592px;
+	top: 82px;
+	padding-top: 4px;
+	padding-left: 6px;
+	padding-right: 5px;
+	width: 228px;	
+}
+#search_box {
+	padding-top: 2px;
+	float:left;
+}
+#search_cntrl {
+	padding-left: 5px;
+	float: right;
+}
+#oc_main_nav {
+	position:absolute;
+	left: 10px;
+	top: 100px;
+	z-index:10;
+	height: 24px;
+}
+#oc_main_nav div.act_nav_l {
+	position:relative;
+	float:left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height:17px;
+	font: 12px arial;
+	font-stretch:wider;
+	font-weight: 700;
+	color: #A1A1A1;	
+	background-image: url('http://static.alexandriaarchive.org/images/general/tab_act_l.png')
+}
+#oc_main_nav div.act_nav {
+	position:relative;
+	float:left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height:17px;
+	background-color : #fbfbfb;
+	font: 12px arial;
+	font-stretch:wider;
+	font-weight: 800;
+	background-image: url('http://static.alexandriaarchive.org/images/general/tab_act.png') 	
+}
+#oc_main_nav div.act_nav_r {
+	position:relative;
+	float:left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height:17px;
+	font: 12px arial;
+	font-stretch:wider;
+	font-weight: 700;
+	color: #A1A1A1;	
+	background-image: url('http://static.alexandriaarchive.org/images/general/tab_act_r.png')
+}
+
+#oc_main_nav div.n_act_nav_l {
+	border-bottom-width: thin;
+	border-bottom-style: solid;
+	border-bottom-color: #D7D7D7;
+	position:relative;
+	float:left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height:16px;
+	font: 12px arial;
+	font-stretch:wider;
+	font-weight: 700;
+	color: #A1A1A1;	
+	background-image: url('http://static.alexandriaarchive.org/images/general/tab_de_act_l.png')
+}
+#oc_main_nav div.n_act_nav {
+	border-bottom-width: thin;
+	border-bottom-style: solid;
+	border-bottom-color: #D7D7D7;
+	position:relative;
+	float:left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height:16px;
+	font: 12px arial;
+	font-stretch:wider;
+	font-weight: 700;
+	color: #A1A1A1;
+	background-image: url('http://static.alexandriaarchive.org/images/general/tab_de_act.png')
+}
+#oc_main_nav div.n_act_nav_r {
+	border-bottom-width: thin;
+	border-bottom-style: solid;
+	border-bottom-color: #D7D7D7;
+	position:relative;
+	float:left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height:16px;
+	font: 12px arial;
+	font-stretch:wider;
+	font-weight: 700;
+	color: #A1A1A1;
+	background-image: url('http://static.alexandriaarchive.org/images/general/tab_de_act_r.png')
+}
+#oc_main_nav div.sides {
+	position:relative;
+	float:left;
+	border-bottom-width: thin;
+	border-bottom-style: solid;
+	border-bottom-color: #D7D7D7;
+	height: 20px;
+	width: 28px;
+}
+.n_act_nav a {
+	text-decoration: none;
+	color: #2E2E2E; 
+}
+.act_nav a {
+	text-decoration: none; 
+}
+input.oc_top_sbutton{
+	width:41px;
+	height:22px;
+	border:0;
+	cursor:pointer;
+	background:url('http://static.alexandriaarchive.org/images/general/button_go.jpg') no-repeat;
+} 

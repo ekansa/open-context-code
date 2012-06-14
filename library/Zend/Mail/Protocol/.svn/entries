@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Mail/Protocol
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Smtp
+dir
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Pop3.php
+file
+
+
+
+add
+
+Smtp.php
+file
+
+
+
+add
+
+Abstract.php
+file
+
+
+
+add
+
+Imap.php
+file
+
+
+
+add
+

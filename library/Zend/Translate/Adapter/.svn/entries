@@ -1,0 +1,79 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Translate/Adapter
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Csv.php
+file
+
+
+
+add
+
+Tbx.php
+file
+
+
+
+add
+
+Array.php
+file
+
+
+
+add
+
+Ini.php
+file
+
+
+
+add
+
+XmlTm.php
+file
+
+
+
+add
+
+Qt.php
+file
+
+
+
+add
+
+Gettext.php
+file
+
+
+
+add
+
+Xliff.php
+file
+
+
+
+add
+
+Tmx.php
+file
+
+
+
+add
+

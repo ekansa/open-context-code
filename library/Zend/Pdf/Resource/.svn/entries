@@ -1,0 +1,51 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Pdf/Resource
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+ImageFactory.php
+file
+
+
+
+add
+
+Image
+dir
+
+
+
+add
+
+Font
+dir
+
+
+
+add
+
+Image.php
+file
+
+
+
+add
+
+Font.php
+file
+
+
+
+add
+

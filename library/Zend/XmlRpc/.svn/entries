@@ -1,0 +1,100 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/XmlRpc
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Fault.php
+file
+
+
+
+add
+
+Value.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Response.php
+file
+
+
+
+add
+
+Client.php
+file
+
+
+
+add
+
+Server
+dir
+
+
+
+add
+
+Request
+dir
+
+
+
+add
+
+Value
+dir
+
+
+
+add
+
+Server.php
+file
+
+
+
+add
+
+Request.php
+file
+
+
+
+add
+
+Client
+dir
+
+
+
+add
+
+Response
+dir
+
+
+
+add
+

@@ -1,0 +1,1 @@
+awld.init();

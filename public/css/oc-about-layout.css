@@ -1,0 +1,36 @@
+
+div.nav_area {
+  	padding: 5px;
+	background-color: #003B66;
+    	background-color: #003B66;
+    	border-style:solid;
+    	border-width:5px;
+    	border-color: #003366;
+	border-radius:12px;
+}
+
+div.nav_area ul {
+	width: 24em;
+}
+div.nav_area li{
+	float: left;
+  	width: 12em;
+	color: #FFFFFF;
+}
+div.nav_area br{
+   clear: left;
+}
+div.nav_area li strong{
+   	display: block;
+	text-decoration: none;
+        color: #FFFFFF;
+}
+div.nav_area li a{
+   	display: block;
+	text-decoration: none;
+        color: #FFFFFF;
+}
+div.nav_area p{
+        color: #FFFFFF;
+}
+

@@ -1,0 +1,10 @@
+RewriteEngine on
+# RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
+
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1
+
+AddDefaultCharset UTF-8
+AddType application/atom+xml .atom
+

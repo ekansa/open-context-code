@@ -1,0 +1,65 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Soap
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Wsdl.php
+file
+
+
+
+add
+
+Client.php
+file
+
+
+
+add
+
+Server
+dir
+
+
+
+add
+
+Wsdl
+dir
+
+
+
+add
+
+Server.php
+file
+
+
+
+add
+
+AutoDiscover.php
+file
+
+
+
+add
+
+Client
+dir
+
+
+
+add
+

@@ -1,0 +1,100 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/XmlRpc/Value
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Double.php
+file
+
+
+
+add
+
+Collection.php
+file
+
+
+
+add
+
+DateTime.php
+file
+
+
+
+add
+
+Integer.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Array.php
+file
+
+
+
+add
+
+Boolean.php
+file
+
+
+
+add
+
+Nil.php
+file
+
+
+
+add
+
+Base64.php
+file
+
+
+
+add
+
+Struct.php
+file
+
+
+
+add
+
+Scalar.php
+file
+
+
+
+add
+
+String.php
+file
+
+
+
+add
+

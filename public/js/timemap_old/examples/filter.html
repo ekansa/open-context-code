@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Filter Example</title>
+    <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAASI0kCI-azC8RgbOZzWc3VRRarOQe_TKf_51Omf6UUSOFm7EABRRhO0PO4nBAO9FCmVDuowVwROLo3w"
+      type="text/javascript"></script>
+    <script type="text/javascript" src="http://static.simile.mit.edu/timeline/api-2.2.0/timeline-api.js"></script>
+    <script src="../timemap.js" type="text/javascript"></script>
+    <script src="../manipulation.js" type="text/javascript"></script>
+	<script type="text/javascript">
+
+var tm;
+function onLoad() {
+
+    tm = TimeMap.init({
+        mapId: "map",               // Id of map div element (required)
+        timelineId: "timeline",     // Id of timeline div element (required) 
+        datasets: [
+            {
+                id: "artists",
+                title: "Artists",
+                type: "basic",
+                options: {
+                    items: [
+                        {
+                          "start" : "1449-01-01",
+                          "end" : "1492-04-09",
+                          "point" : {
+                              "lat" : 43.76849063719358, 
+                              "lon" : 11.25575065612793
+                           },
+                          "title" : "Lorenzo de' Medici",
+                          "options" : {
+                              description: "tags: ['patron']",
+                              tags: ['patron']
+                          }
+                        },
+                        {
+                          "start" : "1449",
+                          "end" : "1494-01-11",
+                          "point" : {
+                              "lat" : 43.7,
+                              "lon" : 11.28
+                           },
+                          "title" : "Domenico Ghirlandaio",
+                          "options" : {
+                              theme: 'orange',
+                              description: "tags: ['painter']",
+                              tags: ['painter']
+                          }
+                        },
+                        {
+                          "start" : "1452",
+                          "end" : "1519",
+                          "point" : {
+                              "lat" : 43.8166666667,
+                              "lon" : 10.7666666667
+                           },
+                          "title" : "Leonardo da Vinci",
+                          "options" : {
+                              theme: 'blue',
+                              description: "tags: ['painter','sculptor','inventor']",
+                              tags: ['painter','sculptor','inventor']
+                          }
+                        },
+                        {
+                          "start" : "1475",
+                          "end" : "1564",
+                          "point" : {
+                              "lat" : 43.6433,
+                              "lon" : 11.9875
+                           },
+                          "title" : "Michelangelo",
+                          "options" : {
+                              theme: 'green',
+                              description: "tags: ['painter','sculptor']",
+                              tags: ['painter','sculptor']
+                          }
+                        }
+                    ]
+                }
+            }
+        ],
+        bandIntervals: [
+            Timeline.DateTime.DECADE, 
+            Timeline.DateTime.CENTURY
+        ]
+    });
+    // add our new function to the map and timeline filters
+    tm.addFilter("map", TimeMap.filters.hasSelectedTag); // hide map markers on fail
+    tm.addFilter("timeline", TimeMap.filters.hasSelectedTag); // hide timeline events on fail
+}
+
+// filter function for tags
+TimeMap.filters.hasSelectedTag = function(item) {
+    // if no tag was selected, every item should pass the filter
+    if (!window.selectedTag) {
+        return true;
+    }
+    if (item.opts.tags) {
+        // look for selected tag
+        if (item.opts.tags.indexOf(window.selectedTag) >= 0) {
+            // tag found, item passes
+            return true;
+        } 
+        else {
+            // indexOf() returned -1, so the tag wasn't found
+            return false;
+        }
+    }
+    else {
+        // item didn't have any tags
+        return false;
+    }
+};
+
+// onChange handler for pulldown menu
+function setSelectedTag(select) {
+    var idx = select.selectedIndex;
+    window.selectedTag = select.options[idx].value;
+    // run filters
+    tm.filter('map');
+    tm.filter('timeline');
+    // you'll need this to make the timeline update
+    tm.timeline.layout();
+}
+
+    </script>
+	<link href="examples.css" type="text/css" rel="stylesheet"/>
+    <style>
+    div#timelinecontainer{ height: 300px; }
+    div#mapcontainer{ height: 300px; }
+    </style>
+  </head>
+
+  <body onload="onLoad();" onunload="GUnload();">
+    <div id="help">
+    <h1>Filters</h1>
+    In this example, we've loaded a set of tags for each item, and can use this dropdown menu to filter based on tags:
+    <form>
+        <select onChange="setSelectedTag(this);">
+            <option value="">All tags</option>
+            <option value="painter">painter</option>
+            <option value="sculptor">sculptor</option>
+            <option value="inventor">inventor</option>
+            <option value="patron">patron</option>
+        </select>
+    </form>
+    </div>
+    <div id="timemap">
+        <div id="timelinecontainer">
+          <div id="timeline"></div>
+        </div>
+        <div id="mapcontainer">
+          <div id="map"></div>
+        </div>
+    </div>
+  </body>
+</html>

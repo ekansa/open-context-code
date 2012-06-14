@@ -1,0 +1,44 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Pdf/Cmap
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+TrimmedTable.php
+file
+
+
+
+add
+
+ByteEncoding.php
+file
+
+
+
+add
+
+SegmentToDelta.php
+file
+
+
+
+add
+
+ByteEncoding
+dir
+
+
+
+add
+

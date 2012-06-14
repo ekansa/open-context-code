@@ -1,0 +1,44 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Pdf/Resource/Font/Simple
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Standard
+dir
+
+
+
+add
+
+Parsed.php
+file
+
+
+
+add
+
+Standard.php
+file
+
+
+
+add
+
+Parsed
+dir
+
+
+
+add
+

@@ -1,0 +1,216 @@
+/* Open Context Layout Main */
+/*
+Content area: 1000px;
+Header blue: #003B66;
+Heaader grey: #666666;
+*/
+
+body {
+    text-align: center;
+    background-color:#F7F3E9;
+    font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+#headerTop {
+    background-color: #003B66;
+    border-style:solid;
+    border-width:5px;
+    border-color: #003366;
+    height: 90px;
+    min-width: 1000px;
+}
+#headerTopContent{
+    width:1000px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:left;
+}
+#headerTopLogoArea{
+   float:left;
+   margin-left:10px;
+   margin-top:5px;
+}
+#headerTopLogoCellImage{
+   display:table-cell;
+   vertical-align:middle;
+   border:0;
+}
+#headerTopLogoCellImage img {
+    border:0;
+}
+#headerTopLogoCellText{
+    padding-left: 2px;
+    width: 40px;
+    display:table-cell;
+    vertical-align:middle;
+    text-align:left;
+    text-transform:uppercase;
+    color: #FFFFFF;
+    font-size: 20px;
+    letter-spacing: normal;
+    font-weight: normal;
+    line-height: 20px;
+}
+#headerTopLogoCellText a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+#headerTopLogoTagLine {
+    text-align:left;
+    color: #FFFFFF;
+    font-size: 14px;
+    letter-spacing: normal;
+    font-weight: normal;
+    padding-top:2px;
+}
+#headerMiddleArea {
+    width: 30%;
+    float: left;
+    padding-top:2px;
+}
+#headerSearchArea {
+    width: 225px;
+    margin-top: 45px;
+    margin-right: 10px;
+    float:right;
+    padding-top:2px;
+}
+#headerSearchFormArea{
+    width:100%;
+    padding-top:10px;
+}
+#headerSearchInputArea {
+    float:left;
+    padding-top:4px;
+}
+#headerSearchInputArea input {
+    padding-left:8px;
+    border:0;
+    border-radius:8px;
+}
+#headerSearchButtonArea {
+    float:left;
+    width: 40px;
+}
+#headerSearchSubmit {
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: url(../images/layout/searchButtonSmall.png) no-repeat center top;
+    cursor: pointer; /* hand-shaped cursor */
+}
+
+
+.roundedcornr_box_482877 {
+	background: url(../images/layout/roundedcornr_482877_tl.png) no-repeat top left;
+}
+.roundedcornr_top_482877 {
+	background: url(../images/layout/roundedcornr_482877_tr.png) no-repeat top right;
+}
+.roundedcornr_bottom_482877 {
+	background: url(../images/layout/roundedcornr_482877_bl.png) no-repeat bottom left;
+}
+.roundedcornr_bottom_482877 div {
+	background: url(../images/layout/roundedcornr_482877_br.png) no-repeat bottom right;
+}
+.roundedcornr_content_482877 {
+	background: url(../images/layout/roundedcornr_482877_r.png) top right repeat-y;
+}
+
+.roundedcornr_top_482877 div,.roundedcornr_top_482877,
+.roundedcornr_bottom_482877 div, .roundedcornr_bottom_482877 {
+	width: 100%;
+	height: 15px;
+	font-size: 1px;
+}
+.roundedcornr_content_482877, .roundedcornr_bottom_482877 {
+	margin-top: -19px;
+}
+.roundedcornr_content_482877 { padding: 0 15px; }
+
+
+
+
+
+
+
+
+#headerNav {
+    background-color: #666666;
+    border-style:solid;
+    border-width:5px;
+    border-color: #666666;
+    height: 30px;
+    min-width: 1000px;
+}
+#headerNavContent {
+    width:900px;
+    margin-left:auto;
+    margin-right:auto;
+    display:table;
+}
+#headerNavTabs{
+    display:table-row;
+    width:100%;
+}
+div.headerNavTabLink{
+    display:table-cell;
+    text-align:center;
+    vertical-align:top;
+    text-transform:uppercase;
+    font-size: 16px;
+}
+div.headerNavTabCurrent{
+    display:table-cell;
+    text-align:center;
+    vertical-align:top;
+    text-transform:uppercase;
+    font-size: 16px;
+    height: 32px;
+    background: url(../images/layout/activeTab.png) no-repeat bottom center;
+}
+div.headerNavTabLink a{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+div.headerNavTabCurrent a{
+    text-decoration: none;
+    color: #FFFFFF;
+    font-weight: 900;
+}
+
+#footerTop{
+    float: left;
+    width: 100%;
+    background-color: #666666;
+    height:60px;
+    padding-top: 4px;
+    margin-top: 6px;
+    min-width: 1000px;
+}
+ 
+#footerLower {
+    float: left;
+    width: 100%;
+    background-color: #333333;
+    text-align: right;
+    color: #fff;
+    padding-bottom: 4px;
+    height:20px;
+    min-width: 1000px;
+}
+
+
+
+
+
+#main{
+    width:1000px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:left;
+}
+
+

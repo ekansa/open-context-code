@@ -1,0 +1,51 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Paginator/ScrollingStyle
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Sliding.php
+file
+
+
+
+add
+
+Jumping.php
+file
+
+
+
+add
+
+Interface.php
+file
+
+
+
+add
+
+Elastic.php
+file
+
+
+
+add
+
+All.php
+file
+
+
+
+add
+

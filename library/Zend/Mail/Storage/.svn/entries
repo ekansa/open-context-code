@@ -1,0 +1,79 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Mail/Storage
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Folder.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Maildir.php
+file
+
+
+
+add
+
+Pop3.php
+file
+
+
+
+add
+
+Writable
+dir
+
+
+
+add
+
+Abstract.php
+file
+
+
+
+add
+
+Folder
+dir
+
+
+
+add
+
+Mbox.php
+file
+
+
+
+add
+
+Imap.php
+file
+
+
+
+add
+

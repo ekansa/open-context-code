@@ -1,0 +1,107 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Pdf/Element
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Null.php
+file
+
+
+
+add
+
+Stream.php
+file
+
+
+
+add
+
+Reference.php
+file
+
+
+
+add
+
+Array.php
+file
+
+
+
+add
+
+Boolean.php
+file
+
+
+
+add
+
+Name.php
+file
+
+
+
+add
+
+String
+dir
+
+
+
+add
+
+Object
+dir
+
+
+
+add
+
+Numeric.php
+file
+
+
+
+add
+
+Dictionary.php
+file
+
+
+
+add
+
+String.php
+file
+
+
+
+add
+
+Object.php
+file
+
+
+
+add
+
+Reference
+dir
+
+
+
+add
+

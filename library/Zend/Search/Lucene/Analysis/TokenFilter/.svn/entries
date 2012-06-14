@@ -1,0 +1,44 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Search/Lucene/Analysis/TokenFilter
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+LowerCaseUtf8.php
+file
+
+
+
+add
+
+ShortWords.php
+file
+
+
+
+add
+
+LowerCase.php
+file
+
+
+
+add
+
+StopWords.php
+file
+
+
+
+add
+

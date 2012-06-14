@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+import sys
+
+
+def resolve(path):
+    if os.path.islink(path):
+        return resolve(os.readlink(path))
+    return path
+
+PHANTOMJS_NATIVE_ARGS = [
+    'cookies-file',
+    'config',
+    'disk-cache',
+    'ignore-ssl-errors',
+    'load-images',
+    'load-plugins',
+    'local-to-remote-url-access',
+    'max-disk-cache-size',
+    'output-encoding',
+    'remote-debugger-port',
+    'remote-debugger-autorun',
+    'proxy',
+    'proxy-auth',
+    'proxy-type',
+    'script-encoding',
+    'web-security',
+]
+CASPER_ARGS = []
+PHANTOMJS_ARGS = []
+
+for arg in sys.argv[1:]:
+    found = False
+    for native in PHANTOMJS_NATIVE_ARGS:
+        if arg.startswith('--%s' % native):
+            PHANTOMJS_ARGS.append(arg)
+            found = True
+    if not found:
+        CASPER_ARGS.append(arg)
+
+CASPER_PATH = os.path.abspath(os.path.join(os.path.dirname(resolve(__file__)), '..'))
+CASPER_COMMAND = os.environ.get('PHANTOMJS_EXECUTABLE', 'phantomjs').split(' ')
+CASPER_COMMAND.extend(PHANTOMJS_ARGS)
+CASPER_COMMAND.extend([os.path.join(CASPER_PATH, 'bin', 'bootstrap.js'), '--casper-path=%s' % CASPER_PATH, '--cli'])
+CASPER_COMMAND.extend(CASPER_ARGS)
+
+try:
+    status = subprocess.call(CASPER_COMMAND)
+except KeyboardInterrupt:
+    print('\nCasperJS interrupted, exiting.')
+    status = 0
+sys.exit(status)

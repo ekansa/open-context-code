@@ -1,0 +1,222 @@
+// Settings
+@capsule-background: #FFF;
+@capsule-width: 320px;
+@capsule-radius: 3px;
+@capsule-border-color: #CCC;
+@capsule-border: 1px solid @capsule-border-color;
+@capsule-padding: 2px 6px;
+
+@panel-offset: 13px;
+@popup-arrow-height: 15px;
+@popup-arrow-width: 28px;
+
+// Mixins
+
+.box-shadow(@xoff:1px, @yoff:2px, @blur:2px, @spread:0, @color:#666) {
+  -moz-box-shadow:    @xoff @yoff @blur @spread @color;
+  -webkit-box-shadow: @xoff @yoff @blur @spread @color;
+  box-shadow:         @xoff @yoff @blur @spread @color;
+}
+
+.border-radius(@radius) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.capsule() {
+    font-family: Tahoma, Verdana, sans-serif;
+    font-size: 11px;
+    border: @capsule-border;
+    background: @capsule-background;
+    .border-radius(@capsule-radius);
+    .box-shadow;
+}
+
+// index element
+.awld {
+    
+    // structural styles
+    
+    .aw-panel {
+        .capsule;
+        display: none;
+        position: absolute;
+        margin: @panel-offset 0 0 -1px;
+        border-top: 0;
+        width: @capsule-width;
+    }
+    
+    .aw-index {
+        .capsule;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .aw-group {
+        padding: @capsule-padding;
+        display: none;
+        
+        &:last-child {
+            padding-bottom: .8em;
+        }
+    }
+    
+    .aw-tab {
+        padding: @capsule-padding;
+        background: @capsule-background;
+    }
+    
+    .aw-ctrl {
+        margin-top: .5em;
+        padding: @capsule-padding;
+        border-bottom: @capsule-border;
+        
+        span {
+            color: #999;
+        }
+        
+        div {
+            display: inline-block;
+            border: @capsule-border;
+            border-bottom: 0;
+            margin-bottom: -4px;
+            padding: 0 .3em 3px .3em;
+            background: @capsule-background;
+            border-top-left-radius: @capsule-radius;
+            border-top-right-radius: @capsule-radius;
+            
+            &.off {
+                background: #DDD;
+                cursor: pointer;
+            }
+        }
+    }
+    
+    .aw-modules {
+        display: none;
+    }
+    
+    // this is a bit of a hack to get the top border visible
+    
+    hr {
+        display: none;
+        margin: (@panel-offset + 1) 0 0 0;
+        width: @capsule-width;
+        position: absolute;
+        border: 0;
+        border-top: @capsule-border;
+        .box-shadow;
+    }
+    
+    // text styles
+    
+    a, .refs {
+        color: #900;
+        cursor: pointer;
+        
+        &:hover {
+            color: #D00;
+        }
+    }
+    
+    h2 {
+        font-size: 1em;
+        margin: .5em 0 0 0;
+    }
+    
+    p {
+        margin: 0.3em 0;
+    }
+}
+
+// Popover styles adapted from Twitter Bootstrap v2.0.3
+// https://github.com/twitter/bootstrap
+// Copyright 2012 Twitter, Inc
+// Licensed under the Apache License v2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+// Designed and built with all the love in the world @twitter by @mdo and @fat.
+#popoverArrow {
+  .top() {
+    bottom: 0;
+    left: 50%;
+    margin-bottom: -(@popup-arrow-height - 6);
+  }
+  .bottom() {
+    top: 0;
+    left: 50%;
+    margin-top: -(@popup-arrow-height - 6);
+    background-position: 0 -@popup-arrow-height;
+  }
+  .left() {
+    top: 50%;
+    right: 0;
+    width: @popup-arrow-height;
+    height: @popup-arrow-width;
+    margin: -(@popup-arrow-width / 2) -(@popup-arrow-height - 6) 0 0;
+    background-position: -(@popup-arrow-width + @popup-arrow-height) 0;
+  }
+  .right() {
+    top: 50%;
+    left: 0;
+    width: @popup-arrow-height;
+    height: @popup-arrow-width;
+    margin: -(@popup-arrow-width / 2) 0 0 -(@popup-arrow-height - 6);
+    background-position: -@popup-arrow-width 0;
+  }
+}
+
+.awld-pop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    padding: 5px;
+    
+    &.top    { margin-top:  -7px; }
+    &.right  { margin-left:  12px; }
+    &.bottom { margin-top:   10px; }
+    &.left   { margin-left: -12px; }
+    
+    &.top .arrow    { #popoverArrow > .top(); }
+    &.right .arrow  { #popoverArrow > .right(); }
+    &.bottom .arrow { #popoverArrow > .bottom(); }
+    &.left .arrow   { #popoverArrow > .left();  }
+    
+    .arrow {
+        position: absolute;
+        margin-left: -(@popup-arrow-width / 2);
+        height: @popup-arrow-height;
+        width: @popup-arrow-width;
+        background: url(///ui/images/arrow.png) no-repeat 0 0;
+    }
+}
+
+.awld-pop-inner {
+    width: 280px;
+    height: 180px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    .capsule;
+    padding: 2px 6px;
+    
+    &.loading {
+        background-image: url(///ui/images/ajax-loader.gif);
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+    }
+    
+    .res-type {
+        font-weight: normal;
+        color: #33C;
+    }
+    
+    .media {
+        margin: 1em 1em 0 0;
+        float: left;
+    }
+    
+    p {
+        margin: 1em 1em 0 0;
+    }
+}

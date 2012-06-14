@@ -1,0 +1,147 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/* 
+<span class='line'>  2</span>  * Timemap.js Copyright 2008 Nick Rabinowitz.
+<span class='line'>  3</span>  * Licensed under the MIT License (see LICENSE.txt)
+<span class='line'>  4</span>  */</span><span class="WHIT">
+<span class='line'>  5</span> 
+<span class='line'>  6</span> </span><span class="COMM">/**
+<span class='line'>  7</span>  * @fileOverview
+<span class='line'>  8</span>  * JSON Loaders (JSONP, JSON String)
+<span class='line'>  9</span>  *
+<span class='line'> 10</span>  * @author Nick Rabinowitz (www.nickrabinowitz.com)
+<span class='line'> 11</span>  */</span><span class="WHIT">
+<span class='line'> 12</span> 
+<span class='line'> 13</span> </span><span class="COMM">/**
+<span class='line'> 14</span>  * @class
+<span class='line'> 15</span>  * JSONP loader class - expects a service that takes a callback function name as
+<span class='line'> 16</span>  * the last URL parameter.
+<span class='line'> 17</span>  *
+<span class='line'> 18</span>  * &lt;p>The jsonp loader assumes that the JSON can be loaded from a url to which a 
+<span class='line'> 19</span>  * callback function name can be appended, e.g. "http://www.test.com/getsomejson.php?callback="
+<span class='line'> 20</span>  * The loader then appends a nonce function name which the JSON should include.
+<span class='line'> 21</span>  * This works for services like Google Spreadsheets, etc., and accepts remote URLs.&lt;/p>
+<span class='line'> 22</span>  *
+<span class='line'> 23</span>  * @example Usage in TimeMap.init():
+<span class='line'> 24</span>  
+<span class='line'> 25</span>     datasets: [
+<span class='line'> 26</span>         {
+<span class='line'> 27</span>             title: "JSONP Dataset",
+<span class='line'> 28</span>             type: "jsonp",
+<span class='line'> 29</span>             options: {
+<span class='line'> 30</span>                 url: "http://www.test.com/getsomejson.php?callback="
+<span class='line'> 31</span>             }
+<span class='line'> 32</span>         }
+<span class='line'> 33</span>     ]
+<span class='line'> 34</span>  *
+<span class='line'> 35</span>  * @constructor
+<span class='line'> 36</span>  * @param {Object} options          All options for the loader:&lt;pre>
+<span class='line'> 37</span>  *   {Array} url                        URL of JSON service to load, callback name left off
+<span class='line'> 38</span>  *   {Function} preloadFunction         Function to call on data before loading
+<span class='line'> 39</span>  *   {Function} transformFunction       Function to call on individual items before loading
+<span class='line'> 40</span>  * &lt;/pre>
+<span class='line'> 41</span>  */</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="NAME">TimeMap.loaders.jsonp</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">    </span><span class="COMM">// get standard functions</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">    </span><span class="NAME">TimeMap.loaders.mixin</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">options</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">    </span><span class="COMM">// get URL to load</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">    </span><span class="NAME">this.url</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">options.url</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 48</span> 
+<span class='line'> 49</span> </span><span class="COMM">/**
+<span class='line'> 50</span>  * JSONP load function.
+<span class='line'> 51</span>  *
+<span class='line'> 52</span>  * @param {TimeMapDataset} dataset  Dataset to load data into
+<span class='line'> 53</span>  * @param {Function} callback       Function to call once data is loaded
+<span class='line'> 54</span>  */</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="NAME">TimeMap.loaders.jsonp.prototype.load</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">dataset</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">loader</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">    </span><span class="COMM">// get items</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">    </span><span class="NAME">TimeMap.loaders.jsonp.read</span><span class="PUNC">(</span><span class="NAME">this.url</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">        </span><span class="COMM">// load</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">        </span><span class="NAME">items</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">loader.preload</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">        </span><span class="NAME">dataset.loadItems</span><span class="PUNC">(</span><span class="NAME">items</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">loader.transform</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">        </span><span class="COMM">// callback</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">        </span><span class="NAME">callback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 66</span> 
+<span class='line'> 67</span> </span><span class="COMM">/**
+<span class='line'> 68</span>  * Static - for naming anonymous callback functions
+<span class='line'> 69</span>  * @type int
+<span class='line'> 70</span>  */</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="NAME">TimeMap.loaders.jsonp.counter</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 72</span> 
+<span class='line'> 73</span> </span><span class="COMM">/**
+<span class='line'> 74</span>  * Static - reads JSON from a URL, assuming that the service is set up to apply
+<span class='line'> 75</span>  * a callback function specified in the URL parameters.
+<span class='line'> 76</span>  *
+<span class='line'> 77</span>  * @param {String}      jsonUrl     URL to load, missing the callback function name
+<span class='line'> 78</span>  * @param {function}    f           Callback function to apply to returned data
+<span class='line'> 79</span>  */</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="NAME">TimeMap.loaders.jsonp.read</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">f</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">    </span><span class="COMM">// Define a unique function name</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">callbackName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"_"</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">TimeMap.loaders.jsonp.counter</span><span class="PUNC">++</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 83</span> 
+<span class='line'> 84</span> </span><span class="WHIT">    </span><span class="NAME">TimeMap.loaders.jsonp</span><span class="PUNC">[</span><span class="NAME">callbackName</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">        </span><span class="COMM">// Pass result to user function</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">        </span><span class="NAME">f</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">        </span><span class="COMM">// Delete the callback function</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">        </span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">TimeMap.loaders.jsonp</span><span class="PUNC">[</span><span class="NAME">callbackName</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 90</span> 
+<span class='line'> 91</span> </span><span class="WHIT">    </span><span class="COMM">// Create a script tag, set its src attribute and add it to the document</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">    </span><span class="COMM">// This triggers the HTTP request and submits the query</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">script</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">document.createElement</span><span class="PUNC">(</span><span class="STRN">"script"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">    </span><span class="NAME">script.src</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">url</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">"TimeMap.loaders.jsonp."</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">callbackName</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">    </span><span class="NAME">document.body.appendChild</span><span class="PUNC">(</span><span class="NAME">script</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 97</span> 
+<span class='line'> 98</span> </span><span class="COMM">/**
+<span class='line'> 99</span>  * @class
+<span class='line'>100</span>  * JSON string loader factory - expects a plain JSON array.
+<span class='line'>101</span>  * Inherits from remote loader.
+<span class='line'>102</span>  *
+<span class='line'>103</span>  * &lt;p>The json_string loader assumes an array of items in plain JSON, with no
+<span class='line'>104</span>  * callback function - this will require a local URL.&lt;/p>
+<span class='line'>105</span>  *
+<span class='line'>106</span>  * &lt;p>Depends on:&lt;/p>
+<span class='line'>107</span>  * &lt;ul>
+<span class='line'>108</span>  *  &lt;li>lib/json2.pack.js&lt;/li>
+<span class='line'>109</span>  * &lt;/ul>
+<span class='line'>110</span>  *
+<span class='line'>111</span>  * @example Usage in TimeMap.init():
+<span class='line'>112</span>  
+<span class='line'>113</span>     datasets: [
+<span class='line'>114</span>         {
+<span class='line'>115</span>             title: "JSON String Dataset",
+<span class='line'>116</span>             type: "json_string",
+<span class='line'>117</span>             options: {
+<span class='line'>118</span>                 url: "mydata.json"    // Must be a local URL
+<span class='line'>119</span>             }
+<span class='line'>120</span>         }
+<span class='line'>121</span>     ]
+<span class='line'>122</span>  *
+<span class='line'>123</span>  * @param {Object} options          All options for the loader:&lt;pre>
+<span class='line'>124</span>  *   {Array} url                        URL of JSON service to load, callback name left off
+<span class='line'>125</span>  *   {Function} preloadFunction         Function to call on data before loading
+<span class='line'>126</span>  *   {Function} transformFunction       Function to call on individual items before loading
+<span class='line'>127</span>  * &lt;/pre>
+<span class='line'>128</span>  * @return {TimeMap.loaders.remote} Remote loader configured for JSON strings
+<span class='line'>129</span>  */</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="NAME">TimeMap.loaders.json_string</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">loader</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">TimeMap.loaders.remote</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">    </span><span class="NAME">loader.parse</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">JSON.parse</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">loader</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>135</span> 
+<span class='line'>136</span> </span><span class="COMM">// Probably the default json loader should be json_string, not</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="COMM">// jsonp. I may change this in the future, so I'd encourage you to use</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="COMM">// the specific one you want.</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="NAME">TimeMap.loaders.json</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">TimeMap.loaders.jsonp</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>140</span> </span></pre></body></html>

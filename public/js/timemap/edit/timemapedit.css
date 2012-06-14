@@ -1,0 +1,160 @@
+/*
+Styles for editing tools
+*/
+
+#editpane {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 350px;
+    height: 550px;
+    padding: 5px;
+    margin: 5px;
+    background: #FFFFFF;
+    overflow: hidden;
+    z-index: 1002;
+    border: 1px solid #CCCCCC;
+}
+
+#editclose {
+    float: right;
+    background-image: url(http://maps.google.com/intl/en_us/mapfiles/iw_close.gif);
+    width: 12px;
+    height: 12px;
+    font-size: 10px;
+    cursor: pointer;
+}
+#editresize {
+    position: absolute; 
+    right: 5px; 
+    bottom: 2px;
+    width: 12px;
+    height: 12px;
+    font-size: 10px;
+    background: #CCCCCC;
+    cursor: pointer;
+}
+
+#editpane .edittitle {
+    background: #EEEEEE;
+    padding: 3px;
+    cursor: move;
+    margin-bottom: 5px;
+}
+#editpane .edittitle h3 {
+    margin: 0px;
+    font-weight: normal;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+#dspane {
+    height: 90%;
+    overflow: auto;
+}
+
+#dspane .dataset {
+    margin: 5px 5px 10px 5px;
+}
+#dspane .dataset .dstitle {
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 23px;
+    padding-top: 2px;
+}
+
+div.datasettheme {
+  width: 15px; 
+  height: 15px;
+  margin: 3px;
+  background: #CCCCCC;
+  float: left;
+}
+
+.editlink {
+  font-weight: normal;
+  font-style: normal;
+  color: #0000CC;
+  cursor: pointer;
+  font-size: 12px;
+  padding-right: 1em;
+  text-decoration: underline;
+}
+
+div.thememenu {
+  width: 42px;
+  height: 63px;
+  border: 1px solid #CCCCCC;
+  background: #FFFFFF;
+  display: none;
+  position: absolute;
+}
+
+.dataset .item {
+    margin-top: 1em;
+    padding: .5em 0em;
+    font-size: 0.8em;
+}
+.dataset .item .itemicon {
+    float: right;
+    cursor: pointer;
+}
+.dataset .item .itemtitle {
+    font-weight: bold;
+    cursor: pointer;
+}
+.dataset .item .itemlabel {
+    color: #999999;
+    width: 45px;
+    float: left;
+}
+.dataset .item .itemdesc {
+    cursor: pointer;
+}
+.dataset .item .itempmtools {
+    height: 31px;
+}
+.dataset .item  .missingelement {
+    color: #CCCCCC;
+    font-style: italic;
+    font-size: 0.8em;
+    line-height: 1.6em;
+}
+
+.polygonicon {
+    width:15px; 
+    height:15px; 
+    border:1px solid #CCCCCC;
+    margin-right: 7px;
+}
+.polylineicon {
+    width:32px;
+    height:32px;
+}
+
+.pmbutton {
+  width:31px;
+  height:31px;
+  float: left;
+  margin-right: 5px;
+  cursor: pointer;
+}
+#markerbutton {
+  background-image: url(http://google.com/mapfiles/ms/t/Bmu.png);
+}
+#markerbutton.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bmd.png);
+}
+ 
+#polylinebutton {
+  background-image: url(http://google.com/mapfiles/ms/t/Blu.png);
+}
+#polylinebutton.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bld.png);
+}
+ 
+#polygonbutton {
+  background-image: url(http://google.com/mapfiles/ms/t/Bpu.png);
+}
+#polygonbutton.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bpd.png);
+}

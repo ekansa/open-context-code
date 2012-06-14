@@ -1,5 +1,9 @@
 <?php
 
+/*
+Publishes some Open Annotation N3 triples for Pelagios place annotations based on an Atom Feed
+*/
+
 $data = $this->data;
 if(count($data["records"])>0){
     header('Content-type: text/n3; charset="UTF-8"', true);

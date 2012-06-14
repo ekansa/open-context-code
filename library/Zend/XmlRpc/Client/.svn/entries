@@ -1,0 +1,58 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/XmlRpc/Client
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+IntrospectException.php
+file
+
+
+
+add
+
+FaultException.php
+file
+
+
+
+add
+
+HttpException.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+ServerIntrospection.php
+file
+
+
+
+add
+
+ServerProxy.php
+file
+
+
+
+add
+

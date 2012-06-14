@@ -1,0 +1,198 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Validate
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Between.php
+file
+
+
+
+add
+
+File
+dir
+
+
+
+add
+
+Int.php
+file
+
+
+
+add
+
+Identical.php
+file
+
+
+
+add
+
+EmailAddress.php
+file
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Barcode.php
+file
+
+
+
+add
+
+Interface.php
+file
+
+
+
+add
+
+Abstract.php
+file
+
+
+
+add
+
+GreaterThan.php
+file
+
+
+
+add
+
+Float.php
+file
+
+
+
+add
+
+InArray.php
+file
+
+
+
+add
+
+Ccnum.php
+file
+
+
+
+add
+
+Ip.php
+file
+
+
+
+add
+
+StringLength.php
+file
+
+
+
+add
+
+Barcode
+dir
+
+
+
+add
+
+Regex.php
+file
+
+
+
+add
+
+Alnum.php
+file
+
+
+
+add
+
+Date.php
+file
+
+
+
+add
+
+Hostname.php
+file
+
+
+
+add
+
+NotEmpty.php
+file
+
+
+
+add
+
+LessThan.php
+file
+
+
+
+add
+
+Digits.php
+file
+
+
+
+add
+
+Hex.php
+file
+
+
+
+add
+
+Alpha.php
+file
+
+
+
+add
+
+Hostname
+dir
+
+
+
+add
+

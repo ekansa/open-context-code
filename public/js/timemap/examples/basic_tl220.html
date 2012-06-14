@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Basic Example, Timeline v.2.2.0</title>
+    <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAASI0kCI-azC8RgbOZzWc3VRRarOQe_TKf_51Omf6UUSOFm7EABRRhO0PO4nBAO9FCmVDuowVwROLo3w"
+      type="text/javascript"></script>
+    <script type="text/javascript" src="http://static.simile.mit.edu/timeline/api-2.2.0/timeline-api.js"></script>
+    <script src="../timemap.js" type="text/javascript"></script>
+	<script type="text/javascript">
+
+function onLoad() {
+
+    tm = TimeMap.init({
+                mapId: "map",               // Id of map div element (required)
+        timelineId: "timeline",     // Id of timeline div element (required)
+        options: {
+            eventIconPath: "../images/"
+        },
+        datasets: [
+            {
+                id: "artists",
+                title: "Artists",
+                theme: "orange",
+                // note that the lines below are now the preferred syntax
+                type: "basic",
+                options: {
+                    items: [
+                        {
+                          "start" : "1449",
+                          "end" : "1494-01-11",
+                          "point" : {
+                              "lat" : 43.7717,
+                              "lon" : 11.2536
+                           },
+                          "title" : "Domenico Ghirlandaio",
+                          "options" : {
+                            // set the full HTML for the info window
+                            "infoHtml": "<div class='custominfostyle'><b>Domenico Ghirlandaio</b> was a visual artist of some sort.</div>"
+                          }
+                        },
+                        {
+                          "start" : "1452",
+                          "end" : "1519",
+                          "point" : {
+                              "lat" : 43.8166666667,
+                              "lon" : 10.7666666667
+                           },
+                          "title" : "Leonardo da Vinci",
+                          "options" : {
+                            // load HTML from another file via AJAX
+                            // Note that this may break in IE if you're running it with
+                            // a local file, due to cross-site scripting restrictions
+                            "infoUrl": "ajax_content.html",
+                            "theme": "red"
+                          }
+                        },
+                        {
+                          "start" : "1475",
+                          "end" : "1564",
+                          "point" : {
+                              "lat" : 43.6433,
+                              "lon" : 11.9875
+                           },
+                          "title" : "Michelangelo",
+                          "options" : {
+                            // use the default title/description info window
+                            "description": "Renaissance Man",
+                            "theme": "yellow"
+                          }
+                        }
+                    ]
+                }
+            }
+        ],
+        bandIntervals: [
+            Timeline.DateTime.DECADE, 
+            Timeline.DateTime.CENTURY
+        ]
+    });
+    // manipulate the timemap further here if you like
+}
+    </script>
+	<link href="examples.css" type="text/css" rel="stylesheet"/>
+    <style>
+    div#timelinecontainer{ height: 300px; }
+    div#mapcontainer{ height: 300px; }
+    </style>
+  </head>
+
+  <body onload="onLoad();" onunload="GUnload();">
+    <div id="help">
+    <h1>Basic Dataset with Timeline v.2.2.0</h1>
+    This example uses the 2.2.0 version of the SIMILE Timeline API. The code is essentially the same; only the version of Timeline is different. My general impression is that the older version of Timeline (v.1.2) is still more stable than the newer version, but the newer version has a few new features and a slightly different default look and feel. Note that you don't seem to be able to hide the event text for a given timeline band in the later version.
+    </div>
+    <div id="timemap">
+        <div id="timelinecontainer">
+          <div id="timeline"></div>
+        </div>
+        <div id="mapcontainer">
+          <div id="map"></div>
+        </div>
+    </div>
+  </body>
+</html>

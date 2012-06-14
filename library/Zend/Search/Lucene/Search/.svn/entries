@@ -1,0 +1,121 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Search/Lucene/Search
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Similarity
+dir
+
+
+
+add
+
+QueryParserException.php
+file
+
+
+
+add
+
+QueryEntry
+dir
+
+
+
+add
+
+Weight
+dir
+
+
+
+add
+
+Query.php
+file
+
+
+
+add
+
+QueryLexer.php
+file
+
+
+
+add
+
+QueryToken.php
+file
+
+
+
+add
+
+QueryHit.php
+file
+
+
+
+add
+
+Query
+dir
+
+
+
+add
+
+QueryParser.php
+file
+
+
+
+add
+
+Similarity.php
+file
+
+
+
+add
+
+BooleanExpressionRecognizer.php
+file
+
+
+
+add
+
+QueryEntry.php
+file
+
+
+
+add
+
+QueryParserContext.php
+file
+
+
+
+add
+
+Weight.php
+file
+
+
+
+add
+

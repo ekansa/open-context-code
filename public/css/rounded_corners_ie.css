@@ -1,0 +1,5 @@
+.rounded-corners {
+    behavior: url(http://opencontext/css/border-radius.htc);
+    border-radius: 15px;
+}
+

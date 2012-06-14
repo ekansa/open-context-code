@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>TimeMap Test Suite</title>
+    <link rel="stylesheet" type="text/css" href="../../jsUnit/css/jsUnitStyle.css">
+    <script language="JavaScript" type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+function loadSuite_tl12() {
+    var result = new top.jsUnitTestSuite();
+    result.addTestPage("../timemap/tests/basicLoadTests.html");
+    result.addTestPage("../timemap/tests/kmlLoadTests.html");
+    result.addTestPage("../timemap/tests/jsonLoadTests.html");
+    result.addTestPage("../timemap/tests/jsonStringLoadTests.html");
+    result.addTestPage("../timemap/tests/geoRSSLoadTests.html");
+    result.addTestPage("../timemap/tests/kmlTests.html");
+    result.addTestPage("../timemap/tests/visibilityTests.html");
+    result.addTestPage("../timemap/tests/missingElementTests.html");
+    result.addTestPage("../timemap/tests/placemarkTests.html");
+    result.addTestPage("../timemap/tests/kmlPlacemarkTests.html");
+    result.addTestPage("../timemap/tests/deletionTests.html");
+    result.addTestPage("../timemap/tests/themeTests.html");
+    result.addTestPage("../timemap/tests/timeParserTests.html");
+    result.addTestPage("../timemap/tests/scrollToTests.html");
+    result.addTestPage("../timemap/tests/iterationTests.html");
+    return result;
+}
+
+function loadSuite_tl220() {
+    var result = new top.jsUnitTestSuite();
+    result.addTestPage("../timemap/tests/basicLoadTests_tl220.html");
+    result.addTestPage("../timemap/tests/kmlLoadTests_tl220.html");
+    result.addTestPage("../timemap/tests/jsonLoadTests_tl220.html");
+    result.addTestPage("../timemap/tests/jsonStringLoadTests_tl220.html");
+    result.addTestPage("../timemap/tests/geoRSSLoadTests_tl220.html");
+    result.addTestPage("../timemap/tests/kmlTests_tl220.html");
+    result.addTestPage("../timemap/tests/visibilityTests_tl220.html");
+    result.addTestPage("../timemap/tests/missingElementTests_tl220.html");
+    result.addTestPage("../timemap/tests/placemarkTests_tl220.html");
+    result.addTestPage("../timemap/tests/kmlPlacemarkTests_tl220.html");
+    result.addTestPage("../timemap/tests/deletionTests_tl220.html");
+    result.addTestPage("../timemap/tests/themeTests_tl220.html");
+    result.addTestPage("../timemap/tests/timeParserTests_tl220.html");
+    result.addTestPage("../timemap/tests/scrollToTests_tl220.html");
+    result.addTestPage("../timemap/tests/iterationTests_tl220.html");
+    return result;
+}
+
+function loadSuite_local() {
+    var result = new top.jsUnitTestSuite();
+    result.addTestPage("../timemap/tests/basicLoadTests_local.html");
+    result.addTestPage("../timemap/tests/kmlLoadTests_local.html");
+    result.addTestPage("../timemap/tests/jsonLoadTests_local.html");
+    result.addTestPage("../timemap/tests/jsonStringLoadTests_local.html");
+    result.addTestPage("../timemap/tests/geoRSSLoadTests_local.html");
+    result.addTestPage("../timemap/tests/kmlTests_local.html");
+    result.addTestPage("../timemap/tests/visibilityTests_local.html");
+    result.addTestPage("../timemap/tests/missingElementTests_local.html");
+    result.addTestPage("../timemap/tests/placemarkTests_local.html");
+    result.addTestPage("../timemap/tests/kmlPlacemarkTests_local.html");
+    result.addTestPage("../timemap/tests/deletionTests_local.html");
+    result.addTestPage("../timemap/tests/themeTests_local.html");
+    result.addTestPage("../timemap/tests/timeParserTests_local.html");
+    result.addTestPage("../timemap/tests/scrollToTests_local.html");
+    result.addTestPage("../timemap/tests/iterationTests_local.html");
+    return result;
+}
+
+function loadSuite_local_tl230() {
+    var result = new top.jsUnitTestSuite();
+    result.addTestPage("../timemap/tests/basicLoadTests_local_tl230.html");
+    result.addTestPage("../timemap/tests/kmlLoadTests_local_tl230.html");
+    result.addTestPage("../timemap/tests/jsonLoadTests_local_tl230.html");
+    result.addTestPage("../timemap/tests/jsonStringLoadTests_local_tl230.html");
+    result.addTestPage("../timemap/tests/geoRSSLoadTests_local_tl230.html");
+    return result;
+}
+
+function suite() {
+    var newsuite = new top.jsUnitTestSuite();
+    newsuite.addTestSuite(loadSuite_tl12());
+    newsuite.addTestSuite(loadSuite_tl220());
+    newsuite.addTestSuite(loadSuite_local());
+    newsuite.addTestSuite(loadSuite_local_tl230());
+    return newsuite;
+}
+
+
+
+    </script>
+</head>
+
+<body>
+<h1>TimeMap Test Suite</h1>
+
+<p>This page contains a suite of tests for testing TimeMap with jsUnit.</p>
+</body>
+</html>

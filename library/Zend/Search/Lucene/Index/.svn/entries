@@ -1,0 +1,86 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Search/Lucene/Index
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+SegmentWriter
+dir
+
+
+
+add
+
+Writer.php
+file
+
+
+
+add
+
+DictionaryLoader.php
+file
+
+
+
+add
+
+SegmentInfo.php
+file
+
+
+
+add
+
+SegmentWriter.php
+file
+
+
+
+add
+
+FieldInfo.php
+file
+
+
+
+add
+
+TermInfo.php
+file
+
+
+
+add
+
+SegmentMerger.php
+file
+
+
+
+add
+
+SegmentInfoPriorityQueue.php
+file
+
+
+
+add
+
+Term.php
+file
+
+
+
+add
+

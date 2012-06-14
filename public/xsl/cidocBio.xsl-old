@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+<!ENTITY owl "http://www.w3.org/2002/07/owl#">
+<!ENTITY crm "http://purl.org/NET/crm-owl#">
+<!ENTITY claros "http://purl.org/NET/Claros/vocab#">
+<!ENTITY claros_place "http://purl.org/NET/Claros/place#">
+<!ENTITY claros_placeid "http://purl.org/NET/Claros/placeid#">
+]>
+
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+                xmlns:owl="http://www.w3.org/2002/07/owl#"
+                xmlns:crm="http://purl.org/NET/crm-owl#"
+                xmlns:claros="http://purl.org/NET/Claros/vocab#"
+                xmlns:atom="http://www.w3.org/2005/Atom"
+                xmlns:georss="http://www.georss.org/georss"
+                xmlns:oc="http://opencontext.org/schema/space_schema_v1.xsd"
+                xmlns:arch="http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd"
+                xmlns:dc="http://purl.org/dc/elements/1.1/"
+                >
+    <xsl:output method="xml" indent="yes" encoding="utf-8" />
+
+
+
+    <xsl:template name="string-replace">
+            <xsl:param name="arg"/>
+            <xsl:param name="toReplace"/>
+            <xsl:param name="replaceWith"/>
+            <xsl:choose>
+                <xsl:when test="contains($arg, $toReplace)">
+                    <xsl:variable name="prefix" select="substring-before($arg, $toReplace)"/>
+                    <xsl:variable name="postfix" select="substring($arg, string-length($prefix)+string-length($toReplace)+1)"/>
+                    <xsl:value-of select="concat($prefix, $replaceWith)"/>
+                    <xsl:call-template name="string-replace">
+                        <xsl:with-param name="arg" select="$postfix"/>
+                        <xsl:with-param name="toReplace" select="$toReplace"/>
+                        <xsl:with-param name="replaceWith" select="$replaceWith"/>
+                    </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$arg"/>
+                </xsl:otherwise>
+            </xsl:choose>
+    </xsl:template>
+
+
+
+    <xsl:template match="/">
+
+        <xsl:variable name="item_id">
+            <xsl:value-of select="arch:spatialUnit/@UUID"/>
+        </xsl:variable>
+        
+        <xsl:variable name="num_contribs">
+            <xsl:value-of select="count(arch:spatialUnit/oc:metadata/dc:contributor)"/>
+        </xsl:variable>
+        
+        <xsl:variable name="num_editors">
+            <xsl:value-of select="count(arch:spatialUnit/oc:metadata/dc:creator)"/>
+        </xsl:variable>
+        
+        <xsl:variable name="num_externalRefs">
+            <xsl:value-of select="count(//oc:external_references/oc:reference)"/>
+        </xsl:variable>
+        
+        <xsl:variable name="num_Obs">
+            <xsl:value-of select="count(//arch:observations/arch:observation)"/>
+        </xsl:variable>
+        
+        <xsl:variable name="num_Children">
+            <xsl:value-of select="count(//arch:spatialUnit/oc:children/oc:tree/oc:child)"/>
+        </xsl:variable>
+        
+        <xsl:variable name="num_linkedData">
+            <xsl:value-of select="count(//oc:linkedData/oc:relationLink)"/>
+        </xsl:variable>
+    
+        <xsl:variable name="qPrefix">http://opencontext.org/sets/</xsl:variable>
+        
+        
+        <xsl:variable name="ChildQValue">
+                <xsl:choose>
+                        <xsl:when test="//arch:spatialUnit/oc:children/@qPath">
+                                <xsl:value-of select="$qPrefix"/><xsl:value-of select="//arch:spatialUnit/oc:children/@qPath"/>
+                        </xsl:when>
+                        <xsl:otherwise>0</xsl:otherwise>
+                </xsl:choose>
+        </xsl:variable>
+    
+    
+        <xsl:variable name="Material">
+            <xsl:choose>
+                <xsl:when test="//arch:properties/arch:property[oc:var_label = 'Material']">
+                    <xsl:value-of select="//arch:properties/arch:property[oc:var_label = 'Material']/oc:show_val"/>
+				</xsl:when>
+                <xsl:otherwise>
+                    <xsl:choose>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Groundstone'">Stone</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Non Diag. Bone'">Bone</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Animal Bone'">Bone</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Human Bone'">Bone</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Pottery'">Cermamic</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Glass'">Glass</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Shell'">Shell</xsl:when>
+                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Coin'">Metal</xsl:when>
+                        <xsl:otherwise>Not specified</xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+    
+        <xsl:variable name="contextPath">
+            <xsl:for-each select="arch:spatialUnit/oc:context/oc:tree[@id='default']/oc:parent">
+                <xsl:value-of select="oc:name"/>
+                <xsl:if test="position() != last()"> / </xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+    
+        <xsl:variable name="contextURI">
+            <xsl:for-each select="arch:spatialUnit/oc:context/oc:tree[@id='default']/oc:parent">
+                <xsl:if test="position() = last()">http://opencontext.org/subjects/<xsl:value-of select="oc:id"/></xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+    
+    
+        <xsl:variable name="max_Tabs">10</xsl:variable>
+
+        
+        <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <crm:E20_Biological_Object>
+                <xsl:attribute name="rdf:about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/></xsl:attribute> 
+                <rdfs:label><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdfs:label>
+    
+                <crm:P102_has_title>
+                    <crm:E35_Title>
+                      <rdf:value><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdf:value>
+                    </crm:E35_Title>
+                </crm:P102_has_title>
+                
+                <crm:P2_has_type>
+                    <crm:E55_Type>
+                        <rdf:value><xsl:value-of select="arch:spatialUnit/oc:item_class/oc:name"/></rdf:value>
+                    </crm:E55_Type>
+                </crm:P2_has_type>
+    
+                <crm:P48_has_preferred_identifier>
+                    <crm:E42_Identifier>
+                        <rdf:value><xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></rdf:value>
+                    </crm:E42_Identifier>
+                </crm:P48_has_preferred_identifier>
+    
+                <crm:P92b_was_brought_into_existence_by>
+                    <crm:E63_Beginning_of_Existence>
+                        <rdfs:label>Beginning of '<xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/>'</rdfs:label>
+                            
+                            <crm:P126_employed>
+                                <crm:E57_Material>
+                                  <rdfs:label><xsl:value-of select="$Material"/></rdfs:label>
+                                </crm:E57_Material>
+                            </crm:P126_employed>
+                            
+                            <crm:P4_has_time-span>
+                            <crm:E52_Time-Span>
+                              <crm:P82_at_some_time_within>
+                                <claros:Period>
+                                  <claros:period_begin rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_start"/></claros:period_begin>
+                                  <claros:period_end rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_finish"/></claros:period_end>
+                                </claros:Period>
+                              </crm:P82_at_some_time_within>
+                            </crm:E52_Time-Span>
+                          </crm:P4_has_time-span>
+                    </crm:E63_Beginning_of_Existence>
+                </crm:P92b_was_brought_into_existence_by>
+    
+    
+                <xsl:for-each select="//arch:properties/arch:property[arch:decimal/@href | arch:integeter/@href]">
+                   
+                    <crm:P43F_has_dimension>
+                        <crm:E54_Dimension>
+                            <crm:P91F_has_unit>
+                                <xsl:attribute name="rdf:resource">
+                                    <xsl:value-of select="arch:decimal/@href | arch:integeter/@href"/>
+                                </xsl:attribute>
+                            </crm:P91F_has_unit>
+                            <crm:P90F_has_value>
+                                <xsl:value-of select="arch:decimal | arch:integeter"/>
+                            </crm:P90F_has_value>
+                            <rdfs:label><xsl:value-of select="oc:var_label"/>: <xsl:value-of select="oc:show_val"/> (<xsl:value-of select="arch:decimal/@abrv | arch:integeter/@abrv"/>)</rdfs:label>
+                        </crm:E54_Dimension>
+                    </crm:P43F_has_dimension>
+                     
+                </xsl:for-each>
+    
+                <!--
+                <crm:P53_has_former_or_current_location>
+                    <xsl:attribute name="rdf:resource">
+                        <xsl:value-of select="$contextURI"/>
+                    </xsl:attribute>
+                </crm:P53_has_former_or_current_location>
+                -->
+                
+		<xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://purl.org/NET/biol/ns#term_hasTaxonomy']">
+		    <!--Biological Taxonomy Present  -->
+                    <crm:P2f_has_type>
+                        <crm:E55_Type>
+                            <xsl:attribute name="rdf:about">
+                                <xsl:value-of select="oc:targetLink/@href"/>
+                            </xsl:attribute>
+                            <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+                        </crm:E55_Type>
+                    </crm:P2f_has_type>
+                </xsl:for-each>
+		
+                <crm:P53_has_former_or_current_location>
+                    <crm:E53_Place>
+                        <xsl:attribute name="rdf:about">
+                            <xsl:value-of select="$contextURI"/>
+                        </xsl:attribute>
+                        <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+                    </crm:E53_Place>
+                </crm:P53_has_former_or_current_location>
+                
+                
+                <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link[oc:type = 'image']">
+					<crm:P138i_has_representation>
+                        <crm:E38_Image>
+                            <xsl:attribute name="rdf:about">http://opencontext.org/media/<xsl:value-of select="oc:id"/></xsl:attribute>
+                            <rdfs:label><xsl:value-of select="oc:name"/></rdfs:label>
+                        </crm:E38_Image>
+                    </crm:P138i_has_representation>
+				</xsl:for-each>
+                
+                <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link[oc:type != 'image']">
+					<crm:P70i_is_documented_in>
+                        <xsl:attribute name="rdf:resource">http://opencontext.org/media/<xsl:value-of select="oc:id"/></xsl:attribute>
+                    </crm:P70i_is_documented_in>
+				</xsl:for-each>
+                
+                <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:diary_links/oc:link">
+					<crm:P70i_is_documented_in>
+                        <xsl:attribute name="rdf:resource">http://opencontext.org/documents/<xsl:value-of select="oc:id"/></xsl:attribute>
+                    </crm:P70i_is_documented_in>
+				</xsl:for-each>
+
+            </crm:E20_Biological_Object>
+        </rdf:RDF>
+    </xsl:template>
+
+</xsl:stylesheet>

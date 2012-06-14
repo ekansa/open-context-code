@@ -1,0 +1,30 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Service/Nirvanix/Namespace
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Base.php
+file
+
+
+
+add
+
+Imfs.php
+file
+
+
+
+add
+

@@ -1,0 +1,140 @@
+﻿#main_page {
+	position:relative;
+	z-index:2;
+	top: 30px;
+	width: 791px;
+	min-height:400px;
+	top:120px;
+	background-color: #FfFfFf;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	margin-left: 5px;
+}
+#main_content{
+	position:relative;
+	width:791px;
+	z-index:1;
+	top:6px;
+	min-height:400px;
+}
+#welcome_box {
+	width:700px; 
+	height:20%;
+}
+#welcome_main {
+	text-align:center; 
+	font-weight:500; 
+	font-size:120%;
+	font-family:"Verdana", Verdana, Sans-serif; 
+	float:left; 
+	width:200px; 
+	padding-top:5px;
+}
+#welcome_text_box {
+	padding-top:5px; 
+	margin-left:6px; 
+	float:left; 
+	width:70%; 
+	text-align:left;
+}
+#welcome_text {
+	font-size:75%;
+}
+#bottom_cont{
+	clear: both;
+	width:100%;
+	z-index:6;
+	height:10px;
+}
+#footer {
+	position: relative;
+	margin-top: 50px;
+	width:792px;
+	height:50px;
+	z-index:4;
+	left: 0px;
+	top: 200px;
+	background-color: #460A0A;
+	display: table-cell;
+    	vertical-align: middle
+}
+#w3c_val_logo {
+	float:left;
+	z-index:5;
+	left: 10px;
+	margin-top: 2px;
+	margin-left: 4px;
+	display: table-cell;
+    	vertical-align: middle;
+}
+#all_lic{
+	float:left;
+	width: 60%;
+	height: 32px;
+	margin-top: 2px;
+	margin-left: 10px;
+	background-color: #CCCCCC;
+	padding: 2px;
+	display: table-cell;
+    	vertical-align: middle;
+}
+#lic_pict{
+	float: left;
+	height: 40px;
+	margin-top: 1px;
+}
+#licarea{
+	float: left;
+	margin-left: 10px;
+	height: 32px;
+	width: 70%;
+	text-align: center;
+}
+div#timemap {
+padding: 1em;
+}
+
+div#timelinecontainer{
+width: 100%;
+height: 35%;
+}
+
+div#timeline{
+ width: 100%;
+ height: 100%;
+ font-size: 10px;
+ background: #CCCCCC;
+ border-color: #D7D7D7;
+border-width: thin;
+border-style: solid;
+}
+
+div#mapcontainer {
+ width: 100%;
+ height: 70%;
+ border-color: #D7D7D7;
+border-width: thin;
+border-style: solid;
+}
+
+#timemap {
+    height: 670px;
+}
+
+div#map {
+ width: 100%;
+ height: 100%;
+ background: #EEEEEE;
+}
+
+div.infotitle {
+    font-size: 14px;
+    font-weight: bold;
+    width: 200px;
+}
+div.infodescription {
+    font-size: 14px;
+    font-style: italic;
+    width: 200px;
+}

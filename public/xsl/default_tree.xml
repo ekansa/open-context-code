@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <field view="Context" solrName="default_context" ocParam="default_context" sort="1">
+        <showWhen>
+            <filter solrName="*" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Project" solrName="project_name" ocParam="proj" sort="1">
+        <showWhen>
+            <filter solrName="*" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="organize">
+                <subField view="New Projects" collapse="true" showType="list" sort="1">
+                    <item view="Dove Mountain Groundstone" solrName="Dove Mountain Groundstone" sort="1" />
+                    <item view="Bade Museum" solrName="Bade Museum" sort="2" />
+                </subField>
+                <subField view="Featured Projects" collapse="true" showType="list" sort="2">
+                    <item view="Petra Great Temple Excavations" solrName="Petra Great Temple Excavations" sort="1" />
+                    <item view="Domuztepe Excavations" solrName="Domuztepe Excavations" sort="2" />
+                </subField>
+                <subField view="Other" collapse="true" showType="remainder" showNum="100" sort="3" />
+            </itemSort>
+        </settings>
+    </field>
+    <field view="Category" solrName="item_class" ocParam="cat" sort="3">
+        <showWhen>
+            <filter solrName="*" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>15</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="User Tag" solrName="user_tag" ocParam="tag" sort="4">
+        <showWhen>
+            <filter solrName="*" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Tag Creator" solrName="tag_creator_name" ocParam="tagger" sort="5">
+        <showWhen>
+            <filter solrName="tag" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Descriptive Variable" solrName="variable_NOB" ocParam="prop" sort="6">
+        <showWhen>
+            <filter solrName="context" value="2" />
+            <filter solrName="item_class" value="*" />
+            <filter solrName="project_name" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Values for " solrName="var_NOB_val" ocParam="prop" sort="7">
+        <showWhen>
+            <filter solrName="variable_NOB" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Related People" solrName="person_link" ocParam="person" sort="8">
+        <showWhen>
+            <filter solrName="context" value="2" />
+            <filter solrName="item_class" value="*" />
+            <filter solrName="project_name" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Date Range" solrName="date" ocParam="date" sort="9">
+        <showWhen>
+            <filter solrName="*" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>100</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+    <field view="Image Media Count" solrName="image_media_count" sort="10">
+        <showWhen>
+            <filter solrName="*" value="*" />
+        </showWhen>
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="default" />
+        </settings>
+    </field>
+</root>
+

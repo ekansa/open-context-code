@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <field view="Descriptive Variable" solrName="variable_NOB" sort="6">
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="organize">
+                <subField view="Main Bone Fields" collapse="false" showType="list" sort="1">
+                    <item view="Taxon" solrName="Taxon" sort="1" />
+                    <item view="Element" solrName="Element" sort="2" />
+                    <item view="Side" solrName="Side" sort="3" />
+                    <item view="Sex" solrName="Sex" sort="4" />
+                    <item view="Bone Preservation" solrName="Bone Preservation" sort="5" />
+                    <item view="Body Section 1" solrName="Body Section 1" sort="6" />
+                    <item view="Body Section 2" solrName="Body Section 2" sort="7" />
+                    <item view="Skeletal Element" solrName="Skeletal Element" sort="8" />
+                    <item view="Element Size" solrName="Element Size" sort="9" />
+                </subField>
+                <subField view="Object Descriptions" collapse="false" showType="list" sort="2">
+                    <item view="Artifact Name" solrName="Artifact Name" sort="1" />
+                    <item view="Material" solrName="Material" sort="2" />
+                    <item view="Disposition" solrName="Disposition" sort="3" />
+                </subField>
+                <subField view="Bone Age Fields" collapse="false" showType="list" sort="3">
+                    <item view="Age Category" solrName="Age Category" sort="1" />
+                    <item view="Fusion (Proximal)" solrName="Fusion (Proximal)" sort="2" />
+                    <item view="Fusion (Distal)" solrName="Fusion (Distal)" sort="3" />
+                    <item view="Tooth Wear Stage" solrName="Tooth Wear Stage" sort="4" />
+                    <item view="Age (fusion)" solrName="Age (fusion)" sort="5" />
+                </subField>
+                <subField view="Object Descriptions" collapse="false" showType="list" sort="4">
+                    <item view="Artifact Name" solrName="Artifact Name" sort="1" />
+                    <item view="Material" solrName="Material" sort="2" />
+                    <item view="Disposition" solrName="Disposition" sort="3" />
+                </subField>
+                <subField view="Bone Surface Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Surface Exposure/ Readability" solrName="Surface Exposure/ Readability" sort="121" />
+                    <item view="Matrix Adhesion" solrName="Matrix Adhesion" sort="122" />
+                    <item view="Surface Degradation Stage" solrName="Surface Degradation Stage" sort="123" />
+                    <item view="Surface Degradation Type" solrName="Surface Degradation Type" sort="124" />
+                    <item view="Surface Degradation Extent" solrName="Surface Degradation Extent" sort="125" />
+                    <item view="Degredation Association W/ Thermal Exposure" solrName="Degredation Association W/ Thermal Exposure" sort="126" />
+                    <item view="Peeling" solrName="Peeling" sort="127" />   
+                </subField>
+                <subField view="Bone Color / Burning" collapse="false" showType="list" sort="5">
+                    <item view="Epiphysis Corttical Color" solrName="Epiphysis Corttical Color" sort="128" />
+                    <item view="Epiphysis Cancellous Color" solrName="Epiphysis Cancellous Color" sort="129" />
+                    <item view="Metaphysis Cortical Color" solrName="Metaphysis Cortical Color" sort="130" />
+                    <item view="Metaphysis Fracture Edge Color" solrName="Metaphysis Fracture Edge Color" sort="131" />
+                    <item view="Metaphysis Medullary Color" solrName="Metaphysis Medullary Color" sort="132" />
+                    <item view="Shaft Cortical Color" solrName="Shaft Cortical Color" sort="133" />
+                    <item view="Shaft Fracture Edge Color" solrName="Shaft Fracture Edge Color" sort="134" />
+                    <item view="Shaft Medullary Color" solrName="Shaft Medullary Color" sort="135" />
+                    <item view="Irregular Bones: Color/extent" solrName="Irregular Bones: Color/extent" sort="136" /> 
+                </subField>
+                <subField view="Polish, Toothmarks, Cutmarks" collapse="false" showType="list" sort="5">
+                    <item view="End Polish" solrName="End Polish" sort="137" />
+                    <item view="Non End Polish" solrName="Non End Polish" sort="138" />
+                    <item view="Tooth Mark Type: Location" solrName="Tooth Mark Type: Location" sort="139" />
+                    <item view="Cutmark Type" solrName="Cutmark Type" sort="2" />
+                    <item view="Cutmark Location" solrName="Cutmark Location" sort="3" />
+                </subField>
+                <subField view="Bone Loadpoint, Impact" collapse="false" showType="list" sort="5">
+                    <item view="Loadpoint #" solrName="Loadpoint #" sort="1" />
+                    <item view="Loadpoint Type" solrName="Loadpoint Type" sort="2" />
+                    <item view="Loadpoint Location" solrName="Loadpoint Location" sort="3" />
+                    <item view="Opposing Loadpoint #" solrName="Opposing Loadpoint #" sort="4" />
+                    <item view="Opposing Loadpoint Type" solrName="Opposing Loadpoint Type" sort="5" />
+                    <item view="Depressed Fractures" solrName="Depressed Fractures" sort="6" />
+                    <item view="Radiating Fracture Lines (rf) " solrName="Radiating Fracture Lines (rf) " sort="7" />
+                    <item view="Concentric Fractures W/ Incipient/attached Flakes (cf)" solrName="Concentric Fractures W/ Incipient/attached Flakes (cf)" sort="8" />
+                    <item view="Negative Flake Scar (fs)" solrName="Negative Flake Scar (fs)" sort="9" />
+                    <item view="Cortical Flake Scar (fs)" solrName="Cortical Flake Scar (fs)" sort="10" />
+                    <item view="Diverging Fracture Lines" solrName="Diverging Fracture Lines" sort="11" />
+                    <item view="Lateral Stress Features" solrName="Lateral Stress Features" sort="12" />
+                    <item view="Notch Type" solrName="Notch Type" sort="13" />
+                    <item view="Notch Length (mm)" solrName="Notch Length (mm)" sort="14" />
+                    <item view="Notch Depth (mm)" solrName="Notch Depth (mm)" sort="15" />
+                    <item view="Notch Truncation" solrName="Notch Truncation" sort="16" />
+                    <item view="Flake Scar Width (mm)" solrName="Flake Scar Width (mm)" sort="17" />
+                    <item view="Flake Scar Lngth (mm)" solrName="Flake Scar Lngth (mm)" sort="18" />
+                    <item view="Cranium: Arcuate Impact Zone (az)" solrName="Cranium: Arcuate Impact Zone (az)" sort="19" />
+                    <item view="Cranium: Bft Associated Percussion Marks (pm)" solrName="Cranium: Bft Associated Percussion Marks (pm)" sort="20" />
+                    <item view="Cranium: Vault Release (vr)" solrName="Cranium: Vault Release (vr)" sort="21" />
+                    <item view="Cranium: Associated Concentric Frags (ac)" solrName="Cranium: Associated Concentric Frags (ac)" sort="22" /> 
+                </subField>
+                <subField view="Long Bone Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Rep. Proximal Epiphysis (Long Bones)" solrName="Rep. Proximal Epiphysis (Long Bones)" sort="20" />
+                    <item view="Rep. Proximal Metaphysis (Long Bones)" solrName="Rep. Proximal Metaphysis (Long Bones)" sort="21" />
+                    <item view="Rep. Shaft (Long Bones)" solrName="Rep. Shaft (Long Bones)" sort="22" />
+                    <item view="Rep. Distal Metaphysis (Long Bones)" solrName="Rep. Distal Metaphysis (Long Bones)" sort="23" />
+                    <item view="Rep. Distal Epiphysis (Long Bones)" solrName="Rep. Distal Epiphysis (Long Bones)" sort="24" />
+                    <item view="Shaft Circumference (Long Bones)" solrName="Shaft Circumference (Long Bones)" sort="25" />
+                    <item view="Specimen Length (Long Bones) (mm)" solrName="Specimen Length (Long Bones) (mm)" sort="26" />
+                    <item view="#ancient, #modern Fracture Edges (Long Bones) " solrName="#ancient, #modern Fracture Edges (Long Bones) " sort="27" />
+                </subField>
+                <subField view="Scapula Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Scapula: Glenoid Fossa" solrName="Scapula: Glenoid Fossa" sort="28" />
+                    <item view="Scapula: Axillary Border" solrName="Scapula: Axillary Border" sort="29" />
+                    <item view="Scapula: Acromion" solrName="Scapula: Acromion" sort="30" />
+                    <item view="Scapula: Spinoglenoid Ntch" solrName="Scapula: Spinoglenoid Ntch" sort="31" />
+                    <item view="Scapula: Corocoid Process" solrName="Scapula: Corocoid Process" sort="32" />
+                    <item view="Scapula: Corocoid Notch" solrName="Scapula: Corocoid Notch" sort="33" />
+                    <item view="Scapula: Spine" solrName="Scapula: Spine" sort="34" />
+                    <item view="Scapula: Body" solrName="Scapula: Body" sort="35" />
+                    <item view="Scapula: Vertebral Border" solrName="Scapula: Vertebral Border" sort="36" />
+                    <item view="Scapula: Inf. Angle" solrName="Scapula: Inf. Angle" sort="37" />    
+                </subField>
+                <subField view="Rib Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Rib: Head, Neck, Tubercle (pxep)" solrName="Rib: Head, Neck, Tubercle (pxep)" sort="38" />
+                    <item view="Rib: Tubercle -angle (vert Shaft)" solrName="Rib: Tubercle -angle (vert Shaft)" sort="39" />
+                    <item view="Rib: Angle-sternal End (sternal Shaft)" solrName="Rib: Angle-sternal End (sternal Shaft)" sort="40" />
+                    <item view="Rib: Sternal Ep (dsep)" solrName="Rib: Sternal Ep (dsep)" sort="41" />    
+                </subField>
+                <subField view="Vertebra Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Vertebra: Spine" solrName="Vertebra: Spine" sort="42" />
+                    <item view="Vertebra: Left Arch" solrName="Vertebra: Left Arch" sort="43" />
+                    <item view="Vert: Right Arch" solrName="Vert: Right Arch" sort="44" />
+                    <item view="Vert: Right Superior Articular Facet" solrName="Vert: Right Superior Articular Facet" sort="45" />
+                    <item view="Vert: Right Inferior Articular Facet" solrName="Vert: Right Inferior Articular Facet" sort="46" />
+                    <item view="Vert: Left Superior Articular Facet" solrName="Vert: Left Superior Articular Facet" sort="47" />
+                    <item view="Vert: Left Inferior Articular Facet" solrName="Vert: Left Inferior Articular Facet" sort="48" />
+                    <item view="Vert: Transverse Process" solrName="Vert: Transverse Process" sort="49" />
+                    <item view="Vert: Body" solrName="Vert: Body" sort="50" />
+                    <item view="Vert: Dens" solrName="Vert: Dens" sort="51" />
+                    <item view="Vert: Indet" solrName="Vert: Indet" sort="52" />
+                </subField>
+                <subField view="Pelvis / Sacrum Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Acetabulum" solrName="Acetabulum" sort="53" />
+                    <item view="Illium: Blade/fossa" solrName="Illium: Blade/fossa" sort="54" />
+                    <item view="Ilium : Superior and Inferior Iliac Crest" solrName="Ilium : Superior and Inferior Iliac Crest" sort="55" />
+                    <item view="Ilium: Auricular Area" solrName="Ilium: Auricular Area" sort="56" />
+                    <item view="Ilium: Sciatic Notch Apex" solrName="Ilium: Sciatic Notch Apex" sort="57" />
+                    <item view="Ilium: Int. Arcate Line Area" solrName="Ilium: Int. Arcate Line Area" sort="58" />
+                    <item view="Ischial Pubic Ramus" solrName="Ischial Pubic Ramus" sort="59" />
+                    <item view="Pubis: Symphysis" solrName="Pubis: Symphysis" sort="60" />
+                    <item view="Pubis: Iliopubic Ramus" solrName="Pubis: Iliopubic Ramus" sort="61" />
+                    <item view="Sacrum: Promontory" solrName="Sacrum: Promontory" sort="62" />
+                    <item view="Sacrum: Ala/auricular Area " solrName="Sacrum: Ala/auricular Area " sort="63" />
+                    <item view="Sacrum: Dorsal Wall" solrName="Sacrum: Dorsal Wall" sort="64" />   
+                </subField>
+                <subField view="Cranial Preservation" collapse="false" showType="list" showNum="15" sort="5">
+                    <item view="Cranium: Pre-conjoin Completeness" solrName="Cranium: Pre-conjoin Completeness" sort="65" />
+                    <item view="Cranium: Post Conjoin Completeness" solrName="Cranium: Post Conjoin Completeness" sort="66" />
+                    <item view="Vault: Indeterminate Squama" solrName="Vault: Indeterminate Squama" sort="67" />
+                    <item view="Frontal: Right Supraorbital Torus" solrName="Frontal: Right Supraorbital Torus" sort="68" />
+                    <item view="Frontal: Left Supraorbital Torus" solrName="Frontal: Left Supraorbital Torus" sort="69" />
+                    <item view="Frontal: Glabella" solrName="Frontal: Glabella" sort="70" />
+                    <item view="Frontal: Squama" solrName="Frontal: Squama" sort="71" />
+                    <item view="Frontal: Temporal Lines" solrName="Frontal: Temporal Lines" sort="72" />
+                    <item view="Right Parietal: Superior Squama" solrName="Right Parietal: Superior Squama" sort="73" />
+                    <item view="Right Parietal: Temporal Line" solrName="Right Parietal: Temporal Line" sort="74" />
+                    <item view="Right Parietal: Inferior Squama" solrName="Right Parietal: Inferior Squama" sort="75" />
+                    <item view="Right Parietal Boss" solrName="Right Parietal Boss" sort="76" />
+                    <item view="Left Parietal: Superior Squama" solrName="Left Parietal: Superior Squama" sort="77" />
+                    <item view="Left Parietal: Temporal Line" solrName="Left Parietal: Temporal Line" sort="78" />
+                    <item view="Left Parietal: Inferior Squama" solrName="Left Parietal: Inferior Squama" sort="79" />
+                    <item view="Left Parietal Boss" solrName="Left Parietal Boss" sort="80" />
+                    <item view="Right Temporal Squama" solrName="Right Temporal Squama" sort="81" />
+                    <item view="Right Zygomatic Arch" solrName="Right Zygomatic Arch" sort="82" />
+                    <item view="Right Temporal Eam" solrName="Right Temporal Eam" sort="83" />
+                    <item view="Right Temporal Mastoid" solrName="Right Temporal Mastoid" sort="84" />
+                    <item view="Right Temporal Petrosal" solrName="Right Temporal Petrosal" sort="85" />
+                    <item view="Right Temporal Glenoid" solrName="Right Temporal Glenoid" sort="86" />
+                    <item view="Left Temporal Squama" solrName="Left Temporal Squama" sort="87" />
+                    <item view="Left Zygomatic Arch" solrName="Left Zygomatic Arch" sort="88" />
+                    <item view="Left Temporal Eam" solrName="Left Temporal Eam" sort="89" />
+                    <item view="Left Temporal Mastoid" solrName="Left Temporal Mastoid" sort="90" />
+                    <item view="Left Temporal Petrosal" solrName="Left Temporal Petrosal" sort="91" />
+                    <item view="Left Temporal Glenoid" solrName="Left Temporal Glenoid" sort="92" />
+                    <item view="Occipital: Lambda, Sup Planum" solrName="Occipital: Lambda, Sup Planum" sort="93" />
+                    <item view="Occipital: Inion" solrName="Occipital: Inion" sort="94" />
+                    <item view="Occipital: Inf Planum" solrName="Occipital: Inf Planum" sort="95" />
+                    <item view="Occipital: Basioccipital" solrName="Occipital: Basioccipital" sort="96" />
+                    <item view="Occipital: Foramen Magnum" solrName="Occipital: Foramen Magnum" sort="97" />
+                    <item view="Right Maxilla: Body" solrName="Right Maxilla: Body" sort="98" />
+                    <item view="Right Maxilla: Dental Arcade I-c" solrName="Right Maxilla: Dental Arcade I-c" sort="99" />
+                    <item view="Right Maxilla: Dental Arcade P3-m3" solrName="Right Maxilla: Dental Arcade P3-m3" sort="100" />
+                    <item view="Left Maxilla: Body" solrName="Left Maxilla: Body" sort="101" />
+                    <item view="Left Maxilla: Dental Arcade I-c" solrName="Left Maxilla: Dental Arcade I-c" sort="102" />
+                    <item view="Left Maxilla: Dental Arcade P3-m3" solrName="Left Maxilla: Dental Arcade P3-m3" sort="103" />
+                    <item view="Sphenoid" solrName="Sphenoid" sort="104" />
+                    <item view="Right Nasal " solrName="Right Nasal " sort="105" />
+                    <item view="Left Nasal " solrName="Left Nasal " sort="106" />
+                    <item view="Right Zygomatic" solrName="Right Zygomatic" sort="107" />
+                    <item view="Left Zygomatic " solrName="Left Zygomatic " sort="108" />
+                    <item view="Right Palatine" solrName="Right Palatine" sort="109" />
+                    <item view="Left Palatine" solrName="Left Palatine" sort="110" />
+                    <item view="Ethmoid" solrName="Ethmoid" sort="111" />
+                    <item view="Right Lacrimal" solrName="Right Lacrimal" sort="112" />
+                    <item view="Left Lacrimal" solrName="Left Lacrimal" sort="113" />
+                </subField>
+                <subField view="Mansible Preservation" collapse="false" showType="list" sort="5">
+                    <item view="Mandible: Right Condyle" solrName="Mandible: Right Condyle" sort="114" />
+                    <item view="Mandible: Right Ascending Ramus" solrName="Mandible: Right Ascending Ramus" sort="115" />
+                    <item view="Mandible: Right Body" solrName="Mandible: Right Body" sort="116" />
+                    <item view="Mandible: Symphysis" solrName="Mandible: Symphysis" sort="117" />
+                    <item view="Mandible: Left Condyle" solrName="Mandible: Left Condyle" sort="118" />
+                    <item view="Mandible: Left Ascending Ramus" solrName="Mandible: Left Ascending Ramus" sort="119" />
+                    <item view="Mandible: Left Body" solrName="Mandible: Left Body" sort="120" />    
+                </subField>
+                <subField view="Other Variables" collapse="true" showType="remainder" showNum="15" sort="4" />
+            </itemSort>
+        </settings>
+    </field>
+    <field view="Related People" solrName="person_link" sort="8">
+        <settings>
+            <collapse>false</collapse>
+            <showNum>10</showNum>
+            <itemSort type="organize">
+                <subField view="Project Directors" collapse="false" showType="list" sort="1">
+                    <item view="Stuart Campbell" solrName="Stuart Campbell" sort="1" />
+                    <item view="Elizabeth Carter" solrName="Elizabeth Carter" sort="2" />
+                </subField>
+                <subField view="Project Specialists" collapse="false" showType="list" sort="2">
+                    <item view="Sarah Whitcher Kansa" solrName="Sarah Whitcher Kansa" sort="1" />
+                    <item view="Suellen Gauld" solrName="Suellen Gauld" sort="2" />
+                    <item view="Phillip M. Rassman" solrName="Phillip M. Rassman" sort="3" />
+                </subField>
+                <subField view="Other Participants" collapse="true" showType="remainder" showNum="100" sort="3" />
+            </itemSort>
+        </settings>
+    </field>
+</root>
+

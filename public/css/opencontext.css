@@ -1,0 +1,271 @@
+@charset "utf-8";
+/* CSS Document */
+
+#namelayer {
+	position:absolute;
+	width:516px;
+	height:22px;
+	z-index:3;
+	left: 277px;
+	top: 75px;
+}
+#toptabs {
+	position:absolute;
+	width:792px;
+	height:29px;
+	z-index:1;
+	left: 2px;
+	top: 94px;
+}
+#main_page {
+	position:relative;
+	z-index:2;
+	top: 30px;
+	width: 790px;
+	min-height:400px;
+	top:100px;
+}
+
+#item_general {
+	position:relative;
+	left:3px;
+	width:787px;
+	height:40px;
+	z-index:5;
+}
+#item_name_class {
+	float:left;
+	width:278px;
+	height:40px;
+	z-index:5;
+}
+#item_class_icon {
+	float:left;
+	width:40px;
+	height:40px;
+	vertical-align:middle;
+	z-index:5;
+}
+#item_name {
+	float:left;
+	width:200px;
+	height:18px;
+	margin-left:4px;
+	line-height:15px;
+	margin-bottom:6px;
+	z-index:5;
+}
+#item_class {
+	float:left;
+	width:200px;
+	height:22px;
+	padding-bottom:4px;
+	margin-left:4px;
+	vertical-align:top;
+	z-index:5;
+}
+
+#viewtrack {
+	float:left;
+	width:130px;
+	height:40px;
+	z-index:5;
+}
+#item_views {
+	float:left;
+	width:129px;
+	height:14px;
+	margin-left:4px;
+	line-height:15px;
+	margin-bottom:4px;
+	z-index:5;
+}
+#item_last_view {
+	float:left;
+	width:129px;
+	height:26px;
+	padding-bottom:4px;
+	margin-left:4px;
+	vertical-align:top;
+	z-index:5;
+}
+
+
+
+#parent_contexts {
+	position:relative;
+	width:787px;
+	height:16px;
+	z-index:6;
+	left:3px;
+	top:3px;
+}
+#contexttitle {
+	float:left;
+	width:160px;
+	height:16px;
+	z-index:6;
+}
+#pcontext {
+	float:left;
+	width:624px;
+	height:16px;
+	z-index:7;
+	overflow: hidden;
+}
+
+#main_descriptions{
+	position:relative;
+	width:787px;
+	z-index:6;
+	left:3px;
+	top:6px;
+}
+#allprops {
+	float:left;
+	width:300px;
+	z-index:6;
+}
+#proptitle {
+	float:left;
+	width:300px;
+	height:26px;
+	z-index:6;
+	left: 5px;
+	top: 5px;
+	background-image: url(http://www.opencontext.org/database/ui_images/oc_h2_contents.jpg);
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: none;
+	border-top-color: #D7D7D7;
+	border-right-color: #D7D7D7;
+	border-bottom-color: #D7D7D7;
+	border-left-color: #D7D7D7;
+	border-left-style: solid;
+}
+#props {
+	float:left;
+	width:300px;
+	min-height:212px;
+	z-index:5;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #D7D7D7;
+	border-right-color: #D7D7D7;
+	border-bottom-color: #D7D7D7;
+	border-left-color: #D7D7D7;
+}
+#allchildren {
+	width:165px;
+	z-index:6;
+	margin-left:8px;
+	float:left;
+}
+#childtitle {
+	float:left;
+	width:165px;
+	height:26px;
+	z-index:6;
+	background-image: url(http://www.opencontext.org/database/ui_images/oc_h2_contents.jpg);
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: none;
+	border-left-style: solid;
+	border-top-color: #D7D7D7;
+	border-right-color: #D7D7D7;
+	border-bottom-color: #D7D7D7;
+	border-left-color: #D7D7D7;
+}
+#children {
+	float:left;
+	width:165px;
+	min-height:118px;
+	z-index:5;
+	overflow: auto;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #D7D7D7;
+	border-right-color: #D7D7D7;
+	border-bottom-color: #D7D7D7;
+	border-left-color: #D7D7D7;
+}
+#alllinks {
+	width:165px;
+	z-index:6;
+	margin-left:8px;
+	float:left;
+}
+#linkstitle {
+	float:left;
+	width:165px;
+	height:26px;
+	background-image: url(http://www.opencontext.org/database/ui_images/oc_h2_contents.jpg);
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: none;
+	border-left-style: solid;
+	border-top-color: #D7D7D7;
+	border-right-color: #D7D7D7;
+	border-bottom-color: #D7D7D7;
+	border-left-color: #D7D7D7;
+}
+#links {
+	float:left;
+	width:165px;
+	min-height:118px;
+	overflow: auto;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #D7D7D7;
+	border-right-color: #D7D7D7;
+	border-bottom-color: #D7D7D7;
+	border-left-color: #D7D7D7;
+}
+
+
+
+
+
+
+
+#w3c_val_logo {
+	position:relative;
+	z-index:3;
+	left: 10px;
+	top: -42px;
+}
+#footer {
+	position:relative;
+	width:792px;
+	height:50px;
+	z-index:2;
+	left: 0px;
+	top: 80px;
+}

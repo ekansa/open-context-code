@@ -1,0 +1,6 @@
+<h2>{{#?.type}}<span class="res-type">{{type}}:</span>{{/?.type}} {{name}}</h2>
+<div><a href="{{href}}" target="_blank">{{href}}</a></div>
+{{#?.latlon}}
+    <div class="media"><img src="http://maps.google.com/maps/api/staticmap?size=120x120&amp;zoom=4&amp;markers=color:blue%7C{{latlon}}&amp;sensor=false&amp;maptype=terrain"></div>
+{{/?.latlon}}
+<p>{{{description}}}</p>

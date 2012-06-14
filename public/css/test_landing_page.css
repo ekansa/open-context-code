@@ -1,0 +1,122 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+
+#main{
+  font-family:“Lucida Grande”, sans-serif;
+	position:relative;
+	width:791px;
+	z-index:1;
+	top:120px;
+	min-height:400px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	margin-left: 5px;
+	background-color: #FfFfFf;
+}
+#left{
+	float: left;
+	width:25%;
+	z-index:6;
+	left:3px;
+	top:6px;
+	padding: 6px;
+	min-height:400px;
+}
+#right{
+	float: right;
+	margin-right: 10px;
+	width:68%;
+	z-index:6;
+	left:3px;
+	top:6px;
+	min-height:400px;
+	text-align: right;
+	margin-bottom: 30px;
+}
+#bottom {
+	clear: both;
+	width:98%;
+	z-index:6;
+	left:3px;
+	top:6px;
+}
+#pageTop {
+	position: relative;
+	top: 10px;
+	width:98%;
+}
+#pageIntro {
+	float: left;
+	padding:5px;
+	width:77%;
+	float: left;
+}
+#about_submenu {
+	padding:5px;
+	width:18%;
+	float: right;
+	margin-top: 30px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	background-color: #F5F5DC;
+}
+#pageTopEnd {
+	clear: both;
+	width:98%;
+}
+
+/* styles for the widget creator section*/
+#widget_creator_container{width:550px;font-family:arial;font-size:12px; margin-left:30px;}
+#widget_creator_container .url_box{padding:8px 8px 4px 8px;background:#d4e7ff;border:1px solid #89beff;}
+#help_div{}
+
+
+/* styles for the table pages */
+#table_left_page{margin:12px 0px 0px 20px;float:left;width:530px;}
+#table_left_page p.heading {font-size:16px;}
+#table_left_page p.description{font-size:12px;}
+#table_left_page .box{padding:8px 8px 4px 8px;background:#d4e7ff;border:1px solid #89beff;}
+
+#table_right_page{margin:19px 19px 0px 0px;float:right;width:200px;}
+#panel {margin-bottom:12px;}
+#panel .panel_heading{background:#e4e4e4;padding:3px;font-size:13px;font-weight:bold; }
+#panel .panel_content{border:1px solid #e4e4e4;padding:5px;font-size:12px;}
+.metadata_info{background:#f8f4b9;border:1px solid #d2d2d2;color:#36362e;font-size:10px;padding:9px;}
+.metadata_info ul{margin:6px 0px 0px 0px;padding:0px;font-size:12px;color:black;}
+.metadata_info li{margin-left:17px;}
+.metadata_info .heading{font-size:15px;font-weight:bold;padding:0px 0px 9px 0px;}
+.metadata_info .section{font-size:13px;font-weight:bold;}
+#progress_zone {display:none;width:100%;font-size:12px;margin-top:9px;}
+
+#progress_zone .progress_bar{line-height:13px;background:#f67d12;width:5%;border:1px solid #d4d4d4;margin-top:2px;}
+
+table{width:100%;}
+td, th { font-size:12px; line-height:13px; border-bottom:1px solid #eee; vertical-align:top; padding:5px;}
+th { text-align:left; font-size:12px; font-weight:bold; }
+thead th, 
+tfoot td { color:#666; padding:2px 5px; font-size:11px; background:#e1e1e1 url(../images/widget/nav-bg.gif) top left repeat-x; border-left:1px solid #ddd; border-bottom:1px solid #ddd; }
+tfoot td { border-bottom:none; border-top:1px solid #ddd; }
+thead th:first-child, 
+tfoot td:first-child { border-left:none !important; }
+thead th.optional { font-weight:normal !important; }
+fieldset table { border-right:1px solid #eee; }
+tr.row-label td { font-size:9px; padding-top:2px; padding-bottom:0; border-bottom:none; color:#666; margin-top:-1px; }
+tr.alt { background:#f6f6f6; }
+.row1 { background:#EDF3FE; }
+.row2 { background:white; }
+.metadata{margin: 0px 0px 10px 0px;}
+.metadata table{border:1px solid #ede984;} 
+.metadata td{padding:3px 0px 3px 5px;;border:0px;}
+
+.paginator { font-size:11px; padding:5px 0px 5px 0px;line-height:22px; margin:0px; text-align:center; }
+.paginator a:link, .paginator a:visited { padding:2px 6px; border:solid 1px #ccc; background:white; text-decoration:none; }
+.paginator a.showall { padding:0 !important; border:none !important; }
+.paginator a.showall:hover { color:#036 !important; background:transparent !important; }
+.paginator .end { border-width:2px !important; margin-right:6px; }
+.paginator .this-page { padding:2px 6px; font-weight:bold; font-size:13px; vertical-align:top; }
+.paginator a:hover { color:white; background:#5b80b2; border-color:#036; }
+
+.breadcrumb{margin:10px 0px 0px 20px;padding:0px;font-size:11px;}

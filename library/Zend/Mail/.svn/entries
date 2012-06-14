@@ -1,0 +1,79 @@
+8
+
+dir
+0
+https://svn.ischool.berkeley.edu/opencontext/trunk/library/Zend/Mail
+https://svn.ischool.berkeley.edu/opencontext
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Protocol
+dir
+
+
+
+add
+
+Exception.php
+file
+
+
+
+add
+
+Message
+dir
+
+
+
+add
+
+Storage
+dir
+
+
+
+add
+
+Part
+dir
+
+
+
+add
+
+Storage.php
+file
+
+
+
+add
+
+Message.php
+file
+
+
+
+add
+
+Transport
+dir
+
+
+
+add
+
+Part.php
+file
+
+
+
+add
+
