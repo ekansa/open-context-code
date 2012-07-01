@@ -27,7 +27,7 @@ class allController extends Zend_Controller_Action
   }//end function
     
   
-   public function atomAction(){
+  public function atomAction(){
     $this->_helper->viewRenderer->setNoRender();
     
     //check for referring links
@@ -41,11 +41,12 @@ class allController extends Zend_Controller_Action
       $page = 1;
     }
     
+    mb_internal_encoding( 'UTF-8' );
     $host = OpenContext_OCConfig::get_host_config();
     $archiveFeed = new ArchiveFeed;
     $archiveFeed->set_up_feed_page($page);
     
-    header('Content-type: application/atom+xml', true);
+    header('Content-type: application/atom+xml; charset=utf-8', true);
     echo $archiveFeed->generateFeed();
     
   }//end function
@@ -69,6 +70,7 @@ class allController extends Zend_Controller_Action
     else{
       $batch = 0;
     }
+    mb_internal_encoding( 'UTF-8' );
     $archiveFeed = new ArchiveFeed;
     $archiveFeed->set_up_feed_page(1);
     echo "Start Batch: ".$batch;
@@ -94,5 +96,25 @@ class allController extends Zend_Controller_Action
     //echo "<br/><a href='http://opencontext.org/all/space?batch=".$batch."'>next...</a>";
   }
   
+  
+  public function siteMapAction(){
+    $this->_helper->viewRenderer->setNoRender();
+    
+    $siteMapObj = new SiteMap;
+    
+    /*
+    $siteMapObj->startDB();
+    $siteMapObj->getMaxRankings();
+    $siteMapObj->get_items();
+    $siteMapObj->adjust_rankings();
+    */
+    
+    
+    //header('Content-Type: application/javascript; charset=utf8');
+    //echo Zend_Json::encode($siteMapObj->itemList);
+    
+    header('Content-Type: application/xml; charset=utf-8');
+    echo $siteMapObj->get_make_sitemap();
+  }
    
 }//end of class

@@ -95,7 +95,7 @@ class ArchiveFeed {
     
     function generateFeed(){
 	
-	
+	mb_internal_encoding( 'UTF-8' );
 	$feedItems = $this->feedItems;
 	$host = OpenContext_OCConfig::get_host_config();
 	$base_hostname = OpenContext_OCConfig::get_host_config(false);
