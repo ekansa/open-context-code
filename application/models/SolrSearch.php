@@ -653,29 +653,29 @@ class solrSearch{
 	
 	if($this->spatial || $this->image || $this->document || $this->project){
 	    if(!empty($doc->time_span)){
-			$actDocOutput["time_span"] = $doc->time_span;
+		$actDocOutput["time_span"] = $doc->time_span;
 	    }
 	    if(!empty($doc->geo_lat)){
-			$actDocOutput["geo_lat"] = $doc->geo_lat;
+		$actDocOutput["geo_lat"] = $doc->geo_lat;
 	    }
 	    if(!empty($doc->geo_long)){
-			$actDocOutput["geo_long"] = $doc->geo_long;
+		$actDocOutput["geo_long"] = $doc->geo_long;
 	    }
 	    if(!empty($doc->geo_point)){
-			$actDocOutput["geo_point"] = $doc->geo_point;
+		$actDocOutput["geo_point"] = $doc->geo_point;
 	    }
 	    if(!empty($doc->project_name)){
-			$actDocOutput["project_name"] = $doc->project_name;
+		$actDocOutput["project_name"] = $doc->project_name;
 	    }
 	    if(!empty($doc->item_class)){
-			$actDocOutput["item_class"] = $doc->item_class;
+		$actDocOutput["item_class"] = $doc->item_class;
 	    }
 	    if(!empty($doc->creator)){
-			$actDocOutput["creator"] = $doc->creator;
+		$actDocOutput["creator"] = $doc->creator;
 	    }
 	    if(!empty($doc->contributor)){
-			$actDocOutput["contributor"] = $doc->contributor;
-	    }  
+		$actDocOutput["contributor"] = $doc->contributor;
+	    } 
 	}
 	
 	return $actDocOutput;
@@ -780,14 +780,17 @@ class solrSearch{
 		
 		$default_context_path = $this->default_context_path;
 		if (!$default_context_path) {
-				$query = "[* TO *]";
+		    $query = "*:*";
 			// otherwise, query for the default context path.
-			} else {
-				$query = "default_context_path:" . $default_context_path . "*";
-			}    
+		} else {
+		    $query = "default_context_path:" . $default_context_path . "*";
+		}    
 			
 		$contextArray = Opencontext_FacetQuery::defaultContextORparser("default_context_path", $this->original_default_context_path);
 		$query = $contextArray["query"];
+		if(!stristr($query, "default_context_path")){
+		    $query = "*:*";
+		}
 		
 		if($this->geoParam != false){
 			$query = "(".$query.") && (".$this->geoParam.")";
@@ -799,7 +802,7 @@ class solrSearch{
 		}
 		
 		unset($param_array["bq"]);
-		$param_array["bq"][] = "{item_type:site^10}";
+		//$param_array["bq"][] = "{item_type:site^10}";
 		//$param_array["fq"] .= " && item_type:site^10";
 		//$param_array["bq"][] = "!item_type:project^5";
 		
