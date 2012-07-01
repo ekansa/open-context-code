@@ -122,7 +122,7 @@ class aboutController extends Zend_Controller_Action
 		
         $this->view->ok = true;
 	$this->view->blubbie = "Blubbie";
-        OpenContext_SocialTracking::update_referring_link('about - IP', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);        
+        //OpenContext_SocialTracking::update_referring_link('about - IP', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);        
         //$this->view->result = $result;
                 
     }
