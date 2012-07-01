@@ -481,6 +481,15 @@ Code for showing the database-like content
 									</img>
 								</a>
 							</td>
+							<xsl:if test="oc:relation != 'link'" >
+								<td>
+										<a>
+										<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+										<xsl:attribute name="title"><xsl:value-of select="oc:relation"/>: <xsl:value-of select="oc:name"/></xsl:attribute>
+										<xsl:value-of select="oc:relation"/>
+										</a>
+								</td>
+						        </xsl:if>
 						</tr>
 				</xsl:for-each>
 			</table>
