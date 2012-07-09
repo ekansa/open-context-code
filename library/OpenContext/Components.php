@@ -21,8 +21,14 @@ class OpenContext_Components {
 			"about" => array("css" => array(),
 					"js"=> array()
 				),
-			"browse" => array("css" => array("/css/opencontext_style.css",
+			"browse" => array("css" => array(
+							/*
+						       "/css/opencontext_style.css",
 						       "/css/default_banner.css",
+							*/
+							"/css/oc-layout-rev2.css",
+							"/css/bootstrap.css",
+							"/css/bootstrap-responsive.css",
 						       "/css/opencontext_browse.css",
 						       "/css/atomresults.css",
 						       "/css/rounded_corners.css"

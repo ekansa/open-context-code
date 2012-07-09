@@ -11,10 +11,10 @@ $host = OpenContext_OCConfig::get_host_config();
         <div id="headerTopLogoArea">
             <div id="headerTopLogoRow">
                 <div id="headerTopLogoCellImage">
-                    <a href="../" title="Open Context (Home)"><img src="../images/layout/oc-door-logo.png" alt="Open Context Logo"/></a>
+                    <a href="<?php echo $host;?>" title="Open Context (Home)"><img src="<?php echo $host;?>/images/layout/oc-door-logo.png" alt="Open Context Logo"/></a>
                 </div>
                 <div id="headerTopLogoCellText">
-                    <a href="../" title="Open Context (Home)">Open Context</a>
+                    <a href="<?php echo $host;?>" title="Open Context (Home)">Open Context</a>
                 </div>
             </div>
             <div id="headerTopLogoTagLine">
@@ -25,6 +25,7 @@ $host = OpenContext_OCConfig::get_host_config();
         <div id="headerMiddleArea">
         </div>
 
+        <!--
         <div id="headerSearchArea">
             <div id="id="headerSearchFormArea">
                 <form method="get" action="<?php echo $host;?>/search/" id="search-form">
@@ -37,6 +38,6 @@ $host = OpenContext_OCConfig::get_host_config();
                 </form>
             </div>
         </div>
-        
+        -->
     </div>
 </div>

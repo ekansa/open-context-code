@@ -97,7 +97,10 @@ class setsController extends Zend_Controller_Action {
 	
 	
 	
-	$this->view->result_output = OpenContext_ResultAtom::atom_to_html($solrSearch->currentAtom, $solrSearch->makeSpaceAtomFeed()); //generate xhtml result output
+	//$this->view->result_output = OpenContext_ResultAtom::atom_to_html($solrSearch->currentAtom, $solrSearch->makeSpaceAtomFeed()); //generate xhtml result output
+	$atom_string = $solrSearch->makeSpaceAtomFeed();
+	$this->view->spaceResults = $solrSearch->atom_to_object($atom_string);
+	
 	/*
 	$output = array("numFound" => $solrSearch->numFound,
 			"facets" => $solrSearch->facets,
@@ -623,8 +626,8 @@ class setsController extends Zend_Controller_Action {
 				"geoTileFacets" => $facetURLs->geoTileFacetURLs,
 				"paging" => $pagingArray,
 				//"facetsA" => $solrSearch->facets,
-				"results" => $spaceResults["items"]
-				//"qstring" => "http://localhost:8983/solr/select/?".$solrSearch->queryString
+				"results" => $spaceResults["items"],
+				"qstring" => "http://localhost:8983/solr/select/?".$solrSearch->queryString
 				);
 		
 		$this->_helper->viewRenderer->setNoRender();
@@ -648,47 +651,47 @@ class setsController extends Zend_Controller_Action {
     
     public function googearthAction(){
         
-	if(OpenContext_UserMessages::isSolrDown()){
-	    return $this->render('down');
-	}
-	
-	$protect = new Floodprotection; //check to make sure service is not abused by too many requests
-	$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
-	$protect->check_ip();
-	if($protect->lock){
-	    sleep($protect->sleepTime);
-	}
-	unset($protect);
-	
-	//$this->_helper->viewRenderer->setNoRender();
+		if(OpenContext_UserMessages::isSolrDown()){
+			return $this->render('down');
+		}
+		
+		$protect = new Floodprotection; //check to make sure service is not abused by too many requests
+		$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
+		$protect->check_ip();
+		if($protect->lock){
+			sleep($protect->sleepTime);
+		}
+		unset($protect);
+		
+		//$this->_helper->viewRenderer->setNoRender();
         $requestURI = $this->_request->getRequestUri();
-	$this->view->requestParams = $this->_request->getParams();
-	$requestParams = $this->_request->getParams();
-	
-	$requestURI = str_replace(".kml;balloonFlyto", "", $requestURI);
-	$requestURI = str_replace(".kml;balloon", "", $requestURI);
-	$requestURI = str_replace(".kml;flyto", "", $requestURI);
-	
-	$requestDecode = OpenContext_GoogleEarth::decodeFeatureAnchor($requestURI, $requestParams);
-	$requestURI = $requestDecode["requestURI"];
-	$requestParams = $requestDecode["params"];
-	
-	$checkCompData = OpenContext_GoogleEarth::checkCompData($requestURI, $requestParams);
-	$requestURI = $checkCompData["uri"];
-	$comp = $checkCompData["comp"];
-	
-	//echo $requestURI." <br/><br/>";
-	//echo "<br/>comp: ".$comp;
-	//echo var_dump($requestParams);
+		$this->view->requestParams = $this->_request->getParams();
+		$requestParams = $this->_request->getParams();
+		
+		$requestURI = str_replace(".kml;balloonFlyto", "", $requestURI);
+		$requestURI = str_replace(".kml;balloon", "", $requestURI);
+		$requestURI = str_replace(".kml;flyto", "", $requestURI);
+		
+		$requestDecode = OpenContext_GoogleEarth::decodeFeatureAnchor($requestURI, $requestParams);
+		$requestURI = $requestDecode["requestURI"];
+		$requestParams = $requestDecode["params"];
+		
+		$checkCompData = OpenContext_GoogleEarth::checkCompData($requestURI, $requestParams);
+		$requestURI = $checkCompData["uri"];
+		$comp = $checkCompData["comp"];
+		
+		//echo $requestURI." <br/><br/>";
+		//echo "<br/>comp: ".$comp;
+		//echo var_dump($requestParams);
 	
         $this->view->requestURI = $requestURI;
         $JSONdataURI = str_replace(".kml", ".json", $requestURI); 
-	$JSONdataURI = str_replace("sets/facets/", "sets/", $JSONdataURI); // uri for the JSON version of search results
-	
-	$frontendOptions = array(
-                'lifetime' => 72000, // cache lifetime, measured in seconds, 7200 = 2 hours
-                'automatic_serialization' => true
-        );
+		$JSONdataURI = str_replace("sets/facets/", "sets/", $JSONdataURI); // uri for the JSON version of search results
+		
+		$frontendOptions = array(
+					'lifetime' => 72000, // cache lifetime, measured in seconds, 7200 = 2 hours
+					'automatic_serialization' => true
+			);
                 
         $backendOptions = array(
             'cache_dir' => './cache/' // Directory where to put the cache files
@@ -727,26 +730,26 @@ class setsController extends Zend_Controller_Action {
 	    $compDenominators = array();
 	    
 	    foreach($compObject["facets"]["context"] as $actCompContext){
-		$key = $actCompContext["name"];
-		$compDenominators[$key] = $actCompContext["count"];
+			$key = $actCompContext["name"];
+			$compDenominators[$key] = $actCompContext["count"];
 	    }
 	    unset($compObject);
 	    //echo var_dump($compDenominators);
 	    
 	    $maxPercent = 100;
 	    foreach($OCData["facets"]["context"] as $actContext){
-		@$compTotal = $compDenominators[$actContext["name"]];
-		if(!$compTotal){
-		    $countPercent = 100;
-		    $compTotal = 0;
-		}
-		else{
-		    $countPercent = round((($actContext["count"] / $compTotal )*100),0);
-		}
-		
-		if($countPercent>$maxPercent){
-		    $maxPercent = $countPercent; //for cases where the numerator is larger than the denominator
-		}
+			@$compTotal = $compDenominators[$actContext["name"]];
+			if(!$compTotal){
+				$countPercent = 100;
+				$compTotal = 0;
+			}
+			else{
+				$countPercent = round((($actContext["count"] / $compTotal )*100),0);
+			}
+			
+			if($countPercent>$maxPercent){
+				$maxPercent = $countPercent; //for cases where the numerator is larger than the denominator
+			}
 	    }
 	    
 	    
@@ -926,140 +929,140 @@ class setsController extends Zend_Controller_Action {
     
     public function kmlresultsAction(){
         
-	if(OpenContext_UserMessages::isSolrDown()){
-	    return $this->render('down');
-	}
-	
-	$protect = new Floodprotection; //check to make sure service is not abused by too many requests
-	$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
-	$protect->check_ip();
-	if($protect->lock){
-	    sleep($protect->sleepTime);
-	}
-	unset($protect);
-	
-	//$this->_helper->viewRenderer->setNoRender();
-        $requestURI = $this->_request->getRequestUri();
-	$this->view->requestParams = $this->_request->getParams();
-	$requestParams = $this->_request->getParams();
-	
-	$requestURI = str_replace(".kml;balloonFlyto", "", $requestURI);
-	$requestURI = str_replace(".kml;balloon", "", $requestURI);
-	$requestURI = str_replace(".kml;flyto", "", $requestURI);
-	
-	$requestDecode = OpenContext_GoogleEarth::decodeFeatureAnchor($requestURI, $requestParams);
-	$requestURI = $requestDecode["requestURI"];
-	$requestParams = $requestDecode["params"];
-	
-	//echo $requestURI;
-        $this->view->requestURI = $requestURI;
-        $JSONdataURI = str_replace(".kml", ".json", $requestURI); // uri for the JSON version of search results
-	
-	 $frontendOptions = array(
-                'lifetime' => 72000, // cache lifetime, measured in seconds, 7200 = 2 hours
-                'automatic_serialization' => true
-        );
-                
-        $backendOptions = array(
-            'cache_dir' => './cache/' // Directory where to put the cache files
-        );
-                
-        $cache = Zend_Cache::factory('Core',
-                             'File',
-                             $frontendOptions,
-                             $backendOptions);
-        
-        
-        $cache->clean(Zend_Cache::CLEANING_MODE_OLD); // clean old cache records
-        $cache_id = "setJS_".md5($JSONdataURI);
-        
-        if(!$cache_result = $cache->load($cache_id)) {
-	    $JSON_string = file_get_contents($JSONdataURI);
-	}
-	else{
-	    $JSON_string = $cache_result;
-	}
-	
-	
-	$OCData = Zend_Json::decode($JSON_string);
-	
-	$itemPoint = array();
-	$resultCount = 0;
-	if(array_key_exists("results", $OCData)){
-	    $resultCount = count($OCData["results"]);
-	}
-	else{
-	    echo "<!-- ".$requestURI." -->";
-	}
-	
-	
-	$genPoints = false;
-	if($resultCount>0){
-	    $genPoints = array();
-	    $lonArray = array();
-	    $latArray = array();
-	    $minTime = 30000;
-	    $maxTime = -4500000000;
-	    foreach($OCData["results"] as $actItem){
-		
-		$act_lat = $actItem["geoTime"]["geoLat"]; 
-		$act_lon = $actItem["geoTime"]["geoLong"];
-		$latArray[] = $act_lat;
-		$lonArray[] = $act_lon;
-		$act_point = $act_lon.",".$act_lat;
-		
-		if($minTime > $actItem["geoTime"]["timeBegin"]){
-		   $minTime = $actItem["geoTime"]["timeBegin"];
-		}
-		if($maxTime < $actItem["geoTime"]["timeEnd"]){
-		   $maxTime = $actItem["geoTime"]["timeEnd"];
+		if(OpenContext_UserMessages::isSolrDown()){
+			return $this->render('down');
 		}
 		
+		$protect = new Floodprotection; //check to make sure service is not abused by too many requests
+		$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
+		$protect->check_ip();
+		if($protect->lock){
+			sleep($protect->sleepTime);
+		}
+		unset($protect);
 		
-		if(!in_array($act_point, $itemPoint)){
-		    $itemPoint[] = $act_point;
-		    $truePoint = true;
+		//$this->_helper->viewRenderer->setNoRender();
+		$requestURI = $this->_request->getRequestUri();
+		$this->view->requestParams = $this->_request->getParams();
+		$requestParams = $this->_request->getParams();
+		
+		$requestURI = str_replace(".kml;balloonFlyto", "", $requestURI);
+		$requestURI = str_replace(".kml;balloon", "", $requestURI);
+		$requestURI = str_replace(".kml;flyto", "", $requestURI);
+		
+		$requestDecode = OpenContext_GoogleEarth::decodeFeatureAnchor($requestURI, $requestParams);
+		$requestURI = $requestDecode["requestURI"];
+		$requestParams = $requestDecode["params"];
+		
+		//echo $requestURI;
+		$this->view->requestURI = $requestURI;
+		$JSONdataURI = str_replace(".kml", ".json", $requestURI); // uri for the JSON version of search results
+		
+		$frontendOptions = array(
+					'lifetime' => 72000, // cache lifetime, measured in seconds, 7200 = 2 hours
+					'automatic_serialization' => true
+			);
+					
+			$backendOptions = array(
+				'cache_dir' => './cache/' // Directory where to put the cache files
+			);
+					
+			$cache = Zend_Cache::factory('Core',
+								 'File',
+								 $frontendOptions,
+								 $backendOptions);
+			
+			
+			$cache->clean(Zend_Cache::CLEANING_MODE_OLD); // clean old cache records
+			$cache_id = "setJS_".md5($JSONdataURI);
+			
+			if(!$cache_result = $cache->load($cache_id)) {
+			$JSON_string = file_get_contents($JSONdataURI);
 		}
 		else{
-		    $randLat = (rand(-500,500))/100; //10 meter random offset
-		    $randLon = (rand(-500,500))/100; //10 meter random offset
-		    $degreeFactor = 1 /(111319.5);  // 1 degree = 111319.5 meters at the equator
-		    $act_lat = $act_lat + ($randLat*$degreeFactor);
-		    $act_lon = $act_lon + ($randLon*$degreeFactor);   
-		    $truePoint = false;
-		    $act_point = $act_lon.",".$act_lat;
+			$JSON_string = $cache_result;
 		}
 		
 		
-		$key = $actItem["uri"];
-		$genPoints[$key] = array("point"=>$act_point, "truePoint"=>$truePoint);
+		$OCData = Zend_Json::decode($JSON_string);
 		
-	    }
-	    
-	    $midLat = array_sum($latArray)/$resultCount;
-	    $midLon = array_sum($lonArray)/$resultCount;
-	    $viewRange = 100;
-	    
-	    $this->view->lookPos = array("lat" => $OCData["results"][0]["geoTime"]["geoLat"],
-					 "lon" => $OCData["results"][0]["geoTime"]["geoLong"],
-					 "range"=> $viewRange,
-					 "maxAlt"=> 100,
-					 "minTime"=> $minTime,
-					 "maxTime"=> $maxTime);
-	    
-	}
-	else{
-	    $OCData = false;
-	    $genPoints = false;
-	}
-	
-	$this->view->OCData = $OCData;
-	$this->view->GenPoints = $genPoints;
-	
-	//echo var_dump($genPoints);
-	
-	//header('Content-Type: application/json; charset=utf8');
-        //echo Zend_Json::encode($genPolys);
+		$itemPoint = array();
+		$resultCount = 0;
+		if(array_key_exists("results", $OCData)){
+			$resultCount = count($OCData["results"]);
+		}
+		else{
+			echo "<!-- ".$requestURI." -->";
+		}
+		
+		
+		$genPoints = false;
+		if($resultCount>0){
+			$genPoints = array();
+			$lonArray = array();
+			$latArray = array();
+			$minTime = 30000;
+			$maxTime = -4500000000;
+			foreach($OCData["results"] as $actItem){
+			
+			$act_lat = $actItem["geoTime"]["geoLat"]; 
+			$act_lon = $actItem["geoTime"]["geoLong"];
+			$latArray[] = $act_lat;
+			$lonArray[] = $act_lon;
+			$act_point = $act_lon.",".$act_lat;
+			
+			if($minTime > $actItem["geoTime"]["timeBegin"]){
+			   $minTime = $actItem["geoTime"]["timeBegin"];
+			}
+			if($maxTime < $actItem["geoTime"]["timeEnd"]){
+			   $maxTime = $actItem["geoTime"]["timeEnd"];
+			}
+			
+			
+			if(!in_array($act_point, $itemPoint)){
+				$itemPoint[] = $act_point;
+				$truePoint = true;
+			}
+			else{
+				$randLat = (rand(-500,500))/100; //10 meter random offset
+				$randLon = (rand(-500,500))/100; //10 meter random offset
+				$degreeFactor = 1 /(111319.5);  // 1 degree = 111319.5 meters at the equator
+				$act_lat = $act_lat + ($randLat*$degreeFactor);
+				$act_lon = $act_lon + ($randLon*$degreeFactor);   
+				$truePoint = false;
+				$act_point = $act_lon.",".$act_lat;
+			}
+			
+			
+			$key = $actItem["uri"];
+			$genPoints[$key] = array("point"=>$act_point, "truePoint"=>$truePoint);
+			
+			}
+			
+			$midLat = array_sum($latArray)/$resultCount;
+			$midLon = array_sum($lonArray)/$resultCount;
+			$viewRange = 100;
+			
+			$this->view->lookPos = array("lat" => $OCData["results"][0]["geoTime"]["geoLat"],
+						 "lon" => $OCData["results"][0]["geoTime"]["geoLong"],
+						 "range"=> $viewRange,
+						 "maxAlt"=> 100,
+						 "minTime"=> $minTime,
+						 "maxTime"=> $maxTime);
+			
+		}
+		else{
+			$OCData = false;
+			$genPoints = false;
+		}
+		
+		$this->view->OCData = $OCData;
+		$this->view->GenPoints = $genPoints;
+		
+		//echo var_dump($genPoints);
+		
+		//header('Content-Type: application/json; charset=utf8');
+			//echo Zend_Json::encode($genPolys);
 	
     }//end Googleearth Action function
     

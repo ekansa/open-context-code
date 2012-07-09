@@ -1,19 +1,5 @@
 <?php
 
-$host = OpenContext_OCConfig::get_host_config();
-
-/*
-$requestParams = $this->requestParams;
-
-if($requestParams["controller"] == "about"){
-    $navTab = "about";
-}
-else{
-    $navTab = false;
-}
-*/
-
-$activeTab = "about";
 
 $navTabArray = array("index"=> array("uri"=>"/",
                                       "name"=>"Home",
@@ -54,6 +40,33 @@ $navTabArray = array("index"=> array("uri"=>"/",
                       );
 
 
+//figure out what the active tab is
+$host = OpenContext_OCConfig::get_host_config();
+$request = $_SERVER['REQUEST_URI'];
+$requestEx = explode("/", $request);
+$requestPrefix = $requestEx[0];
+if(count($requestEx)>=2){
+    $requestPrefix .= $requestEx[1];
+}
+if(strlen($requestPrefix)>1){
+    $requestPrefix = "/".$requestPrefix."/";
+}
+else{
+    $requestPrefix = "/";
+}
+
+//now match the request prefix with uri paths from the nav-tab-array
+foreach($navTabArray as $navKey => $actNavArray){
+    if($requestPrefix == $actNavArray["uri"]){
+        $activeTab = $navKey;
+        break;
+    }
+}
+
+
+
+
+
     if($activeTab  == "search"){
         unset($navTabArray ["details"]);
     }
@@ -68,18 +81,18 @@ $navTabArray = array("index"=> array("uri"=>"/",
 
     $dom = new DOMDocument("1.0", "utf-8");
     $dom->formatOutput = true;
-    $root = $dom->createElement("div");
-    $root->setAttribute("id", "headerNavTabs");
+    $root = $dom->createElement("ul");
+    $root->setAttribute("class", "nav");
     $dom->appendChild($root);
     
     foreach($navTabArray  as $tab => $tabData){
         
-        $element = $dom->createElement("div");
+        $element = $dom->createElement("li");
         if($tab == $activeTab){
-            $element->setAttribute("class", "headerNavTabCurrent");
+            $element->setAttribute("class", "active");
         }
         else{
-            $element->setAttribute("class", "headerNavTabLink");
+            //$element->setAttribute("class", "headerNavTabLink");
         }
         $elementA = $dom->createElement("a");
         $elementA->setAttribute("href", $host.$tabData["uri"]);
@@ -97,9 +110,18 @@ $navTabArray = array("index"=> array("uri"=>"/",
 
 ?>
 
-
 <div id="headerNav">
-    <div id="headerNavContent">
-        <?php echo $output; ?>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <?php echo $output; ?>
+            <?php if($activeTab != "browse" && $activeTab != "lightbox"){ ?>
+            <form method="get" action="<?php echo $host;?>/search/" class="navbar-search pull-right" >
+                <input type="text" class="search-query span2" name="q" value="Search">
+                
+                    <input id="headerSearchSubmit" type="submit" value="" />
+                
+            </form>
+            <?php }//end case for no browse, or lightbox ?>
+        </div>
     </div>
 </div>

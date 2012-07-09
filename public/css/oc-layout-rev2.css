@@ -7,23 +7,26 @@ Heaader grey: #666666;
 
 body {
     text-align: center;
-    background-color:#F7F3E9;
-    font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
 #headerTop {
+    /*
     background-color: #003B66;
     border-style:solid;
     border-width:5px;
     border-color: #003366;
-    height: 90px;
-    min-width: 1000px;
+    */
+    color: black;
+    font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+    min-height: 90px;
+   
 }
 #headerTopContent{
-    width:1000px;
+    min-width:1000px;
     margin-left:auto;
     margin-right:auto;
     text-align:left;
+    width: 80%;
 }
 #headerTopLogoArea{
    float:left;
@@ -39,26 +42,25 @@ body {
     border:0;
 }
 #headerTopLogoCellText{
-    padding-left: 2px;
-    width: 40px;
+    padding-left: 2%;
+    width: 10px;
     display:table-cell;
     vertical-align:middle;
     text-align:left;
     text-transform:uppercase;
-    color: #FFFFFF;
-    font-size: 20px;
+    font-size: 1.4em;
     letter-spacing: normal;
     font-weight: normal;
     line-height: 20px;
 }
 #headerTopLogoCellText a {
     text-decoration: none;
-    color: #FFFFFF;
+    color: #003B66;
 }
 #headerTopLogoTagLine {
     text-align:left;
-    color: #FFFFFF;
-    font-size: 14px;
+    color: #003B66;
+    font-size: 1em;
     letter-spacing: normal;
     font-weight: normal;
     padding-top:2px;
@@ -85,7 +87,8 @@ body {
 }
 #headerSearchInputArea input {
     padding-left:8px;
-    border:0;
+    border: solid;
+    border-width: thin;
     border-radius:8px;
 }
 #headerSearchButtonArea {
@@ -133,53 +136,13 @@ body {
 
 
 
-
-
-
-
 #headerNav {
-    background-color: #666666;
-    border-style:solid;
-    border-width:5px;
-    border-color: #666666;
-    height: 30px;
-    min-width: 1000px;
-}
-#headerNavContent {
-    width:900px;
+    min-width:1000px;
+    width: 80%;
     margin-left:auto;
     margin-right:auto;
-    display:table;
 }
-#headerNavTabs{
-    display:table-row;
-    width:100%;
-}
-div.headerNavTabLink{
-    display:table-cell;
-    text-align:center;
-    vertical-align:top;
-    text-transform:uppercase;
-    font-size: 16px;
-}
-div.headerNavTabCurrent{
-    display:table-cell;
-    text-align:center;
-    vertical-align:top;
-    text-transform:uppercase;
-    font-size: 16px;
-    height: 32px;
-    background: url(../images/layout/activeTab.png) no-repeat bottom center;
-}
-div.headerNavTabLink a{
-    text-decoration: none;
-    color: #FFFFFF;
-}
-div.headerNavTabCurrent a{
-    text-decoration: none;
-    color: #FFFFFF;
-    font-weight: 900;
-}
+
 
 #footerTop{
     float: left;
@@ -207,11 +170,12 @@ div.headerNavTabCurrent a{
 
 
 #main{
-    width:1000px;
+    min-width:1000px;
+    width: 80%;
     margin-left:auto;
     margin-right:auto;
     text-align:left;
-	background-color: #FFFFFF;
+    background-color: #FFFFFF;
 }
 
 

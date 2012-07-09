@@ -1664,8 +1664,8 @@ class solrSearch{
 							foreach($act_content->xpath(".//xhtml:div[@class='item_label']") as $act_label){
 								$itemLabel = $act_label."";
 							}
-							foreach($act_content->xpath(".//xhtml:div[@class='item_label']") as $act_label){
-								$itemLabel = $act_label."";
+							foreach($act_content->xpath(".//xhtml:div[@class='context']") as $itemContextXML){
+								$itemContext = $itemContextXML->asXML();
 							}
 							$itemThumb = false;
 							if($act_content->xpath(".//xhtml:div[@class='item_thumb']//xhtml:img/@src")){
@@ -1684,6 +1684,7 @@ class solrSearch{
 									"catIcon"=>$itemIcon,
 									"project"=>$itemProject,
 									"label"=>$itemLabel,
+									"context"=> $itemContext,
 									"thumbIcon"=>$itemThumb,
 									"geoTime" => array("geoLat" => $geoLat,
 											   "geoLong" => $geoLon,

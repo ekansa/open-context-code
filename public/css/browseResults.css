@@ -1,0 +1,55 @@
+@charset "utf-8";
+div.subjectResult {
+	display:table-row; 
+	width:100%;
+
+}
+div.subjectClassIcon{
+	display:table-cell; 
+	vertical-align:middle; 
+	padding:1%;
+}
+div.subjectProject{
+	display:table-cell; 
+	vertical-align:middle; 
+	padding:1%;
+}
+div.subjectClassLabelContext{
+	display:table-cell; 
+	vertical-align:middle; 
+	padding:1%;
+}
+div.subjectClassLabelContext{
+	display:table-cell; 
+	vertical-align:middle; 
+	padding:1%;
+}
+div.subjectClassLabelA{
+	display:table; 
+	width:100%;
+}
+div.subjectClassLabelB{
+	display:table-row;
+}
+div.subjectClass{
+	display:table-cell; 
+	text-align:left;
+}
+div.subjectLabel{
+	display:table-cell; 
+	text-align:left;
+	min-width:60%;
+}
+div.subjectContextA{
+	display:table-row;
+}
+div.subjectContext{
+	display:table-cell; 
+	width:100%; 
+	text-align:left;
+}
+div.subjectThumbnail{
+	display:table-cell; 
+	vertical-align:middle; 
+	padding:1%;
+}

@@ -1,0 +1,314 @@
+/* Global Styles */
+
+h1 {
+	color: #660000;
+    	font-family: Arial,Helvetica,sans-serif;
+    	font-size: 18px;
+    	letter-spacing: normal;
+	font-weight:bold;
+    	line-height: 26px;
+}
+h2 {
+	color: #660000;
+    	font-family: Arial,Helvetica,sans-serif;
+    	font-size: 16px;
+    	letter-spacing: normal;
+    	line-height: 24px;											
+}
+h3 {
+	color: #660000;
+    	font-family: Arial,Helvetica,sans-serif;
+    	font-size: 12px;
+    	letter-spacing: normal;
+    	line-height: 20px;
+}
+h4 {
+    	font-family: Arial,Helvetica,sans-serif;
+    	font-size: 12px;
+    	letter-spacing: normal;
+    	line-height: 18px;
+}
+
+
+body {
+	text-align: center;
+	}
+
+#OCmainPageAll{
+    width:80%;
+    min-width:900px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:left;
+}
+
+	
+
+td {
+
+	color:#000000;
+
+	font-family: Arial, Helvetica, sans-serif;
+
+	font-size: 11px;
+
+	line-height: 13px;
+
+	}
+
+	
+
+a {
+
+	color: #993300;
+
+	}
+
+	
+
+a:hover {
+
+	color: #5C743D;
+
+	}
+
+
+
+/* ID Styles */
+
+
+
+#navigation td {
+
+	border-bottom: 1px solid #F4FFE4;
+
+	}
+
+	
+
+#navigation a {
+
+	font: bold 11px Arial, Helvetica, sans-serif;
+
+	color: #D5EDB3;
+
+	line-height:16px;
+
+	letter-spacing:.1em;
+
+	text-decoration: none;
+
+	display:block;
+
+	padding:8px 6px 10px 20px;
+
+	}
+
+	
+
+#navigation a:hover {
+
+	background: #99CC66;
+
+	color:#993300;
+
+	}
+
+	
+
+#logo 	{
+
+	font:24px Arial, Helvetica, sans-serif;
+
+	color: #5C743D;
+
+	letter-spacing:.2em;
+
+	line-height:30px;
+
+	}
+
+
+
+#tagline 	{	
+
+	font:11px Arial, Helvetica, sans-serif;
+
+	color: #993300;
+
+	letter-spacing:.4em;
+
+	line-height:18px;
+
+	}
+
+
+
+#monthformat {
+
+	border-bottom: 1px dashed #5C743D;
+
+	}
+
+		
+
+#dateformat {
+
+	font:11px Arial, Helvetica, sans-serif;
+
+	color: #993300;
+
+	letter-spacing:.2em;
+
+	}
+
+	
+
+#dateformat a {
+
+	font:11px Arial, Helvetica, sans-serif;
+
+	color: #993300;
+
+	font-weight:bold;
+
+	letter-spacing:.1em;
+
+	text-decoration:none;
+
+	}
+
+	
+
+#dateformat a:hover {
+
+	color: #F4FFE4;
+
+	letter-spacing:.1em;
+
+	}
+
+	
+
+/* Class Styles */
+
+	
+
+.bodyText {
+
+	color:#272727;
+
+	line-height:16px;
+
+	margin-top:0px;
+
+	font-family: Arial, Helvetica, sans-serif;
+
+	font-size: 11px;
+
+	font-weight: normal;
+
+	}
+
+	
+
+.pageName{
+
+	color: #660000;
+
+	line-height:26px;
+
+	letter-spacing:normal;
+
+	font-family: Arial, Helvetica, sans-serif;
+
+	font-size: 16px;
+
+	}
+
+	
+
+.subHeader {
+
+	color: #990000;
+
+	line-height:normal;
+
+	letter-spacing:0.1em;
+
+	font-family: Arial, Helvetica, sans-serif;
+
+	font-size: 11px;
+
+	font-weight: bold;
+
+	}
+
+
+
+.quote {
+
+	font: 20px Arial, Helvetica, sans-serif;
+
+	color: #759DA1;
+
+	line-height:30px;
+
+	}
+
+	
+
+.smallText {
+
+	color: #666666;
+
+	line-height: 13px;
+
+	font-family: Arial, Helvetica, sans-serif;
+
+	font-size: 11px;
+
+	}
+
+
+
+.tinyText {
+
+	color: #000000;
+
+	line-height: 10px;
+
+	font-family: Arial, Helvetica, sans-serif;
+
+	font-size: 10px;
+
+	}
+
+
+
+.navText {
+
+	font: 11px Arial, Helvetica, sans-serif;
+
+	color: #003366;
+
+	line-height:16px;
+
+	letter-spacing:.1em;
+
+	text-decoration: none;
+
+	}
+
+	
+
+.smallText #Layer1 p {
+
+	left: 3px;
+
+}
+
+img{  
+	border-style: none;
+}
+

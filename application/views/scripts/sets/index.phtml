@@ -251,41 +251,23 @@ $openSearchURI = "";
         </script>
     </head>
     <body>
-        
-    <div id="oc_logo">
-	<a href="<?php echo $host;?>" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" /></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" />
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" />
-    </div>
     
-    <!--
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='New Search' size='30' onfocus="if(this.value=='New Search')this.value='';" onblur="if(this.value=='')this.value='New Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   -->
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //reader document top ?>
    
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("browse"); ?> 
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
     
-    
-        
+ 
 <!--
 BEGIN Container for main page content
 --> 
-    <div id="main_page"> 
+    <div id="main"> 
         <!--Begin code for showing available facets-->
         <div id="main_content">
             <div id="left_cont">
@@ -297,7 +279,7 @@ BEGIN Container for main page content
                     <br/>
                         <?php
                         
-                        $pelagios = New PelagiosV2;
+                        $pelagios = New Pelagios;
                         $pelagios->initialize($requestParams);
                         $pelagios->getRelated();
                         $pelagios->displayPelagiosData();
@@ -362,11 +344,36 @@ BEGIN Container for main page content
                         
                 <br />
                 <br />
-                        
-                <?php
-                echo $this->result_output;
-                ?>
                 
+                <div style="width:72%; background-color:yellow; margin-left:3%;">
+                    <div style="display:table; min-width:500px; width:inherit; padding:3%; border-collapse:collapse;">
+                    <?php
+                    //echo $this->result_output;
+                    $spaceResults = $this->spaceResults;
+                    foreach($spaceResults["items"] as $resItem){
+                    
+                    ?>
+                        <div style="display:table-row; width:inherit;">
+                            <div style="display:table-cell; width:10%; padding: 1%; vertical-align:middle; text-align:center;">
+                                <img src="<?php echo $resItem["catIcon"]; ?>" alt="<?php echo $resItem["category"]; ?>" />
+                            </div>
+                            <div style="display:table-cell; width:20%; padding: 1%; vertical-align:middle;">
+                                <?php echo $resItem["project"]; ?>
+                            </div>
+                            <div style="display:table-cell; width:40%; padding: 1%; vertical-align:middle;">
+                                <div><?php echo $resItem["category"]; ?></div>
+                                <div><?php echo $resItem["label"]; ?></div>
+                                <?php echo $resItem["context"]; ?>
+                            </div>
+                            <div style="display:table-cell; text-align:right; width:30%; padding: 1%; vertical-align:middle;">
+                                <img src="<?php echo $resItem["thumbIcon"]; ?>" alt="Thumbnail for <?php echo $resItem["label"]; ?>" />
+                            </div>
+                        </div>
+                    <?php
+                    } //end loop
+                    ?>
+                    </div>
+                </div>
             </div>
                     
    
@@ -383,15 +390,9 @@ BEGIN Container for main page content
    
      </div>
     <br />
-    
-        <div id="footer"> 
-            <div id="w3c_val_logo"> 
-              <a href="http://validator.w3.org/check?uri=referer"> 
-                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
-              </a> 
-            </div>     
-        </div>
-   
      </div>
+
+
+    <?php echo $this->render('footer.phtml'); //reader document footer ?>
     </body>
 </html>    
