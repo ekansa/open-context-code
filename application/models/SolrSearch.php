@@ -10,6 +10,7 @@ class solrSearch{
     public $defaultSort; //default sort value
     public $error;
     public $sortType; //human readable sorting
+    public $facetSort; //sort for facets (solr default is count)
     
     public $solrDown; //solr status
     
@@ -115,6 +116,7 @@ class solrSearch{
 		$this->lastUpdate = false;
 		$this->lastPublished = false;
 		$this->solrDown = false;
+		$this->facetSort = false;
 		
 		$this->geoTileFacets = false;
 		$this->rawDocsArray = false;
@@ -457,6 +459,11 @@ class solrSearch{
 		else{
 			$sort = $this->defaultSort;
 		}
+	
+		if(isset($requestParams['facetSort'])){
+		    $this->facetSort = true;
+		}
+	
 	
 		$sortTypeOutput = null;
 		if(!$sort){
@@ -814,6 +821,10 @@ class solrSearch{
 			$param_array["hl.fragsize"] = 140;
 			$param_array['hl.simple.pre'] = '<strong>';
 			$param_array['hl.simple.post'] = '</strong>';
+		}
+		
+		if($this->facetSort){
+		    $param_array["facet.sort"] = "index";
 		}
 		
 		
