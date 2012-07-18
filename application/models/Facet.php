@@ -55,7 +55,7 @@ class Facet {
         $checkParameter = $this->checkParameter;
         $linkQuery = $this->linkQuery;
         $link = $this->link;
-        $value_string = $this->value_string;
+        $value_string = mb_convert_encoding($this->value_string, "UTF-8");
         $va_value = $this->va_value;
         
 	$fac_val_node = $facetXHTML->createElement("li");
