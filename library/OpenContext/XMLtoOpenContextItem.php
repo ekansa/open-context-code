@@ -876,17 +876,6 @@ class OpenContext_XMLtoOpenContextItem {
 		// Verify that there are properties associated with this item.
 		if ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property")) {
 			
-			
-			foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:var_label[@type='alphanumeric']") as $var_label) {
-				foreach ($var_label->xpath(".") as $var_alpha) {
-						//$OpenContextItem->addSimpleArrayItem($var_alpha."", "alphaNotes"); //add notes
-				}
-				foreach ($var_label->xpath("../oc:show_val") as $show_val) {
-					$OpenContextItem->addAlphaVarVal($var_alpha."", $show_val."");
-				}
-			}//end loop through alpha_numeric variables
-			
-	
 			foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:var_label[@type='nominal']") as $var_label) {
 				foreach ($var_label->xpath(".") as $var_act) {
 					$var_act = $var_act."";
@@ -897,8 +886,8 @@ class OpenContext_XMLtoOpenContextItem {
 				
 				$propValue = false;
 				foreach ($var_label->xpath("../oc:show_val") as $show_val) {
-						$propValue = (string)$show_val;
-						$OpenContextItem->addProperty($propValue, $parentArray, 'nominal'); //add the variable name as top level prop
+					$propValue = (string)$show_val;
+					$OpenContextItem->addProperty($propValue, $parentArray, 'nominal'); //add the variable name as top level prop
 				}
 				
 				$taxonomyArray = $parentArray;
@@ -1111,6 +1100,16 @@ class OpenContext_XMLtoOpenContextItem {
 					}
 	
 				}
+				
+				foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:var_label[@type='alphanumeric']") as $var_label) {
+					foreach ($var_label->xpath(".") as $var_alpha) {
+							//$OpenContextItem->addSimpleArrayItem($var_alpha."", "alphaNotes"); //add notes
+					}
+					foreach ($var_label->xpath("../oc:show_val") as $show_val) {
+						$OpenContextItem->addAlphaVarVal($var_alpha."", $show_val."");
+					}
+				}//end loop through alpha_numeric variables
+				
 				
 				$taxonomyArray = $parentArray;
 				$taxonomyArray[] = $show_val;

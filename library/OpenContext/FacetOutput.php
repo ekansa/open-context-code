@@ -1162,7 +1162,8 @@ class OpenContext_FacetOutput {
 							$facet_val_node->appendChild($fac_val_node);
 								
 							$fac_sub_node_more_list = $facetXHTML->createElement("ul");
-							$fac_sub_node_more_list->setAttribute("style", "margin-left:-21px; display:none");
+							$fac_sub_node_more_list->setAttribute("class", "moreList");
+							$fac_sub_node_more_list->setAttribute("style", "display:none;");
 							$fac_sub_node_more_list->setAttribute("id", $idList);
 							$fac_val_node->appendChild($fac_sub_node_more_list);
 						}

@@ -29,7 +29,7 @@ class OpenContext_Components {
 							"/css/oc-layout-rev2.css",
 							"/css/bootstrap.css",
 							"/css/bootstrap-responsive.css",
-						       "/css/opencontext_browse.css",
+						       "/css/opencontext-browse-rev2.css",
 						       "/css/atomresults.css",
 						       "/css/rounded_corners.css"
 						       ),

@@ -343,7 +343,14 @@ BEGIN Container for main page content
                 <div id="filter_options" class="bodyText">
                     <p class="bodyText"><strong>Click on one of the links below to further limit your search results.</strong></p>
                         <?php echo  $fulltext; ?>
-                        <?php echo $facet_output; ?>
+                        
+                        <?php
+                        
+                        $facet_output = str_replace("href=", " rel=\"noindex, nofollow\" href=", $facet_output); //hack to make robots not query solr
+                        
+                        echo $facet_output;
+                        
+                        ?>
                             
                     <br/>
                     <p>Get summary in <a href="<?php echo $facetAtomURI; ?>">Atom</a></p>

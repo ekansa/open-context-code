@@ -642,15 +642,14 @@ class solrSearch{
 	    
 	    $docTypeArray = $this->docTypeArray;
 	    if(array_key_exists($doc->item_type, $docTypeArray)){
-			$host = OpenContext_OCConfig::get_host_config();
-			if(!stristr($doc->uuid, "http://")){
-				$actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
-			}
-			else{
-				$actDocOutput["href"] = $doc->uuid;
-			}
+		$host = OpenContext_OCConfig::get_host_config();
+		if(!stristr($doc->uuid, "http://")){
+			$actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
+		}
+		else{
+			$actDocOutput["href"] = $doc->uuid;
+		}
 	    }
-	
 	}
 	if($this->substance){
 	    $actDocOutput["item_label"] = $doc->item_label;
@@ -659,6 +658,18 @@ class solrSearch{
 	}
 	
 	if($this->spatial || $this->image || $this->document || $this->project){
+	    
+	    $docTypeArray = $this->docTypeArray;
+	    if(array_key_exists($doc->item_type, $docTypeArray)){
+		$host = OpenContext_OCConfig::get_host_config();
+		if(!stristr($doc->uuid, "http://")){
+			$actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
+		}
+		else{
+			$actDocOutput["href"] = $doc->uuid;
+		}
+	    }
+	    
 	    if(!empty($doc->time_span)){
 		$actDocOutput["time_span"] = $doc->time_span;
 	    }
@@ -682,7 +693,10 @@ class solrSearch{
 	    }
 	    if(!empty($doc->contributor)){
 		$actDocOutput["contributor"] = $doc->contributor;
-	    } 
+	    }
+	    if(!empty($doc->var_vals)){
+		$actDocOutput["var_vals"] = $doc->var_vals;
+	    }
 	}
 	
 	return $actDocOutput;
@@ -839,7 +853,7 @@ class solrSearch{
     
 	//this gives Solr two chances to respond, with a .5 second delay
 	function pingSolr($solr){
-		
+	    
 		if ($solr->ping()) {
 			return true;
 		}
@@ -864,7 +878,9 @@ class solrSearch{
 	*/
 	
 	$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+	//$solr->setDefaultTimeout(5.0);
 	if ($this->pingSolr($solr)) {
+	//if (true) {
 	    try {
 	
 		$response = $solr->search(	$this->query,
@@ -904,8 +920,12 @@ class solrSearch{
 		$this->getGeoTiles();
 		
 	    } catch (Exception $e) {
-			echo "Problem:". $e->getMessage(), "\n";
-			echo $this->queryString;
+		$this->solrDown = true;
+		$solrError = new SolrError;
+		$requestParams = $this->requestParams;
+		$requestParams["solrError"] = $e;
+		$this->requestParams = $requestParams;
+		$solrError->initialize($this->requestParams);
 	    }
 
 	} else {
@@ -980,7 +1000,8 @@ class solrSearch{
 	
 	$lastUpdate = false;
 	$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
-	if ($this->pingSolr($solr)) {
+	//if ($this->pingSolr($solr)) {
+	if (true) {
 	    try {
 	
 		$response = $solr->search($query,
@@ -1000,8 +1021,12 @@ class solrSearch{
 		$rawResponse = Zend_Json::decode($response->getRawResponse());
 		
 	    } catch (Exception $e) {
-			echo "Problem:". $e->getMessage(), "\n";
-			echo $solr->queryString;
+		$this->solrDown = true;
+		$solrError = new SolrError;
+		$requestParams = $this->requestParams;
+		$requestParams["solrError"] = $e;
+		$this->requestParams = $requestParams;
+		$solrError->initialize($this->requestParams);
 	    }
 
 	} else {
@@ -1690,6 +1715,27 @@ class solrSearch{
 							
 						}
 						
+						$var_vals = false;
+						if(is_array($this->documentsArray)){
+						    foreach($this->documentsArray as $doc){
+							if(isset($doc["href"])){
+							    if($doc["href"] == $entryURI){
+								if(isset($doc["var_vals"])){
+								    $var_vals = Zend_json::decode($doc["var_vals"]);
+								}
+								break;
+							    }
+							}
+							else{
+							    $var_vals = "no href";
+							}
+						    }
+						}
+						else{
+						    $var_vals = "no docs";
+						}
+						
+						
 						$resultItem = array("uri"=>$entryURI,
 									"category"=>$itemCat,
 									"catIcon"=>$itemIcon,
@@ -1697,6 +1743,7 @@ class solrSearch{
 									"label"=>$itemLabel,
 									"context"=> $itemContext,
 									"thumbIcon"=>$itemThumb,
+									"var_vals" => $var_vals,
 									"geoTime" => array("geoLat" => $geoLat,
 											   "geoLong" => $geoLon,
 											   "timeBegin" => $kmlBegin,

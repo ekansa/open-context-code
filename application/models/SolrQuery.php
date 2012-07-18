@@ -9,7 +9,7 @@ require ('Apache/Solr/Service.php');
 
 // Connection to solr server
 $solr = new Apache_Solr_Service('localhost', 8180, '/solr');
-
+$solr->setDefaultTimeout(5.0);
 // test the connection to the solr server
 if ($solr->ping()) {
 

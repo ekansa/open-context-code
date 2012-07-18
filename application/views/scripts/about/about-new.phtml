@@ -14,9 +14,10 @@ $host = OpenContext_OCConfig::get_host_config();
       <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/new-oc-layout.css" rel="stylesheet" type="text/css" />
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
       <link href="/css/oc-about-layout.css" rel="stylesheet" type="text/css" /> 
-     
+	<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
       
       <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
     </head>
@@ -24,24 +25,17 @@ $host = OpenContext_OCConfig::get_host_config();
 <body>
 
 <!-- 
-    Logo, top search boz
+    Logo,
 -->    
 <?php echo $this->render('header.phtml'); //reader document top ?>
    
 <!-- 
-    Navigation tabs
+    Navigation tabs, search box
 -->
 <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
 
 
-<!--
-    <div id="headerNav">
-        <div id="headerNavContent">
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-        </div>
-    </div>
--->
-    
+
     <div id="main">
 	<div id="pageTop">
             <div id="pageIntro">
@@ -116,13 +110,12 @@ $host = OpenContext_OCConfig::get_host_config();
 	    
 	</div>
 	
-	<div id="bottom">
-	</div>
+		<div id="bottom">
+		</div>
 	
     </div>
-    <div id="footerTop">
-    </div>
-    <div id="footerLower">
-    </div>
+	
+    <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>
