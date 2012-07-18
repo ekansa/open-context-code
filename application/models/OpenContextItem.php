@@ -422,7 +422,10 @@ class OpenContextItem {
 	if(!$variables){
 	    $variables = array();
 	}
-	$variables[] = array("var" => $var, "val" => $value);
+	$varValKey = sha1($var.self::taxonDelim.$value);
+	if(!array_key_exists($varValKey, $variables)){
+	    $variables[$varValKey] = array("var" => $var, "val" => $value);
+	}
 	$this->variables = $variables;
     }
     
@@ -531,16 +534,16 @@ class OpenContextItem {
 			$parentPath = "";
 			
 			if($setType != "standard" && $setType != "reconciled"){
-				$hashPath = "top";
+			    $hashPath = "top";
 			}
 			else{
-				if($setType == "standard"){
-					$hashPath = "standard"; //for standard units of measurement
-				}
-				elseif($setType =="reconciled"){
-					$hashPath = "reconciled"; //for reconciled propeties to a 
-				}
-				$setType = "nominal";
+			    if($setType == "standard"){
+				$hashPath = "standard"; //for standard units of measurement
+			    }
+			    elseif($setType =="reconciled"){
+				$hashPath = "reconciled"; //for reconciled propeties to a 
+			    }
+			    $setType = "nominal";
 			}
 		}
 		else{
@@ -582,12 +585,15 @@ class OpenContextItem {
 			//sometimes you don't want to add variables, so this is optional
 			$addVars = true;
 			foreach($variables as $oldvar){
-			if($oldvar["var"] == $parentPath && $oldvar["val"] == $value){
+			    if($oldvar["var"] == $parentPath && $oldvar["val"] == $value){
 				$addVars = false;
-			}
+			    }
 			}
 			if($addVars){
-				$variables[] = array("var" => $parentPath, "val" => $value);
+			    $varValKey = sha1($parentPath.self::taxonDelim.$value);
+			    if(!array_key_exists($varValKey, $variables)){
+				$variables[$varValKey] = array("var" => $parentPath, "val" => $value);
+			    }
 			}
 			$this->variables = $variables;
 		}
@@ -628,13 +634,12 @@ class OpenContextItem {
 	
 	
 		if(!$properties){
-			$properties = array();
+		    $properties = array();
 		}
 		$variables = $this->variables;
 		if(!$variables){
-			$variables = array();
+		    $variables = array();
 		}
-		
 	
 		//first create a root property for the link relationship
 		$path = "linkRel";
@@ -711,8 +716,11 @@ class OpenContextItem {
 			$this->propHashArray = $propHashArray;
 		}
 		
-		$variables[] = array("var" => "Rel: ".$relURI,
+		$varValKey = sha1("Rel: ".$relURI.self::taxonDelim.$targURI);
+		if(!array_key_exists($varValKey, $variables)){
+		    $variables[$varValKey] = array("var" => "Rel: ".$relURI,
 			     "val" => $targURI);
+		}
 		$this->variables = $variables;
     }
     
@@ -808,12 +816,13 @@ class OpenContextItem {
 	foreach($delimCounts as $varKey => $delimCount){
 	    
 	    $addVar = true;
-	    $varKeyLen = strlen($varKey);
+	    $checkKey = $varKey.self::taxonDelim;
+	    $checkKeyLen = strlen($checkKey);
 	    
 	    if(count($finalVars) > 0){
 		foreach($finalVars as $addedVar){   
-		    $varSegment = substr($addedVar, 0, $varKeyLen);
-		    if($varSegment == $varKey){
+		    $varSegment = substr($addedVar, 0, $checkKeyLen);
+		    if($varSegment == $checkKey){ //don't add to the final variable list if variable is a part of the path of an existing item
 			$addVar = false;
 		    }
 		}
