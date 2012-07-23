@@ -860,10 +860,19 @@ class solrSearch{
 		else{
 			sleep(.5);
 			if ($solr->ping()) {
-				return true;
+			    return true;
 			}
 			else{
+			    
+			    $solrError = new SolrError;
+			    $solrError->restartSolr();
+			    sleep(.75);
+			    if ($solr->ping()) {
+				return true;
+			    }
+			    else{
 				return false;
+			    }
 			}
 		}
 		
@@ -923,7 +932,7 @@ class solrSearch{
 		$this->solrDown = true;
 		$solrError = new SolrError;
 		$requestParams = $this->requestParams;
-		$requestParams["solrError"] = $e;
+		$requestParams["solrError"] = (string)$e;
 		$this->requestParams = $requestParams;
 		$solrError->initialize($this->requestParams);
 	    }

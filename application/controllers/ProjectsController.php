@@ -22,36 +22,39 @@ class projectsController extends Zend_Controller_Action
     //this function is called if a project UUID is absent
     public function all_atom(){
         
-        $all_project_feed_string = false;
+			$all_project_feed_string = false;
         
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+			$db_params = OpenContext_OCConfig::get_db_config();
+			$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
                                
-		$db->getConnection();
-		$this->setUTFconnection($db);
+			$db->getConnection();
+			$this->setUTFconnection($db);
 		
-        $sql = "SELECT projects.proj_atom,
+			$sql = "SELECT projects.proj_atom,
                 projects.total_views,
                 projects.view_count,
+					 projects.hero_pict,
                 DATE_FORMAT(projects.accession, '%Y-%m-%d') as proj_pub
                 FROM projects
                 WHERE projects.project_id != '0'
-				ORDER BY projects.accession DESC
+						ORDER BY projects.accession DESC
                 ";
 		
-        $result = $db->fetchAll($sql, 2);
-		if($result){
+			$result = $db->fetchAll($sql, 2);
+			if($result){
         
             $proj_atom = array();
             $proj_dates = array();
             foreach($result as $act_result){
                 if(strlen($act_result["proj_atom"])>0){
-                    $proj_atom[] = $act_result["proj_atom"];
+							$heroLink = "<link rel=\"enclosure\" href=\"".$act_result['hero_pict']."\" title=\"Illustrative image\" />";
+							$atom = $act_result["proj_atom"];
+							$atom = str_replace("</id>", "</id>".chr(13).$heroLink.chr(13), $atom); 
+							$proj_atom[] = $atom;
                 }
                 $proj_dates[] = strtotime($act_result["proj_pub"]);
             }//end loop
             $last_date = max($proj_dates);
-            
             $all_project_feed_string = OpenContext_ProjectAtomJson::all_project_atom_feed($proj_atom, $last_date);
     
         }//end case with result

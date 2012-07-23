@@ -12,9 +12,12 @@ class setsController extends Zend_Controller_Action {
 	
 	$requestParams =  $this->_request->getParams();
 	
+	/*
 	if(OpenContext_UserMessages::isSolrDown()){
 	    return $this->render('down');
 	}
+	*/
+	
 	
 	$protect = new Floodprotection; //check to make sure service is not abused by too many requests
 	$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
@@ -627,8 +630,13 @@ class setsController extends Zend_Controller_Action {
 				"paging" => $pagingArray,
 				//"facetsA" => $solrSearch->facets,
 				"results" => $spaceResults["items"],
-				"qstring" => "http://localhost:8983/solr/select/?".$solrSearch->queryString
+				"qstring" => "http://localhost:8983/solr/select/?".$solrSearch->queryString,
+				"paramCount" => count($requestParams)
 				);
+		
+		if($solrSearch->solrDown){
+		    $output["params"] = $solrSearch->requestParams; //show errors in params
+		}
 		
 		$this->_helper->viewRenderer->setNoRender();
 		

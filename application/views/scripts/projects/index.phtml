@@ -1,37 +1,85 @@
 <?php
 
 //header('Content-type: application/xml', true);
-  
+$host = OpenContext_OCConfig::get_host_config();
 $atom = $this->xml_string;
-
-//echo $this->feedURI;
-//echo $atom;
-
-//$atom = false;
-
-//$coins = "ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&amp;rft.type=dataset&amp;rft.title=Open%20Context%20Projects%20and%20Collections&amp;rft.date=2006-03-01&amp;rft.creator=Sarah%20Whitcher%20Kansa&amp;rft.subject=archaeology&amp;rft.subject=dataset&amp;rft.subject=excavation&amp;rft.subject=survey&amp;rft.subject=data&amp;rft.subject=field%20research&amp;rft.subject=collections&amp;rft.format=XML&amp;rft.format=Text%2FHTML&amp;rft.format=.jpg&amp;rft.format=.gif&amp;rft.coverage=Near%20East&amp;rft.language=eng&amp;rft.publisher=Open%20Context&amp;rft.rights=&amp;rft.source=Open%20Context&amp;rft.rights=Creative%20Commons%20Attribution%203&amp;rft_id=http%3A%2F%2Fwww.opencontext.org%2Fprojects%2F";
-
-if ($atom) {
-
-    $doc = new DOMDocument();
-
-    $doc->load("xsl/defaultAllProjects.xsl");
-
-    $proc = new XSLTProcessor();
-
-    $xslt = $proc->importStylesheet($doc);
-
-    $atomDoc = new DomDocument();
-    
-    $atomDoc->loadXML($atom);
-
-
-    echo $proc->transformToXML($atomDoc);
-       
-} else {
-
-    echo "You're killing me.";
-
-}
-
+$doc = new DOMDocument();
+$doc->load("xsl/rev2-all-projects.xsl");
+$proc = new XSLTProcessor();
+$xslt = $proc->importStylesheet($doc);
+$atomDoc = new DomDocument();
+$atomDoc->loadXML($atom);
+$XHTMLbody = $proc->transformToXML($atomDoc);
+$XHTMLbody = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $XHTMLbody);
+//echo $XHTMLbody;
+//header('Content-type: application/xml+xhtml', true);
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <title>Open Context view of all Projects</title>
+    
+    <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon"/>
+    <link rel="alternate" type="application/atom+xml" tilte="Atom feed of all projects" href="<?php echo $host; ?>/projects.atom" />
+    <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $host; ?>/css/projects-rev2.css" rel="stylesheet" type="text/css" />
+    <!--
+    <link href="<?php echo $host; ?>/css/default_project.css" rel="stylesheet" type="text/css" />
+    -->
+    
+    <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+        
+        
+        window.onload = function(){
+            ConvertRowsToLinks("tabLinkRows");
+        }
+
+        function ConvertRowsToLinks(xTableId){
+            var rows = document.getElementById(xTableId).getElementsByTagName("tr");
+            for(i=0; i < rows.length; i++){
+                var link = rows[i].getElementsByTagName("a")
+                if(link.length == 1){
+                  rows[i].onclick = new Function("document.location.href='" + link[0].href + "'");
+                  rows[i].onmouseover = new Function("this.style.cursor = 'pointer'");
+                  rows[i].onmouseout = new Function("this.style.cursor = 'default'");
+                }
+            }
+        }
+
+        
+        -->
+    </script>
+    
+    
+    </head>
+
+    <body>
+        <!-- 
+            Logo,
+        -->    
+        <?php echo $this->render('header.phtml'); //reader document top ?>
+           
+        <!-- 
+            Navigation tabs, search box
+        -->
+        <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+    
+        <?php echo $XHTMLbody; ?>
+        
+        <div id="bottomBuffer">
+        </div>
+        <?php echo $this->render('footer.phtml'); //reader document footer ?>
+    </body>
+</html>

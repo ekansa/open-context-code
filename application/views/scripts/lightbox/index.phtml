@@ -55,48 +55,33 @@ if(!isset($requestParams["q"])){
     $full_link  = str_replace("&", "&amp;", $full_link );
     $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
 
-    /*
-    $fulltext = '<p class="bodyText">Or, type a search term in the box below (works like Google):</p>'.chr(13);
-    //$fulltext .= '<form id="searchbox" name="form4" method="get" action="'.$requestURI.'">'.chr(13);
-    $fulltext .= '<div style="padding:4px; text-align:center;">';
-    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
-    $fulltext .='<input name="q" type="text" id="q_string" size="30" maxlength="100" class="bodyText" alt="Enter full-text search term(s)" onchange="textSearch()" />'.chr(13);
-    $fulltext .= '<div style="display:table-row; width:100%;">';
-    //$fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
-    $fulltext .= '<div style="display:table-cell; text-align:center; vertical-align:middle; padding-left:20px;" class="bodyText"> ';
-    $fulltext .= $searchMessage;
-    $fulltext .= '</div>';
-    $fulltext .= '<div style="display:table-cell; text-align:right; vertical-align:middle; padding-top:3px;" > ';
-    $fulltext .= '<a href="javascript:textSearch();"><img src="http://static.alexandriaarchive.org/images/general/searchButtonSmall.png" alt="Search icon"/></a>';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
-    */
-    
-    //$fulltext = '<p class="bodyText">Or, type a search term in the box below (works like Google):</p>'.chr(13);
-    //$fulltext .= '<form id="searchbox" name="form4" method="get" action="'.$requestURI.'">'.chr(13);
+$full_link = $host.$requestURI;
+    $full_link  = str_replace("&", "&amp;", $full_link );
+    $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
+
     $fulltext = '';
-    $fulltext .= '<div style="display:table;">';
-    $fulltext .= '<div style="display:table-row; width:100%;">';
-    $fulltext .= '<div style="display:table-cell; text-align:left;" class="bodyText">';
-    $fulltext .= 'Or, type a search term in the box below (works like Google):';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
     $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
-    $fulltext .= '<div style="display:table-row; width:100%;">';
-    $fulltext .= '<div style="display:table-cell; text-align:left; vertical-align:middle; padding-left:4px;"> ';
-    $fulltext .='<input style="background-color:#FBF7EC;" name="q" type="text" id="q_string" size="25" maxlength="100" class="bodyText" alt="'.$searchMessage.'" onchange="textSearch()" />'.chr(13);
-    $fulltext .= '</div>';
-    $fulltext .= '<div style="display:table-cell; text-align:right; vertical-align:middle; " > ';
-    //$fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
-    $fulltext .= '<a title="'.$searchMessage.'" href="javascript:textSearch();"><img src="http://static.alexandriaarchive.org/images/general/searchButtonSmall.png" alt="Search icon"/></a>';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
+    $fulltext .= '<div style="display:table; border-collapse:collapse; width:100%;">';
+    $fulltext .= '<div style="display:table-row">';
+    $fulltext .= '<div style="display:table-cell; text-align:left; vertical-align:middle; width:75%;"> ';
+    $fulltext .= '<span style="text-align:left; font-size:.75em;" >';
+    $fulltext .= 'Or, type a search term in the box';
+    $fulltext .= '</span><br/>';
+    $fulltext .= '<div id="b_search_tab">
+                    <div id="b_search_row" class="b_search">
+                        <div id="b_search_cell_in" >
+                            <input name="q" type="text" id="q_string" placeholder="Search here..." />
+                        </div>
+                        <div id="b_search_cell_button">
+                            <button type="submit" onclick="textSearch();">Search</button>
+                        </div>
+                    </div>
+                </div>
+    ';
     
-    
-    
-    //$fulltext .='</form>';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
+    $fulltext .= '</div>';
 }
 else{
     $fulltext = "";
@@ -130,6 +115,34 @@ $facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $face
 
 
 
+//make sort links
+$sortingArray = array(0 => array("value" => "context", "display" => "Context"),
+                      1 => array("value" => "proj", "display" => "Project name"),
+                      2 => array("value" => "label", "display" => "Item label"),
+                      3 => array("value" => "updated", "display" => "Updated time"),
+                      4 => array("value" => "created", "display" => "Publication time"),
+                );
+
+if(isset($requestParams["sort"])){
+    $newSort = array();
+    $newSort[] = array("value" => false, "display" => "Interest Score [Default]");
+    $skip = 0;
+    foreach($sortingArray as $sorter){
+        if(strstr($requestParams["sort"], $sorter["value"])){
+            $skip++;
+        }
+        if($skip != 1){
+            $newSort[] = $sorter;
+        }
+        else{
+            $skip = 2;
+        }
+    }
+    $sortingArray = $newSort;
+    unset($newSort);
+}
+
+
 
 $googleURI = "";
 $facetAtomURI = "";
@@ -146,7 +159,15 @@ $openSearchURI = "";
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <title><?php echo 'Open Context Image Lightbox: ('.$numFound.' Images Showing)'; ?></title> 
         <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon"/>
+        <!--
         <link href="<?php echo $host; ?>/components/css/lightbox" rel="stylesheet" type="text/css" />
+        -->
+        <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+        <link href="<?php echo $host; ?>/css/opencontext-browse-rev2.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $host; ?>/css/colorbox.css" rel="stylesheet" type="text/css" />
+        
         <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo URIescape($this->facetURI_Atom); ?>" />
         <link rel="alternate" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->currentAtom); ?>" />
         
@@ -228,232 +249,262 @@ $openSearchURI = "";
         </script>
     </head>
     <body>
-        
-    <div id="oc_logo">
-	<a href="<?php echo $host;?>" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" /></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" />
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" />
-    </div>
-    <!--
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='New Search' size='30' onfocus="if(this.value=='New Search')this.value='';" onblur="if(this.value=='')this.value='New Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   -->
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("lightbox"); ?> 
+    
+        <!-- 
+            Logo,
+        -->    
+        <?php echo $this->render('header.phtml'); //reader document top ?>
+           
+        <!-- 
+            Navigation tabs, search box
+        -->
+        <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
     
     
-        
-<!--
-BEGIN Container for main page content
---> 
-    <div id="main_page"> 
-        <!--Begin code for showing available facets-->
-        <div id="main_content">
-            <div id="left_cont">
-                <div id="filter_options" class="bodyText">
-                    <p class="bodyText"><strong>Click on one of the links below to further limit your view of <em>images</em> in Open Context.</strong></p>
-                        <?php echo  $fulltext; ?>
-                    <br/>
-                        <?php echo $facet_output; ?>
-                            
-                    <br/>
-                    
-                    <!--
-                    <p>View in <a href="<?php echo URIescape($this->facetURI_KML); ?>">GoogleEarth</a></p>
-                    -->
-                    <p>Get in <a href="<?php echo URIescape($this->facetURI_Atom); ?>">Atom</a></p>
-                </div>
-            </div>
-            <div id="right_cont">   
-                <div id="selected_filters" class="rounded-corners" >
-                    <p class="subHeader">Open Context currently has <strong><?php echo $numFound; ?></strong> images, filtered by the following criteria:</p>
-                    <div class="bodyText"><?php echo $filter_output; ?></div>
-                    <p class="tinyText" style="text-align:right;">Last Updated: <em><?php echo date("F j, Y, g:i a", strtotime($this->lastUpdate)); ?></em></p>
-                    
-                </div>
-                        
-                <br />
-                <br />
-                        
-                <?php
-                
-                /*
-                    Prepare image thumnail list 
-                */
-                
-                $xmlString = "<div style='width:100%;'></div>";
-                $xmlALL = simplexml_load_string($xmlString);
-                $xml = $xmlALL->addChild('div', '');
-                $xml->addAttribute('style', "display:table; width:100%;");
-                $xml->addAttribute('id', "result_tab");
-                
-                $newRow = true;
-                $cc = 0;
-                $firstDone = false;
-                foreach($this->result_output as $imageArray){
-                    
-                    
-                    $prevLink =  $xmlALL->addChild('a', '');
-                    $prevLink->addAttribute('href', $imageArray["previewURI"]);
-                    $prevLink->addAttribute('title', $imageArray["label"]);
-                    $prevLink->addAttribute('rel', 'colorbox_prev');
-                    
-                    if(!$firstDone){
-                        $firstPreviewURI = $imageArray["previewURI"];
-                        $firstTitle = $imageArray["label"];
-                        $firstDone = true;
-                    }
-                    
-                    if($cc >= 3){
-                        $newRow = true;
-                    }
-                    
-                    if($newRow){
-                        $actRow = $xml->addChild('div', '');
-                        $actRow->addAttribute('style', 'display:table-row;');
-                        $cc = 0;
-                        $newRow = false;
-                    }
-                    
-                    $newCell = $actRow->addChild('div', '');
-                    //$newCell->addAttribute('style', 'display:table-cell; width: 33%; text-align: center;');
-                    $newCell->addAttribute('class', 'imageCell');
-                    $newLink =  $newCell->addChild('a', '');
-                    $newLink->addAttribute('href', $imageArray["uri"]);
-                    $newLink->addAttribute('title', $imageArray["label"]);
-                    $newImg = $newLink->addChild('img', '');
-                    $newImg->addAttribute('src', $imageArray["thumbURI"]);
-                    $newImg->addAttribute('alt', $imageArray["label"]);
-                
-                $cc++;
-                }//end loop
-                
-                $dom = dom_import_simplexml($xml)->ownerDocument;
-                $dom->formatOutput = true;
-                $imageThumbs = str_replace('<?xml version="1.0"?>', '', $dom->saveXML());
-                
-                
-                /*
-                Add paging controls
-                */
-                if($this->firstPage_XHTML != $this->currentXHTML){
-                    //not page 1
-                    $first_control = '<a href="'.URIescape($this->firstPage_XHTML).'">';
-		    $first_control .= '<img src="/images/atom_results/left_button_last.gif" alt="first page" border="0" />';
-		    $first_control .= '</a>'; 
-                }
-                else{
-                    //we're on the first page
-                    $first_control = '<img src="/images/atom_results/left_button_last_deact.gif" alt="first page" border="0" />'.chr(13);
-                }
-                if($this->prevPage_XHTML != false){
-                    //previous page exists
-                    $prev_control = '<a href="'.URIescape($this->prevPage_XHTML).'">';
-		    $prev_control .= '<img src="/images/atom_results/left_button.gif" alt="first page" border="0" />';
-		    $prev_control .= '</a>';
-                }
-                else{
-                    //no previous page
-                    $prev_control = '<img src="/images/atom_results/left_button_deact.gif" alt="first page" border="0" />'.chr(13);
-                }
-                if($this->nextPage_XHTML != false){
-                    $next_control = '<a href="'.URIescape($this->nextPage_XHTML).'">';
-		    $next_control .= '<img src="/images/atom_results/right_button.gif" alt="next page" border="0" />';
-		    $next_control .= '</a>';
-                }
-                else{
-                    $next_control = '<img src="/images/atom_results/right_button_deact.gif" alt="previous page" border="0" />'.chr(13);
-                }
-                if($this->lastPage_XHTML != $this->currentXHTML){
-                    $last_control = '<a href="'.URIescape($this->lastPage_XHTML).'">';
-		    $last_control .= '<img src="/images/atom_results/right_button_last.gif" alt="last page" border="0" />';
-		    $last_control .= '</a>';
-                }
-                else{
-                    $last_control = '<img src="/images/atom_results/right_button_last_deact.gif" alt="previous page" border="0" />'.chr(13);
-                }
-                ?>
-                
-                <div id="result_head">
-                    <div style="display:table; width:100%;">
-                        <div style="display:table-row;">
-                            <div class="controlCell">
-                                <?php echo $first_control; ?>
+        <div id="main"> 
+            <!--Begin code for showing available facets-->
+            <div id="main_content">
+                <div id="main_row">
+                    <div id="left_cont">
+                        <div id="filter_options">
+                            <h3>Browse and Filter Images</h3>
+                            <p>Click on one of the links below to further limit your view of <em>images</em> in Open Context.</p>
+                            <div>
+                            <?php echo  $fulltext; ?>
                             </div>
-                            <div class="controlCell">
-                                <?php echo $prev_control; ?>
+                            <div id="facet_sort_tab">
+                                <div id="facet_sort_row">
+                                    <?php
+                                    if(isset($requestParams["facetSort"])){
+                                        $facetSort = "10,9,8 &darr;";
+                                        $facetSortMessage = "Sort facets by count:";
+                                        unset($requestParams["facetSort"]);
+                                        $facetSortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false);
+                                    }
+                                    else{
+                                        $facetSort = "A,B,C &darr;";
+                                        $facetSortMessage = "Sort facets alphabetically:";
+                                        $facetSortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "facetSort", true, false);
+                                    }
+                                    
+                                    ?>
+                                    <div id="facet_sort_message_cell">
+                                        <?php echo $facetSortMessage; ?>
+                                    </div>
+                                    <div id="facet_sort_control_cell">
+                                        <div id="facet_sort_control"><a href="<?php echo $facetSortLink; ?>" title="Change the order of the facet filters below"><?php echo $facetSort; ?></a></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style="display:table-cell; text-align:center; vertical-align:middle;" class="bodyText">
-                                <strong>Results: </strong>
-                                <?php   echo ($this->offset + 1)." to ".($this->number_recs + $this->offset)." of ".$numFound." images <br/>";
-                                        echo "<a href='".$firstPreviewURI."' rel='colorbox_prev' title='".$firstTitle."'>Slideshow view</a>";
+                        </div>
+                        <div id="all_facets">
+                            <?php echo $facet_output; ?>
+                        </div>
+                    </div>
+                    <div id="right_cont">
+                        <div id="selected_filters" >
+                            <p>Open Context currently has <strong><?php echo $numFound; ?></strong> images, filtered by the following criteria:</p>
+                            <div><?php echo $filter_output; ?></div>
+                            <div style="text-align:right;">
+                                <p class="tinyText">Last Updated: <em><?php echo date("F j, Y, g:i a", strtotime($this->lastUpdate)); ?></em></p>
+                            </div>
+                        </div>
+                        <div id="item_list_outer">
+                        
+                            <?php  
+                                /*
+                                    Prepare image thumnail list 
+                                */
+                                
+                                $xmlString = "<div style='width:100%;'></div>";
+                                $xmlALL = simplexml_load_string($xmlString);
+                                $xml = $xmlALL->addChild('div', '');
+                                $xml->addAttribute('style', "display:table; width:100%;");
+                                $xml->addAttribute('id', "result_tab");
+                                
+                                $newRow = true;
+                                $cc = 0;
+                                $firstDone = false;
+                                foreach($this->result_output as $imageArray){
+                                    
+                                    
+                                    $prevLink =  $xmlALL->addChild('a', '');
+                                    $prevLink->addAttribute('href', $imageArray["previewURI"]);
+                                    $prevLink->addAttribute('title', $imageArray["label"]);
+                                    $prevLink->addAttribute('rel', 'colorbox_prev');
+                                    
+                                    if(!$firstDone){
+                                        $firstPreviewURI = $imageArray["previewURI"];
+                                        $firstTitle = $imageArray["label"];
+                                        $firstDone = true;
+                                    }
+                                    
+                                    if($cc >= 3){
+                                        $newRow = true;
+                                    }
+                                    
+                                    if($newRow){
+                                        $actRow = $xml->addChild('div', '');
+                                        $actRow->addAttribute('style', 'display:table-row;');
+                                        $cc = 0;
+                                        $newRow = false;
+                                    }
+                                    
+                                    $newCell = $actRow->addChild('div', '');
+                                    //$newCell->addAttribute('style', 'display:table-cell; width: 33%; text-align: center;');
+                                    $newCell->addAttribute('class', 'imageCell');
+                                    $newLink =  $newCell->addChild('a', '');
+                                    $newLink->addAttribute('href', $imageArray["uri"]);
+                                    $newLink->addAttribute('title', $imageArray["label"]);
+                                    $newImg = $newLink->addChild('img', '');
+                                    $newImg->addAttribute('src', $imageArray["thumbURI"]);
+                                    $newImg->addAttribute('alt', $imageArray["label"]);
+                                
+                                $cc++;
+                                }//end loop
+                                
+                                $dom = dom_import_simplexml($xml)->ownerDocument;
+                                $dom->formatOutput = true;
+                                $imageThumbs = str_replace('<?xml version="1.0"?>', '', $dom->saveXML());
+
+                            ?>
+                        
+                        
+                            <div id="paging_outer">
+                                <div id="paging_tab">
+                                    <div id="paging_row">
+                                        <div class="paging_cell">
+                                            <?php
+                                            
+                                            if($this->firstPage_XHTML && $this->firstPage_XHTML != $this->currentXHTML){
+                                                $linkClass = "pager_active";
+                                                $pageLink = "<a href=\"".$this->firstPage_XHTML."\" class=\"btn btn-small btn-primary\" title=\"Go to the first page of results\" >|&larr;</a>";
+                                            }
+                                            else{
+                                                $linkClass = "pager_inactive";
+                                                $pageLink = "|&larr;";
+                                                $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">|&larr;</a>";
+                                            }
+                                            
+                                            ?>
+                                            <div class="<?php echo $linkClass; ?>" >
+                                                <?php echo $pageLink; ?>
+                                            </div>
+                                        </div>
+                                        <div class="paging_cell">
+                                            <?php
+                                            
+                                            if($this->prevPage_XHTML){
+                                                $linkClass = "pager_active";
+                                                $pageLink = "<a href=\"".$this->prevPage_XHTML."\" class=\"btn btn-small btn-primary\" title=\"Go to the previous page of results\" >&larr;</a>";
+                                            }
+                                            else{
+                                                $linkClass = "pager_inactive";
+                                                $pageLink = "&larr;";
+                                                $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">&larr;</a>";
+                                            }
+                                            
+                                            ?>
+                                            <div class="<?php echo $linkClass; ?>" >
+                                                <?php echo $pageLink; ?>
+                                            </div>
+                                        </div>
+                                        <div id="paging_cell_center">
+                                            <div id="paging_ct_tab">
+                                                <div id="paging_ct_row">
+                                                    <div id="paging_slide_cell">
+                                                        <a href="<?php echo $firstPreviewURI; ?>" rel="colorbox_prev" title="<?php echo "Slide show starting with: ".$firstTitle; ?>"><img src="<?php echo $host; ?>/images/layout/slides.png" /></a>
+                                                    </div>
+                                                    <div id="paging_ct_cell_pageNum">
+                                                        <?php
+                                                            if(isset($requestParams["page"])){
+                                                                $page = $requestParams["page"];
+                                                            }
+                                                            else{
+                                                                $page = 1;
+                                                            }
+                                                            
+                                                            $numRecs = $this->number_recs;
+                                                            $lastPage = intval($this->numFound/$numRecs);
+                                                            if($lastPage * $numRecs < $numFound){
+                                                                $lastPage++;
+                                                            }
+                                                            echo "Page $page of $lastPage";
+                                                            echo ", sorted by ".$this->sorting;
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="sort_tab" style="width:100%;">
+                                                <div id="sort_row">
+                                                    <div id="sort_start">
+                                                        Sort By:
+                                                    </div>
+                                                    <?php
+                                                    foreach($sortingArray as $sorter){
+                                                        $sortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "sort", $sorter["value"], false);
+                                                    ?>
+                                                    <div class="sort_cell">
+                                                        <a href="<?php echo $sortLink; ?>" title="Sort results by <?php echo $sorter["display"]; ?>" ><?php echo $sorter["display"]; ?></a>
+                                                    </div>
+                                                    <?php
+                                                    }//end loop through the sorting array
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="paging_cell">
+                                            <?php
+                                            
+                                            if($this->nextPage_XHTML){
+                                                $linkClass = "pager_active";
+                                                $pageLink = "<a href=\"".$this->nextPage_XHTML."\" class=\"btn btn-small btn-primary\" title=\"Go to the next page of results\" >&rarr;</a>";
+                                            }
+                                            else{
+                                                $linkClass = "pager_inactive";
+                                                $pageLink = "&rarr;";
+                                                $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">&rarr;</a>";
+                                            }
+                                            
+                                            ?>
+                                            <div class="<?php echo $linkClass; ?>" >
+                                                <?php echo $pageLink; ?>
+                                            </div>
+                                        </div>
+                                        <div class="paging_cell">
+                                            <?php
+                                            
+                                            if($this->lastPage_XHTML && $this->lastPage_XHTML != $this->currentXHTML){
+                                                $linkClass = "pager_active";
+                                                $pageLink = "<a href=\"".$this->lastPage_XHTML."\" title=\"Go to the last page of results\" class=\"btn btn-small btn-primary\" >&rarr;|</a>";
+                                            }
+                                            else{
+                                                $linkClass = "pager_inactive";
+                                                $pageLink = "&rarr;|";
+                                                $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">&rarr;|</a>";
+                                            }
+                                            ?>
+                                            <div class="<?php echo $linkClass; ?>" >
+                                                <?php echo $pageLink; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div id="image_results">
+                                <?php
+                                echo $imageThumbs;
                                 ?>
-                            </div>
-                            <div class="controlCell">
-                                <?php echo $next_control; ?>
-                            </div>
-                            <div class="controlCell">
-                                <?php echo $last_control; ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                    
-                    <div id="item_list">
-                        
-                        <?php
-                            echo $imageThumbs;
-                            $feed_link = '<div class="container_a">'.chr(13);
-                            $feed_link .= '<div class="container_l"><p class="tinyText">Get results as an Atom Feed: <br/><a href="'.$host.'/about/services">(About web services)</a></p></div>'.chr(13);
-                            $feed_link .= '<div class="container_r"><a href="'.URIescape($this->currentAtom).'"><img border="0" src="http://validator.w3.org/feed/images/valid-atom.png" alt="[Valid Atom 1.0]" title="Atom 1.0 feed"/></a></div>'.chr(13);
-                            $feed_link .= '</div>'.chr(13);
-                            echo $feed_link;
-                        ?>
-                        
-                    </div>
-                
-                <?php //echo var_dump($request_array)."<br/><br/>"; ?>
-                
             </div>
-                    
-   
-        <!--
-        END of div container for placing main page content
-        -->
-        <div id="bottom_cont">  
-          <br /> 
-          <br /> 
-        </div> 
-        <!--
-        END Code for showing the database-like content
-        -->
-   
-     </div>
-    <br />
-    
-        <div id="footer"> 
-            <div id="w3c_val_logo"> 
-              <a href="http://validator.w3.org/check?uri=referer"> 
-                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
-              </a> 
-            </div>     
         </div>
-   
-     </div>
+    
+    <div id="bottomBuffer">
+    </div>
+    <?php echo $this->render('footer.phtml'); //reader document footer ?>
     </body>
 </html>    

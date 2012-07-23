@@ -1,0 +1,48 @@
+/* Open Context Layout Main */
+/*
+Content area: 1000px;
+Header blue: #003B66;
+Heaader grey: #666666;
+*/
+
+#into_contain{
+   width: 80%;
+	margin-left:auto;
+	margin-right:auto;
+}
+#intro_tab{
+    display:table;
+    border-collapse: collapse;
+}
+#intro_row{
+	display:table-row;
+}
+#intro_cell{
+	display:table-cell;
+   width:40%;
+   vertical-align:top;
+   padding-top:5%;
+   padding-right:5%;
+}
+#carosel_cell{
+	display:table-cell;
+   width:60%;
+   vertical-align:middle;
+}
+div.item{
+    height: 380px;
+}
+div.hero_image {
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+    height: 380px;
+}
+#carosel_cell img{
+    text-align:center;
+}
+#proj_tab_outer {
+    width: 80%;
+    margin-left:auto;
+    margin-right:auto;
+}

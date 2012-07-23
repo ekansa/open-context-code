@@ -782,7 +782,8 @@ class OpenContext_FacetQuery {
 			$param_array["fq"] = substr($tag_fq_string, 3); //  if we're not appending to an existing $param_array['fq'] ,remove the leading '&& '
 		}
 		
-		if($act_taxa_field != false){
+		//lots of request parameters, don't cache the results
+		if(count($requestParams)>=4){
 			$param_array["fq"] = "{!cache=false}".$param_array["fq"]; //no caching
 		}
 		

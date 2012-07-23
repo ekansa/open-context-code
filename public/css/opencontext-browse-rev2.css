@@ -192,7 +192,7 @@
 
 #selected_filters {
 	border: thin solid #CCCCCC;
-	width: 80%;
+	width: 84%;
 	background-color: #F5F5DC;
 	display: block;
 	padding:2%;
@@ -203,7 +203,7 @@
 	min-width:500px;
 }
 #item_list_outer {
-	width:84%;
+	width:88%;
 	min-width:520px;
 	display: block;
 	margin-top:5%;
@@ -238,6 +238,7 @@ div.paging_cell {
 	display:table-cell;
 	vertical-align: middle;
 	width:60%;
+	padding-top:2%;
 }
 .paging_cell a {
 	font-size: 1.3em;
@@ -259,13 +260,60 @@ div.paging_cell {
 #paging_ct_cell_pageNum{
 	display:table-cell;
 	text-align:center;
+	vertical-align: middle;
 	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
 	font-size: 1em;
 	color: #E0EEEE;
 	text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
 }
-
-
+#paging_slide_cell{
+	display:table-cell;
+	text-align:center;
+	vertical-align: middle;
+	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+	font-size: 1em;
+	color: #E0EEEE;
+	text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+}
+#paging_slide_cell img{
+	height: 50%;
+	width: 50%;
+}
+#sort_tab{
+	display:table;
+	border-collapse:collapse;
+	width:85%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:2%;
+	margin-top:2%;
+	border: thin solid #6E6E6E;
+}
+#sort_row{
+	display:table-row;
+	line-height:70%;
+}
+#sort_start{
+	display:table-cell;
+	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+	font-size: .6em;
+	color: #E0EEEE;
+	text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+	text-align:left;
+	vertical-align: middle;
+	padding:1%;
+}
+div.sort_cell{
+	display:table-cell;
+	text-align:center;
+	vertical-align: middle;
+	padding:1%;
+}
+div.sort_cell a{     
+	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+	font-size: .6em;
+	color: #fff;
+}
 /*
 div.pager_active {
 	border: thin solid #fff;
@@ -340,6 +388,7 @@ div.item_sample_data_tab{
 	border: thin solid #CCCCCC;
 	display: table;
 	border-collapse:collapse;
+	width: 100%;
 }
 div.item_sample_data_tab span {
 	font-family: "Lucida Console", Monaco, monospace;
@@ -361,6 +410,8 @@ div.item_sample_var{
 	text-align:left;
 	padding:2px;
 	border-right: thin solid #CCCCCC;
+	overflow:hidden;
+	word-wrap: break-word;
 }
 div.item_sample_val{
 	display:table-cell;
@@ -368,6 +419,13 @@ div.item_sample_val{
 	width:55%;
 	text-align:left;
 	padding:2px;
+	overflow:hidden;
+	-ms-word-break: break-all;
+	word-break: break-all;
+	word-break: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+        hyphens: auto;
 }
 span.item_cat_label {
 	font-weight: bold;
@@ -490,4 +548,12 @@ div.filter_row{
 	display:table-row;
 	padding-top:1px;
 	padding-bottom:2px;
+}
+#image_results {
+	display:table;
+	border-collapse:collapse;
+	width:100%;
+	min-width:520px;
+	border-top: thin solid #CCCCCC;
+	background-color:#fff;
 }

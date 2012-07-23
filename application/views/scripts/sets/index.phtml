@@ -58,17 +58,7 @@ if(!isset($requestParams["q"])){
     $full_link  = str_replace("&", "&amp;", $full_link );
     $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
 
-    /*
-    $fulltext = '<p class="bodyText">Or, type a search term in the box below (works like Google):</p>'.chr(13);
-    //$fulltext .= '<form id="searchbox" name="form4" method="get" action="'.$requestURI.'">'.chr(13);
-    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
-    $fulltext .='<input name="q" type="text" id="q_string" size="30" maxlength="100" class="bodyText" alt="Enter full-text search term(s)" onchange="textSearch()" />'.chr(13);
-    $fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
-    //$fulltext .='</form>';
-    */
-    
     $fulltext = '';
-    
     $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
     $fulltext .= '<div style="display:table; border-collapse:collapse; width:100%;">';
     $fulltext .= '<div style="display:table-row">';
@@ -76,20 +66,6 @@ if(!isset($requestParams["q"])){
     $fulltext .= '<span style="text-align:left; font-size:.75em;" >';
     $fulltext .= 'Or, type a search term in the box';
     $fulltext .= '</span><br/>';
-    /*
-    $fulltext .='<input style="background-color:#FBF7EC;" name="q" type="text" id="q_string" class="input span2 focused"  maxlength="100"  alt="'.$searchMessage.'" onchange="textSearch()" />'.chr(13);
-    $fulltext .= '</div>';
-    $fulltext .= '<div style="display:table-cell; text-align:right; vertical-align:middle; padding-top:1%; padding:left:4%; width:20%;" > ';
-    //$fulltext .='<input type="submit" id="submit" value="'.$searchMessage.'" class="bodyText" alt="Run full-text search" onclick="textSearch();"/>'.chr(13);
-    $fulltext .= '<a title="'.$searchMessage.'" href="javascript:textSearch();"><img src="http://static.alexandriaarchive.org/images/general/searchButtonSmall.png" alt="Search icon"/></a>';
-    */
-    /*
-    $fulltext .= '<form class="form-wrapper cf">
-        <input name="q" type="text" id="q_string" placeholder="Search here..." required>
-        <button type="submit" onclick="textSearch();">Search</button>
-    </form>';
-    */
-    
     $fulltext .= '<div id="b_search_tab">
                     <div id="b_search_row" class="b_search">
                         <div id="b_search_cell_in" >
@@ -105,14 +81,6 @@ if(!isset($requestParams["q"])){
     $fulltext .= '</div>';
     $fulltext .= '</div>';
     $fulltext .= '</div>';
-    /*
-    $fulltext .= '<div style="display:table-row; width:100%;">';
-    $fulltext .= '<div style="display:table-cell; text-align:left; font-size:.75em;" >';
-    $fulltext .= 'Or, type a search term in the box below (works like Google):';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
-    */
-    
 }
 else{
     $fulltext = "";
@@ -168,6 +136,38 @@ else{
 $googleURI = "";
 $facetAtomURI = "";
 $openSearchURI = "";
+
+
+
+
+
+//make sort links
+$sortingArray = array(0 => array("value" => "context", "display" => "Context"),
+                      1 => array("value" => "proj", "display" => "Project name"),
+                      2 => array("value" => "label", "display" => "Item label"),
+                      3 => array("value" => "updated", "display" => "Updated time"),
+                      4 => array("value" => "created", "display" => "Publication time"),
+                );
+
+if(isset($requestParams["sort"])){
+    $newSort = array();
+    $newSort[] = array("value" => false, "display" => "Interest Score [Default]");
+    $skip = 0;
+    foreach($sortingArray as $sorter){
+        if(strstr($requestParams["sort"], $sorter["value"])){
+            $skip++;
+        }
+        if($skip != 1){
+            $newSort[] = $sorter;
+        }
+        else{
+            $skip = 2;
+        }
+    }
+    $sortingArray = $newSort;
+    unset($newSort);
+}
+
 
 ?>
 
@@ -328,7 +328,7 @@ BEGIN Container for main page content
                 <div id="left_cont">
                     <div id="filter_options">
                         <h3>Browse and Filter</h3>
-                        Click on one of the links below to further limit your view of <em>analytic data</em> in Open Context.</strong></p>
+                        <p>Click on one of the links below to further limit your view of <em>analytic data</em> in Open Context.</p>
                         <div>
                         <?php echo  $fulltext; ?>
                         </div>
@@ -379,8 +379,9 @@ BEGIN Container for main page content
                 </div>
                 <div id="right_cont">   
                     <div id="selected_filters" >
-                        <p class="subHeader">Open Context currently has <strong><?php echo $numFound; ?></strong> items, filtered by the following criteria:</p>
-                        <div class="bodyText"><?php echo $filter_output; ?>
+                        <p>Open Context currently has <strong><?php echo $numFound; ?></strong> items, filtered by the following criteria:</p>
+                        <div>
+                            <?php echo $filter_output; ?>
                         </div>
                         
                         <div style="text-align:right;">
@@ -483,8 +484,33 @@ BEGIN Container for main page content
                                                             $lastPage++;
                                                         }
                                                         echo "Page $page of $lastPage";
+                                                        echo ", sorted by ".$this->sorting;
                                                     ?>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <?php 
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        ?>
+                                        <div id="sort_tab">
+                                            <div id="sort_row">
+                                                <div id="sort_start">
+                                                    Sort By:
+                                                </div>
+                                                <?php
+                                                foreach($sortingArray as $sorter){
+                                                    $sortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "sort", $sorter["value"], false);
+                                                ?>
+                                                <div class="sort_cell">
+                                                    <a href="<?php echo $sortLink; ?>" title="Sort results by <?php echo $sorter["display"]; ?>" ><?php echo $sorter["display"]; ?></a>
+                                                </div>
+                                                <?php
+                                                }//end loop through the sorting array
+                                                ?>
                                             </div>
                                         </div>
                                     </div>

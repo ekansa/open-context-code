@@ -57,6 +57,14 @@ class SolrError {
     
     
     
+    public function restartSolr($solrDir = "/var/www/oc-solr3-6/example"){
+	$commandString = "cd $solrDir/example;rm nohup.out;killall -9 java;nohup java -jar start.jar &;";
+	shell_exec($commandString);
+    }
+    
+    
+    
+    
     //indicate the requester new IP address, the URL, and the time
     public function register_new_error(){
 		

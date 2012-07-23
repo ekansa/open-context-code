@@ -1045,6 +1045,7 @@ class Apache_Solr_Service
 
 		// params will be sent to SOLR in the QUERY STRING
 		$queryString = $this->_generateQueryString($params);
+		$this->queryString = $queryString;
 
 		// the file contents will be sent to SOLR as the POST BODY - we use application/octect-stream as default mimetype
 		return $this->_sendRawPost($this->_extractUrl . $this->_queryDelimiter . $queryString, $data, false, $mimetype);
