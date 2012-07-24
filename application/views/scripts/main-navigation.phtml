@@ -103,9 +103,6 @@ foreach($navTabArray as $navKey => $actNavArray){
         $root->appendChild($element);
     }
     
-    /*
-    $output = str_replace('<?xml version="1.0"?>', '', $root->saveXML());
-    */
     $output = $dom->saveXML($root);
 
 ?>
@@ -116,7 +113,7 @@ foreach($navTabArray as $navKey => $actNavArray){
             <?php echo $output; ?>
             <?php if($activeTab != "browse" && $activeTab != "lightbox"){ ?>
             <form method="get" action="<?php echo $host;?>/search/" class="navbar-search pull-right" >
-                <input type="text" class="search-query span2" name="q" value="Search">
+                <input type="text" class="search-query span2" name="q" value="Search" />
                 
                     <input id="headerSearchSubmit" type="submit" value="" />
                 

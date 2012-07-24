@@ -113,37 +113,6 @@ else{
 
 $facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $facet_fields, $facet_queries, $requestParams, $request_array, $host, $advanced);
 
-
-
-//make sort links
-$sortingArray = array(0 => array("value" => "context", "display" => "Context"),
-                      1 => array("value" => "proj", "display" => "Project name"),
-                      2 => array("value" => "label", "display" => "Item label"),
-                      3 => array("value" => "updated", "display" => "Updated time"),
-                      4 => array("value" => "created", "display" => "Publication time"),
-                );
-
-if(isset($requestParams["sort"])){
-    $newSort = array();
-    $newSort[] = array("value" => false, "display" => "Interest Score [Default]");
-    $skip = 0;
-    foreach($sortingArray as $sorter){
-        if(strstr($requestParams["sort"], $sorter["value"])){
-            $skip++;
-        }
-        if($skip != 1){
-            $newSort[] = $sorter;
-        }
-        else{
-            $skip = 2;
-        }
-    }
-    $sortingArray = $newSort;
-    unset($newSort);
-}
-
-
-
 $googleURI = "";
 $facetAtomURI = "";
 $openSearchURI = "";
@@ -272,30 +241,14 @@ $openSearchURI = "";
                             <div>
                             <?php echo  $fulltext; ?>
                             </div>
-                            <div id="facet_sort_tab">
-                                <div id="facet_sort_row">
-                                    <?php
-                                    if(isset($requestParams["facetSort"])){
-                                        $facetSort = "10,9,8 &darr;";
-                                        $facetSortMessage = "Sort facets by count:";
-                                        unset($requestParams["facetSort"]);
-                                        $facetSortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false);
-                                    }
-                                    else{
-                                        $facetSort = "A,B,C &darr;";
-                                        $facetSortMessage = "Sort facets alphabetically:";
-                                        $facetSortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "facetSort", true, false);
-                                    }
-                                    
-                                    ?>
-                                    <div id="facet_sort_message_cell">
-                                        <?php echo $facetSortMessage; ?>
-                                    </div>
-                                    <div id="facet_sort_control_cell">
-                                        <div id="facet_sort_control"><a href="<?php echo $facetSortLink; ?>" title="Change the order of the facet filters below"><?php echo $facetSort; ?></a></div>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- facet sorting options -->
+                            <?php
+                            
+                            $SortOptionsObj = New SortOptions;
+                            $SortOptionsObj->requestParams = $requestParams;
+                            echo $SortOptionsObj->makeFacetSortLinks();
+                            
+                            ?>
                         </div>
                         <div id="all_facets">
                             <?php echo $facet_output; ?>
@@ -435,23 +388,8 @@ $openSearchURI = "";
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="sort_tab" style="width:100%;">
-                                                <div id="sort_row">
-                                                    <div id="sort_start">
-                                                        Sort By:
-                                                    </div>
-                                                    <?php
-                                                    foreach($sortingArray as $sorter){
-                                                        $sortLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "sort", $sorter["value"], false);
-                                                    ?>
-                                                    <div class="sort_cell">
-                                                        <a href="<?php echo $sortLink; ?>" title="Sort results by <?php echo $sorter["display"]; ?>" ><?php echo $sorter["display"]; ?></a>
-                                                    </div>
-                                                    <?php
-                                                    }//end loop through the sorting array
-                                                    ?>
-                                                </div>
-                                            </div>
+                                            <!-- Add result sort options -->
+                                            <?php echo $SortOptionsObj->makeSortLinks(); ?>
                                         </div>
                                         <div class="paging_cell">
                                             <?php

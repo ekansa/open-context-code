@@ -174,8 +174,8 @@ class solrSearch{
 		//to avoid an error on sorting
 		$requestParams = $this->requestParams;
 		if(!isset($requestParams["q"]) && !isset($requestParams["sort"]) ){
-			$requestParams["sort"] = "label";
-			$this->requestParams = $requestParams;
+		  $requestParams["sort"] = "label";
+		  $this->requestParams = $requestParams;
 		}
 		
 		$this->allDocs = true;
@@ -540,7 +540,7 @@ class solrSearch{
 	}//end case with sorting requested
 
 	
-	if(isset($requestParams["q"])){
+	if(isset($requestParams["q"]) && !isset($requestParams["sort"])){
 	    //sort by relevancy, the default without parameter if you're doing a key-word search
 	    $this->sortType = "Full-text search relevancy";
 	    if(isset($param_array['sort'])){

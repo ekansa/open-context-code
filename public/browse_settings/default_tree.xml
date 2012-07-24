@@ -25,8 +25,8 @@
             <showNum>10</showNum>
             <itemSort type="organize"> 
                 <subField view="New Projects" collapse="true" showType="list" sort="1">
-                    <item view="Khirbat al-Mudayna al-Aliya" solrName="Khirbat al-Mudayna al-Aliya" sort="1" />
-                    <item view="Dove Mountain Groundstone" solrName="Dove Mountain Groundstone" sort="2" />
+                    <item view="Kenan Tepe" solrName="Kenan Tepe" sort="1" />
+                    <item view="Rough Cilicia" solrName="Rough Cilicia" sort="2" />
                 </subField>
                 <subField view="Featured Projects" collapse="true" showType="list" sort="2">
                     <item view="Petra Great Temple Excavations" solrName="Petra Great Temple Excavations" sort="1" />

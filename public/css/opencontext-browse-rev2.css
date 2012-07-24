@@ -433,6 +433,15 @@ span.item_cat_label {
 span.item_label {
 	margin-left:8%;
 }
+div.search_doc_cell {
+    display:table-cell;
+    vertical-align: top;
+    text-align: left;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    padding-left:10px;
+    padding-right:3%;
+}
 /*
 li.facetSub{
 	list-style-type:none; 
