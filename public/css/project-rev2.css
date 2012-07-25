@@ -1,0 +1,285 @@
+/* Open Context Layout Main */
+/*
+Content area: 1000px;
+Header blue: #003B66;
+Heaader grey: #666666;
+*/
+#item_top {
+	width:80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+#item_top_tab {
+	display:table;
+   border-collapse: collapse;
+}
+#item_top_row {
+	display:table-row;
+}
+#item_top_icon_cell {
+	display:table-cell;
+	vertical-align: middle;
+}
+#item_top_name_cell {
+	display:table-cell;
+	vertical-align:top;
+	padding-left:5%;
+	padding-right:5%;
+	width: 40%;
+}
+#item_top_name_cell h1{
+	font-size: medium;
+}
+#item_top_des_cell {
+	display:table-cell;
+	vertical-align:top;
+	padding-left:5%;
+	padding-right:5%;
+	width: 40%;
+}
+#item_top_view_cell{
+	display:table-cell;
+	text-align: right;
+	vertical-align:top;
+}
+#parent_contexts {
+	position:relative;
+	width:787px;
+	height:16px;
+	z-index:6;
+	left:3px;
+	top:3px;
+}
+#contexttitle {
+	float:left;
+	width:160px;
+	height:16px;
+	z-index:6;
+}
+#pcontext {
+	float:left;
+	width:624px;
+	height:16px;
+	z-index:7;
+	overflow: hidden;
+}
+
+#main_description {
+	width:80%;
+	margin-top:10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#main_description {
+	width:80%;
+	margin-top:10px;
+}
+#main_description_tab {
+	display:table;
+   border-collapse: collapse;
+}
+#main_description_row {
+	display:table-row;
+}
+#left_des{
+	display:table-cell;
+	width:70%;
+	min-height:400px;
+}
+#right_des{
+	display:table-cell;
+	width:28%;
+	z-index:6;
+	padding-left:3px;
+	min-height:400px;
+}
+#bottom_des{
+	clear: both;
+	width:100%;
+	z-index:6;
+	height:10px;
+}
+#preview{
+	position:relative;
+	width:95%;
+	z-index:6;
+	left:6px;
+	top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+	margin-bottom: 20px;
+}
+#image_area{
+	position:relative;
+	width:80%;
+	margin-left: 5%;
+	margin-right: 10%;
+}
+#properties{
+	position:relative;
+	width:95%;
+	z-index:6;
+	left:6px;
+	top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+	margin-bottom: 20px;
+}
+#allchildren{
+	position:relative;
+	width:95%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+div.container {
+    	float: left;
+	min-height: 2em;
+    	display: table-cell;
+	margin-left: 4px;
+    	vertical-align: middle 
+}
+div.container_a {
+    	float: left;
+	min-height: 2em;
+	width: 50%;
+    	display: table-cell;
+    	vertical-align: middle 
+}
+div.clear_container {
+    	clear: both;
+	min-height: 2em;
+    	display: table-cell;
+	margin-top: 4px;
+    	vertical-align: middle 
+}
+#allnotes{
+	position:relative;
+	width:95%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+#all_links{
+	position:relative;
+	width:95%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+#all_people{
+	position:relative;
+	width:95%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+#all_root{
+	position:relative;
+	width:90%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+#all_keywords{
+	position:relative;
+	width:90%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+#all_tags{
+	position:relative;
+	width:90%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+#all_media{
+	position:relative;
+	width:90%;
+	z-index:6;
+	left:6px;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
+
+#footer {
+	position: relative;
+	margin-top: 50px;
+	width:792px;
+	height:50px;
+	z-index:4;
+	left: 0px;
+	top: 200px;
+	background-color: #460A0A;
+	display: table-cell;
+    	vertical-align: middle
+}
+#w3c_val_logo {
+	float:left;
+	z-index:5;
+	left: 10px;
+	margin-top: 2px;
+	margin-left: 4px;
+	display: table-cell;
+    	vertical-align: middle;
+}
+#all_lic{
+	float:left;
+	width: 60%;
+	height: 32px;
+	margin-top: 2px;
+	margin-left: 10px;
+	background-color: #CCCCCC;
+	padding: 2px;
+	display: table-cell;
+    	vertical-align: middle;
+}
+#lic_pict{
+	float: left;
+	height: 40px;
+	margin-top: 1px;
+}
+#licarea{
+	float: left;
+	margin-left: 10px;
+	height: 32px;
+	width: 70%;
+	text-align: center;
+}

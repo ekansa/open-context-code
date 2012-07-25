@@ -284,16 +284,15 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                         <div id="filter_options">
                             <h3>Open Context Search</h3>
                             <p>Click on one of the links below to further limit your search results.</p>
+                            <!-- facet sorting options -->
+                            <?php
+                            
+                            $SortOptionsObj = New SortOptions;
+                            $SortOptionsObj->requestParams = $requestParams;
+                            echo $SortOptionsObj->makeFacetSortLinks();
+                            
+                            ?>
                         </div>
-
-                        <!-- facet sorting options -->
-                        <?php
-                        
-                        $SortOptionsObj = New SortOptions;
-                        $SortOptionsObj->requestParams = $requestParams;
-                        echo $SortOptionsObj->makeFacetSortLinks();
-                        
-                        ?>
                         
                         <div id="all_facets">
                             <?php echo $facet_output; ?>
@@ -546,10 +545,10 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                             </div>
                         </div>
                     </div>
-                </div>
-                </div>
-            </div>
-        </div>
+                    </div> <!--End right col cell -->
+                </div> <!--End main content row -->
+            </div> <!--End main content tab -->
+        </div> <!-- End main id -->
         <div id="bottomBuffer">
 
         </div>
