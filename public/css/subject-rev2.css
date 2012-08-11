@@ -5,13 +5,14 @@ Header blue: #003B66;
 Heaader grey: #666666;
 */
 #item_top {
-	width:80%;
+	width:90%;
 	margin-left: auto;
 	margin-right: auto;
 }
 #item_top_tab {
 	display:table;
    border-collapse: collapse;
+	width:100%;
 }
 #item_top_row {
 	display:table-row;
@@ -45,37 +46,36 @@ Heaader grey: #666666;
 	text-align: right;
 	vertical-align:top;
 }
-#parent_contexts {
-	position:relative;
-	width:787px;
-	height:16px;
-	z-index:6;
-	left:3px;
-	top:3px;
+#item_context_tab {
+	display:table;
+   border-collapse: collapse;
+	width:100%;
 }
-#contexttitle {
-	float:left;
-	width:160px;
-	height:16px;
-	z-index:6;
+#item_context_row {
+	display:table-row;
 }
-#pcontext {
-	float:left;
-	width:624px;
-	height:16px;
-	z-index:7;
-	overflow: hidden;
+#item_context_t_cell {
+	display:table-cell;
+	vertical-align: middle;
+	text-align:left;
+	width:18%;
+	padding-top:2%;
+	padding-bottom:2%;
+}
+#item_context_cell {
+	display:table-cell;
+	vertical-align: middle;
+	text-align:left;
+	padding-left:1%;
+	padding-top:2%;
+	padding-bottom:2%;
 }
 
 #main_description {
-	width:80%;
+	width:90%;
 	margin-top:10px;
 	margin-left: auto;
 	margin-right: auto;
-}
-#main_description {
-	width:80%;
-	margin-top:10px;
 }
 #main_description_tab {
 	display:table;

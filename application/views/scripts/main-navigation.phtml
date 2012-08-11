@@ -56,28 +56,34 @@ else{
 }
 
 //now match the request prefix with uri paths from the nav-tab-array
-foreach($navTabArray as $navKey => $actNavArray){
-    if($requestPrefix == $actNavArray["uri"]){
-        $activeTab = $navKey;
-        break;
+if($requestPrefix == "/subjects/"){
+    $activeTab = "details";
+}
+else{
+    foreach($navTabArray as $navKey => $actNavArray){
+        if($requestPrefix == $actNavArray["uri"]){
+            $activeTab = $navKey;
+            break;
+        }
     }
 }
 
 
 
 
-
     if($activeTab  == "search"){
-        unset($navTabArray ["details"]);
+        unset($navTabArray["details"]);
     }
     elseif($activeTab  == "details"){
-        unset($navTabArray ["search"]);
+        unset($navTabArray["search"]);
     }
     else{
-        unset($navTabArray ["details"]); 
+        unset($navTabArray["details"]);
+        unset($navTabArray["search"]);
     }
 
-    unset($navTabArray["index"]);
+    unset($navTabArray ["search"]);
+    unset($navTabArray["accounts"]);
 
     $dom = new DOMDocument("1.0", "utf-8");
     $dom->formatOutput = true;

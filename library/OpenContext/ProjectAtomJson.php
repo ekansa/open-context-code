@@ -313,9 +313,9 @@ class OpenContext_ProjectAtomJson {
 		
 		$xml_string = $proj_dom->saveXML();
                     
-                $xml_string = str_replace("<default:", "<", $xml_string);
-                $xml_string = str_replace("</default:", "</", $xml_string);
-                $xml_string = str_replace('<entry xmlns:default="http://www.w3.org/1999/xhtml" xmlns:oc="http://about.opencontext.org/schema/person_schema_v1.xsd">', chr(13)."<entry>".chr(13), $xml_string);
+      $xml_string = str_replace("<default:", "<", $xml_string);
+      $xml_string = str_replace("</default:", "</", $xml_string);
+      $xml_string = str_replace('<entry xmlns:default="http://www.w3.org/1999/xhtml" xmlns:oc="http://about.opencontext.org/schema/person_schema_v1.xsd">', chr(13)."<entry>".chr(13), $xml_string);
 		$xml_string = str_replace('<entry xmlns:default="http://www.w3.org/1999/xhtml" xmlns:oc="http://opencontext.org/schema/person_schema_v1.xsd">', chr(13)."<entry>".chr(13), $xml_string);
 		$xml_string = str_replace('<entry xmlns:default="http://www.w3.org/1999/xhtml">', chr(13)."<entry>".chr(13), $xml_string);
 

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- DWXMLSource="../../../Documents and Settings/Eric Kansa/Desktop/atomSample.xml" --><!DOCTYPE xsl:stylesheet  [
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xsl:stylesheet  [
 	<!ENTITY nbsp   "&#160;">
 	<!ENTITY copy   "&#169;">
 	<!ENTITY reg    "&#174;">
@@ -131,9 +132,9 @@
 								<div id="item_top_icon_cell">
 										<img width='40' height='40'><xsl:attribute name="src">/images/item_view/project_icon.jpg</xsl:attribute><xsl:attribute name="alt">Project or Organization</xsl:attribute></img>
 								</div>
-								<div id="item_top_name_cell">Project / Collection:<h1><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:name/arch:string"/></h1>
+								<div id="item_top_name_cell"><h1><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:name/arch:string"/></h1>
 								</div>       
-								<div id="item_top_des_cell">Description: <br/><span class="top_short_des"><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type='short_des']" disable-output-escaping="yes"/></span>
+								<div id="item_top_des_cell"><span class="top_short_des"><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type='short_des']" disable-output-escaping="yes"/></span>
 								</div>
 								<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="atom:feed/atom:entry/arch:project/oc:social_usage/oc:item_views[@type!='spatialCount']/oc:count"/></strong>
 								</div>
@@ -158,9 +159,7 @@
 				
 				
 										<div id="allnotes" class="bodyText">
-											<p class="subHeader">Project / Collection Overview
-									
-											</p>
+											<h5>Project / Collection Overview</h5>
 											
 											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:observations/arch:observation/arch:links/oc:diary_links/oc:link) != 0" >	
 												<p class="bodyText">
@@ -237,52 +236,47 @@
 										
 										
 										<div id="preview">
-											<p class="subHeader">Content Associated with this Project</p>
+											<h5>Content Associated with this Project</h5>
 											<p class="bodyText">Items in these categories have been viewed: <strong><xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count"/></strong> times. (Ranked: <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@rank"/> of  <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@pop"/>)</p>
-											<xsl:for-each select="atom:feed/atom:entry">
-												<xsl:if test="./atom:category/@term ='category' ">
-													<table>
-														<tbody>
-															<tr>
-																<td><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></td><td><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></td><td><span class="bodyText"><xsl:value-of select="./atom:content"/></span></td>
-															</tr>
-														</tbody>
-													</table>
-												</xsl:if>
-											</xsl:for-each>
-										
-										</div>
-										
-										<div id="properties">
-											<p class="subHeader">Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property)"/> properties)</p>
-											<table border="0" cellpadding="1">
-												 <xsl:for-each select="atom:feed/atom:entry/arch:project/arch:properties/arch:property">
-													  <tr>
-														<td width='95'>
-															<xsl:value-of select="oc:var_label"/>            </td>
-														<td> </td>
-														<td>
-															<a>
-																<xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>
-																<xsl:value-of select="oc:show_val"/>                </a>            </td>
-													  </tr>
-												  </xsl:for-each>
-												  <xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property) = 0">
-													<tr><td><xsl:value-of select="atom:feed/atom:entry/arch:project/oc:metadata/oc:no_props" disable-output-escaping="yes"/></td></tr>
-												  </xsl:if>
-											</table>
+												<div class="list_tab" style="width:100%;">
+														<xsl:for-each select="atom:feed/atom:entry">
+																<xsl:if test="./atom:category/@term ='category' ">
+																		<div class="list_tab_row">
+																				<div class="list_tab_cell_icon"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
+																				<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
+																				<div class="list_tab_cell"><xsl:value-of select="./atom:content"/></div>
+																		</div>
+																</xsl:if>
+														</xsl:for-each>
+												</div>
 										</div>
 										
 										
-										
+										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property) !=0 ">
+												<div id="properties">
+														<h5>Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property)"/> properties)</h5>
+														<div class="list_tab"> 
+																<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:properties/arch:property">
+																		<div class="list_tab_row">
+																				<div class="list_tab_cell">		
+																						<xsl:value-of select="oc:var_label"/>
+																				</div>
+																				<div class="list_tab_cell">
+																						<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																				</div>
+																	 </div>
+																 </xsl:for-each>
+														</div>
+												</div>
+										</xsl:if>
 										
 										
 										
 										<div id="all_people" class="bodyText">
-											<p class="subHeader">Associated People (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link)"/> items)</p>
-											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link) != 0" >	
+											<h5>Associated People (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link)"/> people)</h5>
+											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link[oc:name/text() !='']) != 0" >	
 												<p class="bodyText">
-													<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link">
+													<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link[oc:name/text() !='']">
 														<a><xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()"> , </xsl:if>
 													</xsl:for-each>
 												</p>
@@ -295,36 +289,32 @@
 								</div> <!-- end left_des cell -->
 								<div id="right_des">
 								
-									<div id="all_root" class="bodyText">
-										<p class="subHeader">Browse this Project</p>
-												<xsl:if test="//arch:project/oc:metadata/oc:project_name/@pub_status = 'forthcoming'">
-														<p class="bodyText"><span style="color:#191970; font-weight:bold;"> [<em>Status: Forthcoming Project</em>]</span></p> 
-												</xsl:if>
-											<xsl:for-each select="atom:feed/atom:entry">
-												<xsl:if test="./atom:category/@term ='context' ">
-													<table>
-														<tbody>
-															<tr>
-																<td><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></td><td><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></td><td><span class="bodyText"> <xsl:value-of select="./atom:content"/></span></td>
-															</tr>
-														</tbody>
-													</table>
-												</xsl:if>
-											</xsl:for-each>
-										<br/>	
-									</div>
+										<div id="all_root" class="bodyText">
+												<h5>Browse this Project</h5>
+												<div class="list_tab">
+														<xsl:for-each select="atom:feed/atom:entry">
+																<xsl:if test="./atom:category/@term ='context' ">
+																		<div class="list_tab_row">
+																				<div class="list_tab_cell"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
+																				<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
+																				<div  class="list_tab_cell"><div style="padding-left:4px"><xsl:value-of select="./atom:content"/></div></div>
+																		</div>
+																</xsl:if>
+													</xsl:for-each>
+												</div>
+										</div>
 								
 								
-									<div id="all_keywords" class="bodyText">
-										<p class="subHeader">Keywords for this Project</p>
-											<em><xsl:for-each select="//arch:project/oc:metadata/dc:subject">
-												<xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
-												</xsl:for-each>
-											</em>
-										<br/>	
-									</div>
+										<div id="all_keywords" class="bodyText">
+												<h5>Keywords for this Project</h5>
+													<em><xsl:for-each select="//arch:project/oc:metadata/dc:subject">
+														<xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
+														</xsl:for-each>
+													</em>
+												<br/>	
+										</div>
 								
-								
+								<!--
 									<div id="all_tags" class="bodyText">
 										<p class="subHeader">Tags Used in this Project  (<xsl:value-of select="count(descendant::atom:feed/atom:entry/atom:category[@term='user tag'])"/>)</p>
 										<p class="bodyText">Items from this project/collection have been tagged by: <strong><xsl:value-of select="	count(descendant::atom:feed/atom:entry/atom:category[@term='tag creator'])"/></strong> people.</p>
@@ -335,71 +325,69 @@
 											</xsl:for-each>
 										<br/>	
 									</div>
-								
+								-->
 									
-									<div id="all_media" class="bodyText" >
-										<p class="subHeader">Linked Media  (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link)"/> files)</p>
-										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link) != 0" >
-											<table border="0" cellpadding="1">
-												<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link">
-														<tr>
-															<xsl:choose>
-															<xsl:when test="oc:type = 'csv'">	
-															<td >
-																<a>
-																	<xsl:attribute name="href">../tables/<xsl:value-of select="oc:id"/></xsl:attribute>
-																	<xsl:attribute name="title">Downloadable table: <xsl:value-of select="oc:name"/></xsl:attribute>
-																	<img>
-																		<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
-																		<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
-																	</img>
-																</a>
-															</td>
-															<td >
-																<a>
-																	<xsl:attribute name="href">../tables/<xsl:value-of select="oc:id"/></xsl:attribute>
-																	<xsl:attribute name="title">Downloadable table: <xsl:value-of select="oc:name"/></xsl:attribute>
-																	<xsl:value-of select="oc:name"/></a>
-															</td>
-															</xsl:when>
-															<xsl:when test="oc:type = 'acrobat pdf'">	
-															<td >
-																<a>
-																	<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																	<xsl:attribute name="title">Acrobat Document: <xsl:value-of select="oc:name"/></xsl:attribute>
-																	<img>
-																		<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
-																		<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
-																	</img>
-																</a>
-															</td>
-															<td >
-																<a>
-																	<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																	<xsl:attribute name="title">Acrobat Document: <xsl:value-of select="oc:name"/></xsl:attribute>
-																	<xsl:value-of select="oc:name"/></a>
-															</td>
-															</xsl:when>
-															<xsl:otherwise>	
-															<td colspan='2'>
-																<a>
-																	<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																	<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
-																	<img>
-																		<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
-																		<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
-																	</img>
-																</a>
-															</td>
-															</xsl:otherwise>
-															</xsl:choose>
-														</tr>
-												</xsl:for-each>
-											</table>
-											<br/>
-											<br/>
-										</xsl:if>
-									</div>
+										<div id="all_media" class="bodyText" >
+												<h5>Linked Media  (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link)"/> files)</h5>
+												<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link) != 0" >
+														<div class="list_tab">
+																<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link">
+																		<div class="list_tab_row">
+																				<xsl:choose>
+																				<xsl:when test="oc:type = 'csv'">	
+																				<div  class="list_tab_cell">
+																					<a>
+																						<xsl:attribute name="href">../tables/<xsl:value-of select="oc:id"/></xsl:attribute>
+																						<xsl:attribute name="title">Downloadable table: <xsl:value-of select="oc:name"/></xsl:attribute>
+																						<img>
+																							<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																							<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																						</img>
+																					</a>
+																				</div>
+																				<div  class="list_tab_cell">
+																					<a>
+																						<xsl:attribute name="href">../tables/<xsl:value-of select="oc:id"/></xsl:attribute>
+																						<xsl:attribute name="title">Downloadable table: <xsl:value-of select="oc:name"/></xsl:attribute>
+																						<xsl:value-of select="oc:name"/></a>
+																				</div>
+																				</xsl:when>
+																				<xsl:when test="oc:type = 'acrobat pdf'">	
+																				<div  class="list_tab_cell">
+																					<a>
+																						<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																						<xsl:attribute name="title">Acrobat Document: <xsl:value-of select="oc:name"/></xsl:attribute>
+																						<img>
+																							<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																							<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																						</img>
+																					</a>
+																				</div>
+																				<div  class="list_tab_cell">
+																					<a>
+																						<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																						<xsl:attribute name="title">Acrobat Document: <xsl:value-of select="oc:name"/></xsl:attribute>
+																						<xsl:value-of select="oc:name"/></a>
+																				</div>
+																				</xsl:when>
+																				<xsl:otherwise>	
+																				<div class="list_tab_cell">
+																					<a>
+																						<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																						<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																						<img>
+																							<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																							<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																						</img>
+																					</a>
+																				</div>
+																				</xsl:otherwise>
+																				</xsl:choose>
+																		</div>
+																</xsl:for-each>
+														</div>
+												</xsl:if>
+										</div>
 								
 								</div>
 								

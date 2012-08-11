@@ -1,5 +1,5 @@
 <?php
-
+$host = OpenContext_OCConfig::get_host_config();
 
 //echo htmlentities($this->solr_out);
 $XML = false;
@@ -12,39 +12,74 @@ if ($XML) {
 
     $useragent = @$_SERVER['HTTP_USER_AGENT'];
 
+    /*
     if(strstr($useragent,"MSIE")){
         $doc->load("xsl/defaultSpatial.xsl");
     }    
     else{
         $doc->load("xsl/defaultSpatial_rdfa.xsl");
     }
-    
+    */
+    $doc->load("xsl/rev2-subject.xsl");
     
     $proc = new XSLTProcessor();
     $xslt = $proc->importStylesheet($doc);
     $archaeoMLDoc = new DomDocument();
     $archaeoMLDoc->loadXML($XML->asXML());
-    $output = $proc->transformToXML($archaeoMLDoc);
-    
-    if(!strstr($useragent,"MSIE")){
-        header('Content-type: application/xhtml+xml', true);
-    }
-    else{
-        header('Content-type: text/html; charset=utf-8	', true);
-        //header('Content-type: application/xhtml+xml', true);
-        $XMLprefix = '<?xml version="1.0" encoding="utf-8"?>';
-        $output = str_replace($XMLprefix, "", $output);
-    }
-    
-    echo $output;
-       
-} else {
-
-    echo "You're killing me.";
-
+    $XHTMLbody = $proc->transformToXML($archaeoMLDoc); 
 }
-
-
-
-
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <title>Open Context view of Item:</title>
+    
+    <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon"/>
+    <link rel="alternate" type="application/atom+xml" tilte="Atom feed of all subject items" href="<?php echo $host; ?>/subjects.atom" />
+    <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $host; ?>/css/subject-rev2.css" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-tab.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-dropdown.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        <!--
+        
+        $('.dropdown-toggle').dropdown()
+        
+        -->
+    </script>
+    </head>
+    <body>
+        <!-- 
+            Logo,
+        -->    
+        <?php echo $this->render('header.phtml'); //reader document top ?>
+           
+        <!-- 
+            Navigation tabs, search box
+        -->
+        <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+    
+        <?php echo $XHTMLbody; ?>
+        
+        <div id="bottomBuffer">
+        </div>
+        </div>
+        <?php echo $this->render('footer.phtml'); //reader document footer ?>
+        <script type="text/javascript">
+        <!--
+         $('#obsTabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+          })
+         -->
+    </script>
+    </body>
+</html>
+
