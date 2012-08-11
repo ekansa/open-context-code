@@ -1633,7 +1633,7 @@ class solrSearch{
 			$resultArrayURIKey = array();
 			if(is_array($this->documentsArray)){
 				foreach($this->documentsArray as $doc){
-					$uriKey = $host.$docTypeArray["spatial"].$doc["uuid"];
+					$uriKey = $host.$docTypeArray["spatial"]["href"].$doc["uuid"];
 					$resultArrayURIKey[$uriKey] = $doc;
 				}//end loop
 			}
@@ -2058,7 +2058,7 @@ SET atom_entry =  REPLACE(atom_entry, '(tumbnail file)', '(thumbnail file)')
 	    
 	    $resultItem = array("uri"=> $uriItem,
 				"project"=>$doc["project_name"],
-				"label"=> $mediaItem->label." (".$doc["project_name"].": ".$doc["item_class"].")",
+				"label"=> $mediaItem->label." (".$doc["project_name"].": ".$doc["item_class"][0].")",
 				"thumbURI"=> $mediaItem->thumbnailURI,
 				"previewURI" => $mediaItem->previewURI,
 				"fullURI" => $mediaItem->previewURI,
