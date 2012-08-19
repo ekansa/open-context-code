@@ -42,14 +42,16 @@
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;
 }
-
+#search_sort_block{
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+    background-color: #7D7D7D;
+}
 #b_search_tab{
 	display:table;
+   width:100%;
 	border-collapse: collapse;
-	width:100%;
-	margin-left:auto;
-	margin-right:auto;
-	background-color: #7D7D7D;
 	text-align: center;
 }
 #b_search_row{
@@ -60,24 +62,47 @@
 	width:75%;
 	text-align:right;
 	vertical-align:top;
-	padding-top:3%;
 	padding-left:3%;
+   height: 80%;
+}
+#b_search_in_border{
+    
 }
 #b_search_cell_button{
 	display:table-cell;
 	width:25%;
 	text-align:left;
 	vertical-align:top;
-	padding-top:3%;
 }
+#b_search_but_border{
+    
+}
+.bb {
+        box-sizing: border-box; /* css3 rec */
+        -moz-box-sizing: border-box; /* ff2 */
+        -ms-box-sizing: border-box; /* ie8 */
+        -webkit-box-sizing: border-box; /* safari3 */
+        -khtml-box-sizing: border-box; /* konqueror */
+    }
+
 .b_search input {
     font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
     font-size: .75em;
+    /*
     height: 80%;
     background-color:#FFFFFE;
     border: none;
     border-radius: 5px 0px 0px 5px;
-    width: 100%;
+    */
+    background-color:#FFFFFE;
+    border: none;
+    border-radius: 5px 0px 0px 5px;
+    background-color:#FFFFFE;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 100%;
+    border: none;
+    width: 95%;
 }
  
 .b_search input:focus {
@@ -110,14 +135,20 @@
     padding: 0;
     cursor: pointer;
     width: 90%;
-    height: 80%;
     font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
     font-size: .75em;
     color: #fff;
     text-transform: uppercase;
+    /*
     background: #003B66;
-    border-radius: 0 5px 5px 0;      
+    border-radius: 0 5px 5px 0;
+    */
     text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+    height: inherit;
+    margin-top: auto;
+    margin-bottom: auto;
+    background: #003B66;
+    border-radius: 0 5px 5px 0;
 }   
    
 .b_search button:hover{     
@@ -138,9 +169,6 @@
 	display:table;
 	border-collapse: collapse;
 	width:100%;
-	margin-left:auto;
-	margin-right:auto;
-	background-color: #7D7D7D;
 	text-align: center;
 }
 #facet_sort_row{

@@ -61,27 +61,20 @@ $full_link = $host.$requestURI;
 
     $fulltext = '';
     $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
-    $fulltext .= '<div style="display:table; border-collapse:collapse; width:100%;">';
-    $fulltext .= '<div style="display:table-row">';
-    $fulltext .= '<div style="display:table-cell; text-align:left; vertical-align:middle; width:75%;"> ';
-    $fulltext .= '<span style="text-align:left; font-size:.75em;" >';
+    $fulltext .= '<span style="text-align:left; margin-left:2%; font-size:.75em;" >';
     $fulltext .= 'Or, type a search term in the box';
     $fulltext .= '</span><br/>';
     $fulltext .= '<div id="b_search_tab">
                     <div id="b_search_row" class="b_search">
                         <div id="b_search_cell_in" >
-                            <input name="q" type="text" id="q_string" placeholder="Search here..." />
+                                <input name="q" class="bb" type="text" id="q_string" placeholder="Search here..." />
                         </div>
                         <div id="b_search_cell_button">
-                            <button type="submit" onclick="textSearch();">Search</button>
+                                <button class="bb" type="submit" onclick="textSearch();">Search</button>
                         </div>
                     </div>
                 </div>
     ';
-    
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
-    $fulltext .= '</div>';
 }
 else{
     $fulltext = "";
@@ -238,9 +231,9 @@ $openSearchURI = "";
                         <div id="filter_options">
                             <h3>Browse and Filter Images</h3>
                             <p>Click on one of the links below to further limit your view of <em>images</em> in Open Context.</p>
-                            <div>
+                            <div id="search_sort_block">
                             <?php echo  $fulltext; ?>
-                            </div>
+                            
                             <!-- facet sorting options -->
                             <?php
                             
@@ -249,6 +242,7 @@ $openSearchURI = "";
                             echo $SortOptionsObj->makeFacetSortLinks();
                             
                             ?>
+                            </div>
                         </div>
                         <div id="all_facets">
                             <?php echo $facet_output; ?>
