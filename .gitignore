@@ -3,6 +3,11 @@ $ cat .gitignore
 library/OpenContext/OCConfig.php
 
 public/database/oc_media/**/*
+
+public/cache/**/*
+public/comp_cache/**/*
+public/time_cache/**/*
+
 public/cache/*
 public/comp_cache/*
 public/time_cache/*
