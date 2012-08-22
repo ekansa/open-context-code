@@ -265,28 +265,75 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																						<xsl:if test="position() != 1">
 																								<xsl:attribute name="class">tab-pane fade</xsl:attribute>
 																						</xsl:if>
-																						<xsl:if test="count(descendant::arch:properties/arch:property) !=0 ">
+																						<xsl:if test="count(descendant::arch:properties/arch:property) !=0 or count(descendant::arch:notes/arch:note) !=0 ">
 																								<div class="properties">
-																										<xsl:choose>
-																												<xsl:when test="oc:obs_metadata/oc:name">
-																														<h5><xsl:value-of select="oc:obs_metadata/oc:name"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
-																												</xsl:when>
-																												<xsl:otherwise>
-																														<h5>Observation <xsl:value-of select="position()"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)</h5>
-																												</xsl:otherwise>
-																										</xsl:choose>
-																										<div class="list_tab"> 
-																												<xsl:for-each select="arch:properties/arch:property">
-																														<div class="list_tab_row">
-																																<div class="list_tab_cell">		
-																																		<xsl:value-of select="oc:var_label"/>
+																										  <xsl:if test="count(descendant::arch:properties/arch:property) !=0">
+																												<xsl:choose>
+																														<xsl:when test="oc:obs_metadata/oc:name">
+																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
+																														</xsl:when>
+																														<xsl:otherwise>
+																																<h5>Observation <xsl:value-of select="position()"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)</h5>
+																														</xsl:otherwise>
+																												</xsl:choose>
+																												<div class="list_tab"> 
+																														<xsl:for-each select="arch:properties/arch:property">
+																																<div class="list_tab_row">
+																																		<div class="list_tab_cell">		
+																																				<xsl:value-of select="oc:var_label"/>
+																																		</div>
+																																		<div class="list_tab_cell">
+																																				<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																																		</div>
+																															 </div>
+																														 </xsl:for-each>
+																												</div>
+																										  </xsl:if>
+																										  <xsl:if test="count(descendant::arch:notes/arch:note) !=0 ">
+																												<div class="item-notes">
+																													 <h5>Item Notes</h5>
+																													 <xsl:for-each select="arch:notes/arch:note">
+																														  <div class="item-note">
+																																<xsl:value-of select="arch:string" disable-output-escaping="yes" />
+																														  </div>
+																													 </xsl:for-each>
+																												</div>
+																										  </xsl:if>
+																										  <xsl:if test="count(descendant::arch:links/oc:space_links/oc:link) != 0" >
+																												<div class="item-links">
+																													 <h5>Linked Items (<xsl:value-of select="count(descendant::arch:links/oc:space_links/oc:link)"/> items)</h5>
+																													 <div class="list_tab">
+																														  <xsl:for-each select="arch:links/oc:space_links/oc:link[position() mod 2 = 1]">
+																																<div class="list_tab_row">
+																																	 <div class="list_tab_cell_icon">	
+																																			 <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																																				 <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																																				 <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
+																																			 </img></a>
+																																	 </div>
+																																	 <div class="list_tab_cell"><a>
+																																			 <xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																			 </a> ( <xsl:value-of select="oc:relation"/> )
+																																	 </div>
+																																	 
+																																	 <xsl:for-each select="following-sibling::oc:link[1]">
+																																		  <div class="list_tab_cell_icon">	
+																																			 <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																																				 <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																																				 <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
+																																			 </img></a>
+																																		  </div>
+																																		  <div class="list_tab_cell"><a>
+																																				  <xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																				  </a> ( <xsl:value-of select="oc:relation"/> )
+																																		  </div>
+																																	 </xsl:for-each>
+																																	 
 																																</div>
-																																<div class="list_tab_cell">
-																																		<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
-																																</div>
+																														  </xsl:for-each>
 																													 </div>
-																												 </xsl:for-each>
-																										</div>
+																												</div>
+																											</xsl:if>
 																								</div>
 																						</xsl:if>
 																				</div>
@@ -302,6 +349,10 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												
 										</div><!-- end div for left des cell -->
 										<div id="right_des">
+												<div>
+													 <h5>Project Rreview Status</h5>
+													 Peer-reviewed
+												</div>
 										</div><!-- end div for right des cell -->
 								</div><!-- end div for main des row -->
 						</div><!-- end div for left des tab -->
@@ -343,10 +394,6 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 				</xsl:choose>
 		
 </xsl:template>
-
-
-
-
 
 
 
