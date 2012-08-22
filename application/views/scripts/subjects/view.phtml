@@ -52,6 +52,7 @@ if ($XML) {
         
         $('.dropdown-toggle').dropdown()
         
+        
         -->
     </script>
     </head>
@@ -77,7 +78,17 @@ if ($XML) {
          $('#obsTabs a').click(function (e) {
             e.preventDefault();
             $(this).tab('show');
-          })
+          });
+         
+            var url = document.location.toString();
+            if (url.match('#')) {
+                $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+            }
+            
+            // Change hash for page-reload
+            $('.nav-tabs a').on('shown', function (e) {
+                window.location.hash = e.target.hash;
+            })
          -->
     </script>
     </body>

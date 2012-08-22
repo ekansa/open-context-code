@@ -107,7 +107,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 </xsl:variable>
 
 
-<xsl:variable name="max_Tabs">9</xsl:variable>
+<xsl:variable name="max_Tabs">7</xsl:variable>
 
 <xsl:variable name="citation">
 	<xsl:for-each select="arch:spatialUnit/oc:metadata/dc:contributor">
@@ -162,7 +162,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 										</div>
 										<div id="item_top_name_cell">
 												<h1>Item: <xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></h1>
-												<p>Class: <xsl:value-of select="//arch:spatialUnit/oc:item_class/oc:name"/></p>
+												<h2>Class: <xsl:value-of select="//arch:spatialUnit/oc:item_class/oc:name"/></h2>
 										</div>
 										<div id="item_top_des_cell">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a>
 										</div>
@@ -203,7 +203,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												
 												<div style="width:100%;">
 														<xsl:choose>
-																<xsl:when test="$num_Obs != 1">
+																<xsl:when test="$num_Obs != 0">
 																		<ul class="nav nav-tabs" id="obsTabs" style="width:100%; min-width:625px;">
 																				<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
 																						<xsl:choose>
@@ -253,11 +253,11 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																</xsl:otherwise>
 														</xsl:choose>
 														
-														<div style="width:100%;">
-																<xsl:if test="$num_Obs != 1">
+														<div>
+																<xsl:if test="$num_Obs != 0">
 																		<xsl:attribute name="class">tab-content</xsl:attribute>
 																		<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
-																				<div style="width:100%;">
+																				<div>
 																						<xsl:attribute name="id">obs-<xsl:value-of select="position()"/></xsl:attribute>
 																						<xsl:if test="position() = 1">
 																								<xsl:attribute name="class">tab-pane fade in active</xsl:attribute>
