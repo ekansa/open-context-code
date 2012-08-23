@@ -59,6 +59,9 @@ else{
 if($requestPrefix == "/subjects/"){
     $activeTab = "details";
 }
+elseif($requestPrefix == "/media/"){
+    $activeTab = "details";
+}
 else{
     foreach($navTabArray as $navKey => $actNavArray){
         if($requestPrefix == $actNavArray["uri"]){
