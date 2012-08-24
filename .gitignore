@@ -1,5 +1,6 @@
 $ cat .gitignore
 
+application/controllers/TestController.php
 library/OpenContext/OCConfig.php
 
 public/database/oc_media/**/*
