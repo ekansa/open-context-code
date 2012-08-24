@@ -305,7 +305,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																													 <div class="list_tab">
 																														  <xsl:for-each select="arch:links/oc:space_links/oc:link[position() mod 2 = 1]">
 																																<div class="list_tab_row">
-																																	 <div class="list_tab_cell_icon">	
+																																	 <div class="list_tab_cell_icon_duoCol">	
 																																			 <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
 																																				 <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
 																																				 <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
@@ -317,7 +317,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																	 </div>
 																																	 
 																																	 <xsl:for-each select="following-sibling::oc:link[1]">
-																																		  <div class="list_tab_cell_icon">	
+																																		  <div class="list_tab_cell_icon_duoCol">	
 																																			 <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
 																																				 <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
 																																				 <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>

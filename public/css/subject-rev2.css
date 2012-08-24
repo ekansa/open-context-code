@@ -118,6 +118,16 @@ div.list_tab_cell_icon {
 	padding-left:1%;
 	padding-right:1%;
 }
+div.list_tab_cell_icon_duoCol {
+	display:table-cell;
+	min-width:33px;
+	vertical-align: middle;
+	text-align:center;
+	padding-top:1%;
+	padding-bottom:1%;
+	padding-left:1%;
+	padding-right:0px;
+}
 div.list_tab_cell {
 	display:table-cell;
 	min-width:33px;
@@ -159,6 +169,6 @@ div.item-note{
 	padding:2%;
 	width: 90%;
 }
-div.item-links{
-	
+div.item-links div{
+	font-size:95%;
 }
