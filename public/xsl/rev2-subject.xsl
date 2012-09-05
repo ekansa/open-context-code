@@ -164,9 +164,18 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<h1>Item: <xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></h1>
 												<h2>Class: <xsl:value-of select="//arch:spatialUnit/oc:item_class/oc:name"/></h2>
 										</div>
-										<div id="item_top_des_cell">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a>
+										<div id="item_top_des_cell">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a><br/>
+										Number of Views: <strong><xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></strong>
 										</div>
+										<!--
 										<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></strong>
+										</div>
+										-->
+										<div id="citation-cell">
+												<h5>Suggested Citation</h5>
+												<div id="citation">
+												<xsl:value-of select="$citationView"/>
+												</div>
 										</div>
 								</div>
 						</div><!--end div for the top_tab -->
@@ -265,19 +274,19 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																						<xsl:if test="position() != 1">
 																								<xsl:attribute name="class">tab-pane fade</xsl:attribute>
 																						</xsl:if>
-																						<xsl:if test="count(descendant::arch:properties/arch:property) !=0 or count(descendant::arch:notes/arch:note) !=0 ">
+																						<xsl:if test="count(descendant::arch:properties/arch:property[oc:show_val/text()]) !=0 or count(descendant::arch:notes/arch:note) !=0 ">
 																								<div class="properties">
-																										  <xsl:if test="count(descendant::arch:properties/arch:property) !=0">
+																										  <xsl:if test="count(descendant::arch:properties/arch:property[oc:show_val/text()]) !=0">
 																												<xsl:choose>
 																														<xsl:when test="oc:obs_metadata/oc:name">
-																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
+																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
 																														</xsl:when>
 																														<xsl:otherwise>
-																																<h5>Observation <xsl:value-of select="position()"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)</h5>
+																																<h5>Observation <xsl:value-of select="position()"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
 																														</xsl:otherwise>
 																												</xsl:choose>
 																												<div class="list_tab"> 
-																														<xsl:for-each select="arch:properties/arch:property">
+																														<xsl:for-each select="arch:properties/arch:property[oc:show_val/text()]">
 																																<div class="list_tab_row">
 																																		<div class="list_tab_cell">		
 																																				<xsl:value-of select="oc:var_label"/>
@@ -299,6 +308,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																													 </xsl:for-each>
 																												</div>
 																										  </xsl:if>
+																										 
 																										  <xsl:if test="count(descendant::arch:links/oc:space_links/oc:link) != 0" >
 																												<div class="item-links">
 																													 <h5>Linked Items (<xsl:value-of select="count(descendant::arch:links/oc:space_links/oc:link)"/> items)</h5>
@@ -349,15 +359,96 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												
 										</div><!-- end div for left des cell -->
 										<div id="right_des">
-												<div>
-													 <h5>Project Rreview Status</h5>
+												
+												
+												<div id="editorial" >
+													 <h5>Editorial Status</h5>
 													 Peer-reviewed
+													 
+													 <xsl:if test="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public']) != 0">
+														<br/>
+														<br/>
+														<h5>Editorial Description (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public'])"/>)</h5>
+														<xsl:for-each select="arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag">
+														  <a>
+															  <xsl:if test="@type != 'chronological'"><xsl:attribute name="href">../sets/?tag[]=<xsl:value-of select="oc:name"/></xsl:attribute></xsl:if>
+															  <xsl:if test="@type = 'chronological'"><xsl:attribute name="href">../sets/?t-start=<xsl:value-of select="//oc:time_start"/>&amp;t-end=<xsl:value-of select="//oc:time_finish"/></xsl:attribute><xsl:attribute name="title">Rough dates provided by editors to facilitate searching</xsl:attribute></xsl:if><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()"> , </xsl:if>
+													  </xsl:for-each>
+														
+														<xsl:if test="//oc:user_tags/oc:tag[@type = 'chronological']">
+																  <p class="tinyText"><strong>Editor's Note:</strong> Date ranges are approximate and do not necessarily reflect the opinion of data contributors. These dates are provided only to facilitate searches.</p>
+														  </xsl:if>
+													 </xsl:if>
+													 
+														<xsl:if test="$num_linkedData != 0">
+																<br/>
+																<div class="awld-scope">
+																		<h5>Linked Data:</h5>
+																		<xsl:for-each select="//oc:linkedData/oc:relationLink">
+																		<p class="tinyText">
+																		<xsl:value-of select="oc:vocabulary"/>-<xsl:value-of select="oc:label"/> :: <xsl:value-of select="oc:targetLink/oc:vocabulary"/>-
+																		<a>
+																		<xsl:if test="@href = 'http://purl.org/NET/biol/ns#term_hasTaxonomy'">
+																				<xsl:attribute name="rel">bio:term_hasTaxonomy</xsl:attribute>
+																		</xsl:if>
+																		<xsl:attribute name="property"><xsl:value-of select="oc:targetLink/oc:label"/></xsl:attribute>
+																		<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute>
+																		<xsl:attribute name="title">Target concept</xsl:attribute><xsl:value-of select="oc:targetLink/oc:label"/></a>
+																		</p>
+																</xsl:for-each>
+																</div>
+														</xsl:if>
 												</div>
+												
 										</div><!-- end div for right des cell -->
 								</div><!-- end div for main des row -->
 						</div><!-- end div for left des tab -->
 				</div><!-- end div for main des -->
 		
+				<xsl:for-each select="//oc:linkedData/oc:relationLink">
+				<!--RDFa metadata, hidden from view  -->
+				<div style="display:none;">
+						<xsl:if test="contains(@href, 'http://gawd.atlantides.org/terms/origin')">
+								<div xmlns:oac="http://www.openannotation.org/ns/" id="concordiaOrigin" typeof="oac:Annotation">
+								<xsl:attribute name="about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/>#concordiaOrigin</xsl:attribute>
+								
+								<!-- for each record change this to the Pleiades URI of the Origin place (like a mint) -->
+								<a rel="oac:Body">
+								<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute>
+								Origin place, source of the object (like a mint)
+								</a>
+								
+								<!-- for each record change this to the Pleiades URI of the Origin place (like a mint) -->
+								<a rel="oac:Target">
+								<xsl:attribute name="href">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/></xsl:attribute>
+								URI of the Open Context object
+								</a>
+								<span property="dc:title">Annoation linking this Open Context object to an origin location</span>
+								<span property="dc:publisher">OpenContext.org</span>
+								</div>
+						</xsl:if>
+						
+						<xsl:if test="contains(@href, 'http://purl.org/dc/terms/references')">
+								<div xmlns:oac="http://www.openannotation.org/ns/" id="concordiaRelated" typeof="oac:Annotation">
+								<xsl:attribute name="about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/>#concordiaRelated</xsl:attribute>
+								
+								<!-- for each record change this to the Pleiades URI of the Origin place (like a mint) -->
+								<a rel="oac:Body">
+								<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute>
+								Origin place, source of the object (like a mint)
+								</a>
+								
+								<!-- for each record change this to the Pleiades URI of the Origin place (like a mint) -->
+								<a rel="oac:Target">
+								<xsl:attribute name="href">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/></xsl:attribute>
+								URI of the Open Context object
+								</a>
+								<span property="dc:title">Annoation linking this Open Context object to an origin location</span>
+								<span property="dc:publisher">OpenContext.org</span>
+								</div>
+						</xsl:if>
+				</div>
+				</xsl:for-each>
 		
 		</div><!-- End div for main body -->
 </xsl:template>

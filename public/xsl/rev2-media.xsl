@@ -139,9 +139,20 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<h2>Class: <xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link[1]/oc:item_class/oc:name"/></h2>
 										</div>
 										<div id="item_top_des_cell">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:resource/@ownedBy !=0"><xsl:value-of select="arch:resource/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:resource/oc:metadata/oc:project_name"/></a>
+										<br/>
+										Number of Views: <strong><xsl:value-of select="arch:resource/oc:social_usage/oc:item_views/oc:count"/></strong>
 										</div>
+										<div id="citation-cell">
+												<h5>Suggested Citation</h5>
+												<div id="citation">
+												<xsl:value-of select="$citationView"/>
+												</div>
+										</div>
+										<!--
 										<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="arch:resource/oc:social_usage/oc:item_views/oc:count"/></strong>
 										</div>
+										-->
+										
 								</div>
 						</div><!--end div for the top_tab -->
 						<div id="item_context_tab">
@@ -150,21 +161,19 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<h5>Context (click to view):</h5>
 										</div>
 										<div id="item_context_cell">
-												<xsl:for-each select="arch:resource/arch:links/oc:space_links/oc:link/oc:context/oc:tree[@id='default']">
-														<xsl:if test="position() = 1">
-																<xsl:for-each select="oc:parent">
-																		<a>
-																				<xsl:attribute name="class">awld-type-object</xsl:attribute>
-																				<xsl:choose>
-																						<xsl:when test="position() = last()">
-																								<xsl:attribute name="rel">conc:findspot</xsl:attribute>
-																						</xsl:when>
-																				</xsl:choose>
-																				<xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>                        						</a>
-																		<xsl:if test="position() != last()"> / </xsl:if>
-																</xsl:for-each>
-														</xsl:if>
+												<xsl:for-each select="arch:resource/arch:links/oc:space_links/oc:link[1]/oc:context/oc:tree[@id='default']">
+														<xsl:for-each select="oc:parent">
+																<a><xsl:attribute name="class">awld-type-object</xsl:attribute>
+																		<xsl:choose>
+																				<xsl:when test="position() = last()">
+																						<xsl:attribute name="rel">conc:findspot</xsl:attribute>
+																				</xsl:when>
+																		</xsl:choose>
+																		<xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a> / 
+														</xsl:for-each>
 												</xsl:for-each>
+												<a><xsl:attribute name="href">../subjects/<xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link[1]/oc:id"/></xsl:attribute>
+														<xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link[1]/oc:name"/></a> (linked item)
 										</div>
 								</div>
 						</div>
@@ -214,12 +223,12 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																<div>
 																		<xsl:attribute name="id">obs-1</xsl:attribute>
 																		<xsl:attribute name="class">tab-pane fade in active</xsl:attribute>
-																		<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property) !=0 or count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
+																		<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) !=0 or count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
 																				<div class="properties">
-																						<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property) !=0">
-																								<h5>Observation Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property)"/>)</h5>
+																						<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) !=0">
+																								<h5>Observation Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
 																										<div class="list_tab"> 
-																												<xsl:for-each select="arch:resource/arch:properties/arch:property">
+																												<xsl:for-each select="arch:resource/arch:properties/arch:property[oc:show_val/text()]">
 																														<div class="list_tab_row">
 																																<div class="list_tab_cell">		
 																																		<xsl:value-of select="oc:var_label"/>
@@ -254,7 +263,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																		</img></a>
 																																</div>
 																																<div class="list_tab_cell"><a>
-																																		<xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																		<xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
 																																		</a> ( <xsl:value-of select="oc:relation"/> )
 																																</div>
 																															 
@@ -283,7 +292,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<!--last div of observations related content -->
 										</div><!-- end div for left des cell -->
 										<div id="right_des">
-												<div>
+												<div id="editorial">
 													 <h5>Project Rreview Status</h5>
 													 Peer-reviewed
 												</div>

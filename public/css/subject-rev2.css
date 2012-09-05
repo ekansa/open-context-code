@@ -5,7 +5,7 @@ Header blue: #003B66;
 Heaader grey: #666666;
 */
 #item_top {
-	width:90%;
+	width:95%;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -41,13 +41,23 @@ Heaader grey: #666666;
 	vertical-align:top;
 	padding-left:1%;
 	padding-right:5%;
-	width: 40%;
-	line-height:95%;
+	width: 35%;
+	/* line-height:95%; */
 }
 #item_top_view_cell{
 	display:table-cell;
 	text-align: right;
 	vertical-align:top;
+}
+#citation-cell {
+	display:table-cell;
+	vertical-align: top;
+	width: 40%;
+}
+#citation{
+	font-family: serif;
+	font-size: 85%;
+	line-height:95%;
 }
 #item_context_tab {
 	display:table;
@@ -73,9 +83,8 @@ Heaader grey: #666666;
 	padding-top:2%;
 	padding-bottom:2%;
 }
-
 #main_description {
-	width:90%;
+	width:95%;
 	margin-top:10px;
 	margin-left: auto;
 	margin-right: auto;
@@ -90,12 +99,13 @@ Heaader grey: #666666;
 }
 #left_des{
 	display:table-cell;
-	width:70%;
+	width:68%;
 	min-height:400px;
+	padding-right: 2%;
 }
 #right_des{
 	display:table-cell;
-	width:28%;
+	width:30%;
 	z-index:6;
 	padding-left:3px;
 	min-height:400px;
@@ -171,4 +181,17 @@ div.item-note{
 }
 div.item-links div{
 	font-size:95%;
+}
+#editorial {
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	border: thin solid #CCCCCC;
+	background-color: #F5F5DC;
+	display: block;
+	padding:2%;
+}
+p.tinyText {
+	font-size: 80%;
 }
