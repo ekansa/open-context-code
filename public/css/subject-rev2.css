@@ -41,7 +41,7 @@ Heaader grey: #666666;
 	vertical-align:top;
 	padding-left:1%;
 	padding-right:5%;
-	width: 35%;
+	width: 30%;
 	/* line-height:95%; */
 }
 #item_top_view_cell{
@@ -52,7 +52,7 @@ Heaader grey: #666666;
 #citation-cell {
 	display:table-cell;
 	vertical-align: top;
-	width: 40%;
+	width: 45%;
 }
 #citation{
 	font-family: serif;
@@ -99,13 +99,13 @@ Heaader grey: #666666;
 }
 #left_des{
 	display:table-cell;
-	width:68%;
+	width:65%;
 	min-height:400px;
 	padding-right: 2%;
 }
 #right_des{
 	display:table-cell;
-	width:30%;
+	width:35%;
 	z-index:6;
 	padding-left:3px;
 	min-height:400px;
