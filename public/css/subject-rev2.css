@@ -20,13 +20,14 @@ Heaader grey: #666666;
 #item_top_icon_cell {
 	display:table-cell;
 	vertical-align: top;
+	min-width:40px;
 }
 #item_top_name_cell {
 	display:table-cell;
 	vertical-align:top;
 	padding-left:1%;
 	padding-right:5%;
-	width: 35%;
+	width: 30%;
 	line-height:90%;
 }
 #item_top_name_cell h1{
@@ -55,7 +56,7 @@ Heaader grey: #666666;
 	width: 45%;
 }
 #citation{
-	font-family: serif;
+	color: #5C5C5C;
 	font-size: 85%;
 	line-height:95%;
 }
@@ -194,4 +195,10 @@ div.item-links div{
 }
 p.tinyText {
 	font-size: 80%;
+}
+#media-links {
+	border: thin solid #CCCCCC;
+	margin-top:4%;
+	padding:2%;
+	
 }

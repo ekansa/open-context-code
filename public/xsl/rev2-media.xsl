@@ -296,6 +296,50 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 													 <h5>Project Rreview Status</h5>
 													 Peer-reviewed
 												</div>
+												<div id="media-links">
+														<h5>Linked Media (<xsl:value-of select="count(descendant::arch:resource/arch:links/oc:media_links/oc:link)"/>)</h5>
+														<div class="list_tab">
+																<xsl:for-each select="arch:resource/arch:links/oc:media_links/oc:link">
+																		<div class="list_tab_row">
+																			<div class="list_tab_cell">
+																				<a>
+																					<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																					<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																					<img>
+																						<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																						<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																					</img>
+																				</a>
+																			</div>
+																			<xsl:if test="oc:descriptor">
+																				<div class="list_tab_cell">
+																				<a>
+																					<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																					<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																						<xsl:value-of select="oc:descriptor"/>
+																				</a>
+																				</div>
+																			</xsl:if>
+																		</div>
+																</xsl:for-each>
+														</div>
+														<p>
+																<a>
+																		<xsl:attribute name="href">../media/<xsl:value-of select="arch:resource/@UUID"/>.xml</xsl:attribute>
+																		<xsl:attribute name="title">ArchaeoML (XML) Representation</xsl:attribute>
+																		<xsl:attribute name="type">application/xml</xsl:attribute>ArchaeoML (XML) Version
+																</a>
+														</p>
+														
+														<p>
+																<a>
+																		<xsl:attribute name="href">https://github.com/ekansa/Open-Context-Data/tree/master/data/<xsl:value-of select="arch:resource/@ownedBy"/>/media/<xsl:value-of select="arch:resource/@UUID"/>.xml</xsl:attribute>
+																		<xsl:attribute name="title">XML data in Github repository</xsl:attribute>
+																		Version-control (Github, XML Data)
+																</a>
+														</p>
+														
+												</div>
 										</div><!-- end div for right des cell -->
 								</div><!-- end div for main des row -->
 						</div><!-- end div for left des tab -->
