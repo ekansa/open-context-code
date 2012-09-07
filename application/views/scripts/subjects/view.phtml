@@ -26,7 +26,11 @@ if ($XML) {
     $xslt = $proc->importStylesheet($doc);
     $archaeoMLDoc = new DomDocument();
     $archaeoMLDoc->loadXML($XML->asXML());
-    $XHTMLbody = $proc->transformToXML($archaeoMLDoc); 
+    //$XHTMLbody = $proc->transformToXML($archaeoMLDoc);
+    $newDom = $proc->transformToDoc($archaeoMLDoc);
+    $newDom->formatOutput = true;
+    $rootNode = $newDom->getElementsByTagName("div")->item(0);
+    $XHTMLbody = $newDom->saveXML($rootNode);
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">

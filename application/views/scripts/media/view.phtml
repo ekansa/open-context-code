@@ -22,7 +22,11 @@ if ($XML) {
     $xslt = $proc->importStylesheet($doc);
     $archaeoMLDoc = new DomDocument();
     $archaeoMLDoc->loadXML($XML);
-    $XHTMLbody = $proc->transformToXML($archaeoMLDoc); 
+    
+    $newDom = $proc->transformToDoc($archaeoMLDoc);
+    $newDom->formatOutput = true;
+    $rootNode = $newDom->getElementsByTagName("div")->item(0);
+    $XHTMLbody = $newDom->saveXML($rootNode);
 }
 ?>
 
