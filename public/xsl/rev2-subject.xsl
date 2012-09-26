@@ -353,8 +353,67 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												
 												</div>
 												<!--last div of observations related content -->
-																									
 												
+												<div class="item-links" id="item-children-diaries" >
+													 <xsl:if test="($num_Children &gt; 50) and ($ChildQValue != 0)" >
+																<h5>Contents (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:children/oc:tree/oc:child)"/> items)</h5>
+																<p>Too many items are contained in this context to display.
+																To browse and search through items contained in <strong><xsl:value-of select="//arch:spatialUnit/arch:name/arch:string"/></strong>,
+																please <a><xsl:attribute name="href"><xsl:value-of select="$ChildQValue"/></xsl:attribute>(click here)</a>.
+																</p>
+													 </xsl:if>
+													 <xsl:if test="($num_Children != 0) and (($num_Children &lt; 51) or ($ChildQValue = 0))" >
+														  <h5>Contents (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:children/oc:tree/oc:child)"/> items)</h5>
+														  <div class="list_tab">
+																<xsl:for-each select="arch:spatialUnit/oc:children/oc:tree/oc:child[position() mod 2 = 1]">
+																	 <div class="list_tab_row">
+																		  <div class="list_tab_cell_icon_duoCol">	
+																				<a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																					<xsl:choose>
+																						  <xsl:when test="contains(oc:item_class/oc:iconURI, 'http://')">
+																								  <xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																						  </xsl:when>
+																						  <xsl:otherwise>
+																								  <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																						  </xsl:otherwise>
+																					  </xsl:choose>
+																					  <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
+																				  </img></a>
+																		  </div>
+																		  <div class="list_tab_cell"><a>
+																				<xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																				</a> (<xsl:choose><xsl:when test="oc:descriptor"><xsl:value-of select="oc:descriptor"/></xsl:when>
+												<xsl:otherwise><xsl:value-of select="oc:item_class/oc:name"/></xsl:otherwise>
+												</xsl:choose>)
+																		  </div>
+																		  
+																		  <xsl:for-each select="following-sibling::oc:child[1]">
+																				<div class="list_tab_cell_icon_duoCol">	
+																					 <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																						 <xsl:choose>
+																								<xsl:when test="contains(oc:item_class/oc:iconURI, 'http://')">
+																										<xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																								</xsl:when>
+																								<xsl:otherwise>
+																										<xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																								</xsl:otherwise>
+																							</xsl:choose>
+																							<xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
+																						</img></a>
+																				</div>
+																				<div class="list_tab_cell"><a>
+																					 <xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																					 </a> (<xsl:choose><xsl:when test="oc:descriptor"><xsl:value-of select="oc:descriptor"/></xsl:when>
+													 <xsl:otherwise><xsl:value-of select="oc:item_class/oc:name"/></xsl:otherwise>
+													 </xsl:choose>)
+																				</div>
+																		  </xsl:for-each>
+																	 </div>
+																</xsl:for-each>
+														  </div>
+												  </xsl:if>
+													 <br/>
+												</div>
 												
 												
 										</div><!-- end div for left des cell -->

@@ -172,17 +172,25 @@ div.tab-pane {
 	margin-top: 2%;
 	margin-left: 2%;
 }
-div.item-notes{
+div.item-notes {
 	margin-left: 0px;
 	margin-right: 0px;
 }
-div.item-note{
+div.item-note {
 	padding:2%;
 	width: 90%;
 }
 div.item-links div{
 	font-size:95%;
 }
+#item-children-diaries {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #DDD;
+	padding:2%;
+	margin-top: 5%;
+}
+
 #editorial {
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;

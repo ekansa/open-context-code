@@ -275,7 +275,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																		  </img></a>
 																																		</div>
 																																		<div class="list_tab_cell"><a>
-																																				<xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																				<xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
 																																				</a> ( <xsl:value-of select="oc:relation"/> )
 																																		</div>
 																																</xsl:for-each>
