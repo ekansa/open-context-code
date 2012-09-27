@@ -54,7 +54,7 @@ $host = OpenContext_OCConfig::get_host_config();
 <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
 
 
-
+<div id="main">
     <div id="main_content">
 		  <div id="main_row">
 				<div id="left_sidebar">
@@ -202,7 +202,9 @@ $host = OpenContext_OCConfig::get_host_config();
 		
     </div> <!-- end main div -->
 	
-    <?php echo $this->render('footer.phtml'); //reader document footer ?>
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
 	
 </body>
 </html>
