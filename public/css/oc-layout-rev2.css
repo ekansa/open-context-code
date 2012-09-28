@@ -182,6 +182,8 @@ div.footer_cell {
     padding-bottom: 4px;
     height:20px;
     min-width: 1000px;
+    text-align: center;
+    font-size: 75%;
 }
 
 
