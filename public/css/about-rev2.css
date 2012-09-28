@@ -48,7 +48,7 @@ Heaader grey: #666666;
 
 .gksm-custom-menu-widget {
 	margin: 0;
-	padding: 50px 0 0 0;
+	/* padding: 1px 0 0 0; */
 	}
 
 .gksm-custom-menu-widget ul {
