@@ -1,8 +1,6 @@
-
 <?php
 $host = OpenContext_OCConfig::get_host_config();
 ?>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -10,123 +8,165 @@ $host = OpenContext_OCConfig::get_host_config();
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
       <title>About Open Context: Uses and Applications</title>
-      
       <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="About Open Context: Uses and Applications" />
+      <meta name="DC.title" content="About Open Context" />
       <meta name="DC.created" content="January 1, 2010" />
       <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+		
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+        
+        -->
+    </script>
+
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 </head>
     
 <body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">Open Context's Uses and Appplications</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">Open Context provides a platform for researchers to publish their
-                    primary field data and documentation. Because Open Context is a free and open access
-                    service, all members of the public are welcome to use and reuse this content. All
-                    contributions to Open Context are monitored by a professional editorial staff to
-                    make sure contributions only stem from professional field research programs. The
-                    main focus of Open Context is to deliver primary data in cultural heritage related
-                    fields. However, we do demonstrate some applications in other disciplines, including
-                    the geological sciences and public health.</p>
-		    
-		    <h3>Digital Preservation and Archiving</h3>
-		    <p class="bodyText">While Open Context itself is not a digital repository, Open Context uses
-		    digital preservation services provided by the University of California's <a href='http://www.cdlib.org/' title='CDL Website'>California Digital Library (CDL)</a>. CDL services provide Open Context with a strong institutional foundation for long-term citation and data archiving, including:</p>
-		    <ul class="bodyText">
-			<li>Minting and binding of ARKs ("<a href='https://wiki.ucop.edu/display/Curation/ARK' title='CDL documentation about ARKs'>Archival Resource Keys</a>"): ARKs are special identifiers managed by an institutional repository. The CDL will help insure the objects associated with these identifiers can be retrieved in the future, even if access protocols such as "HTTP" change.</li>
-			<li>Data archiving: The CDL also provides data curation and stewardship to maintain integrity of digital data and to migrate data into new computing environments as required.</li>
-		    </ul>
-                </div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("uses", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-        
-        <br/>
-        <div style="margin:10px;">
-            <h3>Publishing of Field Documentation</h3>
-	    <p class="bodyText">Open Context is primarily aimed at the dissemination of primary
-                    field data and documentation. While the system in itself is not a long-term archive
-                    for such data, Open Context does help prepare datasets for greater longevity. Open
-                    Context uses 100% open source technologies, stores and disseminates data in open formats,
-                    and requires open licensing for all its content. In doing so, we minimize costs and
-                    difficulties for other organizations to duplicate and archive Open Context content.
-                    In addition, Open Context developers work in active collaboration with related digital
-                    archiving efforts with an eye to developing services to use them as the systems mature.</p>  
-	    <p class="bodyText">Open Context's services and features enhance the value of primary field
-            documentation, both to the larger community and the data creators. For researchers wishing
-            to publish data, Open Context offers the following advantages:</p>
-	    <ul class="bodyText">
-		<li>A common platform for uploading and publishing diverse field data</li>
-                <li>A simple way to combine and integrate datasets created by multidisciplinary teams</li>
-                <li>An easy method to create an "e-appendix" to compliment a formal publication with rich media and comprehensive analytic data</li>
-                <li>A web-friendly framework for making datasets easy to discover via Google and easy to use with common web-browsers</li>
-                <li>A suite of powerful web-services that make published datasets easily visualized and used in a host of web-based and desktop applications</li>    
-            </ul>
-	    <br/>
-            <br/>
-	    <h3>Access and Use of Field Documentation</h3>
-	    <p class="bodyText">Open Context is based on the premise that research data is most valuable if it is openly shared.
-            The system offers a variety of features to make field data easy to find, explore, analyze, and reuse. To meet these
-            needs Open Context offers features including:</p>  
-	    <ul class="bodyText">
-		<li>A powerful faceted navigation system that enables users to compose analytically precise searches and queries through a simple point and click interface</li>
-                <li>Rich interlinking of between analytic data, textual documents, media resources, and descriptions of projects and research methods</li>
-                <li>Easy citation tools, including support for the <a href="http://www.zotero.org">Zotero</a> bibliographic management tool</li>
-                <li>A simple common interface and powerful set of tools applied to a wide range of diverse datasets</li>
-                <li>Atom-based <a href="../services">Web services</a> that enable users great flexibility using Open Context data on their own sites, with their own presentation styles and visualization tools</li>    
-            </ul>
-	</div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
 
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //reader document top ?>
+   
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				<div id="left_sidebar">
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About: Uses</h2>
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("uses", $host); ?>
+						  </div>
+					 </div>
+				</div>
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">Open Context's Applications and Uses</h1>
+								<p>Open Context provides a platform for researchers to publish their primary field data and documentation. Because Open Context is a free and open access service, all members of the public are welcome to use and reuse this content. All contributions to Open Context are monitored by a professional editorial staff to make sure contributions only stem from professional field research programs. The main focus of Open Context is to deliver primary data in cultural heritage related fields. However, we do demonstrate some applications in other disciplines, including the geological sciences and public health.
+								</p>		
+						  </div>
+					 </div>
+
+					 <div>
+						  <h3>Researcher Data Management</h3>
+					  
+						  <p>The National Science Foundation and National Endowment for the Humnanities now require "Data Managment Plans" in
+						  grant proposals. Both of these federal agencies specifically reference Open Context's data managment services. Open Context
+						  provides services for researchers to disseminate data, promote the interoperability of data, and archive data in digital repositories.</p>
+						  <ul>
+								<li>
+									 <p><strong>Editorial Review:</strong> To reach the point where researcher data can be used by a
+									 wider community, datasets must have sufficient quality and documentation. To give context,
+									 data also need to be related and linked
+									 with shared concepts and with other datasets available on the Web. These goals require specialized
+									 expertise and dedicated editorial workflows.
+									 </p>
+								</li>
+								<li>
+									 <p><strong>Interoperability and Distributed Systems:</strong> Over centralization in monolithic &ldquo;one repository to rule them all&rdquo;
+									 systems can put too many information eggs in one limiting basket. Open Context networks data and services
+									 across systems inside and outside of archaeology. We work with multiple digital respositories, actively collaborate
+									 with other data sharing projects, and work to make sure data published with Open Context can freely flow into
+									 other innovative systems and applications. 
+									 </p>
+								</li>
+								<li>
+									 <p><strong>Preparing Data for Archiving:</strong> Open Context itself <em>is not</em> a digital repository that
+									 preserves data for the long term. Rather, Open Context provides critical services to prepare data for
+									 preservation in other institutional repositories. Open Context integrates and documents multiple
+									 forms of media including tabular data, images, geospatial data, and documents.  We disseminate this information in
+									 open and nonproprietary formats, documented with appropriate metadata. These activities help digital repositories
+									 preserve data for the long term as meaningful and intelligible resources.
+									 </p>
+								</li>
+								<li>
+									 <p><strong>Archiving and Preservation:</strong> Open Context works with multiple university-based
+									 digital repositories to archive data. We can assist researchers in archiving with their home institution's
+									 libraries. We also use preservation services provided by the 
+									 University of California's <a href='http://www.cdlib.org/' title='CDL Website'>California Digital
+									 Library (CDL)</a>. CDL services provide Open Context with a strong institutional foundation
+									 for long-term citation and data archiving, including:</p>
+									 <ul>
+										  <li>Persistent Identifiers: Open Context uses persistent identifer services to facilitate
+										  reliable <em>citation</em> and retrieval of data over the long term. We assign ARK identifiers to ("<a href='https://wiki.ucop.edu/display/Curation/ARK' title='CDL documentation about ARKs'>Archival Resource Keys</a>") to individual items of data, and
+										  DOIs (<a href="http://www.doi.org/">Digital Object Identifier</a>) to projects and datasets. ARKs and DOIs are special identifiers managed by institutional repositories
+										  that help insure resources associated with these identifiers can be retrieved in the future.</li>
+										  <li>Data archiving: The CDL also provides data curation and stewardship to maintain integrity of digital data and to migrate data into new computing environments as required.</li>
+									 </ul>
+
+									 </p>
+								</li>
+								<li>
+									 <p><strong>Version Control and Collaboration:</strong> In addition to archiving data with university libraries,
+									 Open Context makes data freely available through <a href="https://github.com/ekansa/Open-Context-Data/">GitHub</a>.
+									 GitHub offers a number of collaboration tools, including robust version control, issue tracking, and the ability
+									 to easily "fork" Open Context's data to adapt and use in wholly different settings.
+									 </p>
+								</li>
+						  </ul>
+						  
+						  <h3>Publication Services</h3>
+						  <p>Open Context's services and features enhance the value of primary field
+            documentation, both to the larger community and the data creators. Data editors collaborate with contributors
+						  to make datasets higher quality, more consistent, and aligned to standards that make data easier to use and understand. For researchers wishing
+            to publish data, Open Context offers the following advantages:</p>
+						  <ul>
+								<li>Editorial processes to improve data quality and align data to key standards</li>
+								<li>A common platform for uploading and publishing diverse field data</li>
+								<li>A simple way to combine and integrate datasets created by multidisciplinary teams</li>
+								<li>An easy method to create an "e-appendix" to compliment a formal publication with rich media and comprehensive analytic data</li>
+								<li>A Web-friendly framework for making datasets easy to discover via Google and easy to use with common Web-browsers</li>
+								<li>A suite of powerful web-services that make published datasets easily visualized and used in a host of web-based and desktop applications</li>    
+						  </ul>
+
+						  <h3>Open Architecture and Open Data</h3>
+						  <p>Open Context licenses all content with Creative Commons, and makes all data
+						  available in a variety of machine-readible formats. These steps makes all Open Context data legally
+						  and technologically portable. Individuals who find Open Context semantics and other features too limiting
+						  are free (and welcome) to simply copy all data of interest and deploy these data in other systems.
+						  This openness and data portability is a critical aspect in making sure that Open Context supports
+						  innovative research applications for the long term.
+						  </p>
+						  
+						  </div>
+					 </div>
+			 
+			 
+				</div>
+		
+    </div> <!-- end main div -->
+	
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>

@@ -93,3 +93,6 @@ Heaader grey: #666666;
 	border-style: solid;
 	border-color: #D7D7D7;
 }
+.code {
+	font-family: courier;
+}
