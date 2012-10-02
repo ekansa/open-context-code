@@ -1,0 +1,45 @@
+<script type="text/javascript">
+    <!--
+    var OCfeedURI = "http://ux.opencontext.org/blog/feed/";
+    var GitDataFeedURI = "https://github.com/ekansa/Open-Context-Data/commits/master.atom";
+    var GitCodeFeedURI = "https://github.com/ekansa/open-context-code/commits/master.atom";
+    
+    google.load("feeds", "1");
+
+    function doFeed(feedURI, feedDomID){
+        var container = document.getElementById(feedDomID);
+        var feedDom =  document.createElement("ul");
+        container.appendChild(feedDom);
+        var ActFeed = new google.feeds.Feed(feedURI);
+        ActFeed.load(function(result) {
+            if (!result.error) {
+                for (var i = 0; i < result.feed.entries.length; i++) {
+                    var entry = result.feed.entries[i];
+                    var entryDom = document.createElement("li");
+                    var alink = document.createElement("a");
+                    alink.appendChild(document.createTextNode(entry.title));
+                    alink.setAttribute('href', entry.link);
+                    entryDom.appendChild(alink);
+                    feedDom.appendChild(entryDom);
+                }
+            }
+            else{
+                var entryDom = document.createElement("li");
+                entryDom.appendChild(document.createTextNode("News feed currently unavailable"));
+                feedDom.appendChild(entryDom);
+            }
+        });
+        
+        
+        
+    }
+    
+    function initialize() {
+        doFeed(OCfeedURI,"OC-feed");
+        doFeed(GitDataFeedURI,"Git-data-feed");
+        doFeed(GitCodeFeedURI,"Git-code-feed");
+    }
+
+    google.setOnLoadCallback(initialize);
+    -->
+</script>

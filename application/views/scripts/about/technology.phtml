@@ -1,5 +1,6 @@
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -23,17 +24,18 @@ $host = OpenContext_OCConfig::get_host_config();
 		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
     <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
     <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
     
 	 <script type="text/javascript">
         <!--
         
         $('.carousel').carousel();
-        
+		  
         -->
     </script>
 
 	 
-	 
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
 	 
 	 
 	 
@@ -46,7 +48,7 @@ $host = OpenContext_OCConfig::get_host_config();
 <!-- 
     Logo,
 -->    
-<?php echo $this->render('header.phtml'); //reader document top ?>
+<?php echo $this->render('header.phtml'); //render document top ?>
    
 <!-- 
     Navigation tabs, search box
@@ -57,14 +59,23 @@ $host = OpenContext_OCConfig::get_host_config();
 <div id="main">
     <div id="main_content">
 		  <div id="main_row">
+				
 				<div id="left_sidebar">
+					 
 					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
 						  <h2 class="widgettitle">About: Technologies</h2>
+						  
 						  <div class="submenu-widget submenu-widget-projects">
 								<?php echo OpenContext_NavMenus::AboutNavMenu("technology", $host); ?>
 						  </div>
+						  
 					 </div>
+					 
+					 <?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+					 
 				</div>
+				
+				<!-- end left side div -->
 				
 				<div id="right_sidebar">
 					 <div id="pageTop">
@@ -109,13 +120,13 @@ $host = OpenContext_OCConfig::get_host_config();
 						  approaches are based on over a decade of Semantic Web research and development.
 						  Open Context's implementation of these approaches are summarized below:</p>
 						  
-						  <h4 id="linked-data">Open Context and RESTful Services</h4>
+						  <h4 id="restful">Open Context and RESTful Services</h4>
 						  <p>Open Context provides a machine-readable data in a variety of formats using RESTful style services.
 						  The services support faceted search requests according to a wide variety of query parameters.
 						  These services are
 						  fully documented [<a href="../about/services">here</a>] and are very simple to access and use.
 						  The RESTful services offer data in the following formats:</p>
-						  <ul>
+						  <ul class="big-list">
 								<li><strong>Atom Syndication Format: </strong> Atom is a widely used and widely supported XML format
 								ideally suited for sharing lists of Web resources described by some simple metadata. Open Context offers faceted
 								search results as a list of resources expressed in Atom. The Atom feeds provide information about when items in
@@ -173,8 +184,11 @@ $host = OpenContext_OCConfig::get_host_config();
 			 
 			 
 				</div>
-		
-    </div> <!-- end main div -->
+				<!-- end right side div -->
+		  </div>
+		  <!-- end main row div -->
+    
+	 </div> <!-- end main div -->
 	
     
 </div> <!-- end main div -->	 

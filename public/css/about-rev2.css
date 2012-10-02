@@ -44,7 +44,15 @@ Heaader grey: #666666;
 }
 
 
+.icon {
+	padding-left: 30px; 
+	background-repeat: no-repeat;
+	background-position: left center;	
+	}
 
+.rss {
+	background-image: url(../images/layout/rss16x16px.gif);
+	}
 
 .gksm-custom-menu-widget {
 	margin: 0;
@@ -70,13 +78,75 @@ Heaader grey: #666666;
 	border-bottom: 1px solid #ccc;
 	font-variant:small-caps;
 	}
-
-.gksm-custom-menu-widget h2.widgettitle {
+.gksm-custom-menu-widget strong {
+	color: #333333;
+	font-weight: bold;
+}
+h2.widgettitle {
 	font-size: 24px;
 /* 	text-transform: uppercase; */
 	padding: 0 0 0 15px;
 	border-bottom: 1px solid #ccc;
 	font-variant:small-caps;
+	font-family: 'Trajan Pro', trajan-pro, 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+	text-align: center;
+	color: #333333;
+	}
+
+
+.newsroom_widget h2 {
+	font-family: 'Trajan Pro', trajan-pro, 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+	letter-spacing: 0;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);
+	zoom:1;
+/* 	text-transform: uppercase; */
+	text-align: center;
+	color: #333333;
+	}
+.newsroom_widget h2 {
+	font-size: 24px;
+	margin: 75px 0 0 0;
+	padding: 10px 0 0 0;
+	border-top: 3px solid #ccc;
+	border-bottom: 2px solid #ccc;
+	}
+
+
+.newsfeed_box {
+	margin: 0;
+	padding: 15px 0 15px 15px;
+	border-bottom: 1px solid #d8d2bc;
+	}
+
+.newsfeed_box h3 {
+	font-family:/*  tk-chaparral-pro, */ 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+	text-transform: none;
+	font-size: 16px;
+	font-style: italic;
+	margin: 0;
+	padding-top: 15px;
+	padding-bottom: 15px;	
+/* 	line-height: 17px; */
+	}
+
+.newsfeed_box h3 a, .newsfeed_box h3 a:hover {
+	color: #000;
+	text-decoration: none;
+	}
+
+.newsfeed_box p a, .newsfeed_box p a:hover, .newsfeed_box li a, .newsfeed_box li a:hover {
+	text-decoration: none;
+	font-family: 'Trajan Pro', trajan-pro, 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+	}
+
+.newsfeed_box li{
+	list-style-type:circle;
+	}
+
+.newsfeed_box p {
+	margin: 0;
+	padding: none;
+	line-height: 1.1em;
 	}
 
 
@@ -95,4 +165,14 @@ Heaader grey: #666666;
 }
 .code {
 	font-family: courier;
+}
+
+ul.big-list{
+	width: 80%;
+	margin-right:auto;
+	margin-left:auto;
+}
+ul.big-list li{
+	margin-top:10px;
+	margin-bottom:15px;
 }

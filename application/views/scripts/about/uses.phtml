@@ -1,5 +1,6 @@
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -23,6 +24,7 @@ $host = OpenContext_OCConfig::get_host_config();
 		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
     <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
     <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
     
 	 <script type="text/javascript">
         <!--
@@ -32,13 +34,8 @@ $host = OpenContext_OCConfig::get_host_config();
         -->
     </script>
 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+
 	 </head>
     
 <body>
@@ -64,7 +61,8 @@ $host = OpenContext_OCConfig::get_host_config();
 								<?php echo OpenContext_NavMenus::AboutNavMenu("uses", $host); ?>
 						  </div>
 					 </div>
-				</div>
+				<?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+				</div><!-- End Left Sidebar div -->
 				
 				<div id="right_sidebar">
 					 <div id="pageTop">
@@ -138,7 +136,7 @@ $host = OpenContext_OCConfig::get_host_config();
             documentation, both to the larger community and the data creators. Data editors collaborate with contributors
 						  to make datasets higher quality, more consistent, and aligned to standards that make data easier to use and understand. For researchers wishing
             to publish data, Open Context offers the following advantages:</p>
-						  <ul>
+						  <ul class="big-list">
 								<li>Editorial processes to improve data quality and align data to key standards</li>
 								<li>A common platform for uploading and publishing diverse field data</li>
 								<li>A simple way to combine and integrate datasets created by multidisciplinary teams</li>
