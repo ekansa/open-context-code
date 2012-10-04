@@ -6,7 +6,7 @@ Publishes some Open Annotation N3 triples for Pelagios place annotations based o
 
 $data = $this->data;
 if(count($data["records"])>0){
-    header('Content-type: text/n3; charset="UTF-8"', true);
+    header('Content-type: text/plain; charset="UTF-8"', true);
     
     echo "<http://opencontext.org/export/pelagios> ";
     echo "<http://purl.org/dc/terms/title> ";
