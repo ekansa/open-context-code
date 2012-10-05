@@ -10,6 +10,7 @@ Heaader grey: #666666;
 	width: 90%;
 	margin-left:auto;
 	margin-right:auto;
+	margin-bottom: 5%;
 	min-width:900px;
 	min-height:400px;
 	display:table;
@@ -187,11 +188,6 @@ ul.big-list li{
 li.rec-item {
 	padding-bottom:6px;
 }
-
-#oai-pmh-container{
-	margin-top:5%;
-	margin-bottom:10%;
-}
 div.list_tab {
 	display:table;
   	border-collapse: collapse;
@@ -223,6 +219,8 @@ div.list_tab_cell {
 	padding-right:2%;
 }
 
+
+/* About -Services specific styles */
 #parameters {
 	margin-bottom: 10%;
 }
@@ -270,4 +268,15 @@ ol.service-examples li{
 div.rec-code {
 	font-family:courier;
 	padding-bottom:5px;
+}
+
+/* About - publishing styles */
+div.data-pub-step {
+	padding-left: 15%;
+	padding-right: 15%;
+	padding-top: 6%;
+}
+#data-prep-list{
+	background-color:#F2F2F2;
+	padding:3%;
 }

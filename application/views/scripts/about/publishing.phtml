@@ -1,5 +1,6 @@
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -7,147 +8,354 @@ $host = OpenContext_OCConfig::get_host_config();
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>About Publishing in Open Context</title>
+      <title>About Open Context: Publishing</title>
       <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="About Publishing in Open Context" />
-      <meta name="DC.created" content="June 1, 2010" />
-      <meta name="DC.date" content="April 10, 2011" />
+      <meta name="DC.title" content="About Open Context" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+		
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+        
+        -->
+    </script>
+
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+
+	 </head>
     
 <body>
-  <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">Data Publication Guidelines for Contributors</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">Open Context is a Web-based data publication system that offers free access to editorially verified datasets, many of which are linked to print publications. Open Context also offers an optional peer review process to further validate datasets. The system uses a simple and generalized data model that can accommodate most archaeological datasets and museum collections. Because archaeological databases vary widely in organization and in terminologies, we have developed a specialized application (called "Penelope") to import data into Open Context for Web publication. We welcome submissions and publication proposals. If you are interested in publishing your research in Open Context, please <a href='mailto:skansa@alexandriaarchive.org' title='Email the editor, Sarah Kansa'>contact the Editor</a> and follow these guidelines.</p>
-		    <br/>
-		    <h3>Estimating Publication Costs and Help with Grants</h3>
-		    <p class="bodyText">If you are preparing a grant for the National Science Foundation (NSF) Archaeology Program, Open Context can provide specific guidance for developing the NSF required <em>Data Management Plan</em>. Along with technical and other information, Open Context will help you budget appropriately. This guidance also may be useful for grant proposals submitted to other foundations. Even if you are not working on a proposal, this information can help you understand Open Context publication costs more generally. <a href='../about/estimate' title='Generating data access plans and budgets' >Click here</a> for help with such proposals. </p>
-		    <br/>
-		    <br/>
-		    <p class="bodyText">For a printer-friendly version of this document describing archaeological data publication, please <a href='../docs/HowToPublish_OpenContext_Mar2011-1.pdf' title='PDF version, Updated March 2011'>click here (Adobe Acrobat File)</a>.</p>
-		    <p class="tinyText">[Archived January 2010 Version is <a href='../docs/HowToPublish_OpenContext_Jan2010.pdf'>here</a>].</p>
-		</div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("publishing", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-        
-        <br/>
-        <div style="margin:10px">
-            <h3>Process Overview</h3>
-	      
-	    <p class="bodyText">While we have worked hard to make importing data into Open Context simple, imports still require some understanding of the ArchaeoML data model behind Open Context. Therefore, Open Context editors are the main users of Penelope and they import data on behalf of contributors and work closely with data authors to ensure that the data are published in a logical and appealing way.  In the future, we hope to further automate the import process, eventually making it easier for users to "self-publish" their data. However, as Open Context's content is editorially verified, some editorial involvement will always be required.</p>
-	    <p class="bodyText">While Penelope is very flexible and can accommodate most datasets, some preparation is required before importing data. Most of this preparation involves documenting a dataset so that it can be understood by Open Context's editors and future users of the content, including other researchers and students. Below we describe how to prepare your data for smooth publication in Open Context.</p>
-	    
-	    <div style="margin:5px;background-color:#F2F2F2;padding-top:5px;padding-bottom:5px;padding-right:15px;">
-		<h4>Data Preparation</h4>
-		<ol class="bodyText">
-		    <li><p class="bodyText"><em>Good Database Design:</em> Good database design from a project's start makes eventual data publication easier. Normalization (removal of redundant information) helps to maintain data quality. Maintaining consistency is also important. For example, numeric data fields should contain only numeric data. If additional notation or explanation is required for some numeric information, these should go in other fields. Data validation (error checking) practices throughout data collection will speed data publication and help make the published data more valuable and easier to use by others.</p></li>
-                    <li><p class="bodyText"><em>Clean-up and Edits:</em> Publishing data in Open Context is a form of publication, but one that differs from journal articles or books. Because datasets are often fairly "raw," one should not expect perfect spelling, grammar, or compositional excellence in daily logs, database comment fields, etc.  Spelling problems in these fields will probably have little impact on the overall usability of contributed data. However, some errors have greater impact.  For instance, nominal values (terms used over and over again), such as the terms used to describe artifacts in a small finds database ("lamp," "coin," "spindle-whorl"), should be consistent (in terms of plurals, terminology, and spelling) to aid search and understanding. Identifiers for objects or contexts (such as "catalog #," "locus #"), especially those that have associated descriptive information should also be free of errors.</p></li>
-		    <li><p class="bodyText"><em>Decoding:</em> To speed up data entry, many people use coding systems as a convenient way to record data. However, these coding systems may be unintelligible without explanation. To facilitate understanding of a dataset, our preferred practice is to request that data contributors replace code with intelligible text before import.</p></li>
-		    <li><p class="bodyText"><em>Description and Explanation:</em> Each field of every dataset must have some narrative description to aid interpretation, even if only a sentence or two. Sometimes certain values in these fields should also be described, especially if data contributors employ terminology that is not widely used by their colleagues.</p></li>
-		    <li><p class="bodyText"><em>Structural Relations:</em> Archaeologists often manage their data in relational databases with complex structures. These structures need explanation so that editors can perform the proper queries to extract data. Specifically, we will need to know the primary and secondary (foreign) keys in each table.</p></li>
-                    <li><p class="bodyText"><em>Locations and Objects:</em> Open Context creates a separate web page (retrieved at a URL) for every location and object, person, and media file it publishes. It is important to let Open Context editors know which fields represent identifiers for different locations and objects (archaeological sites, archaeological contexts, survey tracks, artifacts, ecofacts). Ideally, some descriptive information should be made available for each identified location and object, including excavation areas or trenches, even if these descriptions are only in narrative form.</p></li>
-		    <li><p class="bodyText"><em>Images and Media:</em> Images and other media comprise an important component of archaeological documentation. Each individual media file must be clearly and unambiguously linked to one or more specific records in the dataset (such as records of excavation contexts, people, excavation log records, artifact records, etc). The data contributor should prepare a separate table listing each image file name, an image description (if desired) and the number / identifier of the object or place the image describes.</p></li>
-		    <li><p class="bodyText"><em>Abstract and Background: </em> Each project should have a narrative abstract or background description. This should provide introductory information describing the project goals, key findings, as well as methods and recording systems.  For large projects, contributors can also provide additional supplemental background descriptions of specialist analyses. These materials may be submitted in Microsoft Word (or similar) format. </p></li>
-		    <li><p class="bodyText"><em>People and Attribution: </em> For citation purposes, every record in Open Context must be attributed to one or more specific person(s). In some cases, certain database fields have records of different people who made observations and analyses. Ideally, the people identified in these fields should be identified by full name (not initials) and these names should be spelled properly. In other cases, entire data tables or datasets are created by a single person (such as a specialist). For each data table, please provide a name and institutional affiliation for the person(s) primarily responsible for authorship.</p></li>
-		    <li><p class="bodyText"><em>General Good Practice: </em> The UK-based <a href='http://ads.ahds.ac.uk/'>Archaeology Data Service</a> has prepared <a href='http://ads.ahds.ac.uk/project/goodguides/g2gp.html
-'>guides to good practice</a>. These are currently being revised and expanded in collaboration with <a href='http://digitalantiquity.org'>Digital Antiquity</a>. Open Context editors highlight these documents because they are invaluable guides to improving data quality, longevity, and usability.</p></li>
-		</ol>
-	    </div>
-	    <br/>
-	    <h4>Data Formats and Structures</h4>
-	    
-	    <p class="bodyText">Data for import should be in Microsoft Excel tables. The first row ("row 1") of the table should contain data field names (columns). The other rows should have the data records in the table, with each data record listed in a separate row. If you do not have Excel or cannot produce Excel spreadsheets from your database, Penelope can also handle Filemaker, Access, and Open Office, as well as comma separated value files. Please note however, that you first must extract image and other media from a database (if stored in binary fields) and store them as individual files.</p>
-	
-	    <p class="bodyText">The project abstract/background should be in Microsoft Word (or a similar format). In addition to the above, you may also provide as much supporting or related documentation as you like, such as PDFs of related publications, extended bibliographies in Word, and links to related web resources (such as descriptive project web sites, profiles of project participants on their institutional web sites or links to self-archived publications related to the dataset).</p>
-	    
-	    <p class="bodyText">Please note, while we accept certain types of data and content in proprietary formats (like Microsoft Excel), our accession and publishing processes transform these data to open formats (chiefly ArchaeoML-XML and CSV). Open, nonproprietary file formats have interoperability and preservation advantages, and the ArchaeoML-XML format enables us to encode more specialized forms of metadata required for archaeological (and related) applications. 
-	    </p>
-	    
-	    <br/>
-	    <h4>Location Information and Site Security</h4>
-	    
-	    <p class="bodyText">Open Context requires at least one geographic reference for each project. This geographic information should be most pertinent location information useful for interpretation. This is usually the location of sites. Because Open Context makes all data freely and openly available, data contributors must consider site security issues associated with revealing location data. If location data represents a threat to site security, these data should not be revealed with great precision. Instead, sensitive location information should be randomized and only provided publicly at reduced precision. Users should be informed of this manipulation, and contact information needs to be provided for qualified researchers to obtain precise location data. Please contact Open Context's editors if you are concerned about site location.</p>
-	    
-	    <br/>
-	    <h4>Copyright and Licensing</h4>
-	    
-	    <p class="bodyText">Open Context publishes open access, editorially controlled datasets to support future research and instructional opportunities. Thus, data contributors must make their content legally usable by others. To ensure legal reuse, we require that all content be released to the public domain, or that contributors use Creative Commons (<a href='http://creativecommons.org' title='Creative Commons Website'>creativecommons.org</a>) copyright licenses on their content. We strongly recommend users select the Creative Commons <a href='http://creativecommons.org/licenses/by/3.0/' title='Creative Commons By-License'>Attribution</a> license. The Attribution license is easiest to understand and helps makes contributed data widely useful as possible. While we allow licenses that restrict commercial uses, we recommend against such restrictions. Please be aware that such restrictions are inherently ambiguous and would inhibit important uses, such as inclusion of content in textbooks or even journals distributed through sales. For more background on managing copyright and intellectual property issues, especially with regard to stakeholder communities, please <a href='../about/intellectual-property' title='Data Management and IP'>click here</a>. </p>
-	    
-	    <p class="bodyText">In the US, copyright applies to expressive works, not compilations of factual information. Therefore, Creative Commons copyright licenses are not appropriate for some datasets, especially those with limited "expressive" content. Datasets that are less expressive and have less authorial voice tend toward a more scientific and factual nature (i.e. those that mainly include physical measurements and adhere to widely used conventions in nomenclature and recording). These datasets should use the <a href='http://creativecommons.org/publicdomain/zero/1.0/' title='Details about CC-Zero'>Creative Commons-Zero</a> (public domain) dedication.</p>
-	    
-	    <p class="bodyText">We encourage contributors to choose a single license to apply to the entire dataset; however, we can also assign different license choices to individual items.</p>
-	    
-	    <p class="bodyText">Please note that copyright and licensing issues are largely independent of scholarly citation and attribution. <em>Professional standards dictate that all users properly cite data contributors even for public domain content, especially for scholarly uses.</em> This professional norm of conduct works independently of the copyright status of content.</p>
-	    
-	    <br/>
-	    <h4>Publishing Fees</h4>
-	    
-	    <p class="bodyText">To support open access publication and archiving, Open Context has developed a pricing structure based on a contributor-pays model. Publication fees vary between $250 and $6000 depending on the complexity and size of the contributed database and related content. For example, a single spreadsheet of faunal data, with no related images would cost on the low end of this spectrum. In contrast, a complex project with several databases, specialist analsyses, and thousands of media files, would be on the high-end of this scale. Open Context developers can provide additional fee based services for implementations based on Open Context's Web-services (API) or other customizations. To assist in budgeting, interested contributors should contact the editorial team (see below) to establish a fee for their specific project.</p>
-	    <p class="bodyText"><strong>Grant Seekers (NSF and Other Granting Programs):</strong> We have developed a form to help plan your data sharing requirements. This form will help you budget appropriately for data sharing and it will generate text you can use for the "Data Management Plan" section of an NSF proposal. Other granting agencies may wish to see similar plans. Once you successfully complete the form, you will receive an email with a budget estimate and language to add to your Data Management Plan. This language will include a description of the access, interoperability, and archiving issues. <a href='../about/estimate' title='Grant-Seekers Form for NSF and Programs'>Click here to use this form.</a>
-</p>
-	    
-	    <br/>
-	    <h4>Peer Review</h4>
-	    
-	    <p class="bodyText">Open Context content must pass professional editorial scrutiny before it can be published on the web. Open Context only accepts content from professional / accredited researchers, government officials, and museum staff. Contributors must be able to demonstrate adherence to appropriate legal, ethical, and professional standards of conduct and methodological rigor. In addition to these editorial controls, contributors may also request peer-review of their contributions. If peer review is desired, please provide names and contact information for possible reviewers, as well as a brief description of the expertise needed to make informed judgments of your content. Content that passes peer-review will be clearly marked as such on Open Context.</p>
-	    
-	    <br/>
-	    <h4>Questions?</h4>
-	    
-	    <p class="bodyText">Please address questions to the Editor of Open Context, Sarah Whitcher Kansa (<a href='mailto:skansa@alexandriaarchive.org'>skansa@alexandriaarchive.org</a>).</p>
-	    
-	</div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
 
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //reader document top ?>
+   
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				<div id="left_sidebar">
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About: Publishing</h2>
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("publishing", $host); ?>
+						  </div>
+					 </div>
+				<?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+				</div><!-- End Left Sidebar div -->
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">Data Publication Guidelines for Contributors</h1>
+								<p>Open Context is a Web-based data publication system that offers free access to editorially verified datasets, many of which are linked to print publications. Open Context also offers an optional peer review process to further validate datasets. The system uses a simple and generalized data model that can accommodate most archaeological datasets and museum collections. We welcome submissions and publication proposals. If you are interested in publishing your research in Open Context, please <a href='mailto:skansa@alexandriaarchive.org' title='Email the editor, Sarah Kansa'>contact the Editor</a> and follow these guidelines.
+								</p>		
+						  </div>
+					 </div>
+
+					 <div>
+						  <h3>What Does Data Publishing Involve?</h3>
+					  
+						  <p>Publishing data with Open Context has many similarities with publishing with a conventional journal. We have a step-by-step process
+						  where contributors work with our editorial staff to review, clean-up, and document data so that these data can be valued and
+						  professionally recognized contributions.</p>
+						  
+						  <div id="about-slides">
+								<div id="myCarousel" class="carousel slide">
+									 <!-- Carousel items -->
+									 <div class="carousel-inner">
+										  
+										  <div class="item active">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>1. Publication Planning</h3>
+														  <p>Cleaner and more consistent datasets are easier for you to analyze and they are easier to publish.
+														  Develop strategies to reduce errors in recording (see <a href="#data-prep">below</a>).</p>
+														  <p>Even so, no dataset is perfect. Open Context's editorial staff have experience and tools to help make cleanup and editing as
+														  efficient as possible. We help you: </p>
+														  <ul>
+																<li>Publish existing excavation, survey or collections data (and associated media, such as pictures, GIS files, etc.)
+																</li>
+																<li>Develop a grant "Data Management Plan" (<a href="#data-management">see below</a>).
+																</li>
+														  </ul>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  
+										  
+										  <div class="item">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>2. Proposing a Publication</h3>
+														  <p>The next step involves contacting Open Context editors about your publication plans.
+														  You can reach us either via <a href="mailto:skansa@alexandriaarchive.org" title="Email the editor, Sarah Kansa">email</a>
+														  or via our <a href="../about/estimate">Web-based form</a>. Please let us know about:
+														  </p>
+														  <ul>
+																<li>Subject area, research themes documented by your dataset</li>
+																<li>Size and complexity of your dataset (number of databases, data tables, media files, collaborators)</li>
+																<li>Potential profesional and public audiences, inside and outside of archaeology</li>
+																<li>Data sensitivity concerns (<a href="#data-sensitivy">see below</a>)</li>
+																<li>Agreement of project stakeholders to publish data openly, under <a href="#data-licensing">permissive copyright terms</a></li>
+																<li>Covering publication <a href="#fees">fees</a></li>
+														  </ul>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  
+										  
+										  <div class="item">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>3. Submitting Data &amp; Media Files</h3>
+														  <p>When you are ready to publish your data, you have various options in sending your digital files to
+														  Open Context's editors. 
+														  </p>
+														  <ul>
+																<li>Email: Suitable for smaller numbers of files, of limited size</li>
+																<li>Drop Box: Suitable for sending entire directories of files</li>
+																<li>FTP: Suitable for sending entire directories of files</li>
+														  </ul>
+														  <p>
+																<strong>Note:</strong> We may need your help to convert files to open file formats, especially
+																if such converstion requires special software. Open formats are easier to archive and use across
+																computing platforms. See <a href="#data-formats">below for more</a>.
+														  </p>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  
+										  <div class="item">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>4. Quality Review &amp; Edits</h3>
+														  <p>Open Context editors use Google Refine to check for consistency and fix minor problems in structured
+														  (tabular) data. We work with
+														  data contributors to fix more major problems. Reviews and edits focus on:
+														  </p>
+														  <ul>
+																<li>Consistency: terms used in classification need to be consistent (capitalization, plurals, etc.)</li>
+																<li>Decoding: we work with contributors to decode numeric codes and abreviations to improve intelligibility</li>
+																<li>Validation: numeric columns and fields should have numbers, numbers need to have believable values</li>
+																<li>Identifiers: identifiers need to be unique and unabigious in a dataset, so different data tables, media files, etc.
+																can be associated</li>
+														  </ul>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  
+										  
+										  <div class="item">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>5. Pre-Publication Staging &amp; Review</h3>
+														  <p>Open Context editors integrate project data tables, media and other files using the ArchaeoML data structure.
+														  This structure integrates different data elements, enabling search, browse and analysis within and between projects.
+														  During this step, researchers can preview how their data will look in Open Context before public release.
+														  Data staging involves:
+														  </p>
+														  
+														  <ul>
+																<li>Additional debugging and error fixes</li>
+																<li>Documentation and description of terminology and recording systems</li>
+																<li>Assignment of authorship and citation credit to specific data elements</li>
+																<li>Editorial Board review for intelligibility, potential for reuse</li>
+														  </ul>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  
+										  
+										  <div class="item">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>6. Annotation with Standards</h3>
+														  <p>Open Context editors annotate data to standards that enable interoperability and
+														  new research opportunities, including integration with other collections on the Web.
+														  We use "Linked Open Data" methods to relate recording systems used within a dataset
+														  to community-embraced standards, including:
+														  </p>
+														  
+														  <ul>
+																<li>Geographic places reference <a href="http://geonames.org">GeoNames.org</a> and <a href="http://pleiades.stoa.org">Pleiades</a></li>
+																<li>Biological taxa reference the <a href="http://eol.org">Encyclopedia of Life</a></li>
+																<li>Units of measurement reference <a href="http://freebase.com">Freebase</a> identifers</li>
+																<li>Biological morphology references use <a href="http://obofoundry.org/wiki/index.php/UBERON:Main_Page">UBERON</a></li>
+																<li><em>We will adopt additional standards as they emerge</em></li>
+														  </ul>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  
+										  
+										  <div class="item">
+												<div class="hero_image">
+													 <div class="data-pub-step">
+														  <h3>7. Publication &amp; Archiving</h3>
+														  <p>Once contributors, the editorial staff, and the editorial board agree a dataset is ready for publication,
+														  we post data to the public on the open Web. This step involves:
+														  </p>
+														  
+														  <ul>
+																<li>Archiving with the California Digital Library (and optionally, other repositories)</li>
+																<li>Assignment of persistent identifiers needed for long-term citation</li>
+																<li>Posting to GitHub as a secondary delivery channel and continued version tracking</li>
+																<li>Indexing to enable powerful queries and searches</li>
+																<li>Public search-engine (Google, Bing, etc.) indexing for discovery</li>
+														  </ul>
+													 </div>
+												</div>
+												<!--
+												<div class="carousel-caption">
+												</div>
+												-->
+										  </div>
+										  		
+									 </div>
+									 <!-- end carousel inner div -->
+									 
+								
+									  <!-- Carousel nav -->
+									 <a class="carousel-control left" href="#myCarousel" data-slide="prev">&#171;</a>
+									 <a class="carousel-control right" href="#myCarousel" data-slide="next">&#187;</a>
+								</div>
+								<!-- end myCarousel div -->
+								
+						  </div>
+						  <!--end about-slides div -->
+						  
+						  <h3>Peer-Review</h3>
+						  <p>All content published on Open Context must first see approval by the editorial staff and relevant
+						  members of the editorial board (depending on disciplinary specialization). We do not reject data for lack of
+						  'significance' like a conventional journal, since quality data may have unanticipated future applications and
+						  may improve the statistical power of future meta-analyses. Rather our review criteria include:</p>
+								<ul>
+									 <li>Methological soundness and data quality</li>
+									 <li>Quality of documentation</li>
+									 <li>Suitability for wider reuse</li>
+								</ul>
+						  <p>Contributors may request option peer-review by qualified researchers not affliated with Open Context.
+						  The reviewers will be asked to comment upon the merits of a dataset according to the criteria listed above. Reviewer
+						  comments will be posted publicly associated with a dataset. The dataset will also be specially
+						  marked as 'peer-reviewed'.</p>
+						  
+					 </div>
+			 
+				<div id="data-prep">
+					 <h3>Data Preparation</h3>
+					 <p>Data publication with Open Context requires extensive processing and review. Reference to the points below can help make this
+					 effort more efficient.</p>
+					 <div id="data-prep-list">
+						  <ol>
+								<li><p><em>Good Database Design:</em> Good database design from a project's start makes eventual data publication easier. Normalization (removal of redundant information) helps to maintain data quality. Maintaining consistency is also important. For example, numeric data fields should contain only numeric data. If additional notation or explanation is required for some numeric information, these should go in other fields. Data validation (error checking) practices throughout data collection will speed data publication and help make the published data more valuable and easier to use by others.</p></li>
+								<li><p><em>Clean-up and Edits:</em> Publishing data in Open Context is a form of publication, but one that differs from journal articles or books. Because datasets are often fairly "raw," one should not expect perfect spelling, grammar, or compositional excellence in daily logs, database comment fields, etc.  Spelling problems in these fields will probably have little impact on the overall usability of contributed data. However, some errors have greater impact.  For instance, nominal values (terms used over and over again), such as the terms used to describe artifacts in a small finds database ("lamp," "coin," "spindle-whorl"), should be consistent (in terms of plurals, terminology, and spelling) to aid search and understanding. Identifiers for objects or contexts (such as "catalog #," "locus #"), especially those that have associated descriptive information should also be free of errors.</p></li>
+								<li><p><em>Decoding:</em> To speed up data entry, many people use coding systems as a convenient way to record data. However, these coding systems may be unintelligible without explanation. To facilitate understanding of a dataset, our preferred practice is to request that data contributors replace code with intelligible text before import.</p></li>
+								<li><p><em>Description and Explanation:</em> Each field of every dataset must have some narrative description to aid interpretation, even if only a sentence or two. Sometimes certain values in these fields should also be described, especially if data contributors employ terminology that is not widely used by their colleagues.</p></li>
+								<li><p><em>Structural Relations:</em> Archaeologists often manage their data in relational databases with complex structures. These structures need explanation so that editors can perform the proper queries to extract data. Specifically, we will need to know the primary and secondary (foreign) keys in each table.</p></li>
+											 <li><p><em>Locations and Objects:</em> Open Context creates a separate web page (retrieved at a URL) for every location and object, person, and media file it publishes. It is important to let Open Context editors know which fields represent identifiers for different locations and objects (archaeological sites, archaeological contexts, survey tracks, artifacts, ecofacts). Ideally, some descriptive information should be made available for each identified location and object, including excavation areas or trenches, even if these descriptions are only in narrative form.</p></li>
+								<li><p><em>Images and Media:</em> Images and other media comprise an important component of archaeological documentation. Each individual media file must be clearly and unambiguously linked to one or more specific records in the dataset (such as records of excavation contexts, people, excavation log records, artifact records, etc). The data contributor should prepare a separate table listing each image file name, an image description (if desired) and the number / identifier of the object or place the image describes.</p></li>
+								<li><p><em>Abstract and Background: </em> Each project should have a narrative abstract or background description. This should provide introductory information describing the project goals, key findings, as well as methods and recording systems.  For large projects, contributors can also provide additional supplemental background descriptions of specialist analyses. These materials may be submitted in Microsoft Word (or similar) format. </p></li>
+								<li><p><em>People and Attribution: </em> For citation purposes, every record in Open Context must be attributed to one or more specific person(s). In some cases, certain database fields have records of different people who made observations and analyses. Ideally, the people identified in these fields should be identified by full name (not initials) and these names should be spelled properly. In other cases, entire data tables or datasets are created by a single person (such as a specialist). For each data table, please provide a name and institutional affiliation for the person(s) primarily responsible for authorship.</p></li>
+								<li><p><em>General Good Practice: </em> The UK-based <a href='http://ads.ahds.ac.uk/'>Archaeology Data Service</a> has prepared <a href='http://ads.ahds.ac.uk/project/goodguides/g2gp.html
+				  '>guides to good practice</a>. These are currently being revised and expanded in collaboration with <a href='http://digitalantiquity.org'>Digital Antiquity</a>. Open Context editors highlight these documents because they are invaluable guides to improving data quality, longevity, and usability.</p></li>
+						  </ol>
+					 </div>
+				</div>
+			 
+				<div id="data-formats">
+					 <h3>Data Formats and Structures</h3>
+					 <p>Data for import should be in Microsoft Excel tables. The first row ("row 1") of the table should contain data field names (columns). The other rows should have the data records in the table, with each data record listed in a separate row. If you do not have Excel or cannot produce Excel spreadsheets from your database, Penelope can also handle Filemaker, Access, and Open Office, as well as comma separated value files. Please note however, that you first must extract image and other media from a database (if stored in binary fields) and store them as individual files.</p>
+				
+					 <p>The project abstract/background should be in Microsoft Word (or a similar format). In addition to the above, you may also provide as much supporting or related documentation as you like, such as PDFs of related publications, extended bibliographies in Word, and links to related web resources (such as descriptive project web sites, profiles of project participants on their institutional web sites or links to self-archived publications related to the dataset).</p>
+					 
+					 <p>Please note, while we accept certain types of data and content in proprietary formats (like Microsoft Excel), our accession and publishing processes transform these data to open formats (chiefly ArchaeoML-XML and CSV). Open, nonproprietary file formats have interoperability and preservation advantages, and the ArchaeoML-XML format enables us to encode more specialized forms of metadata required for archaeological (and related) applications. 
+					 </p>	 
+				</div>
+			 
+				<div id="data-sensitivy">
+					 <h3>Location Information and Site Security</h3>
+	    
+					 <p>Open Context requires at least one geographic reference for each project. This geographic information should be most pertinent location information useful for interpretation. This is usually the location of sites. Because Open Context makes all data freely and openly available, data contributors must consider site security issues associated with revealing location data. If location data represents a threat to site security, these data should not be revealed with great precision. Instead, sensitive location information should be randomized and only provided publicly at reduced precision. Users should be informed of this manipulation, and contact information needs to be provided for qualified researchers to obtain precise location data. Please contact Open Context's editors if you are concerned about site location or other sensity issues.</p>
+				</div>
+			 
+			 
+				<div id="data-licensing">
+					 <h3>Copyright and Licensing</h3>
+					 <p>Open Context publishes open access, editorially controlled datasets to support future research and instructional opportunities. Thus, data contributors must make their content legally usable by others. To ensure legal reuse, we require that all content be released to the public domain, or that contributors use Creative Commons (<a href='http://creativecommons.org' title='Creative Commons Website'>creativecommons.org</a>) copyright licenses on their content. We strongly recommend users select the Creative Commons <a href='http://creativecommons.org/licenses/by/3.0/' title='Creative Commons By-License'>Attribution</a> license. The Attribution license is easiest to understand and helps makes contributed data widely useful as possible. While we allow licenses that restrict commercial uses, we recommend against such restrictions. Please be aware that such restrictions are inherently ambiguous and would inhibit important uses, such as inclusion of content in textbooks or even journals distributed through sales. For more background on managing copyright and intellectual property issues, especially with regard to stakeholder communities, please <a href='../about/intellectual-property' title='Data Management and IP'>click here</a>. </p>
+	    
+					 <p>In the US, copyright applies to expressive works, not compilations of factual information. Therefore, Creative Commons copyright licenses are not appropriate for some datasets, especially those with limited "expressive" content. Datasets that are less expressive and have less authorial voice tend toward a more scientific and factual nature (i.e. those that mainly include physical measurements and adhere to widely used conventions in nomenclature and recording). These datasets should use the <a href='http://creativecommons.org/publicdomain/zero/1.0/' title='Details about CC-Zero'>Creative Commons-Zero</a> (public domain) dedication.</p>
+	    
+					 <p>We encourage contributors to choose a single license to apply to the entire dataset; however, we can also assign different license choices to individual items.</p>
+	    
+					 <p>Please note that copyright and licensing issues are largely independent of scholarly citation and attribution. <em>Professional standards dictate that all users properly cite data contributors even for public domain content, especially for scholarly uses.</em> This professional norm of conduct works independently of the copyright status of content.</p>
+				</div>
+				
+				<div id="fees">
+					 <h3>Publishing Fees</h3>
+	    
+					 <p>To support open access publication and archiving, Open Context has developed a pricing structure based on a contributor-pays model. Publication fees vary between $250 and $6000 depending on the complexity and size of the contributed database and related content. For example, a single spreadsheet of faunal data, with no related images would cost on the low end of this spectrum. In contrast, a complex project with several databases, specialist analsyses, and thousands of media files, would be on the high-end of this scale. Open Context developers can provide additional fee based services for implementations based on Open Context's Web-services (API) or other customizations. To assist in budgeting, interested contributors should contact the editorial team (see below) to establish a fee for their specific project.</p>
+					 
+					 <h4 id="data-management">Grant Seekers (NSF, NEH and Other Granting Programs):</h4>
+					 <p>We have developed a form to help plan your data management requirements. This form will help you budget appropriately for data sharing and it will generate text you can use for the "Data Management Plan" section of a NSF or NEH proposal. Other granting agencies may wish to see similar plans. Once you successfully complete the form, you will receive an email with a budget estimate and language to add to your Data Management Plan. This language will include a description of the access, interoperability, and archiving issues. <a href='../about/estimate' title='Grant-Seekers Form for NSF and Programs'>Click here to use this form.</a></p>
+				
+				</div>
+				
+				
+				</div>
+				<!-- end right side div -->
+		  </div>
+		  <!--end main row div -->
+		
+    </div> <!-- end main div -->
+	
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>
