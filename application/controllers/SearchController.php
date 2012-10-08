@@ -254,15 +254,15 @@ class SearchController extends Zend_Controller_Action {
 		$host = OpenContext_OCConfig::get_host_config(); 
 		$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
 		
-		$facetURLs = new facetURLs;
-		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->setSolrFacets($SolrSearch->facets);
-		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $SolrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
-		$facetURLs->facetLinking();
+		$FacetURLs = new FacetURLs;
+		$FacetURLs->setRequestParams($requestParams);
+		$FacetURLs->setSolrFacets($SolrSearch->facets);
+		$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+		$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+		$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+		$FacetURLs->facetLinking();
 		
-		$this->view->facets = $facetURLs->facetURLs;
+		$this->view->facets = $FacetURLs->FacetURLs;
 		
     }//end atom-facets viewer
 
@@ -339,13 +339,13 @@ class SearchController extends Zend_Controller_Action {
 				     "last" => $SolrSearch->lastPage_JSON,
 				     );
 		
-		$facetURLs = new facetURLs;
-		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->setSolrFacets($SolrSearch->facets);
-		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $SolrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
-		$facetURLs->facetLinking();
+		$FacetURLs = new FacetURLs;
+		$FacetURLs->setRequestParams($requestParams);
+		$FacetURLs->setSolrFacets($SolrSearch->facets);
+		$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+		$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+		$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+		$FacetURLs->facetLinking();
 		
 		$output = array("numFound" => $SolrSearch->numFound,
 				"offset" => $SolrSearch->offset,
@@ -353,7 +353,7 @@ class SearchController extends Zend_Controller_Action {
 				"updateed" => $SolrSearch->lastUpdate,
 				"sorting" => $SolrSearch->sortType,
 				"summary" => $summaryObj,
-				"facets" => $facetURLs->facetURLs,
+				"facets" => $FacetURLs->FacetURLs,
 				"paging" => $pagingArray,
 				"results" => $SolrSearch->documentsArray,
 				"query" => $SolrSearch->queryString

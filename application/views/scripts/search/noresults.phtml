@@ -266,7 +266,7 @@ BEGIN Container for main page content
                     if(isset($jsonObj["facets"]["webpage type"])){
                         $output .= "<p class='bodyText'><strong>Items from these types of web-pages:</strong></p><p class='bodyText'>";
                         $i=0;
-                        $dtypes = new documentTypes;
+                        $dtypes = new DocumentTypes;
                         foreach($jsonObj["facets"]["webpage type"] as $actDocType){
                                 
                                 $dtypes->solrToOutside($actDocType["name"]);

@@ -4,7 +4,7 @@
 /*this class manages translations between document types internal to solr
 and document types visible to outside users
 */
-class documentTypes{
+class DocumentTypes{
     
     public $solrOutside = array("spatial" => array("term" => "Analytic data (subjects)", "linkVal" => "subject"),
 				"image" => array("term" => "Image media", "linkVal" => "image"),
@@ -25,28 +25,28 @@ class documentTypes{
     
     //turns an outside query value into a value solr can see
     function externalValueToSolr($outsideVal){
-	$linkKey = array();
-	$solrVal = $outsideVal;
-	foreach($this->solrOutside as $solrkey => $outsideArray){
-	    $outsideLink = $outsideArray["linkVal"];
-	    if($outsideVal == $outsideLink){
-		$solrVal = $solrkey; //found the solr value for the outside request value
-	    }
-	    
-	}
+		  $linkKey = array();
+		  $solrVal = $outsideVal;
+		  foreach($this->solrOutside as $solrkey => $outsideArray){
+				$outsideLink = $outsideArray["linkVal"];
+				if($outsideVal == $outsideLink){
+			  $solrVal = $solrkey; //found the solr value for the outside request value
+				}
+				
+		  }
 	
-	$this->solrVal = $solrVal;
-	return $solrVal;
+		  $this->solrVal = $solrVal;
+		  return $solrVal;
     }
     
     function solrToOutside($solrValue){
-	$this->outsideTerm = $solrValue;
-	$this->linkVal = $solrValue;
-	if(array_key_exists($solrValue, $this->solrOutside)){
-	    $solrOutside = $this->solrOutside;
-	    $this->outsideTerm = $solrOutside[$solrValue]["term"];
-	    $this->linkVal = $solrOutside[$solrValue]["linkVal"];
-	}
+		  $this->outsideTerm = $solrValue;
+		  $this->linkVal = $solrValue;
+		  if(array_key_exists($solrValue, $this->solrOutside)){
+				$solrOutside = $this->solrOutside;
+				$this->outsideTerm = $solrOutside[$solrValue]["term"];
+				$this->linkVal = $solrOutside[$solrValue]["linkVal"];
+		  }
     }
     
     

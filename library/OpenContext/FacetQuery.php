@@ -365,7 +365,7 @@ class OpenContext_FacetQuery {
 			$dtypeQuery = "";
 			$firstLoop = true;
 			
-			$dtypes = new documentTypes;
+			$dtypes = new DocumentTypes;
 			
 			foreach($docType as $raw_dtype){
 				

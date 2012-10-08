@@ -220,7 +220,7 @@ class OpenContext_FacetOutput {
 			}
 			elseif($key == "doctype"){
 				$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, false, $type);
-				$dtypes = new documentTypes;
+				$dtypes = new DocumentTypes;
 				if(stristr($value, "||")){
 					$valArray = explode("||", $value);
 					$remValue = "";
@@ -1095,7 +1095,7 @@ class OpenContext_FacetOutput {
 				}
 				
 				if($facetCategory->checkParameter == "doctype"){
-					$dtypes = new documentTypes;
+					$dtypes = new DocumentTypes;
 					$dtypes->solrToOutside($value_string);
 					$value_string = $dtypes->outsideTerm;
 					$Facet->value_string = $value_string;

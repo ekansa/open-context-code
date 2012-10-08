@@ -156,7 +156,7 @@ class publishController extends Zend_Controller_Action
 			}
 			else{
 				
-				$siteIndexObj = new sitePageIndex;
+				$siteIndexObj = new SitePageIndex;
 				$siteIndexObj->indexAll();
 				$data["sitePages"] = $siteIndexObj->docsAdded;
 				$data["sitePageError"] = $siteIndexObj->error;

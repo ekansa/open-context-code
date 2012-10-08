@@ -420,7 +420,7 @@ public function solrReIndexAction(){
 
 	public function aboutLookAction(){
 		$this->_helper->viewRenderer->setNoRender();
-		$sitePages = new sitePageIndex;
+		$sitePages = new SitePageIndex;
 		$sitePages->indexAll();
 		
 		header('Content-Type: application/json; charset=utf8');

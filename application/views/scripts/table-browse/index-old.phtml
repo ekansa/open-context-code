@@ -501,15 +501,15 @@ BEGIN Container for main page content
                                         }
                                         
                                         
-                                        $termHighlight = new termHighlight;
-                                        $termHighlight->xmlString = $string;
-                                        $termHighlight->addMarkup = true;
+                                        $TermHighlight = new TermHighlight;
+                                        $TermHighlight->xmlString = $string;
+                                        $TermHighlight->addMarkup = true;
                                         if(isset($requestParams['q'])){
-                                            $termHighlight->searchString = $requestParams['q'];
+                                            $TermHighlight->searchString = $requestParams['q'];
                                         }
-                                        $termHighlight->XMLsnippet();
-                                        $termHighlight->generateSnippet();
-                                        echo "<div class='snippet'>...".$termHighlight->snippet."...</div>";
+                                        $TermHighlight->XMLsnippet();
+                                        $TermHighlight->generateSnippet();
+                                        echo "<div class='snippet'>...".$TermHighlight->snippet."...</div>";
                                         
                                         
                                     ?>

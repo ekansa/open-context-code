@@ -501,7 +501,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                                                     $string = $itemObj->archaeoML;
                                                 }
                                                 elseif($doc["item_type"] == "site"){
-                                                    $sitePages = new sitePageIndex;
+                                                    $sitePages = new SitePageIndex;
                                                     //$sitePages->deletePage("http://opencontext/about/services/");
                                                     $pageString =  $sitePages->pageXHTML($doc["uuid"]);
                                                     unset($sitePages);
@@ -519,15 +519,15 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                                                 
                                                 */
                                                 
-                                                $termHighlight = new termHighlight;
-                                                $termHighlight->xmlString = $string;
-                                                $termHighlight->addMarkup = true;
+                                                $TermHighlight = new TermHighlight;
+                                                $TermHighlight->xmlString = $string;
+                                                $TermHighlight->addMarkup = true;
                                                 if(isset($requestParams['q'])){
-                                                    $termHighlight->searchString = $requestParams['q'];
+                                                    $TermHighlight->searchString = $requestParams['q'];
                                                 }
-                                                $termHighlight->XMLsnippet();
-                                                $termHighlight->generateSnippet();
-                                                echo "<div class='snippet'>...".$termHighlight->snippet."...</div>";
+                                                $TermHighlight->XMLsnippet();
+                                                $TermHighlight->generateSnippet();
+                                                echo "<div class='snippet'>...".$TermHighlight->snippet."...</div>";
                                                 
                                                 
                                             ?>

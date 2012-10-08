@@ -92,11 +92,11 @@ class setsController extends Zend_Controller_Action {
 	}
 	
 	//prep geotile facets
-	$facetURLs = new facetURLs;
-	$facetURLs->setRequestParams($requestParams);
-	$facetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
-	$facetURLs->geoTileFacets();
-	$this->view->geoTileFacets = $facetURLs->geoTileFacetURLs;
+	$FacetURLs = new FacetURLs;
+	$FacetURLs->setRequestParams($requestParams);
+	$FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
+	$FacetURLs->geoTileFacets();
+	$this->view->geoTileFacets = $FacetURLs->geoTileFacetURLs;
 	
 	
 	
@@ -262,15 +262,15 @@ class setsController extends Zend_Controller_Action {
 		$host = OpenContext_OCConfig::get_host_config(); 
 		$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
 		
-		$facetURLs = new facetURLs;
-		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->setSolrFacets($SolrSearch->facets);
-		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $SolrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
-		$facetURLs->facetLinking();
+		$FacetURLs = new FacetURLs;
+		$FacetURLs->setRequestParams($requestParams);
+		$FacetURLs->setSolrFacets($SolrSearch->facets);
+		$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+		$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+		$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+		$FacetURLs->facetLinking();
 		
-		$this->view->facets = $facetURLs->facetURLs;
+		$this->view->facets = $FacetURLs->FacetURLs;
 		
     }//end atom-facets viewer
 
@@ -355,14 +355,14 @@ class setsController extends Zend_Controller_Action {
 					 "last" => $SolrSearch->lastPage_JSON,
 					 );
 		
-		$facetURLs = new facetURLs;
-		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
-		$facetURLs->setSolrFacets($SolrSearch->facets);
-		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $SolrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
-		$facetURLs->facetLinking();
+		$FacetURLs = new FacetURLs;
+		$FacetURLs->setRequestParams($requestParams);
+		$FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
+		$FacetURLs->setSolrFacets($SolrSearch->facets);
+		$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+		$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+		$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+		$FacetURLs->facetLinking();
 		
 		$output = array("numFound" => $SolrSearch->numFound,
 				"offset" => $SolrSearch->offset,
@@ -370,8 +370,8 @@ class setsController extends Zend_Controller_Action {
 				"updated" => $SolrSearch->lastUpdate,
 				"sorting" => $SolrSearch->sortType,
 				"summary" => $summaryObj,
-				"facets" => $facetURLs->facetURLs,
-				"geoTileFacets" => $facetURLs->geoTileFacetURLs,
+				"facets" => $FacetURLs->FacetURLs,
+				"geoTileFacets" => $FacetURLs->geoTileFacetURLs,
 				"paging" => $pagingArray
 				//"resultsA" => $SolrSearch->documentsArray,
 				//"results" => $spaceResults["items"],
@@ -465,17 +465,17 @@ class setsController extends Zend_Controller_Action {
 					 "last" => $SolrSearch->lastPage_JSON,
 					 );
 		
-		$facetURLs = new facetURLs;
-		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
-		$facetURLs->setSolrFacets($SolrSearch->facets);
-		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $SolrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
-		$facetURLs->facetLinking();
+		$FacetURLs = new FacetURLs;
+		$FacetURLs->setRequestParams($requestParams);
+		$FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
+		$FacetURLs->setSolrFacets($SolrSearch->facets);
+		$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+		$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+		$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+		$FacetURLs->facetLinking();
 		
 		$reconResults = false;
-		$allFacets = $facetURLs->facetURLs;
+		$allFacets = $FacetURLs->FacetURLs;
 		if(isset($allFacets["linking-relation-target"])){
 			$reconResults = array();
 			$linkedData = new LinkedDataRef;
@@ -611,14 +611,14 @@ class setsController extends Zend_Controller_Action {
 					 "last" => $SolrSearch->lastPage_JSON,
 					 );
 		
-		$facetURLs = new facetURLs;
-		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->setSolrFacets($SolrSearch->facets);
-		$facetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
-		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $SolrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
-		$facetURLs->facetLinking();
+		$FacetURLs = new FacetURLs;
+		$FacetURLs->setRequestParams($requestParams);
+		$FacetURLs->setSolrFacets($SolrSearch->facets);
+		$FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
+		$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+		$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+		$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+		$FacetURLs->facetLinking();
 		
 		$output = array("numFound" => $SolrSearch->numFound,
 				"offset" => $SolrSearch->offset,
@@ -626,8 +626,8 @@ class setsController extends Zend_Controller_Action {
 				"updated" => $SolrSearch->lastUpdate,
 				"sorting" => $SolrSearch->sortType,
 				"summary" => $summaryObj,
-				"facets" => $facetURLs->facetURLs,
-				"geoTileFacets" => $facetURLs->geoTileFacetURLs,
+				"facets" => $FacetURLs->FacetURLs,
+				"geoTileFacets" => $FacetURLs->geoTileFacetURLs,
 				"paging" => $pagingArray,
 				//"facetsA" => $SolrSearch->facets,
 				"results" => $spaceResults["items"],

@@ -411,43 +411,43 @@ class SolrSearch{
     function makeDocumentTypeArray(){
 	
 		$typeParameter = "";
-		$documentTypes = array();
+		$DocumentTypes = array();
 		if($this->substance){
-			$documentTypes[] = "substance";
+			$DocumentTypes[] = "substance";
 		}
 		if($this->spatial){
 			$this->defaultSort = false; //sort by interest score
-			$documentTypes[] = "spatial";
+			$DocumentTypes[] = "spatial";
 		}
 		if($this->image){
-			$documentTypes[] = "image";
+			$DocumentTypes[] = "image";
 		}
 		if($this->video){
-			$documentTypes[] = "video";
+			$DocumentTypes[] = "video";
 		}
 		if($this->person){
-			$documentTypes[] = "person";
+			$DocumentTypes[] = "person";
 		}
 		if($this->project){
-			$documentTypes[] = "project";
+			$DocumentTypes[] = "project";
 		}
 		if($this->document){
-			$documentTypes[] = "document";
+			$DocumentTypes[] = "document";
 		}
 		if($this->table){
-			$documentTypes[] = "table";
+			$DocumentTypes[] = "table";
 		}
 		if($this->site){
-			$documentTypes[] = "site";
+			$DocumentTypes[] = "site";
 		}
 		if($this->media){
-			$documentTypes[] = "acrobat pdf";
-			$documentTypes[] = "external";
-			$documentTypes[] = "KML";
-			$documentTypes[] = "GIS";
+			$DocumentTypes[] = "acrobat pdf";
+			$DocumentTypes[] = "external";
+			$DocumentTypes[] = "KML";
+			$DocumentTypes[] = "GIS";
 		}
 	
-		return $documentTypes;
+		return $DocumentTypes;
     }
     
     
@@ -746,10 +746,10 @@ class SolrSearch{
 		$extendedFacets = OpenContext_FacetQuery::unfold_deep_parameters($requestParams, $slashCount);
 		
 		
-		$documentTypes = $this->makeDocumentTypeArray();
+		$DocumentTypes = $this->makeDocumentTypeArray();
 		
 		$param_array = array();
-		$param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $documentTypes);
+		$param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
 		$param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, $context_depth);
 			
 		//echo "here's the context depth:".print_r($param_array); 
