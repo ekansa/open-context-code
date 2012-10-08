@@ -33,66 +33,66 @@ class TableBrowseController extends Zend_Controller_Action {
 	
 			
 		
-		$solrSearch = new solrSearch;
-		$solrSearch->initialize();
-		$solrSearch->number_recs =10;
-		//$solrSearch->defaultSort = "interest_score desc";
-		$solrSearch->requestURI = $this->_request->getRequestUri();
-		$solrSearch->requestParams = $requestParams;
-		$solrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-		$requestParams = $solrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+		$SolrSearch = new SolrSearch;
+		$SolrSearch->initialize();
+		$SolrSearch->number_recs =10;
+		//$SolrSearch->defaultSort = "interest_score desc";
+		$SolrSearch->requestURI = $this->_request->getRequestUri();
+		$SolrSearch->requestParams = $requestParams;
+		$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+		$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 		
 		/*
-		$solrSearch->spatial = true; //do a search for spatial items
-		$solrSearch->image = true; //do a search for image items
-		$solrSearch->media = true; //do a search for media items
-		$solrSearch->document = true; //do a search for document items
-		$solrSearch->project = true; //do a search for project items
+		$SolrSearch->spatial = true; //do a search for spatial items
+		$SolrSearch->image = true; //do a search for image items
+		$SolrSearch->media = true; //do a search for media items
+		$SolrSearch->document = true; //do a search for document items
+		$SolrSearch->project = true; //do a search for project items
 		*/
 		
-		$solrSearch->table = true; //do a search for table items
+		$SolrSearch->table = true; //do a search for table items
 		
-		$solrSearch->buildSolrQuery();
-		$solrSearch->execute_search();
+		$SolrSearch->buildSolrQuery();
+		$SolrSearch->execute_search();
 		
-		if($solrSearch->solrDown){
+		if($SolrSearch->solrDown){
 			return $this->render('down');
 		}
 		
-		$solrSearch->getLatestTime(); //get the last updated
-		//$solrSearch->getLatestTime(false); //get the last published
+		$SolrSearch->getLatestTime(); //get the last updated
+		//$SolrSearch->getLatestTime(false); //get the last published
 		
 		$this->view->requestURI = $this->_request->getRequestUri(); // for testing
 		$this->view->requestParams = $requestParams;  // for testing
-		$this->view->numFound = $solrSearch->numFound;
-		$this->view->facets = $solrSearch->facets;
-		$this->view->docs = $solrSearch->documentsArray;
-		$this->view->offset = $solrSearch->offset;
-		$this->view->number_recs = $solrSearch->number_recs;
-		$this->view->sorting = $solrSearch->sortType;
-		$this->view->lastUpdate = $solrSearch->lastUpdate;
+		$this->view->numFound = $SolrSearch->numFound;
+		$this->view->facets = $SolrSearch->facets;
+		$this->view->docs = $SolrSearch->documentsArray;
+		$this->view->offset = $SolrSearch->offset;
+		$this->view->number_recs = $SolrSearch->number_recs;
+		$this->view->sorting = $SolrSearch->sortType;
+		$this->view->lastUpdate = $SolrSearch->lastUpdate;
 		
-		$this->view->currentXHTML = str_replace("&", "&amp;", $solrSearch->currentXHTML);
-		$this->view->currentJSON = str_replace("&", "&amp;", $solrSearch->currentJSON);
-		$this->view->currentAtom = str_replace("&", "&amp;", $solrSearch->currentAtom);
-		$this->view->firstPage_XHTML = str_replace("&", "&amp;", $solrSearch->firstPage_XHTML);
-		$this->view->firstPage_JSON = str_replace("&", "&amp;", $solrSearch->firstPage_JSON);
-		$this->view->firstPage_Atom = str_replace("&", "&amp;", $solrSearch->firstPage_Atom); 
-		$this->view->prevPage_XHTML = str_replace("&", "&amp;", $solrSearch->prevPage_XHTML);
-		$this->view->prevPage_JSON = str_replace("&", "&amp;", $solrSearch->prevPage_JSON);
-		$this->view->prevPage_Atom = str_replace("&", "&amp;", $solrSearch->prevPage_Atom);
-		$this->view->nextPage_XHTML = str_replace("&", "&amp;", $solrSearch->nextPage_XHTML);
-		$this->view->nextPage_JSON = str_replace("&", "&amp;", $solrSearch->nextPage_JSON);
-		$this->view->nextPage_Atom = str_replace("&", "&amp;", $solrSearch->nextPage_Atom);
-		$this->view->lastPage_XHTML = str_replace("&", "&amp;", $solrSearch->lastPage_XHTML);
-		$this->view->lastPage_JSON = str_replace("&", "&amp;", $solrSearch->lastPage_JSON);
-		$this->view->lastPage_Atom = str_replace("&", "&amp;", $solrSearch->lastPage_Atom);
+		$this->view->currentXHTML = str_replace("&", "&amp;", $SolrSearch->currentXHTML);
+		$this->view->currentJSON = str_replace("&", "&amp;", $SolrSearch->currentJSON);
+		$this->view->currentAtom = str_replace("&", "&amp;", $SolrSearch->currentAtom);
+		$this->view->firstPage_XHTML = str_replace("&", "&amp;", $SolrSearch->firstPage_XHTML);
+		$this->view->firstPage_JSON = str_replace("&", "&amp;", $SolrSearch->firstPage_JSON);
+		$this->view->firstPage_Atom = str_replace("&", "&amp;", $SolrSearch->firstPage_Atom); 
+		$this->view->prevPage_XHTML = str_replace("&", "&amp;", $SolrSearch->prevPage_XHTML);
+		$this->view->prevPage_JSON = str_replace("&", "&amp;", $SolrSearch->prevPage_JSON);
+		$this->view->prevPage_Atom = str_replace("&", "&amp;", $SolrSearch->prevPage_Atom);
+		$this->view->nextPage_XHTML = str_replace("&", "&amp;", $SolrSearch->nextPage_XHTML);
+		$this->view->nextPage_JSON = str_replace("&", "&amp;", $SolrSearch->nextPage_JSON);
+		$this->view->nextPage_Atom = str_replace("&", "&amp;", $SolrSearch->nextPage_Atom);
+		$this->view->lastPage_XHTML = str_replace("&", "&amp;", $SolrSearch->lastPage_XHTML);
+		$this->view->lastPage_JSON = str_replace("&", "&amp;", $SolrSearch->lastPage_JSON);
+		$this->view->lastPage_Atom = str_replace("&", "&amp;", $SolrSearch->lastPage_Atom);
 		
 		//these are links to facets only
-		$this->view->facetURI_Atom= $solrSearch->facetURI_Atom;
-		$this->view->facetURI_JSON= $solrSearch->facetURI_JSON;
+		$this->view->facetURI_Atom= $SolrSearch->facetURI_Atom;
+		$this->view->facetURI_JSON= $SolrSearch->facetURI_JSON;
 		
-		if($solrSearch->numFound < 1){
+		if($SolrSearch->numFound < 1){
 			return $this->render('noresults');
 		}
 		
@@ -111,13 +111,13 @@ class TableBrowseController extends Zend_Controller_Action {
 		
 		
 		/*
-		$output = array("numFound" => $solrSearch->numFound,
-				"facets" => $solrSearch->facets,
-				"docs" => $solrSearch->documentsArray);
+		$output = array("numFound" => $SolrSearch->numFound,
+				"facets" => $SolrSearch->facets,
+				"docs" => $SolrSearch->documentsArray);
 		
 		$this->_helper->viewRenderer->setNoRender();
 		header('Content-Type: application/json; charset=utf8');
-		echo Zend_Json::encode($solrSearch);
+		echo Zend_Json::encode($SolrSearch);
 		*/                                                                                                          
 
 	}//end index viewer
@@ -135,58 +135,58 @@ class TableBrowseController extends Zend_Controller_Action {
 		unset($protect);
 		
 		
-		$solrSearch = new solrSearch;
-		$solrSearch->initialize();
-		$solrSearch->number_recs =10;
-		$solrSearch->requestURI = $this->_request->getRequestUri();
-		$solrSearch->requestParams = $requestParams;
-		$solrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-		$requestParams = $solrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+		$SolrSearch = new SolrSearch;
+		$SolrSearch->initialize();
+		$SolrSearch->number_recs =10;
+		$SolrSearch->requestURI = $this->_request->getRequestUri();
+		$SolrSearch->requestParams = $requestParams;
+		$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+		$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 		
 		/*
-		$solrSearch->spatial = true; //do a search for spatial items
-		$solrSearch->image = true; //do a search for image items
-		$solrSearch->media = true; //do a search for media items
-		$solrSearch->document = true; //do a search for document items
-		$solrSearch->project = true; //do a search for project items
+		$SolrSearch->spatial = true; //do a search for spatial items
+		$SolrSearch->image = true; //do a search for image items
+		$SolrSearch->media = true; //do a search for media items
+		$SolrSearch->document = true; //do a search for document items
+		$SolrSearch->project = true; //do a search for project items
 		*/
 		
-		$solrSearch->table = true; //do a search for table items
-		$solrSearch->buildSolrQuery();
-		$solrSearch->execute_search();
-		$solrSearch->getLatestTime(); //get the last updated
-		$solrSearch->getLatestTime(false); //get the last published
+		$SolrSearch->table = true; //do a search for table items
+		$SolrSearch->buildSolrQuery();
+		$SolrSearch->execute_search();
+		$SolrSearch->getLatestTime(); //get the last updated
+		$SolrSearch->getLatestTime(false); //get the last published
 		
 				$this->view->requestURI = $this->_request->getRequestUri(); // for testing
 		$this->view->requestParams = $requestParams;  // for testing
-		$this->view->numFound = $solrSearch->numFound;
-		$this->view->facets = $solrSearch->facets;
-		$this->view->docs = $solrSearch->documentsArray;
-		$this->view->offset = $solrSearch->offset;
-		$this->view->number_recs = $solrSearch->number_recs;
-		$this->view->sorting = $solrSearch->sortType;
-		$this->view->lastUpdate = $solrSearch->lastUpdate;
-		$this->view->lastPublished = $solrSearch->lastPublished;
+		$this->view->numFound = $SolrSearch->numFound;
+		$this->view->facets = $SolrSearch->facets;
+		$this->view->docs = $SolrSearch->documentsArray;
+		$this->view->offset = $SolrSearch->offset;
+		$this->view->number_recs = $SolrSearch->number_recs;
+		$this->view->sorting = $SolrSearch->sortType;
+		$this->view->lastUpdate = $SolrSearch->lastUpdate;
+		$this->view->lastPublished = $SolrSearch->lastPublished;
 		
-		$this->view->currentXHTML = $solrSearch->currentXHTML;
-		$this->view->currentJSON = $solrSearch->currentJSON;
-		$this->view->currentAtom = $solrSearch->currentAtom;
-		$this->view->firstPage_XHTML = $solrSearch->firstPage_XHTML;
-		$this->view->firstPage_JSON = $solrSearch->firstPage_JSON;
-		$this->view->firstPage_Atom = $solrSearch->firstPage_Atom; 
-		$this->view->prevPage_XHTML = $solrSearch->prevPage_XHTML;
-		$this->view->prevPage_JSON = $solrSearch->prevPage_JSON;
-		$this->view->prevPage_Atom = $solrSearch->prevPage_Atom;
-		$this->view->nextPage_XHTML = $solrSearch->nextPage_XHTML;
-		$this->view->nextPage_JSON = $solrSearch->nextPage_JSON;
-		$this->view->nextPage_Atom = $solrSearch->nextPage_Atom;
-		$this->view->lastPage_XHTML = $solrSearch->lastPage_XHTML;
-		$this->view->lastPage_JSON = $solrSearch->lastPage_JSON;
-		$this->view->lastPage_Atom = $solrSearch->lastPage_Atom;
+		$this->view->currentXHTML = $SolrSearch->currentXHTML;
+		$this->view->currentJSON = $SolrSearch->currentJSON;
+		$this->view->currentAtom = $SolrSearch->currentAtom;
+		$this->view->firstPage_XHTML = $SolrSearch->firstPage_XHTML;
+		$this->view->firstPage_JSON = $SolrSearch->firstPage_JSON;
+		$this->view->firstPage_Atom = $SolrSearch->firstPage_Atom; 
+		$this->view->prevPage_XHTML = $SolrSearch->prevPage_XHTML;
+		$this->view->prevPage_JSON = $SolrSearch->prevPage_JSON;
+		$this->view->prevPage_Atom = $SolrSearch->prevPage_Atom;
+		$this->view->nextPage_XHTML = $SolrSearch->nextPage_XHTML;
+		$this->view->nextPage_JSON = $SolrSearch->nextPage_JSON;
+		$this->view->nextPage_Atom = $SolrSearch->nextPage_Atom;
+		$this->view->lastPage_XHTML = $SolrSearch->lastPage_XHTML;
+		$this->view->lastPage_JSON = $SolrSearch->lastPage_JSON;
+		$this->view->lastPage_Atom = $SolrSearch->lastPage_Atom;
 		
 		//these are links to facets only
-		$this->view->facetURI_Atom = $solrSearch->facetURI_Atom;
-		$this->view->facetURI_JSON = $solrSearch->facetURI_JSON;
+		$this->view->facetURI_Atom = $SolrSearch->facetURI_Atom;
+		$this->view->facetURI_JSON = $SolrSearch->facetURI_JSON;
 
 		/*
 		$fixedParams = $requestParams;
@@ -202,57 +202,57 @@ class TableBrowseController extends Zend_Controller_Action {
     
 		$requestParams =  $this->_request->getParams();
 		
-		$solrSearch = new solrSearch;
-		$solrSearch->initialize();
-		$solrSearch->requestURI = $this->_request->getRequestUri();
-		$solrSearch->requestParams = $requestParams;
-		$solrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-		$requestParams = $solrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+		$SolrSearch = new SolrSearch;
+		$SolrSearch->initialize();
+		$SolrSearch->requestURI = $this->_request->getRequestUri();
+		$SolrSearch->requestParams = $requestParams;
+		$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+		$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 		
 		/*
-		$solrSearch->spatial = true; //do a search for spatial items
-		$solrSearch->image = true; //do a search for image items
-		$solrSearch->media = true; //do a search for media items
-		$solrSearch->document = true; //do a search for document items
-		$solrSearch->project = true; //do a search for project items
+		$SolrSearch->spatial = true; //do a search for spatial items
+		$SolrSearch->image = true; //do a search for image items
+		$SolrSearch->media = true; //do a search for media items
+		$SolrSearch->document = true; //do a search for document items
+		$SolrSearch->project = true; //do a search for project items
 		*/
 		
-		$solrSearch->table = true; //do a search for table items
-		$solrSearch->buildSolrQuery();
-		$solrSearch->execute_search();
-		$solrSearch->getLatestTime(); //get the last updated
-		$solrSearch->getLatestTime(false); //get the last published
+		$SolrSearch->table = true; //do a search for table items
+		$SolrSearch->buildSolrQuery();
+		$SolrSearch->execute_search();
+		$SolrSearch->getLatestTime(); //get the last updated
+		$SolrSearch->getLatestTime(false); //get the last published
 		
 		$this->view->requestURI = $this->_request->getRequestUri(); // for testing
 		$this->view->requestParams = $requestParams;  // for testing
-		$this->view->numFound = $solrSearch->numFound;
-		$this->view->facets = $solrSearch->facets;
-		$this->view->docs = $solrSearch->documentsArray;
-		$this->view->offset = $solrSearch->offset;
-		$this->view->number_recs = $solrSearch->number_recs;
-		$this->view->sorting = $solrSearch->sortType;
-		$this->view->lastUpdate = $solrSearch->lastUpdate;
-		$this->view->lastPublished = $solrSearch->lastPublished;
+		$this->view->numFound = $SolrSearch->numFound;
+		$this->view->facets = $SolrSearch->facets;
+		$this->view->docs = $SolrSearch->documentsArray;
+		$this->view->offset = $SolrSearch->offset;
+		$this->view->number_recs = $SolrSearch->number_recs;
+		$this->view->sorting = $SolrSearch->sortType;
+		$this->view->lastUpdate = $SolrSearch->lastUpdate;
+		$this->view->lastPublished = $SolrSearch->lastPublished;
 		
-		$this->view->currentXHTML = $solrSearch->currentXHTML;
-		$this->view->currentJSON = $solrSearch->currentJSON;
-		$this->view->currentAtom = $solrSearch->currentAtom;
-		$this->view->firstPage_XHTML = $solrSearch->firstPage_XHTML;
-		$this->view->firstPage_JSON = $solrSearch->firstPage_JSON;
-		$this->view->firstPage_Atom = $solrSearch->firstPage_Atom; 
-		$this->view->prevPage_XHTML = $solrSearch->prevPage_XHTML;
-		$this->view->prevPage_JSON = $solrSearch->prevPage_JSON;
-		$this->view->prevPage_Atom = $solrSearch->prevPage_Atom;
-		$this->view->nextPage_XHTML = $solrSearch->nextPage_XHTML;
-		$this->view->nextPage_JSON = $solrSearch->nextPage_JSON;
-		$this->view->nextPage_Atom = $solrSearch->nextPage_Atom;
-		$this->view->lastPage_XHTML = $solrSearch->lastPage_XHTML;
-		$this->view->lastPage_JSON = $solrSearch->lastPage_JSON;
-		$this->view->lastPage_Atom = $solrSearch->lastPage_Atom;
+		$this->view->currentXHTML = $SolrSearch->currentXHTML;
+		$this->view->currentJSON = $SolrSearch->currentJSON;
+		$this->view->currentAtom = $SolrSearch->currentAtom;
+		$this->view->firstPage_XHTML = $SolrSearch->firstPage_XHTML;
+		$this->view->firstPage_JSON = $SolrSearch->firstPage_JSON;
+		$this->view->firstPage_Atom = $SolrSearch->firstPage_Atom; 
+		$this->view->prevPage_XHTML = $SolrSearch->prevPage_XHTML;
+		$this->view->prevPage_JSON = $SolrSearch->prevPage_JSON;
+		$this->view->prevPage_Atom = $SolrSearch->prevPage_Atom;
+		$this->view->nextPage_XHTML = $SolrSearch->nextPage_XHTML;
+		$this->view->nextPage_JSON = $SolrSearch->nextPage_JSON;
+		$this->view->nextPage_Atom = $SolrSearch->nextPage_Atom;
+		$this->view->lastPage_XHTML = $SolrSearch->lastPage_XHTML;
+		$this->view->lastPage_JSON = $SolrSearch->lastPage_JSON;
+		$this->view->lastPage_Atom = $SolrSearch->lastPage_Atom;
 		
 		//these are links to facets only
-		$this->view->facetURI_Atom = $solrSearch->facetURI_Atom;
-		$this->view->facetURI_JSON = $solrSearch->facetURI_JSON;
+		$this->view->facetURI_Atom = $SolrSearch->facetURI_Atom;
+		$this->view->facetURI_JSON = $SolrSearch->facetURI_JSON;
 
 		$fixedParams = $requestParams;
 		$fixedParams["action"] = "index";
@@ -261,10 +261,10 @@ class TableBrowseController extends Zend_Controller_Action {
 		
 		$facetURLs = new facetURLs;
 		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->setSolrFacets($solrSearch->facets);
+		$facetURLs->setSolrFacets($SolrSearch->facets);
 		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $solrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $solrSearch->original_default_context_path;
+		$facetURLs->default_context_path = $SolrSearch->default_context_path;
+		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
 		$facetURLs->facetLinking();
 		
 		$this->view->facets = $facetURLs->facetURLs;
@@ -283,85 +283,85 @@ class TableBrowseController extends Zend_Controller_Action {
 		}
 		unset($protect);
 		
-		$solrSearch = new solrSearch;
-		$solrSearch->initialize();
-		$solrSearch->number_recs =10;
-		$solrSearch->requestURI = $this->_request->getRequestUri();
-		$solrSearch->requestParams = $requestParams;
-		$solrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-		$requestParams = $solrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+		$SolrSearch = new SolrSearch;
+		$SolrSearch->initialize();
+		$SolrSearch->number_recs =10;
+		$SolrSearch->requestURI = $this->_request->getRequestUri();
+		$SolrSearch->requestParams = $requestParams;
+		$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+		$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 		
 		/*
-		$solrSearch->spatial = true; //do a search for spatial items
-		$solrSearch->image = true; //do a search for image items
-		$solrSearch->media = true; //do a search for media items
-		$solrSearch->document = true; //do a search for document items
-		$solrSearch->project = true; //do a search for project items
+		$SolrSearch->spatial = true; //do a search for spatial items
+		$SolrSearch->image = true; //do a search for image items
+		$SolrSearch->media = true; //do a search for media items
+		$SolrSearch->document = true; //do a search for document items
+		$SolrSearch->project = true; //do a search for project items
 		*/
 		
-		$solrSearch->table = true; //do a search for table items
-		$solrSearch->buildSolrQuery();
-		$solrSearch->execute_search();
-		$solrSearch->getLatestTime(); //get the last updated
-		$solrSearch->getLatestTime(false); //get the last published
+		$SolrSearch->table = true; //do a search for table items
+		$SolrSearch->buildSolrQuery();
+		$SolrSearch->execute_search();
+		$SolrSearch->getLatestTime(); //get the last updated
+		$SolrSearch->getLatestTime(false); //get the last published
 		
 		$this->view->requestURI = $this->_request->getRequestUri(); // for testing
 		$this->view->requestParams = $requestParams;  // for testing
-		$this->view->numFound = $solrSearch->numFound;
-		$this->view->facets = $solrSearch->facets;
-		$this->view->docs = $solrSearch->documentsArray;
-		$this->view->offset = $solrSearch->offset;
+		$this->view->numFound = $SolrSearch->numFound;
+		$this->view->facets = $SolrSearch->facets;
+		$this->view->docs = $SolrSearch->documentsArray;
+		$this->view->offset = $SolrSearch->offset;
 		
-		$this->view->currentXHTML = $solrSearch->currentXHTML;
-		$this->view->currentJSON = $solrSearch->currentJSON;
-		$this->view->currentAtom = $solrSearch->currentAtom;
-		$this->view->firstPage_XHTML = $solrSearch->firstPage_XHTML;
-		$this->view->firstPage_JSON = $solrSearch->firstPage_JSON;
-		$this->view->firstPage_Atom = $solrSearch->firstPage_Atom; 
-		$this->view->prevPage_XHTML = $solrSearch->prevPage_XHTML;
-		$this->view->prevPage_JSON = $solrSearch->prevPage_JSON;
-		$this->view->prevPage_Atom = $solrSearch->prevPage_Atom;
-		$this->view->nextPage_XHTML = $solrSearch->nextPage_XHTML;
-		$this->view->nextPage_JSON = $solrSearch->nextPage_JSON;
-		$this->view->nextPage_Atom = $solrSearch->nextPage_Atom;
-		$this->view->lastPage_XHTML = $solrSearch->lastPage_XHTML;
-		$this->view->lastPage_JSON = $solrSearch->lastPage_JSON;
-		$this->view->lastPage_Atom = $solrSearch->lastPage_Atom;
+		$this->view->currentXHTML = $SolrSearch->currentXHTML;
+		$this->view->currentJSON = $SolrSearch->currentJSON;
+		$this->view->currentAtom = $SolrSearch->currentAtom;
+		$this->view->firstPage_XHTML = $SolrSearch->firstPage_XHTML;
+		$this->view->firstPage_JSON = $SolrSearch->firstPage_JSON;
+		$this->view->firstPage_Atom = $SolrSearch->firstPage_Atom; 
+		$this->view->prevPage_XHTML = $SolrSearch->prevPage_XHTML;
+		$this->view->prevPage_JSON = $SolrSearch->prevPage_JSON;
+		$this->view->prevPage_Atom = $SolrSearch->prevPage_Atom;
+		$this->view->nextPage_XHTML = $SolrSearch->nextPage_XHTML;
+		$this->view->nextPage_JSON = $SolrSearch->nextPage_JSON;
+		$this->view->nextPage_Atom = $SolrSearch->nextPage_Atom;
+		$this->view->lastPage_XHTML = $SolrSearch->lastPage_XHTML;
+		$this->view->lastPage_JSON = $SolrSearch->lastPage_JSON;
+		$this->view->lastPage_Atom = $SolrSearch->lastPage_Atom;
 		
 		//these are links to facets only
-		$this->view->facetURI_Atom= $solrSearch->facetURI_Atom;
-		$this->view->facetURI_JSON= $solrSearch->facetURI_JSON;
+		$this->view->facetURI_Atom= $SolrSearch->facetURI_Atom;
+		$this->view->facetURI_JSON= $SolrSearch->facetURI_JSON;
 
 		$fixedParams = $requestParams;
 		$fixedParams["action"] = "index";
 		$host = OpenContext_OCConfig::get_host_config(); 
 		$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
 		
-		$pagingArray = array("self"=> $solrSearch->currentJSON,
-				     "first" => $solrSearch->firstPage_JSON,
-				     "prev" => $solrSearch->prevPage_JSON,
-				     "next" => $solrSearch->nextPage_JSON,
-				     "last" => $solrSearch->lastPage_JSON,
+		$pagingArray = array("self"=> $SolrSearch->currentJSON,
+				     "first" => $SolrSearch->firstPage_JSON,
+				     "prev" => $SolrSearch->prevPage_JSON,
+				     "next" => $SolrSearch->nextPage_JSON,
+				     "last" => $SolrSearch->lastPage_JSON,
 				     );
 		
 		$facetURLs = new facetURLs;
 		$facetURLs->setRequestParams($requestParams);
-		$facetURLs->setSolrFacets($solrSearch->facets);
+		$facetURLs->setSolrFacets($SolrSearch->facets);
 		$facetURLs->doContextMetadata = true; //get date ranges for contexts
-		$facetURLs->default_context_path = $solrSearch->default_context_path;
-		$facetURLs->original_default_context_path = $solrSearch->original_default_context_path;
+		$facetURLs->default_context_path = $SolrSearch->default_context_path;
+		$facetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
 		$facetURLs->facetLinking();
 		
-		$output = array("numFound" => $solrSearch->numFound,
-				"offset" => $solrSearch->offset,
-				"published" => $solrSearch->lastPublished,
-				"updateed" => $solrSearch->lastUpdate,
-				"sorting" => $solrSearch->sortType,
+		$output = array("numFound" => $SolrSearch->numFound,
+				"offset" => $SolrSearch->offset,
+				"published" => $SolrSearch->lastPublished,
+				"updateed" => $SolrSearch->lastUpdate,
+				"sorting" => $SolrSearch->sortType,
 				"summary" => $summaryObj,
 				"facets" => $facetURLs->facetURLs,
 				"paging" => $pagingArray,
-				"results" => $solrSearch->documentsArray,
-				"query" => $solrSearch->queryString
+				"results" => $SolrSearch->documentsArray,
+				"query" => $SolrSearch->queryString
 				);
 		
 		$this->_helper->viewRenderer->setNoRender();

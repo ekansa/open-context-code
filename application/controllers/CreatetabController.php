@@ -473,32 +473,32 @@ class createtabController extends Zend_Controller_Action
     //the following code is very similar to the SETs code from the Sets controller
     $requestParams =  $this->_request->getParams();
     
-	$solrSearch = new solrSearch;
-	$solrSearch->initialize();
-	$solrSearch->requestURI = $this->_request->getRequestUri();
-	$solrSearch->requestParams = $requestParams;
-	$solrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-	$requestParams = $solrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+	$SolrSearch = new SolrSearch;
+	$SolrSearch->initialize();
+	$SolrSearch->requestURI = $this->_request->getRequestUri();
+	$SolrSearch->requestParams = $requestParams;
+	$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+	$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 	
-	$solrSearch->spatial = true; //do a search of spatial items in Open Context
-	$solrSearch->rawDocsArray = true; //get the raw document output
-	$solrSearch->buildSolrQuery();
+	$SolrSearch->spatial = true; //do a search of spatial items in Open Context
+	$SolrSearch->rawDocsArray = true; //get the raw document output
+	$SolrSearch->buildSolrQuery();
 	
-	$param_array = $solrSearch->param_array;
+	$param_array = $SolrSearch->param_array;
 	$param_array['sort'] ="label_sort desc, interest_score desc";
 	unset($param_array["facet.field"]); //Facets are not needed!
 	unset($param_array["facet"]);       //Facets are not needed!
 	unset($param_array["facet.mincount"]);  //Facets are not needed!
-	$solrSearch->param_array = $param_array;
+	$SolrSearch->param_array = $param_array;
 	
-	$solrSearch->execute_search();
-	//$solrSearch->getLatestTime(); //get the last updated
-	//$solrSearch->getLatestTime(false); //get the last published
+	$SolrSearch->execute_search();
+	//$SolrSearch->getLatestTime(); //get the last updated
+	//$SolrSearch->getLatestTime(false); //get the last published
 	
-	$numFound = $solrSearch->numFound;
+	$numFound = $SolrSearch->numFound;
         $record_array = array();
         $newFields = array();
-        foreach($solrSearch->documentsArray as $doc){
+        foreach($SolrSearch->documentsArray as $doc){
 		$item_array = array();
 		$act_id = $doc['uuid'];
 		$item_array["proj"] = $doc['project_name'];
@@ -682,18 +682,18 @@ class createtabController extends Zend_Controller_Action
 	//if(true){
 		$requestParams =  $this->_request->getParams();
 		
-		$solrSearch = new solrSearch;
-		$solrSearch->initialize();
-		$solrSearch->requestURI = $this->_request->getRequestUri();
-		$solrSearch->requestParams = $requestParams;
-		$solrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-		$requestParams = $solrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+		$SolrSearch = new SolrSearch;
+		$SolrSearch->initialize();
+		$SolrSearch->requestURI = $this->_request->getRequestUri();
+		$SolrSearch->requestParams = $requestParams;
+		$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+		$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 		
-		$solrSearch->spatial = true; //do a search of spatial items in Open Context
-		$solrSearch->rawDocsArray = true; //get the raw document output
-		$solrSearch->buildSolrQuery();
+		$SolrSearch->spatial = true; //do a search of spatial items in Open Context
+		$SolrSearch->rawDocsArray = true; //get the raw document output
+		$SolrSearch->buildSolrQuery();
 		
-		$param_array = $solrSearch->param_array;
+		$param_array = $SolrSearch->param_array;
 		//$param_array['sort'] = array("item_class desc", "interest_score desc");
 		//$param_array['sort'] = "item_class desc, interest_score desc";
 	
@@ -707,13 +707,13 @@ class createtabController extends Zend_Controller_Action
 							"def_context_9");
 				
 		$param_array["facet.field"] = array_merge($context_params, $variable_params);
-		$solrSearch->param_array = $param_array;
-		$solrSearch->execute_search();
-		$queryString = $solrSearch->queryString;
-		$solrSearch->getLatestTime(); //get the last updated
-		$solrSearch->getLatestTime(false); //get the last published
+		$SolrSearch->param_array = $param_array;
+		$SolrSearch->execute_search();
+		$queryString = $SolrSearch->queryString;
+		$SolrSearch->getLatestTime(); //get the last updated
+		$SolrSearch->getLatestTime(false); //get the last published
 	
-		$allFacets = $solrSearch->facets;
+		$allFacets = $SolrSearch->facets;
 		$facets = $allFacets["facet_fields"];
 		//echo print_r($facets);
 		
@@ -761,7 +761,7 @@ class createtabController extends Zend_Controller_Action
 			*/
 			
 			//get numbers of documents found
-			$numFound = $solrSearch->numFound;
+			$numFound = $SolrSearch->numFound;
 				  
 			$set_uri = str_replace("/createtab/setfields", "/sets", $requestURI);
 			$set_uri = str_replace(".json", "", $set_uri);
@@ -782,12 +782,12 @@ class createtabController extends Zend_Controller_Action
 									"creators" => $creators,
 									"projects" => $projects,
 					"cache_id" => $cache_id,
-					"setLastPublished" => $solrSearch->lastPublished,
-					"setLastUpdate" => $solrSearch->lastUpdate
+					"setLastPublished" => $SolrSearch->lastPublished,
+					"setLastUpdate" => $SolrSearch->lastUpdate
 									),
 								 "contexts" => $contexts,
 								 "table_fields" => $ranked_vars_array,
-								 "queryString" => "http://localhost:8983/solr/select/?".$solrSearch->queryString
+								 "queryString" => "http://localhost:8983/solr/select/?".$SolrSearch->queryString
 								 );
           $JSONstring = Zend_Json::encode($all_array);
           $cache->save($JSONstring, $cache_id); //save result to the cache

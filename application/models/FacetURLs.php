@@ -9,8 +9,8 @@ class facetURLs{
     public $requestURI; //request URI
     public $requestParams; // array of the request parameters and values
     
-    public $facetFields; //facets from the solrSearch object
-    public $facetQueries; //facet queries from the solrSearch object
+    public $facetFields; //facets from the SolrSearch object
+    public $facetQueries; //facet queries from the SolrSearch object
     public $timeSpanFacets; //treated somewhat differently
     public $geoTileFacets; //geo tile facets
     public $geoTileFacetURLs; //array of URLs to geo-tile facets

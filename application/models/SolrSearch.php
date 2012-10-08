@@ -2,7 +2,7 @@
 
 
 //this class interacts with solr to run searches
-class solrSearch{
+class SolrSearch{
     
     public $page;        //page of result request
     public $number_recs; //number of results per page
@@ -221,7 +221,12 @@ class solrSearch{
 			unset($requestParams["prop"]);
 			$newTaxaArray = array();
 			foreach($propsArray as $varKey => $value){
-				$newTaxaArray[] = $varKey."::".$value;
+            if(strlen($value)>1){
+                $newTaxaArray[] = $varKey."::".$value;
+            }
+            else{
+                $newTaxaArray[] = $varKey;
+            }
 			}
 			
 			if(!array_key_exists("taxa", $requestParams)){
@@ -892,49 +897,50 @@ class solrSearch{
 	//if (true) {
 	    try {
 	
-		$response = $solr->search(	$this->query,
-									$this->offset,
-									$this->number_recs,
-									$this->param_array);
+            $response = $solr->search(	$this->query,
+                                 $this->offset,
+                                 $this->number_recs,
+                                 $this->param_array);
+                      
+            $this->queryString = $solr->queryString;
+            $docs_array = array();
+            
+            foreach (($response->response->docs) as $doc) {
                 
-		$this->queryString = $solr->queryString;
-		$docs_array = array();
-		
-		foreach (($response->response->docs) as $doc) {
-		    
-		    $actDocOutput = array("uuid" => $doc->uuid);
-		    if(!$this->rawDocsArray){
-				$actDocOutput = $this->addResultFields($doc, $actDocOutput);
-		    }
-		    else{
-				$allDoc = (array)$doc;
-				$arrayKey = array_keys($allDoc);
-				$actDocOutput = $allDoc[$arrayKey[1]]; //second key has the fields and data we want in an array
-				//echo print_r($actDocOutput);
-		    }
-		    
-		    $docs_array[] = $actDocOutput ;
-		}
-		
-		$rawResponse = Zend_Json::decode($response->getRawResponse());
-		$reponse = $rawResponse['response'];
-		$numFound = $reponse['numFound'];
-		$this->numFound = $numFound;
-		$this->documentsArray =  $docs_array;
-		
-		if(isset($rawResponse['facet_counts'])){
-		    $this->facets =  $rawResponse['facet_counts'];
-		}
-		$this->pseudoBoost();
-		$this->getGeoTiles();
+                $actDocOutput = array("uuid" => $doc->uuid);
+                if(!$this->rawDocsArray){
+                  $actDocOutput = $this->addResultFields($doc, $actDocOutput);
+                }
+                else{
+                  $allDoc = (array)$doc;
+                  $arrayKey = array_keys($allDoc);
+                  $actDocOutput = $allDoc[$arrayKey[1]]; //second key has the fields and data we want in an array
+                  //echo print_r($actDocOutput);
+                }
+                
+                $docs_array[] = $actDocOutput ;
+            }
+            
+            $rawResponse = Zend_Json::decode($response->getRawResponse());
+            $reponse = $rawResponse['response'];
+            $numFound = $reponse['numFound'];
+            $this->numFound = $numFound;
+            $this->documentsArray =  $docs_array;
+            
+            if(isset($rawResponse['facet_counts'])){
+                $this->facets =  $rawResponse['facet_counts'];
+            }
+            $this->pseudoBoost();
+            $this->getGeoTiles();
 		
 	    } catch (Exception $e) {
-		$this->solrDown = true;
-		$solrError = new SolrError;
-		$requestParams = $this->requestParams;
-		$requestParams["solrError"] = (string)$e;
-		$this->requestParams = $requestParams;
-		$solrError->initialize($this->requestParams);
+            $this->solrDown = true;
+            $this->queryString = $solr->queryString;
+            $solrError = new SolrError;
+            $requestParams = $this->requestParams;
+            $requestParams["solrError"] = (string)$e;
+            $this->requestParams = $requestParams;
+            $solrError->initialize($this->requestParams);
 	    }
 
 	} else {
