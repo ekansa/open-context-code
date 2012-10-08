@@ -280,3 +280,96 @@ div.data-pub-step {
 	background-color:#F2F2F2;
 	padding:3%;
 }
+/* About - Data management estimation form */
+#estimate-form-outer {
+	background-color:#F2F2F2;
+	padding: 2%;
+}
+#estimate-form-outert h5 {
+	font-variant:small-caps;
+}
+#estimate-comments textarea {
+	width: 80%;
+	margin-left: 2%;
+}
+div.estimate-form-part {
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding-top: 2%;
+	padding-bottom: 2%;
+	margin-bottom: 5%;
+}
+.estimate-form-part table {
+	width:80%;
+	border: none;
+}
+#estimate-contac td {
+	border-bottom-color: #EEE;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-collapse: separate;
+}
+td.field-name-n {
+	width:30%;
+	text-align:right;
+	vertical-align: center;
+	padding-top: 6px;
+}
+td.field-name-w {
+	width:70%;
+	text-align:right;
+	vertical-align: center;
+	padding-top: 6px;
+}
+td.field-input {
+	padding-left: 2%;
+	text-align:left;
+	vertical-align: center;
+	padding-top: 6px;
+}
+#estimate-contact input.alpha {
+	width:90%;
+}
+#estimate-db-size td {
+	border-bottom-color: #EEE;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-collapse: separate;
+}
+#estimate-db-size input.num {
+	width:20%;
+	margin-top:6px;
+	margin-bottom:6px;
+}
+#estimate-media-size {
+	padding-left: 2%;
+	padding-right: 2%;
+}
+#estimate-media-size li {
+	list-style: none;
+}
+tr.alt-color {
+	background-color:#F8F8F8;
+}
+td.lic-check {
+	width: 5%;
+	padding:2%;
+}
+td.lic-name {
+	width: 20%;
+	padding: 2%;
+}
+td.lic-note {
+	padding: 2%;
+}
+#estimate-license textarea {
+	width: 80%;
+}
+#estimate-license table {
+	width: 100%;
+}
+#estimate-submit {
+	padding:5%;
+	text-align:right;
+}
