@@ -333,6 +333,7 @@ class Apache_Solr_Service
 	{
 		$httpTransport = $this->getHttpTransport();
 
+        //$this->queryString = $url;
 		$httpResponse = $httpTransport->performGetRequest($url, $timeout);
 		$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
@@ -1177,9 +1178,9 @@ class Apache_Solr_Service
         
         //not sure this is needed
 		//$queryString = preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $queryString);
-
-
-        $this->queryString = $queryString;
+      
+        $this->queryString = $this->_searchUrl . $this->_queryDelimiter . $queryString;
+        //echo 		"Query string is: ". $this->queryString;
 
 		if ($method == self::METHOD_GET)
 		{
