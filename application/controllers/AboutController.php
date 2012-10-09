@@ -13,7 +13,7 @@ class aboutController extends Zend_Controller_Action
       
     public function indexAction()
     {
-	OpenContext_SocialTracking::update_referring_link('about', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
+		  OpenContext_SocialTracking::update_referring_link('about', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
     }
     
     public function usesAction() {
@@ -135,12 +135,12 @@ class aboutController extends Zend_Controller_Action
 							  $this->_request->getRequestUri(),
 							  @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);        
         
-	//use if there are validation problems
-	$this->view->problems = false;
-	$this->view->badRequests = false;
-	
-	$form = new EstimateForm;
-	$this->view->numFieldsValues = $form->valArray;        
+		  //use if there are validation problems
+		  $this->view->problems = false;
+		  $this->view->badRequests = false;
+		  
+		  $form = new EstimateForm;
+		  $this->view->numFieldsValues = $form->valArray;        
     }
     
     
@@ -148,6 +148,11 @@ class aboutController extends Zend_Controller_Action
     
     //invokes publication costs estimation form
     public function getForm(){
+		  /*
+		  OpenContext_SocialTracking::update_referring_link('about - estimate-results',
+								$this->_request->getRequestUri(),
+							  @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
+		  */
         return new EstimateForm(array(
             'action' => '/about/results',
             'method' => 'post',
@@ -166,7 +171,7 @@ class aboutController extends Zend_Controller_Action
         OpenContext_SocialTracking::update_referring_link('about - results', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);        
         //$this->view->result = $result;
         
-	$request = $this->getRequest();
+		  $request = $this->getRequest();
 
         // Check if we have a POST request
         if (!$request->isPost()) {
@@ -175,45 +180,43 @@ class aboutController extends Zend_Controller_Action
 
         // Get our form and validate it
         $form = $this->getForm();
-	$validForm = true;
-	$goodNums = true;
-	$problems = array();
+		  $validForm = true;
+		  $goodNums = true;
+		  $problems = array();
         if (!$form->isValid($request->getPost())) {
-	    $validForm = false;
-	    if(!$form->name->isValid($request->getPost())){
-		$problems["name"] = true;
-	    }
-	    if(!$form->phone->isValid($request->getPost())){
-		$problems["phone"] = true;
-	    }
-	    if(!$form->projname->isValid($request->getPost())){
-		$problems["projname"] = true;
-	    }
-	    if(!$form->email->isValid($request->getPost())){
-		$problems["email"] = true;
-	    }
-	    if(!$form->license->isValid($request->getPost())){
-		$problems["license"] = true;
-	    }
-	    if(!isset($_REQUEST["license"])){
-		$validForm = false;
-		$problems["license"] = true;
-	    }
+				$validForm = false;
+		  if(!$form->name->isValid($request->getPost())){
+				$problems["name"] = true;
+		  }
+		  if(!$form->phone->isValid($request->getPost())){
+				$problems["phone"] = true;
+		  }
+		  if(!$form->projname->isValid($request->getPost())){
+				$problems["projname"] = true;
+		  }
+		  if(!$form->email->isValid($request->getPost())){
+				$problems["email"] = true;
+		  }
+		  if(!$form->license->isValid($request->getPost())){
+				$problems["license"] = true;
+		  }
+		  if(!isset($_REQUEST["license"])){
+				$validForm = false;
+				$problems["license"] = true;
+		  }
 	    
-	    $formValidation = $form->more_form_validation($problems, $validForm, $goodNums);
-	    $problems = $formValidation["problems"];
-	    
-	    //work around for email validation error
-	    $problems = $form->email_validation_recheck($_REQUEST["email"], $problems);
-	    
-	    
-	}
-	else{
-	    $formValidation = $form->more_form_validation($problems, $validForm, $goodNums);
-	    $problems = $formValidation["problems"];
-	    $validForm = $formValidation["validForm"];
-	    $goodNums = $formValidation["goodNums"];
-	}
+		  $formValidation = $form->more_form_validation($problems, $validForm, $goodNums);
+		  $problems = $formValidation["problems"];
+		  
+		  //work around for email validation error
+		  $problems = $form->email_validation_recheck($_REQUEST["email"], $problems);
+	 }
+	 else{
+		  $formValidation = $form->more_form_validation($problems, $validForm, $goodNums);
+		  $problems = $formValidation["problems"];
+		  $validForm = $formValidation["validForm"];
+		  $goodNums = $formValidation["goodNums"];
+	 }
 	
 	
 	if(!$validForm){
@@ -308,39 +311,39 @@ class aboutController extends Zend_Controller_Action
 				  
 				  "other" => "Although this license permits copying of content, it complicates scientific reuse and interoperability of data. Its use is appropriate if other needs outweigh scientific concerns.");
 	    
-	    $licenseSel = $_REQUEST["license"];
-	    $licenseNote = $licenseNoteArray[$licenseSel];
-	    
-	    if($licenseSel == "other"){
-		$license = $_REQUEST["rlicense"];
-		$licenseExp = $_REQUEST["restrict_com"];
-	    }
-	    else{
-		$license = $licenseArray[$licenseSel];
-		$licenseExp = false;
-	    }
-	    
-	    if(isset($_REQUEST["diss"])){
-		$cost = $cost*.75;
-		$diss = true;
-		$dissText = "(Doctoral Dissertation / Graduate Student Project)";
-	    }
-	    else{
-		$diss = false;
-		$dissText = "";
-	    }
-	    
-	    $costHundred = round($cost,-2);
-	    $costTen = round($cost,-1);
-	    $costRemainder = $costTen - $costHundred;
-	    
-	    $finalCost = $costHundred;
-	    if($costRemainder >= 30){
-		$finalCost = $costHundred + 50;
-	    }
-	    if($costRemainder <= -30){
-		$finalCost = $costHundred - 50;
-	    }
+		  $licenseSel = $_REQUEST["license"];
+		  $licenseNote = $licenseNoteArray[$licenseSel];
+		  
+		  if($licenseSel == "other"){
+				$license = $_REQUEST["rlicense"];
+				$licenseExp = $_REQUEST["restrict_com"];
+		  }
+		  else{
+				$license = $licenseArray[$licenseSel];
+				$licenseExp = false;
+		  }
+		  
+		  if(isset($_REQUEST["diss"])){
+				$cost = $cost*.75;
+				$diss = true;
+				$dissText = "(Doctoral Dissertation / Graduate Student Project)";
+		  }
+		  else{
+				$diss = false;
+				$dissText = "";
+		  }
+		  
+		  $costHundred = round($cost,-2);
+		  $costTen = round($cost,-1);
+		  $costRemainder = $costTen - $costHundred;
+		  
+		  $finalCost = $costHundred;
+		  if($costRemainder >= 30){
+				$finalCost = $costHundred + 50;
+		  }
+		  if($costRemainder <= -30){
+				$finalCost = $costHundred - 50;
+		  }
 	    
 	    /*
 	    echo $cost."<br/>";
@@ -350,31 +353,31 @@ class aboutController extends Zend_Controller_Action
 	    */
 	    
 	    if(substr_count($_REQUEST["comment"], "If you have additional comments ")>0){
-		$comment = "(None)";
+				$comment = "(None)";
 	    }
 	    else{
-		$comment = $_REQUEST["comment"];
+				$comment = $_REQUEST["comment"];
 	    }
 	    
-	    $estimateID = substr(md5($_REQUEST["email"].(microtime())),0,10);
-	    
-	    
-	    $this->view->cost = $finalCost;
-	    $this->view->max = $maxLimit;
-	    $this->view->dataset = $dataArray;
-	    $this->view->media = $mediaArray;
-	    $this->view->projname = $_REQUEST["projname"];
-	    $this->view->name = $_REQUEST["name"];
-	    $this->view->email = $_REQUEST["email"];
-	    $this->view->phone = $_REQUEST["phone"];
-	    $this->view->license = $license;
-	    $this->view->licenseNote = $licenseNote;
-	    $this->view->licenseExp = $licenseExp;
-	    $this->view->comment = $comment;
-	    $this->view->diss = $diss;
-	    $this->view->estimateID = $estimateID;
-	
-	    $saveEstimate = array("id"=> $estimateID,
+		  $estimateID = substr(md5($_REQUEST["email"].(microtime())),0,10);
+		  
+		  
+		  $this->view->cost = $finalCost;
+		  $this->view->max = $maxLimit;
+		  $this->view->dataset = $dataArray;
+		  $this->view->media = $mediaArray;
+		  $this->view->projname = $_REQUEST["projname"];
+		  $this->view->name = $_REQUEST["name"];
+		  $this->view->email = $_REQUEST["email"];
+		  $this->view->phone = $_REQUEST["phone"];
+		  $this->view->license = $license;
+		  $this->view->licenseNote = $licenseNote;
+		  $this->view->licenseExp = $licenseExp;
+		  $this->view->comment = $comment;
+		  $this->view->diss = $diss;
+		  $this->view->estimateID = $estimateID;
+	 
+		  $saveEstimate = array("id"=> $estimateID,
 				  "cost"=> $finalCost,
 				  "max" => $maxLimit,
 				  "dataset" => $dataArray,
@@ -389,25 +392,25 @@ class aboutController extends Zend_Controller_Action
 				  "licenseExp" => $licenseExp,
 				  "comment" => $comment);
 	    
-	    $frontendOptions = array(
+		  $frontendOptions = array(
                 'lifetime' => NULL, // cache lifetime, measured in seconds, 7200 = 2 hours
                 'automatic_serialization' => true
-	    );
+		  );
 		    
-	    $backendOptions = array(
-		'cache_dir' => './estimate_cache/' // Directory where to put the cache files
-	    );
+		  $backendOptions = array(
+				'cache_dir' => './estimate_cache/' // Directory where to put the cache files
+		  );
 		    
-	    $cache = Zend_Cache::factory('Core',
+		  $cache = Zend_Cache::factory('Core',
 				 'File',
 				 $frontendOptions,
 				 $backendOptions);
 	    
-	    $cache->save($saveEstimate, $estimateID); //save result to the cache
+		  $cache->save($saveEstimate, $estimateID); //save result to the cache
 	    
 	    
 	    
-	    $emailBody = '
+		  $emailBody = '
 Dear '.$saveEstimate['name'].',
 
 Thank you for your interest in publishing your data with Open Context. The cost for publishing and archiving digital content for the project "'.$saveEstimate["projname"].'" is estimated at $'.$finalCost.'. The reference number for this estimate is: '.$estimateID.' (generated on '.date("F j, Y, g:i a").'). However, due to the uncertainties of estimating project complexity, please note that this estimate does not imply or constitute a binding agreement.
@@ -440,7 +443,7 @@ The following provides additional detail about other features and design attribu
 
 (7) Digital Library Archival Support: Open Context has archival support from the California Digital Library (CDL), one of the world leaders in digital preservation and curation. The CDL continually accessions Open Context content via Web services connecting Open Context and the CDL Merritt digital repository. Through use of these Web services, CDL repository Merritt gains publication and update information, as well as other Dublin Core metadata needed to accession content into the Merritt repository. Upon accession into the Merritt repository, Merritt mints persistent identifiers (ARKs and DOIs). Both DOIs and ARKs comply with DataCite requirements for persistent identification of resources, enabling Open Context to use the DataCite standard. With DataCite, citations to Open Context data can be tracked using digital library infrastructure and services, eventually enabling future determinations of citation impact factors.
 
-(8) Robust Version Control: Version control for datasets will begin in pre-publication editing, cleanup and documentation stages. Google Refine, a major component of the Data Refine tool used to coordinate edits, tracks versions and enables roll-backs of changes. The entire history of data edits is stored, and can be retrieved and archived as a compressed JSON file. This revision history can be archived along with the final published version of a dataset in Merritt. However, data contributors may have privacy concerns and may not want to archive early draft stages of their data. Thus, we will only require archiving of finalized datasets and leave archiving of draft-versions of data to the discretion of contributors. The Merritt digital repository stores a representation of all versions of content accessioned from Open Context. Thus, Merritt ensures the continued accessibility and preservation of earlier versions of data published with Open Context.
+(8) Robust Version Control: Version control for datasets will begin in pre-publication editing, cleanup and documentation stages and continue after publication. Google Refine, software Open Context uses to coordinate edits, tracks versions and enables roll-backs of changes. The entire history of data edits is stored, and can be retrieved and archived as a compressed JSON file. This revision history can be archived along with the final published version of a dataset in Merritt. [Note: Because of privacy concerns, Open Context only requires archiving of finalized datasets and leave archiving of draft-versions of data to the discretion of contributors.] Following publication, Open Context uses GitHub for public version control and issue tracking of data. The Merritt digital repository also stores a representation of all versions of content accessioned from Open Context. Thus, Merritt ensures the continued accessibility and preservation of earlier versions of data published with Open Context.
 
 
 ----//
