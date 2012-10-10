@@ -1,129 +1,302 @@
-
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xml:lang="en"
+	 xmlns:bibo="http://purl.org/ontology/bibo/"
+	 xmlns:cc="http://creativecommons.org/ns#"
+	 xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+	 xmlns:dcterms="http://purl.org/dc/terms/"
+	 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	 xmlns:owl="http://www.w3.org/2002/07/owl#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+	 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:skos="http://www.w3.org/2004/02/skos/core#" 
+>
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>Open Context Bibliography</title>
-      <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="Open Context Bibliography" />
-      <meta name="DC.created" content="January 1, 2011" />
-      <meta name="DC.date" content="January 30, 2011" />
+      <title>About Open Context: Bibliography</title>
+       <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
+	   <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
+      <meta name="DC.title" content="About Open Context" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+	 
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+		  
+        -->
+    </script>
+
+	 
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+	 
+	 
+	 
+	 
+	 
+	 </head>
     
 <body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-   <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
+
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //render document top ?>
    
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">Bibliography Relating to Open Context</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">Open Context publishes archaeological data to facilitate reuses,
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				
+				<div id="left_sidebar">
+					 
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About: Bibliography</h2>
+						  
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("bibliography", $host); ?>
+						  </div>
+						  
+					 </div>
+					 
+					 <?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+					 
+				</div>
+				
+				<!-- end left side div -->
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">Bibliography Relating to Open Context</h1>
+								<p>Open Context publishes archaeological data to facilitate reuses,
 		    including reuse that requires more sophisticated forms of data integration. However, many of the
 		    problems involved with data publication are difficult and complex, especially because
-		    community expectations and technologies continually change. 
-                    </p>
-                    <p class="bodyText">Because of these challenges, we continually work to improve Open Context. This page lists
-		    publications that help document our efforts. 
-		    </p>
-                </div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("biblio", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-	<div style="margin:10px;">
-	    <h3>Open Context Related Publications:</h3>
-                    <ul class="bodyText">
-                        <li>Sorin Adam Matei, Eric Kansa, and Nicholas Rauh (2011) The Visible Past / Open Context Loosely Coupled Model for Digital Humanities Ubiquitous Collaboration and Publishing: Collaborating Across Print, Mobile, and Online Media. <em><a href="http://ijf.cgpublisher.com/product/pub.203/prod.50/index_html">Spaces and Flows: An International Journal of Urban and ExtraUrban Studies</a></em> 1(3): 33-48.  
-			</li>
-			<li>Kansa, Eric C. and Sarah Whitcher Kansa (2011) Towards a Do-it-yourself Cyberinfrastructure: Open Data, Incentives, and Reducing Costs and Complexities of Data Sharing. In <a href='http://escholarship.org/uc/item/1r6137tb#page-73' title='Open Access version'><em>Archaeology 2.0: New Approaches to Communication and Collaboration</em></a>, pp. 57-91, edited by E.C. Kansa, S.W. Kansa, and E. Watrall. Cotsen Institute of Archaeology Press: Los Angeles, CA.  
-			</li>
-			<li>Kansa, Sarah Whitcher and Eric C. Kansa. (2011) Beyond BoneCommons: Recent Developments in Zooarchaeological Data Sharing. <em><a href="http://digitaleditions.sheridan.com/publication/?i=58423&amp;pre=1">The SAA Archaeological Record</a></em> 11(1): 26-29.
-			</li>
-                        <li>
-			Kansa, Eric C. (2010) Open Context in Context: Cyberinfrastructure and Distributed Approaches to Publish and Preserve Archaeological Data. <em><a href='http://www.saa.org/Portals/0/SAA/Publications/thesaaarchrec/Nov2010.pdf' title='Link to PDF version'>SAA Archaeological Record</a></em> 10(5):12-16. 
-			</li>
-			<li>
-			Kansa, Eric C., Sarah Whitcher Kansa, Margie M. Burton, and Cindy Stankowski. (2010)	 Googling the Grey: Open Data, Web Services, and Semantics. <em><a href='http://www.springerlink.com/content/c259133070q276vg/' title='Link to open access paper'>Archaeologies, Journal of the World Archaeological Congress</a></em> 6(2):301-326.
-			</li>
-			<li>Kansa, Eric C., Sarah Whitcher Kansa (2010) Publishing Data in Open Context: Methods and Perspectives. <em><a href='http://csanet.org/newsletter/fall10/nlf1001.html'>CSA Newsletter</a></em>. Vol. XXIII, No. 2 (September 2010). Bryn Mawr: Center for the Study of Architecture.
-			</li>
-			<li>
-			Kansa, Eric C. and Ahrash Bissell (2010) Web Syndication Approaches for Sharing Primary Data in "Small Science" Domains. <em><a href='http://www.jstage.jst.go.jp/article/dsj/9/0/9_42/_article' title='Link to open access paper'>Data Science Journal</a></em> 9:42-53 
-			</li>
-			<li>Kansa, Eric C. and Sarah Whitcher Kansa. (2010) &#8220;Mashable&#8221; heritage: formats, licenses and the allure of openness. <em><a href='http://www.amazon.com/heritage-digital-era-Marinos-Ioannides/dp/1907132252' title='Link to Amazon page'>Heritage in the Digital Era</a></em>, edited by Marinos Ioannides. London: Multi-Science Publishers, pp 105-112.
-			</li>
-			<li>Kansa, Eric C. (2009) Indigenous Heritage and the Digital Commons. In <em><a href='http://www.amazon.com/Traditional-Knowledge-Expressions-Intellectual-Asia-Pacific/dp/9041127216' title='Link to Amaxon page' >Traditional Knowledge, Traditional Cultural Expressions and Intellectual Property Law in the Asia Pacific Region</a></em>, edited by Christoph Antons. Kluwer Law International: Alphen aan den Rijn, pp.219-244. 
-			</li>
-			<li>Kansa, Eric C. (2009)   Opening Archaeology to Mash-ups: Field Data and an Incremental Approach to Semantics. In <em>Digital Heritage in the New Knowledge Environment: Shared spaces &amp; open paths to cultural content</em> (Conference Proceedings), edited by Metaxia Tsipopoulou. Hellenic Ministry of Culture: Athens, Greece.  
-			</li>
-			<li>Kansa, Sarah Whitcher and Eric C. Kansa (2009) Yes, it is all about you: User needs, archaeology and digital data. <em><a href='http://csanet.org/newsletter/spring09/nls0902.html'>CSA Newsletter</a></em>. Vol. XXII, No. 1 (April 2009). Bryn Mawr: Center for the Study of Architecture.
-			</li>
-			<li>Kansa, Eric C and Sarah Whitcher (2009) Open Context: Developing Common Solutions for Data Sharing. <em><a href='http://csanet.org/newsletter/spring09/nls0902.html'>CSA Newsletter</a></em>. Vol. XXI, No. 3 (January 2009). Bryn Mawr: Center for the Study of Architecture.
-			</li>
-			<li>Kansa, Sarah Whitcher and Eric C Kansa (2007) Open Content in Open Context. <em><a href='http://www.alexandriaarchive.org/publications/KansaEdTecArticle.pdf' title='Self-archived offprint'>Educational Technology Magazine</a></em>. Vol. XLVII. (Nov-Dec 2007):26-31.
-			</li>
-			<li>Kansa, Sarah Whitcher, Eric C Kansa and Jason M Schultz (2007) An Open Context for Near Eastern Archaeology. <em><a href='http://www.alexandriaarchive.org/publications/KansaKansaSchultz_NEADec07.pdf' title='Self-archived offprint'>Near Eastern Archaeology</a></em> 70(4): 187-193.
-			</li>
-			<li>Kansa, E., and S. Whitcher Kansa (2007) Open Context: Collaborative Data Publication to Bridge Field Research and Museum Collections. <em><a href='http://www.archimuse.com/ichim07/papers/kansa/kansa.html' title='Conference proceedings'>International Cultural Heritage Informatics Meeting (ICHIM07): Proceedings</a></em>, edited by J. Trant and D. Bearman. Toronto: Archives &amp; Museum Informatics. 2007. Published September 30, 2007. 
-			</li>
-			<li>Kansa, Eric C (2007) An Open Context for Small-scale Field Science Data. <em><a href='http://www.lib.kth.se/iatul2007/abstract.asp?lastname=Kansa' title='Conference proceedings'>Proceedings of the International Association of Technical University Libraries Annual Conference</a></em>, Stockholm, Sweden. 
-			</li>
-			<li>Kansa, Eric C (2007) Publishing Primary Data on the World Wide Web: Opencontext.org and an Open Future for the Past. <em><a href='http://www.sha.org/publications/technical_briefs/volume02/article_01.pdf' title='Conference proceedings'>Technical Briefs in Historical Archaeology</a></em>, 2(1):1-11. 
-			</li>
-                    </ul>
-	    
-        </div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
+		    community expectations and technologies continually change. </p>
+								<p>Because of these challenges, we continually work to improve Open Context. This page lists
+		    publications that help document our efforts.</p> 
+						  </div>
+					 </div>
 
+					 <div resource="http://opencontext.org/" >
+						  <h3>Open Context Related Publications</h3>
+						  <div id="references" >
+								<ul id="pub-list" class="big-list">
+									 <li id="pub-2012-1" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2012-1" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2012-1">
+												<span property="dcterms:bibliographicCitation">Atici, Levent., Sarah Kansa, Justin Lev-Tov, and Eric Kansa (2012) Other People's Data: A Demonstration of the Imperative of Publishing Primary Data. <em>Journal of Archaeological Method and Theory</em> 1(3): 1-19.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://www.springerlink.com/content/61636x6w32662243/">Article</a>]
+													 [<a rel="dcterms:identifier" href="http://dx.doi.org/10.1007/s10816-012-9132-9">DOI</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2011-3" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2011-3" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2011-3">
+												<span property="dcterms:bibliographicCitation">Matei, Sorin Adam., Eric Kansa, and Nicholas Rauh (2011) The Visible Past / Open Context Loosely Coupled Model for Digital Humanities Ubiquitous Collaboration and Publishing: Collaborating Across Print, Mobile, and Online Media. <em>Spaces and Flows: An International Journal of Urban and ExtraUrban Studies</em> 1(3): 33-48.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://ijf.cgpublisher.com/product/pub.203/prod.50">Article</a>]
+													 [<a rel="dcterms:isPartOf" href="http://ijf.cgpublisher.com/product/pub.203/prod.38">Issue</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2011-2" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2011-2" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Chapter" resource="#pub-2011-2">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C. and Sarah Whitcher Kansa (2011) Towards a Do-it-yourself Cyberinfrastructure: Open Data, Incentives, and Reducing Costs and Complexities of Data Sharing. In <em>Archaeology 2.0: New Approaches to Communication and Collaboration</em>, pp. 57-91, edited by E.C. Kansa, S.W. Kansa, and E. Watrall. Cotsen Institute of Archaeology Press: Los Angeles, CA.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:hasVersion" href="http://escholarship.org/uc/item/1r6137tb#page-73">Chapter</a>]
+													 [<a rel="dcterms:isPartOf" href="http://www.worldcat.org/oclc/744560396">WorldCat</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2011-1" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2011-1" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2011-1">
+												<span property="dcterms:bibliographicCitation">Kansa, Sarah Whitcher and Eric C. Kansa. (2011) Beyond BoneCommons: Recent Developments in Zooarchaeological Data Sharing. <em>The SAA Archaeological Record</em> 11(1): 26-29.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:hasVersion" href="http://alexandriaarchive.org/bonecommons/archive/files/kansa_kansa_icaz_saa_jan2011_d7f38e2b2b.pdf">Article</a>]
+													 [<a rel="dcterms:isPartOf" href="http://digitaleditions.sheridan.com/publication/?i=58423">Issue</a>]
+												</span>
+									 </span>
+									 </li>
+									 <li id="pub-2010-5" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2010-5" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2010-5">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C. (2010) Open Context in Context: Cyberinfrastructure and Distributed Approaches to Publish and Preserve Archaeological Data. <em>SAA Archaeological Record</em> 10(5):12-16.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:isPartOf" href="http://www.saa.org/Portals/0/SAA/Publications/thesaaarchrec/Nov2010.pdf">Issue</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2010-4" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2010-4" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2010-4">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C., Sarah Whitcher Kansa, Margie M. Burton, and Cindy Stankowski. (2010)	 Googling the Grey: Open Data, Web Services, and Semantics. <em>Archaeologies, Journal of the World Archaeological Congress</em> 6(2):301-326.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://www.springerlink.com/content/c259133070q276vg/"
+													 title="Link to open access paper">Article</a>]
+													 [<a rel="dcterms:identifier" href="http://dx.doi.org/10.1007/s11759-010-9146-4">DOI</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2010-3" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2010-3" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2010-3">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C., Sarah Whitcher Kansa (2010) Publishing Data in Open Context: Methods and Perspectives. <em>CSA Newsletter</em>. Vol. XXIII, No. 2 (September 2010). Bryn Mawr: Center for the Study of Architecture.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://csanet.org/newsletter/fall10/nlf1001.html">Article</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2010-2" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2010-2" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2010-2">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C. and Ahrash Bissell (2010) Web Syndication Approaches for Sharing Primary Data in "Small Science" Domains. <em>Data Science Journal</em> 9:42-53</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="https://www.jstage.jst.go.jp/article/dsj/9/0/9_009-012/_article" title="Link to open access paper">Article</a>]
+													 [<a rel="dcterms:identifier" href="http://dx.doi.org/10.2481/dsj.009-012">DOI</a>]
+													 [<a rel="dcterms:isPartOf" href="https://www.jstage.jst.go.jp/browse/dsj/9/0/_contents">Issue</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2010-1" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2010-1" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Chapter" resource="#pub-2010-1">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C. and Sarah Whitcher Kansa. (2010) &#8220;Mashable&#8221; heritage: formats, licenses and the allure of openness. <em>Heritage in the Digital Era</em>, edited by Marinos Ioannides. London: Multi-Science Publishers, pp 105-112.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:hasVersion" href="http://www.amazon.com/heritage-digital-era-Marinos-Ioannides/dp/1907132252">Amazon</a>]
+													 [<a rel="dcterms:isPartOf" href="http://www.worldcat.org/oclc/720901432">WorldCat</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2009-4" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2009-4" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Chapter" resource="#pub-2009-4">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C. (2009) Indigenous Heritage and the Digital Commons. In <em>Traditional Knowledge, Traditional Cultural Expressions and Intellectual Property Law in the Asia Pacific Region</em>, edited by Christoph Antons. Kluwer Law International: Alphen aan den Rijn, pp.219-244.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:hasVersion" href="http://www.amazon.com/Traditional-Knowledge-Expressions-Intellectual-Asia-Pacific/dp/9041127216">Amazon</a>]
+													 [<a rel="dcterms:isPartOf" href="http://www.worldcat.org/oclc/300407998">WorldCat</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2009-3" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2009-3" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2009-3">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C. (2009)   Opening Archaeology to Mash-ups: Field Data and an Incremental Approach to Semantics. In <em>Digital Heritage in the New Knowledge Environment: Shared spaces &amp; open paths to cultural content</em> (Conference Proceedings), edited by Metaxia Tsipopoulou. Hellenic Ministry of Culture: Athens, Greece.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:isPartOf" href="http://www.worldcat.org/oclc/431230377">WorldCat</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2009-2" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2009-2" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2009-2">
+												<span property="dcterms:bibliographicCitation">Kansa, Sarah Whitcher and Eric C. Kansa (2009) Yes, it is all about you: User needs, archaeology and digital data. <em>CSA Newsletter</em>. Vol. XXII, No. 1 (April 2009). Bryn Mawr: Center for the Study of Architecture.</span>
+												<span class="ref-links">
+													  [<a rel="rdfs:isDefinedBy" href="http://csanet.org/newsletter/spring09/nls0902.html">Article</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2009-1" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2009-1" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2009-1">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C and Sarah Whitcher (2009) Open Context: Developing Common Solutions for Data Sharing. <em>CSA Newsletter</em>. Vol. XXI, No. 3 (January 2009). Bryn Mawr: Center for the Study of Architecture.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://csanet.org/newsletter/spring09/nls0902.html">Article</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2007-5" rel="dcterms:isReferencedBy" >
+										  <a style="display:none;" href="#pub-2007-5" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2007-5">
+												<span property="dcterms:bibliographicCitation">Kansa, Sarah Whitcher and Eric C Kansa (2007) Open Content in Open Context. <em>Educational Technology Magazine</em>. Vol. XLVII. (Nov-Dec 2007):26-31.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:hasVersion" href="http://www.alexandriaarchive.org/publications/KansaEdTecArticle.pdf" title="Self-archived offprint">Article</a>]
+													 [<a rel="dcterms:isPartOf" href="http://asianvu.com/bookstoread/etp/Educational_Technology_Nov-Dec2007_issue.pdf">Issue</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2007-4" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2007-4" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2007-4">
+												<span property="dcterms:bibliographicCitation">Kansa, Sarah Whitcher, Eric C Kansa and Jason M Schultz (2007) An Open Context for Near Eastern Archaeology. <em>Near Eastern Archaeology</em> 70(4): 187-193.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:hasVersion" href="http://www.alexandriaarchive.org/publications/KansaKansaSchultz_NEADec07.pdf" title="Self-archived offprint">Article</a>]
+													 [<a rel="rdfs:isDefinedBy" href="http://www.jstor.org/stable/20361331">JSTOR</a>]
+													 [<a rel="dcterms:isPartOf" href="http://www.jstor.org/stable/i20361328">Issue</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2007-3" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2007-3" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2007-3">
+												<span property="dcterms:bibliographicCitation">Kansa, E., and S. Whitcher Kansa (2007) Open Context: Collaborative Data Publication to Bridge Field Research and Museum Collections. <em>International Cultural Heritage Informatics Meeting (ICHIM07): Proceedings</em>, edited by J. Trant and D. Bearman. Toronto: Archives &amp; Museum Informatics. 2007. Published September 30, 2007.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://www.archimuse.com/ichim07/papers/kansa/kansa.html" title="Conference proceedings">Article</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2007-2" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2007-2" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2007-2">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C (2007) An Open Context for Small-scale Field Science Data. <em>Proceedings of the International Association of Technical University Libraries Annual Conference</em>, Stockholm, Sweden.</span>
+												<span class="ref-links">
+													 [<a rel="dcterms:abstract" href="http://www.archimuse.com/ichim07/papers/kansa/kansa.html" title="Conference Abstract">Abstract</a>]
+												</span>
+										  </span>
+									 </li>
+									 <li id="pub-2007-1" rel="dcterms:isReferencedBy">
+										  <a style="display:none;" href="#pub-2007-1" ></a>
+										  <span typeof="dcterms:BibliographicResource bibo:Article" resource="#pub-2007-1">
+												<span property="dcterms:bibliographicCitation">Kansa, Eric C (2007) Publishing Primary Data on the World Wide Web: Opencontext.org and an Open Future for the Past. <em>Technical Briefs in Historical Archaeology</em>, 2(1):1-11.</span>
+												<span class="ref-links">
+													 [<a rel="rdfs:isDefinedBy" href="http://www.sha.org/publications/technical_briefs/volume02/article_01.pdf">Article</a>]
+												</span>
+										  </span>
+									 </li>
+									 
+								</ul>
+						  
+						  </div>
+					 </div>
+			 
+			 
+				</div>
+				<!-- end right side div -->
+		  </div>
+		  <!-- end main row div -->
+    
+	 </div> <!-- end main div -->
+	
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>
