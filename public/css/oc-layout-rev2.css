@@ -186,10 +186,6 @@ div.footer_cell {
     font-size: 75%;
 }
 
-
-
-
-
 #main{
     min-width:1000px;
     width: 80%;
@@ -199,4 +195,16 @@ div.footer_cell {
     background-color: #FFFFFF;
 }
 
-
+.icon {
+	padding-left: 30px; 
+	background-repeat: no-repeat;
+	background-position: left center;	
+	}
+.pdf {
+	background-image: url(../images/layout/pdf16x16px.gif);
+	font-family: 'Trajan Pro', trajan-pro, 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+	font-size: 19px;
+}
+.rss {
+	background-image: url(../images/layout/rss16x16px.gif);
+	}

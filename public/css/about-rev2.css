@@ -53,16 +53,6 @@ Heaader grey: #666666;
 	margin-top: 2%;
 }
 
-.icon {
-	padding-left: 30px; 
-	background-repeat: no-repeat;
-	background-position: left center;	
-	}
-
-.rss {
-	background-image: url(../images/layout/rss16x16px.gif);
-	}
-
 .gksm-custom-menu-widget {
 	margin: 0;
 	/* padding: 1px 0 0 0; */

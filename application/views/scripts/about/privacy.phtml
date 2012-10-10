@@ -1,120 +1,129 @@
-
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>About Open Context: User Privacy</title>
+      <title>About Open Context: Privacy Policies</title>
       <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="About Open Context: User Privacy" />
-      <meta name="DC.created" content="June 1, 2010" />
-      <meta name="DC.date" content="June 1, 2011" />
+      <meta name="DC.title" content="About Open Context" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+		
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+		  
+        -->
+    </script>
+
+	 
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+	 
+	 
+	 
+	 
+	 
+	 </head>
     
 <body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
+
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //render document top ?>
    
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">Open Context's Privacy Policy</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">All content in Open Context is freely and openly accessible.
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				
+				<div id="left_sidebar">
+					 
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About: Privacy</h2>
+						  
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("technology", $host); ?>
+						  </div>
+						  
+					 </div>
+					 
+					 <?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+					 
+				</div>
+				
+				<!-- end left side div -->
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">Open Context's Privacy Policy</h1>
+								<p>All content in Open Context is freely and openly accessible.
 		    Open Context requires no login to access and download data. Open Context refrains
 		    from monitoring individual user activities, in a policy consistent with the <a href='http://ala.org/'
 		    title='ALA Homepage'>American Library Association's</a> guidance for protecting patron rights to privacy,
 		    confidentiality, and academic freedom. The absence of a login barrier also allows
 		    Open Context content to be indexed by commercial search engines. </p>
-		    
-		    <p class="bodyText">User rights, as well as our institution's responsibilities, outlined in our privacy policy are based in part
-	    on what are known in the United States as the five "Fair Information Practice Principles." These five principles
-	    outline the rights of Notice, Choice, Access, Security, and Enforcement.</p>
-	    
-	    <p class="bodyText">Our commitment to user privacy and confidentiality has deep roots not only in law but also
-	    in the ethics and practices of scholarly dissemination. Open Context follows the American Library Association
-	    <a href='http://www.ala.org/ala/aboutala/offices/oif/statementspols/otherpolicies/guidelinesdevelopmentimplementation.cfm' title=''>recommendations</a>
-	    for crafting user privacy policies that protect each user's "right to privacy and confidentiality with respect to information sought
-	    or received and resources consulted, borrowed, acquired, or transmitted."
-	    </p>
-	    <br/>
-	    <p class="bodyText"><em>Dowload the Open Context <a href='http://opencontext.org/docs/OpenContext_Privacy_Policy.pdf' title='Open Context Privacy (PDF)'>privacy policy here</a> (PDF document).</em>
-	    </p>
-	    
-                </div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("privacy", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-        
-        <br/>
-        <div style="margin:10px;">
-            <!--
-	    <p class="bodyText"><strong>Privacy Policy</strong></p>
-	    <p class="bodyText">User rights, as well as our institution's responsibilities, outlined in our privacy policy are based in part
-	    on what are known in the United States as the five "Fair Information Practice Principles." These five principles
-	    outline the rights of Notice, Choice, Access, Security, and Enforcement.</p>
-	    
-	    <p class="bodyText">Our commitment to user privacy and confidentiality has deep roots not only in law but also
-	    in the ethics and practices of scholarly dissemination. Open Context follows the American Library Association
-	    <a href='http://www.ala.org/ala/aboutala/offices/oif/statementspols/otherpolicies/guidelinesdevelopmentimplementation.cfm' title=''>recommendations</a>
-	    for crafting user privacy policies that protect each user's "right to privacy and confidentiality with respect to information sought
-	    or received and resources consulted, borrowed, acquired, or transmitted."
-	    </p>
-	    <br/>
-	    <p class="bodyText"><em>Dowload the Open Context <a href='http://opencontext.org/docs/OpenContext_Privacy_Policy.pdf' title='Open Context Privacy (PDF)'>privacy policy here</a> (PDF document).</em>
-	    </p>
-	    -->
-	</div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
+						  </div>
+					 </div>
 
+					 <div>
+						  <br/>
+						  <br/>
+						  
+						  <h3>About Open Context's Privacy Policies</h3>
+						  <p>User rights, as well as our institution's responsibilities, outlined in our privacy policy are based in part
+	    on what are known in the United States as the five "Fair Information Practice Principles." These five principles
+	    outline the rights of Notice, Choice, Access, Security, and Enforcement.</p>
+						  <p>Our commitment to user privacy and confidentiality has deep roots not only in law but also
+	    in the ethics and practices of scholarly dissemination. Open Context follows the American Library Association
+	    <a href="http://www.ala.org/ala/aboutala/offices/oif/statementspols/otherpolicies/guidelinesdevelopmentimplementation.cfm" title="ALA Privacy Recommenations">recommendations</a>
+	    for crafting user privacy policies that protect each user's "right to privacy and confidentiality with respect to information sought
+	    or received and resources consulted, borrowed, acquired, or transmitted."
+						  </p>
+						  
+						  <br/>
+						  <br/>
+						  
+						  
+						  <p><a class="pdf icon" href="http://opencontext.org/docs/OpenContext_Privacy_Policy.pdf" title="Open Context Privacy (PDF)">Open Context Privacy Policy</a></p>
+	    </p>
+					 </div>
+			 
+			 
+				</div>
+				<!-- end right side div -->
+		  </div>
+		  <!-- end main row div -->
+    
+	 </div> <!-- end main div -->
+	
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>
