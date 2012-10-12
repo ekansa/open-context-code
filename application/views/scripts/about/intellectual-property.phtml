@@ -1,104 +1,144 @@
-
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>About Open Context: User Privacy</title>
+      <title>About Open Context: Intellectual Property</title>
       <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="About Open Context: User Privacy" />
-      <meta name="DC.created" content="June 29, 2011" />
-      <meta name="DC.date" content="June 29, 2011" />
+      <meta name="DC.title" content="About Open Context" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+		
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+        
+        -->
+    </script>
+
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+
+	 </head>
     
 <body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">Intellectual Property and Open Context</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">All content in Open Context is freely and openly accessible.
-		    Open Context requires no login to access and download data. While we believe open access and open licensing of research data are powerful tools for encouraging better and more collaborative scientific practice, they are not universally appropriate. Open Context's team asks contributors to carefully consider the issues described below and communicate their perspectives with the Open Context editorial staff. We expect users of Open Context to exercise appropriate ethical behavior and respect the integrity of Open Context's contributors, stakeholding communities, and content. If you have any concerns about the ethical nature of the information presented on the site, please contact Open Context's Editor, Sarah Whitcher Kansa (<a href='mailto:skansa@alexandriaarchive.org'>skansa@alexandriaarchive.org</a>).</p>
-		    <p class="bodyText"><em>Please note:</em> the policy, ethical, legal, and professional issues associated with the Web-based dissemination of research data constantly evolve. Many of these topics relate to active areas of research. To further explore these issues, please refer to the knowledge-base compiled by the <a href='http://www.sfu.ca/ipinch/' title='Link to IPinCH'>Intellectual Property Issues in Cultural Heritage</a> (IPinCH) project.</p> 
-	    
-                </div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("ip", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-        
-        <br/>
-        <div style="margin:10px;">
-            
-	    <h3>Intellectual Property, Data Management and Access</h3>
-	    <p class="bodyText">
-	    Good intellectual property (IP) practice starts in the planning stages of a research project. In general, researchers should be aware of the context of their work since professional and scientific ethics of access and IP vary. Are there national or international policy expectations with regard to data access and management? Are there local or indigenous communities or other groups that have an interest in the research program? A project should start discussions about data sharing, credit and attribution, privacy and cultural sensitivities, and access issues at the project's inception. To increase the potential for inclusivity, we recommend the following practical steps for researchers: 
-	    </p>
-	    <ul class="bodyText">
-		<li>Data collection and management practices should be designed to account for IP concerns, including proper attribution and credit. Database fields can be added to help track attribution and credit, and to flag records and fields that may not be appropriate for public access.</li>
-		<li>Researchers should be aware of laws and norms that may regulate documentation developed in their projects. These may need to be incorporated into data management practices and communicated to Open Context's editorial team.</li>
-		<li>Research should consider working toward collaborative relationships with different stakeholder communities, where appropriate. Data management practices discussed above may also need to accommodate documentation of concepts of ownership and custodianship (or other indigenous concepts) of documentation and content. Researchers working with the cultural heritage of an indigenous community should work in collaboration with that community to assess the sensitivity of material and to develop appropriate data management practices.</li>
-		<li>Terminologies may be acceptable and intelligible / meaningful to different communities in different ways. In addition to the terminologies used for scientific purposes, Open Context encourages use of respectful and relevant terminologies, developed in collaboration with stakeholders.</li>
-		<li>Open Context will take down disputed content pending arbitration and dispute resolution. If an arbitration decision leads to a restoration of access, Open Context will, in most circumstances, flag the content as the subject of a dispute.</li> 
-	    </ul>
-	    <br/>
-	    
-	    <p class="bodyText">The point of these practices is to encourage researchers to look beyond their immediate personal and project needs and consider multiple communities (including professionals working in other disciplines) as stakeholders. Open access and open data are valuable methods to make research more collaborative and relevant to larger communities, as are practices that build collaborations with indigenous communities and recognize their values and contributions. Consideration of these issues in data management plans will help place projects on a stronger ethical and professional foundation.</p>
-	    <br/>
-	    <p class="bodyText"><em>Special thanks</em> go to IPinCH member Sarah E. Carr-Locke (Simon Frasier University) for her role in helping to craft this document. Please note however that the perspectives discussed here reflect the policies and perspectives of Open Context, and do not necessarily reflect the views of the <a href='http://www.sfu.ca/ipinch/' title='Link to IPinCH'>IPinCH</a> project or its members.</p> 
-	</div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
 
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //reader document top ?>
+   
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				<div id="left_sidebar">
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About:</h2>
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("ip", $host); ?>
+						  </div>
+					 </div>
+				<?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+				</div><!-- End Left Sidebar div -->
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">Intellectual Property and Open Context</h1>
+								<p>All content in Open Context is freely and openly accessible. Open Context requires no login to
+								access and download data. While we believe open access and open licensing of research data are
+								powerful tools for encouraging better and more collaborative scientific practice, they are not
+								universally appropriate. Open Context's team asks contributors to carefully consider the issues
+								described below and communicate their perspectives with the Open Context editorial staff. We expect
+								users of Open Context to exercise appropriate ethical behavior and respect the integrity of Open
+								Context's contributors, stakeholding communities, and content. If you have any concerns about
+								the ethical nature of the information presented on the site, please contact Open Context's
+								Editor, Sarah Whitcher Kansa (<a href="mailto:skansa@alexandriaarchive.org">skansa@alexandriaarchive.org</a>).
+								</p>
+								<p><em>Please note:</em> the policy, ethical, legal, and professional issues associated with the
+								Web-based dissemination of research data constantly evolve. Many of these topics relate to active
+								areas of research. To further explore these issues, please refer to the knowledge-base compiled
+								by the <a href="http://www.sfu.ca/ipinch/" title="Link to IPinCH">Intellectual Property Issues in Cultural Heritage</a> (IPinCH) project.
+						  </div>
+					 </div>
+
+					 <div>
+						  <h3>Intellectual Property, Data Management and Access</h3>
+					  
+						  <p>Good intellectual property (IP) practice starts in the planning stages of a research project. In general,
+						  researchers should be aware of the context of their work since professional and scientific ethics of access
+						  and IP vary. Are there national or international policy expectations with regard to data access and management?
+						  Are there local or indigenous communities or other groups that have an interest in the research program? A project
+						  should start discussions about data sharing, credit and attribution, privacy and cultural sensitivities, and
+						  access issues at the project's inception. To increase the potential for inclusivity, we recommend the following
+						  practical steps for researchers: </p>
+						  <ul class="big-list">
+								<li>Data collection and management practices should be designed to account for IP concerns,
+								including proper attribution and credit. Database fields can be added to help track attribution
+								and credit, and to flag records and fields that may not be appropriate for public access.</li>
+								<li>Researchers should be aware of laws and norms that may regulate documentation developed in their
+								projects. These may need to be incorporated into data management practices and communicated to
+								Open Context's editorial team.</li>
+								<li>Research should consider working toward collaborative relationships with different stakeholder
+								communities, where appropriate. Data management practices discussed above may also need to accommodate
+								documentation of concepts of ownership and custodianship (or other indigenous concepts) of documentation
+								and content. Researchers working with the cultural heritage of an indigenous community should work in
+								collaboration with that community to assess the sensitivity of material and to develop appropriate
+								data management practices.</li>
+								<li>Terminologies may be acceptable and intelligible / meaningful to different communities in different ways.
+								In addition to the terminologies used for scientific purposes, Open Context encourages use of respectful
+								and relevant terminologies, developed in collaboration with stakeholders.</li>
+								<li>Open Context will take down disputed content pending arbitration and dispute resolution.
+								If an arbitration decision leads to a restoration of access, Open Context will, in most circumstances,
+								flag the content as the subject of a dispute.</li>     
+						  </ul>
+
+						  <p>The point of these practices is to encourage researchers to look beyond their immediate personal and
+						  project needs and consider multiple communities (including professionals working in other disciplines) as
+						  stakeholders. Open access and open data are valuable methods to make research more collaborative and relevant
+						  to larger communities, as are practices that build collaborations with indigenous communities and recognize
+						  their values and contributions. Consideration of these issues in data management plans will help place
+						  projects on a stronger ethical and professional foundation.
+						  </p>
+						  
+						  <p><em>Special thanks</em> go to IPinCH member Sarah E. Carr-Locke (Simon Frasier University) for her
+						  role in helping to craft this document. Please note however that the perspectives discussed here reflect
+						  the policies and perspectives of Open Context, and do not necessarily reflect the views of the
+						  <a href="http://www.sfu.ca/ipinch/" title="Link to IPinCH">IPinCH</a> project or its members.</p>
+						  </div>
+					 </div>
+			 
+			 
+				</div>
+		
+    </div> <!-- end main div -->
+	
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>
