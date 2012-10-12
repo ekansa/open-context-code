@@ -2,7 +2,8 @@
 $requestURI = $this->requestURI;
 $host = OpenContext_OCConfig::get_host_config();
 $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
-header('HTTP/1.0 404 Not Found');
+header('HTTP/1.0 503 Service Unavailable');
+        header('Retry-After: '.OpenContext_UserMessages::httpEndDate());
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -10,7 +11,7 @@ header('HTTP/1.0 404 Not Found');
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>Open Context 404 (Resource Not Found) Error</title>
+      <title>Open Context 503 (Service Not Available) Error</title>
       
       
       <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
@@ -65,8 +66,8 @@ header('HTTP/1.0 404 Not Found');
 				<div id="right_sidebar">
 					 <div id="pageTop">
 						  <div id="pageIntro">
-								<h1 style="text-align:center;">Resource Not Found (404 Error)</h1>
-								<p>We looked and we looked, but we cannot find the resource you requested at:
+								<h1 style="text-align:center;">Service Not Available Error</h1>
+								<p>Open Context is down for the time being! Please check back again later!
 								</p>
 								<div class="fourOhFour">
 									 <p class="big-code"><?php echo $requestURI; ?></p>

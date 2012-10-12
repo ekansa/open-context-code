@@ -208,3 +208,21 @@ div.footer_cell {
 .rss {
 	background-image: url(../images/layout/rss16x16px.gif);
 	}
+div.fourOhFour {
+    margin-top:5%;
+    margin-bottom:5%;
+    padding: 5%;
+    border: thin solid #CCCCCC; 
+    background-color: #F5F5DC;
+    text-align:center;
+}
+p.big-code {
+    font-family: courier;
+    font-size: large;
+}
+div.fourOhFour-img {
+    margin-left: auto;
+    margin-right: auto;
+    text-align:center;
+    margin-top:2%;
+}

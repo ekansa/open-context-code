@@ -1,104 +1,168 @@
-
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xml:lang="en"
+		 xmlns:bibo="http://purl.org/ontology/bibo/"
+	 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	 xmlns:owl="http://www.w3.org/2002/07/owl#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+	 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:skos="http://www.w3.org/2004/02/skos/core#" 
+>
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>Open Context Sponsors and Collaborators</title>
-      <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="Open Context Sponsors and Collaborators" />
+      <title>About Open Context: Sponsors</title>
+       <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
+	   <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
+      <meta name="DC.title" content="About Open Context" />
       <meta name="DC.created" content="January 1, 2010" />
-      <meta name="DC.date" content="April 10, 2011" />
+      <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+	 
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+		  
+        -->
+    </script>
+
+	 
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+	 
+	 
+	 
+	 
+	 
+	 </head>
     
 <body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-    <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">Open Context Sponsors, Funders, and Collaborators</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">Open Context is maintained and administered by a dedicated staff with the
-                    <a href="http://www.alexandriaarchive.org/">Alexandria Archive Institute</a>, a not-for-profit organization.
-                    In addition, the <a href="http://isd.berkeley.edu/">Information and Service Design (ISD) Program</a>
-                    at the <a href="http://ischool.berkeley.edu/">UC Berkeley School of Information</a> is responsible for
-                    continued software development. Open Context development has been funded by a variety of foundation grants and
-                    charitable donations.</p>
-                    <p class="bodyText">In keeping with the spirit of this public support and to foster collaboration,
-                    all software uses open source components and original source code is released under a GNU-GPL open source
-                    license (see the "<a href="../about/technology">technology</a>" section).</p>
-                </div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("sponsors", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-	<div style="margin:10px;">
-	    <h3>Financial Support for Open Context:</h3>
-                    <ul class="bodyText">
-                        <li><a href="http://www.hewlett.org/">The William and Flora Hewlett Foundation</a>, Open Educational Resources Program</li>
-                        <li><a href="http://www.neh.gov">The National Endowment for the Humanities</a></li>
-                        <li><a href="http://www.imls.gov/">The Institute of Museum and Library Services</a></li>
-                    </ul>
-        
-            <br/>
-            <h3>Collaborative Organizations:</h3>
-                <ul class="bodyText">
-                    <li><a href="http://isd.ischool.berkeley.edu/">ISD Program</a>, UC Berkeley, School of Information</li>
-                    <li><a href="http://www.africancommons.org/">The Africa Commons Project</a></li>
-                    <li><a href="http://www.omeka.org">The Omeka Project</a> (George Mason University)</li>
-                    <li><a href="http://ochre.lib.uchicago.edu/">The OCHRE Project</a> (University of Chicago)</li>
-                </ul>
-        </div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
 
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //render document top ?>
+   
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				
+				<div id="left_sidebar">
+					 
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About:</h2>
+						  
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("sponsors", $host); ?>
+						  </div>
+						  
+					 </div>
+					 
+					 <?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+					 
+				</div>
+				
+				<!-- end left side div -->
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">Open Context Sponsors, Funders, and Collaborators</h1>
+								<p>Open Context is maintained and administered by a dedicated staff with the
+                    <a href="http://www.alexandriaarchive.org/">Alexandria Archive Institute</a>, a not-for-profit organization.
+                    In addition, the <a href="http://www.cdlib.org/">California Digital Library</a>
+                    at the University of California provides data archiving and preservation services.
+						  Open Context development has been funded by a variety of foundation grants and
+                    charitable donations.</p>
+						  </div>
+					 </div>
+
+					 <div resource="http://opencontext.org/" typeof="foaf:Organization foaf:Project" >
+						  <div style="display:none;">
+								<a rel="foaf:maker" href="http://www.alexandriaarchive.org/"></a>
+						  </div>
+						  <h3>Direct Financial Support for Open Context</h3>
+						  <p>The following organizations have provided direct financial support to Open Context development and operations:</p>
+                    <ul class="big-list">
+								<li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://www.neh.gov/">
+										  <a rel="foaf:homepage" href="http://www.neh.gov/">The National Endowment for the Humanities</a>
+									 </span>
+								</li>
+								<li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://www.eol.org/">
+										  <a rel="foaf:homepage" href="http://www.eol.org/">The Encyclopedia of Life</a>
+									 </span>
+								</li>
+								<li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://www.nsf.gov/">
+										  <a rel="foaf:homepage" href="http://www.nsf.gov/">The National Science Foundation</a>
+									 </span>
+								</li>
+								<li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://acls.org/">
+										  <a rel="foaf:homepage" href="http://acls.org/">American Council of Learned Societies</a> (Digital Innovation Fellowship)
+									 </span>
+								</li>
+								<li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://sloan.org/">
+										  <a rel="foaf:homepage" href="http://sloan.org/">Alfred P. Sloan Foundation</a>
+									 </span>
+								</li>
+								<li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://www.imls.gov/">
+										  <a rel="foaf:homepage" href="http://www.imls.gov/">The Institute of Museum and Library Services</a>
+									 </span>
+								</li>
+                        <li rel="foaf:fundedBy">
+									 <span typeof="foaf:Organization" resource="http://www.hewlett.org/">
+										  <a rel="foaf:homepage" href="http://www.hewlett.org/">The William and Flora Hewlett Foundation</a>, Open Educational Resources Program
+									 </span>
+								</li>
+                    </ul>
+						  <br/>
+						  
+						  <h3>Collaborative Organizations</h3>
+						  <p>The Alexandria Archive Instiute / Open Context works on a variety of collaborative projects to
+						  improve cultural heritage information management. These organizations and efforts include:</p> 
+						  <ul class="big-list">
+								<li><a href="http://isaw.nyu.edu/">The Institute for the Study of the Ancient World</a> (New York University)</li>
+								<li><a href="http://fedarch.org">Federated Archaeological Information Management System Project</a> (University of New South Wales)</li>
+								<li><a href="http://ochre.lib.uchicago.edu/">The OCHRE Project</a> (University of Chicago)</li>
+						  </ul>
+					 
+					 </div>
+				</div>
+				<!-- end right side div -->
+		  </div>
+		  <!-- end main row div -->
+    
+	 </div> <!-- end main div -->
+	
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
 </body>
 </html>

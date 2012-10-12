@@ -719,173 +719,32 @@ try {
 
 }catch (Exception $e){
     // handle exceptions yourself
-    /*
-    $frontController->request->setModuleName('default');
-    $frontController->request->setControllerName('error');
-    $frontController->request->setActionName('error');
-    */
-    $host = OpenContext_OCConfig::get_host_config();
-    $fourOhFour = true;
     if(stristr($e, "action") && stristr($e, "does not exist and was not trapped") ){
-        header('HTTP/1.0 404 Not Found');
-        $host = $_SERVER['HTTP_HOST'];
-        $requestURI = "http://".$host.$_SERVER["REQUEST_URI"];
+        
+        unset($frontController);
+        $frontController = Zend_Controller_Front::getInstance();
+        $router = $frontController->getRouter();
+        $router->removeDefaultRoutes();
+        $allroute = new Zend_Controller_Router_Route('*', array('controller' => 'error', 'action' => 'not-found'));
+        $router->addRoute('allroute', $allroute); // 'subjects refers to a unique route name
+        $request = new Zend_Controller_Request_Http();
+        $request->setModuleName("defaut")
+                ->setControllerName("error")
+                ->setActionName("not-found");
+        $response   = $frontController->dispatch($request);
     }
     else{
-        $fourOhFour = false;
-        header('HTTP/1.0 503 Service Unavailable');
-        header('Retry-After: '.OpenContext_UserMessages::httpEndDate());
+        $frontController = Zend_Controller_Front::getInstance();
+        $router = $frontController->getRouter();
+        $router->removeDefaultRoutes();
+        $allroute = new Zend_Controller_Router_Route('*', array('controller' => 'error', 'action' => 'not-available'));
+        $router->addRoute('allroute', $allroute); // 'subjects refers to a unique route name
+        $request = new Zend_Controller_Request_Http();
+        $request->setModuleName("defaut")
+                ->setControllerName("error")
+                ->setActionName("not-found");
+        $response   = $frontController->dispatch($request);
     }
-    //echo "<h1>SNAP! Looks like we can't find this resource. We're sorry to send a 404 Error.</h1>";
-    //echo "<br/><br/>";
+
+}//end caught exceptions
 ?>    
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-    <head> 
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>Open Context Service Not Available</title> 
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
-    
-<body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-   <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("home"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <?php
-                
-                if(!$fourOhFour){
-                
-                ?>
-                <p class="pageName" align="center">Hiccup! Open Context Had a Problem</p>
-                
-                <div style="margin:10px;">
-                    
-		    <div style="margin-left: auto; margin-right: auto; text-align:center;">
-			<img src="http://static.alexandriaarchive.org/images/general/under_construction_sign.jpg" title="No school like the old school" alt="Construction graphic" />
-			<p class="tinyText">Yes, the picture has an old-school look, but at least it's not animated.</p>
-		    </div>
-		    
-                    <h3>What's Going On?</h3>
-		    <?php
-                    /*
-                    if(stristr($e, "too many connections")){
-                        echo "<p class='bodyText'>Open Context is currently busy processing a major data dump for backup purposes.
-                        We typically do this on Sunday evenings (US - Central). If you are seeing this message on another day, it is because we are running a backup
-                        because of major revisions to Open Context.  
-                        </p>
-                        <p class='bodyText'>Please check back in an hour or so. We're very sorry for the delayed access to archaeological data!</p>
-                        ";
-                    }
-                    else{
-                        echo $e;
-                    }
-                    */
-                   ?>
-		    
-                    <p class='bodyText'>
-                        Open Context is in the middle of a major upgrade. We are implementing a wholly new
-                        new version of Apache Solr, so we can
-                        better support a broader range of search and query options. We've also made some other structural
-                        changes to Open Context to improve performance and simplify upkeep.
-                    </p>
-                    <p class='bodyText'>
-                       If you are seeing this page, you will have noticed that these changes introduced some
-                       stability problems. We are aware of these issues and are working to fine-tuning our new setup. 
-                    </p>
-                    <p class='bodyText'>In most cases, simply refesh / or reload your browser and you should get
-                    the page you requested, rather than this annoying error message.
-                    </p>
-                </div>
-            
-            
-                <?php
-                }
-                else{
-                ?>
-                
-                <p class="pageName" align="center">Resource Not Found (404 Error)</p>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">We looked and we looked, but we cannot find the resource you requested at:
-                    </p>
-                    <p class="bodyText"><em><?php echo $requestURI; ?></em></p>
-		    
-		    <div style="text-align:center;">
-			<img src="http://static.alexandriaarchive.org/images/general/404error.jpg" title="A little humor for a sad subject" alt="Sad 404 graphic" />
-			<p class="bodyText">Image Source: <a href="http://www.flickr.com/photos/guspim/2280690094/" title="Flickr Link">Gustavo</a> via Flickr (Creative Commons Share-a-like License)</p>
-		    </div>
-		    
-		    <p class="bodyText">Please check to make sure you have the correct request. If you beleive that something is missing from Open Context, please address questions to the Editor of Open Context, Sarah Whitcher Kansa (skansa@alexandriaarchive.org).
-		    </p>
-                </div>
-                
-                
-                
-                <?php   
-                }
-                ?>
-            </div>
-            
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("index", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-	
-        
-        <div style="margin:10px; ">
-	    
-	</div>
-	
-	<div id="bottom">
-	</div>
-	
-    </div>
-
-</body>
-</html>
-    
-    
-    
-<?php    
-    //echo $e;
-}
-
-?>
