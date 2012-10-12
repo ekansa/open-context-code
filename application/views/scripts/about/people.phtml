@@ -1,137 +1,246 @@
-
 <?php
 $host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xml:lang="en"
+		 xmlns:bibo="http://purl.org/ontology/bibo/"
+	 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	 xmlns:owl="http://www.w3.org/2002/07/owl#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+	 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:skos="http://www.w3.org/2004/02/skos/core#" 
+>
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>Open Context People and Staff</title>
-      <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="Open Context People and Staff" />
-      <meta name="DC.created" content="June 1, 2010" />
-      <meta name="DC.date" content="April 10, 2011" />
+      <title>About Open Context: People</title>
+       <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
+	   <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
+      <meta name="DC.title" content="About Open Context" />
+      <meta name="DC.created" content="January 1, 2010" />
+      <meta name="DC.date" content="January 1, 2011" />
       <meta name="DC.creator" content="Open Context Editors" />
       
-      <link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" /> 
-      <link href="/css/test_landing_page.css" rel="stylesheet" type="text/css" />
-      <link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-      <link href="/css/rounded_corners.css" rel="stylesheet" type="text/css" />
-      
-      <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-    </head>
+      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+	 
+      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+		  
+        -->
+    </script>
+
+	 
+	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
+	 
+	 
+	 
+	 
+	 
+	 </head>
     
 <body>
-    <div id="oc_logo">
-	<a href="<?php echo $host; ?>" title="Open Context (Home)"><img alt="Open Context Logo" src="/images/general/oc_logo.jpg" border="0" ></img></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="/images/general/oc_tagline.jpg" ></img>
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="/images/general/oc_betastamp.jpg" ></img>
-    </div>
-    
-   <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
+
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //render document top ?>
    
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("about"); ?>
-    
-    <div id="main">
-	<div id="pageTop">
-            <div id="pageIntro">
-                <h2 style="text-align:center;">The People Behind Open Context</h2>
-                
-                <div style="margin:10px;">
-                    <p class="bodyText">Open Context is maintained and administered by a dedicated staff with the
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    <div id="main_content">
+		  <div id="main_row">
+				
+				<div id="left_sidebar">
+					 
+					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
+						  <h2 class="widgettitle">About:</h2>
+						  
+						  <div class="submenu-widget submenu-widget-projects">
+								<?php echo OpenContext_NavMenus::AboutNavMenu("people", $host); ?>
+						  </div>
+						  
+					 </div>
+					 
+					 <?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
+					 
+				</div>
+				
+				<!-- end left side div -->
+				
+				<div id="right_sidebar">
+					 <div id="pageTop">
+						  <div id="pageIntro">
+								<h1 style="text-align:center;">People with Open Context</h1>
+								<p>Open Context is maintained and administered by a dedicated staff with the
                     <a href="http://www.alexandriaarchive.org/">Alexandria Archive Institute</a>, a not-for-profit organization.
-                    Primary field datasets are, by their nature, less heavily "polished" than monographs or journal
-                    publications. Nevertheless, we believe editorial and review processes are needed to provide at least a
-                    minimum level of vetting for contributions. The AAI staff, led by Dr. Sarah Whitcher Kansa (Executive
-                    Director), has editorial control over Open Context and performs this function to make sure that Open
-                    Context only publishes datasets from credentialed researchers working on properly permitted projects
-                    or professionally curated collections.
-                    </p>
-                    <p class="bodyText">In addition, Open Context is under ongoing active software development. The AAI staff
-                    coordinates collaboration with the <a href="http://isd.berkeley.edu/">Information and Service Design (ISD) Program</a>
-                    at the <a href="http://ischool.berkeley.edu/">UC Berkeley School of Information</a>. The ISD Program, directed by
-                    Eric Kansa (ISD Executive Director, I-School Adjunct Professor), is responsible for continued software development.</p>
-                </div>
-            </div>
-            <div id="about_submenu" class="rounded-corners">
-                    <p class="bodyText"><em>More About Open Context:</em></p>
-                    <?php echo OpenContext_NavMenus::AboutNavMenu("people", $host); ?>
-            </div>
-            <div id="pageTopEnd">
-                <br/>
-            </div>
-        </div>
-        
-	<div style="margin:10px;">
-	    <h3>Open Context Editorial Staff:</h3>
-                    <ul class="bodyText">
-                        <li><a href="http://www.alexandriaarchive.org/people_swk.php">Sarah Kansa</a>, Executive Editor</li>
-                        <li><a href="http://www.alexandriaarchive.org/people_fd.php">Francis Deblauwe</a>, Assistant Editor</li>
-                    </ul>
-	    <br/>
-	    <h3>Open Context Editorial Board:</h3>
-	    <p class="bodyText">Under the chairmanship of the Executive Editor, the Editorial Board assists the Executive Editor in
-	    developing editorial policies and procedures, in soliciting datasets to be considered for publication in
-	    Open Context, and in recommending reviewers for projects that request peer review.
-	    The Editorial Board also assists with the annual review of the Editorial Policies
-	    and the performance of the editorial staff.</p>
-                    <ul class="bodyText">
-			<li><a href="http://2hzaurtpu.site.aplus.net/faculty01.asp">Levent Atici</a>, Department of Anthropology, University of Nevada, Las Vegas</li>
-                        <li><a href="http://csanet.org/pers/nevita.html">Harrison Eiteljorg, II</a>, Center for the Study of Architecture, Bryn Mawr College</li>
-                        <li><a href="http://www.microcommons.org/foster/">Catherine P. Foster</a>, MicroCommons and Bade Museum</li>
-			<li><a href="http://sebastianheath.com/">Sebastian Heath</a>, American Numismatic Society and Institute for the Study of the Ancient World, New York University</li>
-			<li><a href="http://www.medicalheritage.org/?page_id=796">Lori Jahnke</a>, Medical Heritage Library, The College of Physicians of Philadelphia and the University of Pennsylvania</li>
-			<li>Eric Kansa, Open Context and UC Berkeley</li>
-			<li><a href="http://las.depaul.edu/ant/People/Faculty/MoragKerselPhD.asp">Morag Kersel</a>, DePaul University</li>
-			<li>Sannie Osborn, U.S. Army Corps of Engineers</li>
-			<li><a href="http://berkeley.academia.edu/BenjaminPorter">Benjamin Porter</a>, University of California, Berkeley</li>
-			<li><a href="http://oi.uchicago.edu/pdf/08-09_Rowan.pdf">Yorke Rowan</a>, University of Chicago</li>
-			<li><a href="http://www.anth.uconn.edu/faculty/smith/">Alexia Smith</a>, University of Connecticut</li>
-			<li><a href="http://www.iusb.edu/~socanth/wells.shtml">Joshua Wells</a>, Indiana University, South Bend</li>
-                    </ul>
-            <br/>
-            <h3>Open Context Developers (Active):</h3>
-                <ul class="bodyText">
-                    <li><a href="http://isd.ischool.berkeley.edu/person/ekansa">Eric Kansa</a>, Project Lead</li>
-                    <li><a href="http://www.jwhitaker.info/">Jeremy Whitaker</a>, Technology Consultant, New Product Development. <br/>Research and modeling of future service systems
+                    The AAI staff, led by Dr. Sarah Whitcher Kansa (Executive
+                    Director), works with contributors to provide editorial services in publishing with Open Context.</p>
+								<p>In addition, Eric Kansa leads technology deevelopment for Open Context to improve services,
+								integrate with other Web-based research collections, and preserve data through digital library services. The AAI staff
+                    coordinates collaboration with the <a href="">California Digital Library</a> (CDL) to integrate CDL digital preservation
+						  and curation services in Open Context's publication workflows.</p>
+						  </div>
+					 </div>
 
-</li>
-		    <li><a href="http://www.alexandriaarchive.org/peopleaffiliates.php">John Ward</a>, Consulting Developer</li>
-                </ul>
-	    <br/>
-	    <h3>Open Context Developers (Alumni):</h3>
-                <ul class="bodyText">
-                    <li><a href="http://www.alexandriaarchive.org/peopleaffiliates.php">John Ward</a>, Lead Developer (May - December 2008)</li>
-                    <li><a href="http://www.ischool.berkeley.edu/people/students/sarahvanwart">Sarah van Wart</a>, <em>Penelope</em> Developer, I-School MIMS student</li>
-                    <li><a href="http://people.ischool.berkeley.edu/~mohit.ed/">Mohit Gupta</a>, <em>Omeka plugin</em> Developer, I-School MIMS student</li>
-                    <li><a href="http://www.ischool.berkeley.edu/people/students/noahkersey">Noah Kersey</a>, <em>User-Experience, widgets</em> Developer, I-School MIMS student</li>
-                    <li><a href="http://people.ischool.berkeley.edu/~gvaswani/">Gopal Vaswani</a>, <em>Web-services, database</em> Developer, I-School MIMS student</li>
-                </ul>
-        </div>
+					 <div resource="http://opencontext.org/" typeof="foaf:Organization foaf:Project" >
+						  <div style="display:none;">
+								<a rel="foaf:maker" href="http://www.alexandriaarchive.org/"></a>
+						  </div>
+						  <h3>Open Context Editorial Staff</h3>
+						  
+                    <ul class="big-list">
+                        <li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/180415888">
+										  <a rel="foaf:homepage" href="http://alexandriaarchive.org/about/people#swk">Sarah Kansa</a>, Executive Editor
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/39051639">
+										  <a rel="foaf:homepage" href="http://alexandriaarchive.org/about/people#eck">Eric C. Kansa</a>, Editor
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://alexandriaarchive.org/about/people#fd">
+										  <a rel="foaf:homepage" href="http://alexandriaarchive.org/about/people#fd">Francis Deblauwe</a>, Assistant Editor
+									 </span>
+								</li>
+                    </ul>
+						  <br/>
+						  
+						  <h3>Open Context Editorial Board</h3>
+						  <p>Under the chairmanship of the Executive Editor, the Editorial Board assists the Executive Editor in
+								 developing editorial policies and procedures, in soliciting datasets to be considered for publication in
+								Open Context, and in recommending reviewers for projects that request peer review.
+								The Editorial Board also assists with the annual review of the Editorial Policies
+								and the performance of the editorial staff.</p>
+						  
+						  <ul class="big-list">
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/231886265">
+										  <a rel="foaf:homepage" href="http://2hzaurtpu.site.aplus.net/faculty01.asp">Levent Atici</a>, Department of Anthropology, University of Nevada, Las Vegas
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/48492235">
+										  <a rel="foaf:homepage" href="http://csanet.org/pers/nevita.html">Harrison Eiteljorg, II</a>, Center for the Study of Architecture, Bryn Mawr College
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/260107204">
+										  <a rel="foaf:homepage" href="http://www.microcommons.org/foster/">Catherine P. Foster</a>, MicroCommons and Bade Museum
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/220831018">
+										  <a rel="foaf:homepage" href="http://sebastianheath.com/">Sebastian Heath</a>, American Numismatic Society and Institute for the Study of the Ancient World, New York University
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://web.library.emory.edu/lori-m-jahnke">
+										  <a rel="foaf:homepage" href="http://web.library.emory.edu/lori-m-jahnke">Lori Jahnke</a>, Robert W. Woodruff Library, Emory University
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/250678616">
+										  <a rel="foaf:homepage" href="http://las.depaul.edu/ant/People/Faculty/MoragKerselPhD.asp">Morag Kersel</a>, DePaul University
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/40915402">
+										  <a title="Publications" href="http://www.worldcat.org/identities/lccn-n88-12471">Sannie Osborn</a>, U.S. Army Corps of Engineers
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://berkeley.academia.edu/BenjaminPorter">
+										  <a rel="foaf:homepage" href="http://berkeley.academia.edu/BenjaminPorter">Benjamin Porter</a>, University of California, Berkeley
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/234244635">
+										  <a rel="foaf:homepage" href="http://www.utexas.edu/cola/depts/classics/faculty/atr253">Adam T. Rabinowitz</a>, University of Texas, Austin
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://viaf.org/viaf/4506705">
+										  <a rel="foaf:homepage" href="http://oi.uchicago.edu/research/is/scholars/rowan.html">Yorke Rowan</a>, University of Chicago
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://www.anth.uconn.edu/faculty/smith/">
+										  <a rel="foaf:homepage" href="http://www.anth.uconn.edu/faculty/smith/">Alexia Smith</a>, University of Connecticut
+									 </span>
+								</li>
+								<li rel="foaf:member">
+									 <span typeof="bibo:editor" resource="http://www.iusb.edu/~socanth/wells.shtml">
+										  <a rel="foaf:homepage" href="http://www.iusb.edu/~socanth/wells.shtml">Joshua Wells</a>, Indiana University, South Bend
+									 </span>
+								</li>
+						  </ul>
+						  
+						  <br/>
+						  <h3>Open Context Developers (Active):</h3>
+						  <ul class="big-list">
+								<li rel="foaf:maker">
+									 <span typeof="foaf:Person" resource="http://viaf.org/viaf/39051639">
+										  <a rel="foaf:homepage" href="http://alexandriaarchive.org/about/people#eck">Eric C. Kansa</a>, Project Director
+									 </span>
+								</li>
+								<li rel="foaf:maker">
+									 <span typeof="foaf:Person" resource="http://phoebefrance.net/">
+										  <a rel="foaf:homepage" href="http://alexandriaarchive.org/about/people#pf">Phoebe France</a>, Usability Specialist and Web Designer
+										  <br/>(Starting Fall 2012)
+									 </span>
+								</li>
+								<li rel="foaf:maker">
+									 <span typeof="foaf:Person" resource="http://www.jwhitaker.info/">
+										  <a rel="foaf:homepage" href="http://www.jwhitaker.info/">Jeremy Whitaker</a>, Technology Consultant, New Product Development.
+										  <br/>Research and modeling of future service systems
+									 </span>
+								</li>
+								<li rel="foaf:maker">
+									 <span typeof="foaf:Person" resource="http://www.linkedin.com/profile/view?id=18440411">
+										  <a title="LinkedIn Profile" href="http://www.linkedin.com/profile/view?id=18440411">John Ward</a>, Consulting Developer
+									 </span>
+								</li>
+						  </ul>
+						  <br/>
+						  <h3>Past Open Context Developers (Alumni):</h3>
+						  <ul>
+								<li><a href="http://www.linkedin.com/profile/view?id=18440411">John Ward</a>, Lead Developer (May - December 2008)</li>
+								<li><a href="http://www.ischool.berkeley.edu/people/students/sarahvanwart">Sarah van Wart</a>, <em>Schema Mapping</em> Developer, I-School MIMS student</li>
+								<li><a href="http://people.ischool.berkeley.edu/~mohit.ed/">Mohit Gupta</a>, <em>Omeka plugin</em> Developer, I-School MIMS student</li>
+								<li><a href="http://www.ischool.berkeley.edu/people/students/noahkersey">Noah Kersey</a>, <em>User-Experience, widgets</em> Developer, I-School MIMS student</li>
+								<li><a href="http://people.ischool.berkeley.edu/~gvaswani/">Gopal Vaswani</a>, <em>Web-services, database</em> Developer, I-School MIMS student</li>
+						  </ul>
+					 </div>	  
+				</div>
+				<!-- end right side div -->
+		  </div>
+		  <!-- end main row div -->
+    
+	 </div> <!-- end main div -->
 	
-	<div id="bottom">
-	</div>
+    
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
 	
-    </div>
-
 </body>
 </html>
