@@ -5,7 +5,7 @@ Header blue: #003B66;
 Heaader grey: #666666;
 */
 #item_top {
-	width:80%;
+	width:95%;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -68,14 +68,10 @@ Heaader grey: #666666;
 }
 
 #main_description {
-	width:80%;
+	width:95%;
 	margin-top:10px;
 	margin-left: auto;
 	margin-right: auto;
-}
-#main_description {
-	width:80%;
-	margin-top:10px;
 }
 #main_description_tab {
 	display:table;

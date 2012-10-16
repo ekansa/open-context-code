@@ -148,6 +148,13 @@ div.list_tab_cell {
 	padding-left:2%;
 	padding-right:2%;
 }
+div.list_tab_thumb_cell {
+	display:table-cell;
+	min-width:100px;
+	vertical-align: middle;
+	text-align: center;
+	padding: 2%;
+}
 #obsTabs{
 	margin-bottom: 0px;
 	padding-bottom: 0px;

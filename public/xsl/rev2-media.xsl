@@ -299,27 +299,51 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<div id="media-links">
 														<h5>Linked Media (<xsl:value-of select="count(descendant::arch:resource/arch:links/oc:media_links/oc:link)"/>)</h5>
 														<div class="list_tab">
-																<xsl:for-each select="arch:resource/arch:links/oc:media_links/oc:link">
+																<xsl:for-each select="arch:resource/arch:links/oc:media_links/oc:link[position() mod 2 = 1]">
 																		<div class="list_tab_row">
-																			<div class="list_tab_cell">
-																				<a>
-																					<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																					<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
-																					<img>
-																						<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
-																						<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
-																					</img>
-																				</a>
-																			</div>
-																			<xsl:if test="oc:descriptor">
-																				<div class="list_tab_cell">
-																				<a>
-																					<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																					<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
-																						<xsl:value-of select="oc:descriptor"/>
-																				</a>
+																				<div class="list_tab_thumb_cell">
+																						<a>
+																							<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																							<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																							<img>
+																								<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																								<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																							</img>
+																						</a>
+																						<xsl:if test="oc:descriptor">
+																							<br/>
+																							<a>
+																								<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																								<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																									<xsl:value-of select="oc:descriptor"/>
+																							</a>
+																						</xsl:if>
 																				</div>
-																			</xsl:if>
+																				<xsl:for-each select="following-sibling::oc:link[1]">
+																						<div class="list_tab_thumb_cell">
+																								<a>
+																									<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																									<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																									<img>
+																										<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																										<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																									</img>
+																								</a>
+																								<xsl:if test="oc:descriptor">
+																									<br/>
+																									<a>
+																										<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																										<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																											<xsl:value-of select="oc:descriptor"/>
+																									</a>
+																								</xsl:if>
+																						</div>
+																				</xsl:for-each>
+																				<xsl:if test="count(following-sibling::oc:link[1]) = 0">
+																						<div class="list_tab_thumb_cell">
+																						<br/>
+																						</div>
+																				</xsl:if>
 																		</div>
 																</xsl:for-each>
 														</div>
