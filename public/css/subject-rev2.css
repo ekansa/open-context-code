@@ -123,7 +123,7 @@ h2.views{
 div.list_tab {
 	display:table;
   	border-collapse: collapse;
-	width: 95%;
+	width: 96%;
 	margin-left:2%;
 }
 div.list_tab_row {
@@ -190,6 +190,10 @@ div.tab-pane {
 .tab-pane h5 {
 	margin-top: 2%;
 	margin-left: 2%;
+}
+table.prop-tab {
+	margin:2%;
+	width:96%;
 }
 div.item-notes {
 	margin-left: 0px;

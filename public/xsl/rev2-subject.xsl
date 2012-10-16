@@ -287,7 +287,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																														</xsl:otherwise>
 																												</xsl:choose>
 																												
-																												<table class="table table-striped table-condensed table-hover table-bordered" style="margin:2%; width:95%;">
+																												<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
 																														<thead>
 																																<tr>
 																																		<th>Variable</th>

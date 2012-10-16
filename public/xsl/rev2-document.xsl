@@ -215,7 +215,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																				<div class="properties">
 																						<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) !=0">
 																								<h5>Observation Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
-																								<table class="table table-striped table-condensed table-hover table-bordered" style="margin:2%; width:95%;">
+																								<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
 																										<thead>
 																												<tr>
 																														<th>Variable</th>
