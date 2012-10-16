@@ -150,9 +150,11 @@
 								<div id="item_top_icon_cell">
 										<img width='40' height='40'><xsl:attribute name="src">/images/item_view/project_icon.jpg</xsl:attribute><xsl:attribute name="alt">Project or Organization</xsl:attribute></img>
 								</div>
-								<div id="item_top_name_cell"><h1><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:name/arch:string"/></h1>
+								<div id="item_top_name_cell">
+										<h1><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:name/arch:string"/></h1>
 								</div>       
-								<div id="item_top_des_cell"><span class="top_short_des"><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type='short_des']" disable-output-escaping="yes"/></span>
+								<div id="item_top_des_cell">
+										<span class="top_short_des"><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type='short_des']" disable-output-escaping="yes"/></span>
 								</div>
 								<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="atom:feed/atom:entry/arch:project/oc:social_usage/oc:item_views[@type!='spatialCount']/oc:count"/></strong>
 								</div>

@@ -164,15 +164,16 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<h1>Item: <xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></h1>
 												<h2>Class: <xsl:value-of select="//arch:spatialUnit/oc:item_class/oc:name"/></h2>
 										</div>
-										<div id="item_top_des_cell">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a><br/>
-										Number of Views: <strong><xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></strong>
+										<div id="item_top_des_cell">
+												<h2 class="top_detail">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a></h2>
+												<h2 class="views">Number of Views: <xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></h2>
 										</div>
 										<!--
 										<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></strong>
 										</div>
 										-->
 										<div id="citation-cell">
-												<h5>Suggested Citation</h5>
+												<h2 class="top_detail">Suggested Citation</h2>
 												<div id="citation">
 												<xsl:value-of select="$citationView"/>
 												</div>
@@ -213,7 +214,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<div style="width:100%;">
 														<xsl:choose>
 																<xsl:when test="$num_Obs != 0">
-																		<ul class="nav nav-tabs" id="obsTabs" style="width:100%; min-width:625px;">
+																		<ul class="nav nav-tabs" id="obsTabs">
 																				<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
 																						<xsl:choose>
 																								<xsl:when test="(@obsNumber = '100')">
@@ -279,24 +280,34 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																										  <xsl:if test="count(descendant::arch:properties/arch:property[oc:show_val/text()]) !=0">
 																												<xsl:choose>
 																														<xsl:when test="oc:obs_metadata/oc:name">
-																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
+																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/>: Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
 																														</xsl:when>
 																														<xsl:otherwise>
-																																<h5>Observation <xsl:value-of select="position()"/> Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
+																																<h5>Observation <xsl:value-of select="position()"/>: Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
 																														</xsl:otherwise>
 																												</xsl:choose>
-																												<div class="list_tab"> 
+																												
+																												<table class="table table-striped table-condensed table-hover table-bordered" style="margin:2%; width:95%;">
+																														<thead>
+																																<tr>
+																																		<th>Variable</th>
+																																		<th>Value</th>
+																																</tr>
+																														</thead>
+																														<tbody>
 																														<xsl:for-each select="arch:properties/arch:property[oc:show_val/text()]">
-																																<div class="list_tab_row">
-																																		<div class="list_tab_cell">		
+																																<tr>
+																																		<td>
 																																				<xsl:value-of select="oc:var_label"/>
-																																		</div>
-																																		<div class="list_tab_cell">
+																																		</td>
+																																		<td>
 																																				<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
-																																		</div>
-																															 </div>
+																																		</td>
+																																</tr>
 																														 </xsl:for-each>
-																												</div>
+																														</tbody>
+																												</table>
+																												
 																										  </xsl:if>
 																										  <xsl:if test="count(descendant::arch:notes/arch:note) !=0 ">
 																												<div class="item-notes">
