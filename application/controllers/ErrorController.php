@@ -12,6 +12,13 @@ class ErrorController extends Zend_Controller_Action
         $this->view->requestURI =  $requestURI;
     }
     
+    public function notAvailableAction(){
+        $errors = $this->_getParam('error_handler');
+        $host = $_SERVER['HTTP_HOST'];
+        $requestURI = "http://".$host.$_SERVER["REQUEST_URI"];
+        $this->view->requestURI =  $requestURI;
+    }
+    
     public function errorAction()
     {
         $errors = $this->_getParam('error_handler');

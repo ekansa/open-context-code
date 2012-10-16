@@ -1,0 +1,31 @@
+/* Open Context Bibliographic Layout */
+
+.authors {
+	
+}
+.pub-date {
+	margin-right:3%;
+	width:12%;
+	float:left;
+}
+.ref-title-pub {
+	margin-right:2%;
+	float:right;
+	width:75%;	
+}
+.collection-title {
+	font-style: italic;
+}
+.ref-end{
+	clear:both;
+	width:90%;
+}
+.biblio-item {
+	margin-bottom: 5%;
+}
+div.ref-links {
+	padding-left:23%;
+	text-align:left;
+	display: block;
+	width:100%;
+}

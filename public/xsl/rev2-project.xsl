@@ -11,7 +11,25 @@
 	<!ENTITY yen    "&#165;">
 	<!ENTITY euro   "&#8364;">
 ]>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ocsem="http://opencontext.org/about/concepts#" xmlns:gml="http://www.opengis.net/gml" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss" xmlns:oc="http://opencontext.org/schema/project_schema_v1.xsd" xmlns:arch="http://ochre.lib.uchicago.edu/schema/Project/Project.xsd" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+					 xmlns:ocsem="http://opencontext.org/about/concepts#"
+					 xmlns:gml="http://www.opengis.net/gml"
+					 xmlns:atom="http://www.w3.org/2005/Atom"
+					 xmlns:georss="http://www.georss.org/georss"
+					 xmlns:oc="http://opencontext.org/schema/project_schema_v1.xsd"
+					 xmlns:arch="http://ochre.lib.uchicago.edu/schema/Project/Project.xsd"
+					 xmlns:xhtml="http://www.w3.org/1999/xhtml"
+					 xmlns:dc="http://purl.org/dc/elements/1.1/"
+					 xmlns:bibo="http://purl.org/ontology/bibo/"
+						xmlns:cc="http://creativecommons.org/ns#"
+						xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+						xmlns:dcterms="http://purl.org/dc/terms/"
+						xmlns:foaf="http://xmlns.com/foaf/0.1/"
+						xmlns:owl="http://www.w3.org/2002/07/owl#"
+						xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+						xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+						xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+						xmlns:skos="http://www.w3.org/2004/02/skos/core#">
 <xsl:output method="xml" indent="yes" encoding="utf-8" doctype-public="-//W3C//DTD XHTML+RDFa 1.0//EN" doctype-system="http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"/>
 
 
