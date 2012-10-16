@@ -355,6 +355,35 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																													 </div>
 																												</div>
 																											</xsl:if>
+																										  
+																										  
+																										  <!-- linked documents -->
+																										  <xsl:if test="count(descendant::arch:links/oc:diary_links/oc:link) != 0" >
+																												<div class="item-links">
+																													 <h5>Linked Documents / Logs (<xsl:value-of select="count(descendant::arch:links/oc:diary_links/oc:link)"/> items)</h5>
+																													 <div class="list_tab">
+																														  <xsl:for-each select="arch:links/oc:diary_links/oc:link[position() mod 2 = 1]">
+																																<div class="list_tab_row">
+																																	 
+																																	 <div class="list_tab_cell"><a>
+																																			 <xsl:attribute name="href">../documents/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																			 </a>
+																																	 </div>
+																																	 
+																																	 <xsl:for-each select="following-sibling::oc:link[1]">
+																																		  <div class="list_tab_cell"><a>
+																																			 <xsl:attribute name="href">../documents/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																			 </a>
+																																	 </div>
+																																	 </xsl:for-each>
+																																	 
+																																</div>
+																														  </xsl:for-each>
+																													 </div>
+																												</div>
+																											</xsl:if>
+																										  
+																										  
 																								</div>
 																						</xsl:if>
 																				</div>
