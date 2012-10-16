@@ -73,9 +73,11 @@ h2.views{
 	display:table;
    border-collapse: collapse;
 	width:100%;
+	margin-bottom:2%;
 }
 #item_context_row {
 	display:table-row;
+	border-bottom: 5px solid #E6E6E6;
 }
 #item_context_t_cell {
 	display:table-cell;
@@ -83,7 +85,7 @@ h2.views{
 	text-align:left;
 	width:18%;
 	padding-top:2%;
-	padding-bottom:2%;
+	padding-bottom:0;
 }
 #item_context_cell {
 	display:table-cell;
@@ -91,11 +93,10 @@ h2.views{
 	text-align:left;
 	padding-left:1%;
 	padding-top:2%;
-	padding-bottom:2%;
+	padding-bottom:0;
 }
 #main_description {
 	width:95%;
-	margin-top:10px;
 	margin-left: auto;
 	margin-right: auto;
 	min-height: 400px;
