@@ -20,14 +20,15 @@ Heaader grey: #666666;
 #item_top_icon_cell {
 	display:table-cell;
 	vertical-align: top;
-	min-width:40px;
+	width:40px;
 }
 #item_top_name_cell {
 	display:table-cell;
+	text-align: left;
 	vertical-align:top;
 	padding-left:1%;
 	padding-right:5%;
-	width: 30%;
+	
 	line-height:90%;
 }
 #item_top_name_cell h1{
@@ -54,18 +55,8 @@ h2.views{
 	width: 35%;
 	/* line-height:95%; */
 }
-#item_top_view_cell{
-	display:table-cell;
-	text-align: right;
-	vertical-align:top;
-}
-#citation-cell {
-	display:table-cell;
-	vertical-align: top;
-	width: 40%;
-}
+
 #citation{
-	color: #5C5C5C;
 	font-size: 85%;
 	line-height:98%;
 }
@@ -193,12 +184,16 @@ div.tab-pane {
 	margin-left: 2%;
 }
 table.prop-tab {
-	margin:2%;
+	margin-top: 2%;
+	margin-left: 2%;
+	margin-right: 2%;
+	margin-bottom: 3%;
 	width:96%;
 }
 div.item-notes {
 	margin-left: 0px;
 	margin-right: 0px;
+	margin-bottom: 3%;
 }
 div.item-note {
 	padding:2%;
@@ -206,22 +201,45 @@ div.item-note {
 }
 div.item-links div{
 	font-size:95%;
+	margin-bottom: 3%;
 }
-#item-children-diaries {
+div.person-links div{
+	font-size:100%;
+}
+#item-children {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #DDD;
 	padding:2%;
 	margin-top: 5%;
 }
-
+#media-preview-des {
+	/*
+	border-width: 1px;
+	border-style: solid;
+	border-color: #DDD;
+	*/
+	padding:2%;
+	width: 95%;
+	margin-bottom: 5%;
+}
+#res-properties {
+	
+}
+#document-content {
+	padding: 2%;
+	background-color: #FFF8DC;
+	font-family: Tahoma, Geneva, sans-serif;
+	margin-bottom: 3%;
+}
 #editorial {
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;
 	border-bottom-left-radius: 7px;
 	border-bottom-right-radius: 7px;
-	border: thin solid #CCCCCC;
-	background-color: #F5F5DC;
+	border: 4px solid #9FB6CD;
+	/* background-color: #F5F5DC; */
+	background-color: #F9F9F9;
 	display: block;
 	padding:2%;
 }

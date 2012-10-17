@@ -23,28 +23,8 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 <xsl:output method="xml" indent="yes" encoding="utf-8" doctype-public="-//W3C//DTD XHTML+RDFa 1.0//EN" doctype-system="http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"/>
 
 
-
-<xsl:template name="string-replace">
-		<xsl:param name="arg"/>
-		<xsl:param name="toReplace"/>
-		<xsl:param name="replaceWith"/>
-		<xsl:choose>
-			<xsl:when test="contains($arg, $toReplace)">
-				<xsl:variable name="prefix" select="substring-before($arg, $toReplace)"/>
-				<xsl:variable name="postfix" select="substring($arg, string-length($prefix)+string-length($toReplace)+1)"/>
-				<xsl:value-of select="concat($prefix, $replaceWith)"/>
-				<xsl:call-template name="string-replace">
-					<xsl:with-param name="arg" select="$postfix"/>
-					<xsl:with-param name="toReplace" select="$toReplace"/>
-					<xsl:with-param name="replaceWith" select="$replaceWith"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$arg"/>
-			</xsl:otherwise>
-		</xsl:choose>
-</xsl:template>
-
+<!-- include other XSL files for generally used functions -->
+<xsl:include href="rev2-string-replace.xsl"/>
 
 
 <xsl:template match="/">
@@ -71,6 +51,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 <xsl:variable name="item_id">
 	<xsl:value-of select="arch:spatialUnit/@UUID"/>
 </xsl:variable>
+
 
 <xsl:variable name="num_contribs">
 	<xsl:value-of select="count(arch:spatialUnit/oc:metadata/dc:contributor)"/>
@@ -109,34 +90,35 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 
 <xsl:variable name="max_Tabs">7</xsl:variable>
 
+
 <xsl:variable name="citation">
-	<xsl:for-each select="arch:spatialUnit/oc:metadata/dc:contributor">
+	<xsl:for-each select="//oc:metadata/dc:contributor">
 		<xsl:value-of select="."/>
 		<xsl:if test="position() != last()">, </xsl:if>
 		<xsl:if test="position() = last()">. </xsl:if>
 	</xsl:for-each>
 	<xsl:if test="$num_contribs = 0"> 
-		<xsl:for-each select="arch:spatialUnit/oc:metadata/dc:creator">
+		<xsl:for-each select="//oc:metadata/dc:creator">
 			<xsl:value-of select="."/>
 		<xsl:if test="position() != last()">, </xsl:if>
 		<xsl:if test="position() = last()">. </xsl:if>
 		</xsl:for-each>
-	</xsl:if> &quot;<span xmlns:dc="http://purl.org/dc/elements/1.1/" property="dc:title"><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></span>&quot; (Released <xsl:value-of select="arch:spatialUnit/oc:metadata/dc:date"/>). <xsl:for-each select="arch:spatialUnit/oc:metadata/dc:creator"> <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if><xsl:if test="position() = last()"><xsl:if test="$num_editors = 1"> (Ed.) </xsl:if><xsl:if test="$num_editors != 1"> (Eds.) </xsl:if></xsl:if></xsl:for-each> <em>Open Context. </em>  
+	</xsl:if> &quot;<span xmlns:dc="http://purl.org/dc/elements/1.1/" property="dc:title"><xsl:value-of select="//oc:metadata/dc:title"/></span>&quot; (Released <xsl:value-of select="//oc:metadata/dc:date"/>). <xsl:for-each select="//oc:metadata/dc:creator"> <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if><xsl:if test="position() = last()"><xsl:if test="$num_editors = 1"> (Ed.) </xsl:if><xsl:if test="$num_editors != 1"> (Eds.) </xsl:if></xsl:if></xsl:for-each> <em>Open Context. </em>  
 </xsl:variable>
 
 <xsl:variable name="citationView">
-	<xsl:for-each select="arch:spatialUnit/oc:metadata/dc:contributor">
+	<xsl:for-each select="//oc:metadata/dc:contributor">
 		<xsl:value-of select="."/>
 		<xsl:if test="position() != last()">, </xsl:if>
 		<xsl:if test="position() = last()">. </xsl:if>
 	</xsl:for-each>
 	<xsl:if test="$num_contribs = 0"> 
-		<xsl:for-each select="arch:spatialUnit/oc:metadata/dc:creator">
+		<xsl:for-each select="//oc:metadata/dc:creator">
 			<xsl:value-of select="."/>
 		<xsl:if test="position() != last()">, </xsl:if>
 		<xsl:if test="position() = last()">. </xsl:if>
 		</xsl:for-each>
-	</xsl:if>&quot;<xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/>&quot; (Released <xsl:value-of select="arch:spatialUnit/oc:metadata/dc:date"/>). <xsl:for-each select="arch:spatialUnit/oc:metadata/dc:creator"> <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if><xsl:if test="position() = last()"><xsl:if test="$num_editors = 1"> (Ed.) </xsl:if><xsl:if test="$num_editors != 1"> (Eds.) </xsl:if></xsl:if></xsl:for-each> <em>Open Context. </em> &lt;http://opencontext.org/subjects/<xsl:value-of select="arch:spatialUnit/@UUID"/>&gt; 
+	</xsl:if>&quot;<xsl:value-of select="//oc:metadata/dc:title"/>&quot; (Released <xsl:value-of select="//oc:metadata/dc:date"/>). <xsl:for-each select="//oc:metadata/dc:creator"> <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if><xsl:if test="position() = last()"><xsl:if test="$num_editors = 1"> (Ed.) </xsl:if><xsl:if test="$num_editors != 1"> (Eds.) </xsl:if></xsl:if></xsl:for-each> <em>Open Context. </em> &lt;http://opencontext.org/subjects/<xsl:value-of select="arch:spatialUnit/@UUID"/>&gt; 
 </xsl:variable>
 
 
@@ -167,16 +149,6 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 										<div id="item_top_des_cell">
 												<h2 class="top_detail">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a></h2>
 												<h2 class="views">Number of Views: <xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></h2>
-										</div>
-										<!--
-										<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></strong>
-										</div>
-										-->
-										<div id="citation-cell">
-												<h2 class="top_detail">Suggested Citation</h2>
-												<div id="citation">
-												<xsl:value-of select="$citationView"/>
-												</div>
 										</div>
 								</div>
 						</div><!--end div for the top_tab -->
@@ -322,6 +294,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																										 
 																										  <xsl:if test="count(descendant::arch:links/oc:space_links/oc:link) != 0" >
 																												<div class="item-links">
+																													 <xsl:attribute name="id">l-subjects-<xsl:value-of select="position()"/></xsl:attribute>
 																													 <h5>Linked Items (<xsl:value-of select="count(descendant::arch:links/oc:space_links/oc:link)"/> items)</h5>
 																													 <div class="list_tab">
 																														  <xsl:for-each select="arch:links/oc:space_links/oc:link[position() mod 2 = 1]">
@@ -334,7 +307,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																	 </div>
 																																	 <div class="list_tab_cell"><a>
 																																			 <xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
-																																			 </a> ( <xsl:value-of select="oc:relation"/> )
+																																			 </a> <em><xsl:value-of select="oc:relation"/></em>
 																																	 </div>
 																																	 
 																																	 <xsl:for-each select="following-sibling::oc:link[1]">
@@ -346,7 +319,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																		  </div>
 																																		  <div class="list_tab_cell"><a>
 																																				  <xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
-																																				  </a> ( <xsl:value-of select="oc:relation"/> )
+																																				  </a> <em><xsl:value-of select="oc:relation"/></em>
 																																		  </div>
 																																	 </xsl:for-each>
 																																	 
@@ -360,7 +333,8 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																										  <!-- linked documents -->
 																										  <xsl:if test="count(descendant::arch:links/oc:diary_links/oc:link) != 0" >
 																												<div class="item-links">
-																													 <h5>Linked Documents / Logs (<xsl:value-of select="count(descendant::arch:links/oc:diary_links/oc:link)"/> items)</h5>
+																													 <xsl:attribute name="id">l-docs-<xsl:value-of select="position()"/></xsl:attribute>
+																													 <h5>Linked Documents / Logs (<xsl:value-of select="count(descendant::arch:links/oc:diary_links/oc:link)"/>)</h5>
 																													 <div class="list_tab">
 																														  <xsl:for-each select="arch:links/oc:diary_links/oc:link[position() mod 2 = 1]">
 																																<div class="list_tab_row">
@@ -384,6 +358,32 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																											</xsl:if>
 																										  
 																										  
+																										  <!-- linked persons -->
+																										  <xsl:if test="count(descendant::arch:links/oc:person_links/oc:link) != 0" >
+																												<div class="person-links">
+																													 <xsl:attribute name="id">l-persons-<xsl:value-of select="position()"/></xsl:attribute>
+																													 <h5>Linked Persons / Organizations (<xsl:value-of select="count(descendant::arch:links/oc:person_links/oc:link)"/>)</h5>
+																													 <div class="list_tab">
+																														  <xsl:for-each select="arch:links/oc:person_links/oc:link[position() mod 2 = 1]">
+																																<div class="list_tab_row">
+																																	 
+																																	 <div class="list_tab_cell"><a>
+																																			 <xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																			 </a>, <em><xsl:value-of select="oc:relation"/></em>
+																																	 </div>
+																																	 
+																																	 <xsl:for-each select="following-sibling::oc:link[1]">
+																																		  <div class="list_tab_cell"><a>
+																																			 <xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																																			 </a>, <em><xsl:value-of select="oc:relation"/></em>
+																																	 </div>
+																																	 </xsl:for-each>
+																																	 
+																																</div>
+																														  </xsl:for-each>
+																													 </div>
+																												</div>
+																										  </xsl:if>
 																								</div>
 																						</xsl:if>
 																				</div>
@@ -395,7 +395,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												
 												
 												<xsl:if test="($num_Children &gt; 50) and ($ChildQValue != 0)" >
-													 <div class="item-links" id="item-children-diaries" >
+													 <div class="item-links" id="item-children" >
 														  <h5>Contents (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:children/oc:tree/oc:child)"/> items)</h5>
 														  <p>Too many items are contained in this context to display.
 														  To browse and search through items contained in <strong><xsl:value-of select="//arch:spatialUnit/arch:name/arch:string"/></strong>,
@@ -405,7 +405,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												</xsl:if>
 													 
 												<xsl:if test="($num_Children != 0) and (($num_Children &lt; 51) or ($ChildQValue = 0))" >
-													 <div class="item-links" id="item-children-diaries" >
+													 <div class="item-links" id="item-children" >
 														  <h5>Contents (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:children/oc:tree/oc:child)"/> items)</h5>
 														  <div class="list_tab">
 																<xsl:for-each select="arch:spatialUnit/oc:children/oc:tree/oc:child[position() mod 2 = 1]">
@@ -464,8 +464,16 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<div id="editorial" >
 													 <h5>Editorial Status</h5>
 													 Peer-reviewed
+													 <br/>
+													 <br/>
+													 <h5>Suggested Citation</h5>
+													 <div id="citation">
+														  <xsl:value-of select="$citationView"/>
+													 </div>
+													 
 													 
 													 <xsl:if test="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public']) != 0">
+														
 														<br/>
 														<br/>
 														<h5>Editorial Description (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public'])"/>)</h5>
