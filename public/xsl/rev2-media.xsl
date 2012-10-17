@@ -294,6 +294,13 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																						</xsl:if>
 																						</div>
 																		</xsl:if>
+																		<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) =0 and count(descendant::arch:resource/arch:notes/arch:note) =0 ">
+																				<div class="item-notes">
+																						<div class="item-note">
+																						(No descriptive properties provided)
+																						</div>
+																				</div>
+																		</xsl:if>
 																</div>
 														</div>
 												</div>
@@ -306,28 +313,11 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												</div>
 												<div id="media-links">
 														<h5>Linked Media (<xsl:value-of select="count(descendant::arch:resource/arch:links/oc:media_links/oc:link)"/>)</h5>
-														<div class="list_tab">
-																<xsl:for-each select="arch:resource/arch:links/oc:media_links/oc:link[position() mod 2 = 1]">
-																		<div class="list_tab_row">
-																				<div class="list_tab_thumb_cell">
-																						<a>
-																							<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																							<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
-																							<img>
-																								<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
-																								<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
-																							</img>
-																						</a>
-																						<xsl:if test="oc:descriptor">
-																							<br/>
-																							<a>
-																								<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
-																								<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
-																									<xsl:value-of select="oc:descriptor"/>
-																							</a>
-																						</xsl:if>
-																				</div>
-																				<xsl:for-each select="following-sibling::oc:link[1]">
+														
+														<xsl:if test="//arch:links/oc:media_links/oc:link">
+																<div class="list_tab">
+																		<xsl:for-each select="arch:resource/arch:links/oc:media_links/oc:link[position() mod 2 = 1]">
+																				<div class="list_tab_row">
 																						<div class="list_tab_thumb_cell">
 																								<a>
 																									<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
@@ -346,15 +336,35 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																									</a>
 																								</xsl:if>
 																						</div>
-																				</xsl:for-each>
-																				<xsl:if test="count(following-sibling::oc:link[1]) = 0">
-																						<div class="list_tab_thumb_cell">
-																						<br/>
-																						</div>
-																				</xsl:if>
-																		</div>
-																</xsl:for-each>
-														</div>
+																						<xsl:for-each select="following-sibling::oc:link[1]">
+																								<div class="list_tab_thumb_cell">
+																										<a>
+																											<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																											<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																											<img>
+																												<xsl:attribute name="alt"><xsl:value-of select="oc:name"/></xsl:attribute>
+																												<xsl:attribute name="src"><xsl:value-of select="oc:thumbnailURI"/></xsl:attribute>
+																											</img>
+																										</a>
+																										<xsl:if test="oc:descriptor">
+																											<br/>
+																											<a>
+																												<xsl:attribute name="href">../media/<xsl:value-of select="oc:id"/></xsl:attribute>
+																												<xsl:attribute name="title"><xsl:value-of select="oc:name"/></xsl:attribute>
+																													<xsl:value-of select="oc:descriptor"/>
+																											</a>
+																										</xsl:if>
+																								</div>
+																						</xsl:for-each>
+																						<xsl:if test="count(following-sibling::oc:link[1]) = 0">
+																								<div class="list_tab_thumb_cell">
+																								<br/>
+																								</div>
+																						</xsl:if>
+																				</div>
+																		</xsl:for-each>
+																</div>
+														</xsl:if>
 														<p>
 																<a>
 																		<xsl:attribute name="href">../media/<xsl:value-of select="arch:resource/@UUID"/>.xml</xsl:attribute>
@@ -372,6 +382,67 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 														</p>
 														
 												</div>
+												
+												
+												<div id="item-license" >
+													 <h5>Copyright Licensing</h5>
+													 <div class="list_tab">
+														  <div class="list_tab_row">
+																<div id="license-icon">
+																	 <xsl:choose>
+																		  <xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+																				<a>
+																					 <xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+																					 <img> 
+																						<xsl:attribute name="src"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_icon_URI"/></xsl:attribute>
+																						<xsl:attribute name="alt"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/></xsl:attribute>
+																					 </img>
+																				</a>
+																		  </xsl:when>
+																		  <xsl:otherwise>
+																				<a href="http://creativecommons.org/licenses/by/3.0/">
+																					 <img src="http://i.creativecommons.org/l/by/3.0/88x31.png" alt="Creative Commons Attribution 3.0 License" />
+																				</a>
+																		  </xsl:otherwise>
+																	 </xsl:choose>
+																</div>
+																<div id="license-text">
+																	 To the extent to which copyright applies, this content is licensed with:
+																	 <a>
+																		  <xsl:attribute name="rel">license</xsl:attribute>
+																		  <xsl:choose>
+																				<xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+																					 <xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+																				</xsl:when>
+																				<xsl:otherwise>
+																						<xsl:attribute name="href">http://creativecommons.org/licenses/by/3.0/</xsl:attribute>
+																				</xsl:otherwise>
+																		  </xsl:choose>
+																		  <xsl:choose>
+																				<xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+																					 Creative Commons <xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/>&#32;<xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_vers"/>&#32;License
+																				</xsl:when>
+																				<xsl:otherwise>
+																						Creative Commons Attribution 3.0&#32;License
+																				</xsl:otherwise>
+																		  </xsl:choose>
+																	 </a>
+																	 Attribution Required: Citation, and hyperlinks for online uses.
+																	 <div style="display:none; width:0px; overflow:hidden;">
+																		 <abbr class="unapi-id"><xsl:attribute name="title"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier"/></abbr>
+																		 <a xmlns:cc="http://creativecommons.org/ns#">
+																			 <xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute>
+																			 <xsl:attribute name="property">cc:attributionName</xsl:attribute>
+																			 <xsl:attribute name="rel">cc:attributionURL</xsl:attribute>
+																			 <xsl:value-of select="$citation"/>
+																		 </a>
+																	 </div>
+																</div>
+														  </div>
+													 </div>
+												</div>
+												<!-- end div for license div -->
+												
 										</div><!-- end div for right des cell -->
 								</div><!-- end div for main des row -->
 						</div><!-- end div for left des tab -->

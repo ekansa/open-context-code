@@ -233,6 +233,35 @@ p.tinyText {
 	margin-top:4%;
 	padding:2%;
 }
+#item-license {
+	border: thin solid #CCCCCC;
+	margin-top:4%;
+	padding:2%;
+}
+#license-icon {
+	display:table-cell;
+	width:95px;
+	height: 35px;
+	vertical-align: middle;
+	padding-top:1%;
+	padding-bottom:1%;
+	padding-left:1%;
+	padding-right:1%;
+}
+#license-text {
+	display:table-cell;
+	vertical-align: middle;
+	padding-top:1%;
+	padding-bottom:1%;
+	padding-left:1%;
+	padding-right:1%;
+	font-size: 80%;
+}
+#license-icon img{
+	border:none;
+	width: 88px;
+	height: 31px;
+}
 #image_area {
 	margin-bottom:4%;
 	text-align:center;
