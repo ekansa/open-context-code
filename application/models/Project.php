@@ -104,13 +104,12 @@ class Project {
     //add to the view count;
 	 function addViewCount($id, $viewCount){
 		  $id = $this->security_check($id);
-		  if(!$db){
-				$db_params = OpenContext_OCConfig::get_db_config();
-				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-				$db->getConnection();
-				$this->setUTFconnection($db);
-		  }
-		  
+		 
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+
 		  $viewCount = $viewCount + 1;
 		  $where_term = 'project_id = "'.$id.'"';
 		  $data = array('view_count' => $viewCount); 

@@ -97,7 +97,7 @@ class projectsController extends Zend_Controller_Action
 			$projectEditStatus = $proj->editStatus;
 			$view_count = $proj->viewCount;
 			$sp_view_count = $proj->totalViewCount;
-			$view_count = $proj->addViewCount($id, $view_count);
+			$view_count = $proj->addViewCount($itemUUID, $view_count);
 			
 			$xml_string = $proj_atom; 
 			$rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
