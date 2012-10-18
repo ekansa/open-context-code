@@ -129,9 +129,9 @@
 	</xsl:if>&quot;<xsl:value-of select="//arch:project/oc:metadata/dc:title"/>&quot; (Released <xsl:value-of select="//arch:project/oc:metadata/dc:date"/>). <xsl:for-each select="//arch:project/oc:metadata/dc:creator"> <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if><xsl:if test="position() = last()"><xsl:if test="$num_editors = 1"> (Ed.) </xsl:if><xsl:if test="$num_editors != 1"> (Eds.) </xsl:if></xsl:if></xsl:for-each> <em>Open Context. </em> &lt;http://opencontext.org/projects/<xsl:value-of select="//arch:project/@UUID"/>&gt; 
 </xsl:variable>
 
-
-
-
+<xsl:variable name="citationView">
+		<xsl:value-of select="$citation"/>
+</xsl:variable>
 
 
 
@@ -151,7 +151,7 @@
 										<img width='40' height='40'><xsl:attribute name="src">/images/item_view/project_icon.jpg</xsl:attribute><xsl:attribute name="alt">Project or Organization</xsl:attribute></img>
 								</div>
 								<div id="item_top_name_cell">
-										<h1><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:name/arch:string"/></h1>
+										<h1>Project: <xsl:value-of select="atom:feed/atom:entry/arch:project/arch:name/arch:string"/></h1>
 								</div>       
 								<div id="item_top_des_cell">
 										<span class="top_short_des"><xsl:value-of select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type='short_des']" disable-output-escaping="yes"/></span>
@@ -178,37 +178,20 @@
 								<div id="left_des">
 				
 				
-										<div id="allnotes" class="bodyText">
+										<div id="proj-all-des">
 											<h5>Project / Collection Overview</h5>
 											
-											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:observations/arch:observation/arch:links/oc:diary_links/oc:link) != 0" >	
-												<p class="bodyText">
-													<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:observations/arch:observation/arch:links/oc:diary_links/oc:link">
-														<a><xsl:attribute name="href">../narratives/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()"> , </xsl:if>
-													</xsl:for-each>
-												</p>
-											</xsl:if>
-											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/oc:social_usage/oc:external_references/oc:reference) != 0" >	
-												<p class="bodyText"> 
-													<xsl:for-each select="atom:feed/atom:entry/arch:project/oc:social_usage/oc:external_references/oc:reference">
-														<a><xsl:attribute name="href"><xsl:value-of select="oc:ref_URI"/></xsl:attribute><em><xsl:value-of select="oc:name" disable-output-escaping="yes"/></em></a>
-														<xsl:if test="position() != last()"> , </xsl:if>
-													</xsl:for-each>
-												</p>
-											  </xsl:if>
-											
-											
-											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:notes/arch:note) = 0" >
-											<p class="bodyText">(This item has no additional notes)</p>
-											</xsl:if>
-											
-											<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type!='short_des']">
-												<div class="bodyText"><xsl:value-of select="arch:string" disable-output-escaping="yes" /></div><br/>
-											</xsl:for-each>
-											
-											<br/>
-											<p class="bodyText"><span style='text-decoration:underline;'>Suggested Citation for this Project Overview:</span><br/><xsl:value-of select="$citation"/></p>
-											
+												<div id="proj-abstract">
+														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:notes/arch:note) = 0" >
+															<p class="bodyText">(This item has no additional notes)</p>
+														</xsl:if>
+														
+														<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type!='short_des']">
+															<div class="bodyText"><xsl:value-of select="arch:string" disable-output-escaping="yes" /></div><br/>
+														</xsl:for-each>
+												</div>
+												<h5>Suggested Citation for this Project Overview:</h5>
+												<p><xsl:value-of select="$citation"/></p>
 										</div>
 									
 										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:observations/arch:observation/arch:links/oc:space_links/oc:link) != 0" >
@@ -272,21 +255,29 @@
 										</div>
 										
 										
-										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property) !=0 ">
-												<div id="properties">
-														<h5>Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property)"/> properties)</h5>
-														<div class="list_tab"> 
-																<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:properties/arch:property">
-																		<div class="list_tab_row">
-																				<div class="list_tab_cell">		
-																						<xsl:value-of select="oc:var_label"/>
-																				</div>
-																				<div class="list_tab_cell">
-																						<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
-																				</div>
-																	 </div>
-																 </xsl:for-each>
-														</div>
+										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property[oc:show_val/text()]) !=0 ">
+												<div class="properties">
+														<h5>Project Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:properties/arch:property[oc:show_val/text()])"/> properties)</h5>
+														<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
+																<thead>
+																		<tr>
+																				<th>Variable</th>
+																				<th>Value</th>
+																		</tr>
+																</thead>
+																<tbody> 
+																		<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:properties/arch:property[oc:show_val/text()]">
+																				<tr>
+																						<td>
+																								<xsl:value-of select="oc:var_label"/>
+																						</td>
+																						<td>
+																								<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																						</td>
+																				</tr>
+																		 </xsl:for-each>
+																</tbody>
+														</table>
 												</div>
 										</xsl:if>
 										
@@ -297,7 +288,7 @@
 											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link[oc:name/text() !='']) != 0" >	
 												<p class="bodyText">
 													<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link[oc:name/text() !='']">
-														<a><xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()"> , </xsl:if>
+														<a><xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()">, </xsl:if>
 													</xsl:for-each>
 												</p>
 											</xsl:if>
@@ -308,6 +299,43 @@
 					
 								</div> <!-- end left_des cell -->
 								<div id="right_des">
+								
+										<div id="editorial">
+												<h5>Project Rreview Status</h5>
+												<div id="project-edit-status">
+														  <span id="project-edit-stars">
+																  <xsl:attribute name="title"><xsl:value-of select="//oc:metadata/oc:project_name/@statusDes"/></xsl:attribute>
+																  <xsl:choose>
+																		  <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 1">
+																				  &#9733;&#9734;&#9734;&#9734;&#9734;
+																		  </xsl:when>
+																		  <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 2">
+																				  &#9733;&#9733;&#9734;&#9734;&#9734;
+																		  </xsl:when>
+																		  <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 3">
+																				  &#9733;&#9733;&#9733;&#9734;&#9734;
+																		  </xsl:when>
+																		  <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 4">
+																				  &#9733;&#9733;&#9733;&#9733;&#9734;
+																		  </xsl:when>
+																		  <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 5">
+																				  &#9733;&#9733;&#9733;&#9733;&#9733;
+																		  </xsl:when>
+																		  <xsl:otherwise>
+																				  (Not applicable)
+																		  </xsl:otherwise>
+																  </xsl:choose>
+														  </span>
+														  <xsl:value-of select="//oc:metadata/oc:project_name/@statusLabel"/>
+												  </div>
+												<br/>
+												<br/>
+												<h5>Suggested Citation</h5>
+												<div id="citation">
+														<xsl:value-of select="$citationView"/>
+												</div>
+										</div>
+								
 								
 										<div id="all_root" class="bodyText">
 												<h5>Browse this Project</h5>
@@ -334,19 +362,6 @@
 												<br/>	
 										</div>
 								
-								<!--
-									<div id="all_tags" class="bodyText">
-										<p class="subHeader">Tags Used in this Project  (<xsl:value-of select="count(descendant::atom:feed/atom:entry/atom:category[@term='user tag'])"/>)</p>
-										<p class="bodyText">Items from this project/collection have been tagged by: <strong><xsl:value-of select="	count(descendant::atom:feed/atom:entry/atom:category[@term='tag creator'])"/></strong> people.</p>
-											<xsl:for-each select="atom:feed/atom:entry">
-												<xsl:if test="./atom:category/@term ='user tag' ">
-													<p class="bodyText"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='related']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></p>
-												</xsl:if>
-											</xsl:for-each>
-										<br/>	
-									</div>
-								-->
-									
 										<div id="all_media" class="bodyText" >
 												<h5>Linked Media  (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link)"/> files)</h5>
 												<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:media_links/oc:link) != 0" >
@@ -409,8 +424,68 @@
 												</xsl:if>
 										</div>
 								
-								</div>
+										<div id="item-license" >
+													 <h5>Copyright Licensing</h5>
+													 <div class="list_tab">
+														  <div class="list_tab_row">
+																<div id="license-icon">
+																	 <xsl:choose>
+																		  <xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+																				<a>
+																					 <xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+																					 <img> 
+																						<xsl:attribute name="src"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_icon_URI"/></xsl:attribute>
+																						<xsl:attribute name="alt"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/></xsl:attribute>
+																					 </img>
+																				</a>
+																		  </xsl:when>
+																		  <xsl:otherwise>
+																				<a href="http://creativecommons.org/licenses/by/3.0/">
+																					 <img src="http://i.creativecommons.org/l/by/3.0/88x31.png" alt="Creative Commons Attribution 3.0 License" />
+																				</a>
+																		  </xsl:otherwise>
+																	 </xsl:choose>
+																</div>
+																<div id="license-text">
+																	 To the extent to which copyright applies, this content is licensed with:
+																	 <a>
+																		  <xsl:attribute name="rel">license</xsl:attribute>
+																		  <xsl:choose>
+																				<xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+																					 <xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+																				</xsl:when>
+																				<xsl:otherwise>
+																						<xsl:attribute name="href">http://creativecommons.org/licenses/by/3.0/</xsl:attribute>
+																				</xsl:otherwise>
+																		  </xsl:choose>
+																		  <xsl:choose>
+																				<xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+																					 Creative Commons <xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/>&#32;<xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_vers"/>&#32;License
+																				</xsl:when>
+																				<xsl:otherwise>
+																						Creative Commons Attribution 3.0&#32;License
+																				</xsl:otherwise>
+																		  </xsl:choose>
+																	 </a>
+																	 Attribution Required: Citation, and hyperlinks for online uses.
+																	 <div style="display:none; width:0px; overflow:hidden;">
+																		 <abbr class="unapi-id"><xsl:attribute name="title"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier"/></abbr>
+																		 <a xmlns:cc="http://creativecommons.org/ns#">
+																			 <xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute>
+																			 <xsl:attribute name="property">cc:attributionName</xsl:attribute>
+																			 <xsl:attribute name="rel">cc:attributionURL</xsl:attribute>
+																			 <xsl:value-of select="$citation"/>
+																		 </a>
+																	 </div>
+																</div>
+														  </div>
+													 </div>
+												</div>
+												<!-- end div for license div -->
 								
+								
+								</div>
+								<!-- end right des row -->
 								
 								
 								

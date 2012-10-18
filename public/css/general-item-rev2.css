@@ -1,0 +1,52 @@
+/* Open Context General Item CSS */
+
+#editorial {
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	border: 4px solid #9FB6CD;
+	background-color: #F9F9F9;
+	display: block;
+	padding:2%;
+}
+#project-edit-stars {
+	color: #EE7600;
+	margin-right: 2%;
+}
+p.tinyText {
+	font-size: 80%;
+}
+#citation{
+	font-size: 85%;
+	line-height:98%;
+}
+#item-license {
+	border: thin solid #CCCCCC;
+	margin-top:4%;
+	padding:2%;
+}
+#license-icon {
+	display:table-cell;
+	width:95px;
+	height: 35px;
+	vertical-align: middle;
+	padding-top:1%;
+	padding-bottom:1%;
+	padding-left:1%;
+	padding-right:1%;
+}
+#license-text {
+	display:table-cell;
+	vertical-align: middle;
+	padding-top:1%;
+	padding-bottom:1%;
+	padding-left:1%;
+	padding-right:1%;
+	font-size: 80%;
+}
+#license-icon img{
+	border:none;
+	width: 88px;
+	height: 31px;
+}

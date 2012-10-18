@@ -87,53 +87,30 @@ class projectsController extends Zend_Controller_Action
 		//check for referring links
 		OpenContext_SocialTracking::update_referring_link('project', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
 		
-		$db_params = OpenContext_OCConfig::get_db_config();
-		$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		$db->getConnection();
-		
-		$sql = "SET collation_connection = utf8_general_ci;";
-		$db->query($sql, 2);
-		$sql = "SET NAMES utf8;";
-		$db->query($sql, 2);
-		
-		$sql = 'SELECT projects.proj_name, projects.proj_atom,
-			 projects.total_views,
-			 projects.view_count
-			 FROM projects
-			 WHERE projects.project_id = "'.$itemUUID.'"
-			 LIMIT 1';
-
-		$result = $db->fetchAll($sql, 2);
+		$proj = new Project ;
+		$itemFound = $proj->getByID($itemUUID);
 		 
-		if($result){
+		if($itemFound){
 
-		  $proj = new Project ;
-		  $proj->getByID($itemUUID);
+			$proj_name = $proj->label;
+			$proj_atom = $proj->atomFull;
+			$projectEditStatus = $proj->editStatus;
+			$view_count = $proj->viewCount;
+			$sp_view_count = $proj->totalViewCount;
+			$view_count = $proj->addViewCount($id, $view_count);
 			
-		  $proj_name = $result[0]["proj_name"];
-		  $proj_atom = $result[0]["proj_atom"];
-		  $view_count = $result[0]["view_count"];
-		  $sp_view_count = $result[0]["total_views"];
-					 
-		
-		  $proj_atom = OpenContext_OCConfig::updateNamespace($proj_atom, $itemUUID, "proj_atom", "project");
-		
-		  $view_count++; // increment it up one.
-		  $where_term = 'project_id = "'.$itemUUID.'"';
-		  $data = array('view_count' => $view_count); 
-		  $n = $db->update('projects', $data, $where_term);
-		  $db->closeConnection();
-					 
-		  $xml_string = $proj_atom; 
-		  $rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
-		  $xml_string = OpenContext_ProjectAtomJson::project_atom_feed($proj_atom, $view_count, $sp_view_count, $rank);
-		  $this->view->xml_string = $xml_string;
-	  }
-	  else{
-		  $db->closeConnection();
-		  $this->view->requestURI = $this->_request->getRequestUri(); 
-		  return $this->render('404error');
-	  }
+			$xml_string = $proj_atom; 
+			$rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
+			$xml_string = OpenContext_ProjectAtomJson::project_atom_feed($proj_atom, $view_count, $sp_view_count, $rank);
+			$XML = simplexml_load_string($xml_string);
+			$XML = OpenContext_ProjectReviewAnnotate::XMLmodify($projectEditStatus, $XML, $proj->nameSpaces());
+			$xml_string = $XML->asXML();
+			$this->view->xml_string = $xml_string;
+		}
+		else{
+			$this->view->requestURI = $this->_request->getRequestUri(); 
+			return $this->render('404error');
+		}
 	}
     
     

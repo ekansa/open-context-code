@@ -50,8 +50,8 @@ class Project {
         $output = false; //no user
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		$db->getConnection();
-		$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
 	
 	
         $sql = 'SELECT *
@@ -64,21 +64,19 @@ class Project {
             
             $this->noid = $result[0]["noid"];
             $this->projectUUID = $result[0]["project_id"];
-            
-			$this->itemUUID = $result[0]["project_id"];
-			$this->label = $result[0]["proj_name"];
-	    
-			$this->mimeType = self::default_mimeType;
-	    
-			$this->shortDes = $result[0]["short_des"];
-			$this->viewCount = $result[0]["view_count"];
-			$this->totalViewCount = $result[0]["total_views"];
-            $this->createdTime = $result[0]["accession"];
-            $this->updatedTime = $result[0]["updated"];
-			$this->archaeoML = $result[0]["proj_archaeoml"];
-			$this->atomFull = $result[0]["proj_atom"];
-			
-			$this->editStatus = $result[0]["edit_status"];
+				$this->itemUUID = $result[0]["project_id"];
+				$this->label = $result[0]["proj_name"];
+				$this->mimeType = self::default_mimeType;
+			 
+				$this->shortDes = $result[0]["short_des"];
+				$this->viewCount = $result[0]["view_count"];
+				$this->totalViewCount = $result[0]["total_views"];
+				$this->createdTime = $result[0]["accession"];
+				$this->updatedTime = $result[0]["updated"];
+				$this->archaeoML = $result[0]["proj_archaeoml"];
+				$this->atomFull = $result[0]["proj_atom"];
+				
+				$this->editStatus = $result[0]["edit_status"];
 	   
 			/*
 			$this->accentFix($this->archaeoML, "archaeoML", $db);	
@@ -98,12 +96,31 @@ class Project {
             $output = true;
         }
         
-		$db->closeConnection();
+		  $db->closeConnection();
     
         return $output;
     }
     
-    
+    //add to the view count;
+	 function addViewCount($id, $viewCount){
+		  $id = $this->security_check($id);
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+		  }
+		  
+		  $viewCount = $viewCount + 1;
+		  $where_term = 'project_id = "'.$id.'"';
+		  $data = array('view_count' => $viewCount); 
+		  $n = $db->update('projects', $data, $where_term);
+		  $this->viewCount = $viewCount;
+		  $db->closeConnection();
+		  return $viewCount;
+	 }
+	 
+	 
     //used to fix legacy non utf8 problem
     function accentFix($xmlString, $XMLtype, $db){
 	
@@ -131,35 +148,35 @@ class Project {
 			//20 => array("bad" => "Gurdil", "good" => "Gürdil")
 			);
 	
-	//echo $xmlString;
-	$change = false;
-	foreach($stringArray as $checks){
-		$badString = $checks["bad"];
-		$goodString = $checks["good"];
-		//echo $badString ." ".$goodString;
-		if(stristr($xmlString, $badString)){
-		    $xmlString = str_replace($badString, $goodString, $xmlString);
-		    $change = true;
-		}
-	}
+		  //echo $xmlString;
+		  $change = false;
+		  foreach($stringArray as $checks){
+			  $badString = $checks["bad"];
+			  $goodString = $checks["good"];
+			  //echo $badString ." ".$goodString;
+			  if(stristr($xmlString, $badString)){
+					$xmlString = str_replace($badString, $goodString, $xmlString);
+					$change = true;
+			  }
+		  }
 	
-	if($change){
-	    $newXML = $xmlString;
-	    @$xml = simplexml_load_string($newXML);
-	    if($XMLtype == "atom" && $xml){
-		$this->atomFull = $newXML;
-		
-		$data = array("proj_atom" => $newXML);
-		$where = " project_id = '".$this->itemUUID."' ";
-		$db->update("projects", $data, $where);
-	    }
-	    elseif($XMLtype == "archaeoML" && $xml){
-		$this->archaeoML = $newXML;
-		$data = array("proj_archaeoml" => $newXML);
-		$where = " project_id = '".$this->itemUUID."' ";
-		$db->update("projects", $data, $where);
-	    }
-	}
+		  if($change){
+				$newXML = $xmlString;
+				@$xml = simplexml_load_string($newXML);
+				if($XMLtype == "atom" && $xml){
+			  $this->atomFull = $newXML;
+			  
+			  $data = array("proj_atom" => $newXML);
+			  $where = " project_id = '".$this->itemUUID."' ";
+			  $db->update("projects", $data, $where);
+				}
+				elseif($XMLtype == "archaeoML" && $xml){
+			  $this->archaeoML = $newXML;
+			  $data = array("proj_archaeoml" => $newXML);
+			  $where = " project_id = '".$this->itemUUID."' ";
+			  $db->update("projects", $data, $where);
+				}
+		  }
 	
     }//end function
     
@@ -209,17 +226,17 @@ class Project {
         
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		$db->getConnection();
-		$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
     
-		if(!$this->noid){
-			$this->noid = false;
-		}
-		if(!$this->archaeoML){
-			$this->archaeoML = $this->newArchaeoML;
-		}
-    
-		$data = array("noid" => $this->noid,
+		  if(!$this->noid){
+			  $this->noid = false;
+		  }
+		  if(!$this->archaeoML){
+			  $this->archaeoML = $this->newArchaeoML;
+		  }
+		
+		  $data = array("noid" => $this->noid,
 		      "project_id" => $this->itemUUID,
 		      "proj_name" => $this->label,
 		      "def_lic_id" => $this->licenseURI,
@@ -234,53 +251,53 @@ class Project {
 		      "accession" => $this->createdTime
 		      );
 	
-		if($versionUpdate){
-			$this->versionUpdate($this->itemUUID, $db); //save previous version history
-			unset($data["created"]);
-		}
+		  if($versionUpdate){
+			  $this->versionUpdate($this->itemUUID, $db); //save previous version history
+			  unset($data["created"]);
+		  }
 		
-		//if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
-		if(false){
-			/*
-			This gets around size limits for inserting into MySQL.
-			It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-			*/
-			$bigString = new BigString;
-			$bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "project", $this->archaeoML, $db);
-			$data["proj_archaeoml"] = OpenContext_OCConfig::get_bigStringValue();
-		}
-		else{
-			$data["proj_archaeoml"] = $this->archaeoML;
-		}
+		  //if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
+		  if(false){
+			  /*
+			  This gets around size limits for inserting into MySQL.
+			  It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+			  */
+			  $bigString = new BigString;
+			  $bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "project", $this->archaeoML, $db);
+			  $data["proj_archaeoml"] = OpenContext_OCConfig::get_bigStringValue();
+		  }
+		  else{
+			  $data["proj_archaeoml"] = $this->archaeoML;
+		  }
 		
-		//if(OpenContext_OCConfig::need_bigString($this->atomFull)){
-		if(false){
-			/*
-			This gets around size limits for inserting into MySQL.
-			It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-			*/
-			$bigString = new BigString;
-			$bigString->saveCurrentBigString($this->itemUUID, "atomFull", "project", $this->atomFull, $db);
-			$data["proj_atom"] = OpenContext_OCConfig::get_bigStringValue();
-		}
-		else{
-			$data["proj_atom"] = $this->atomFull;
-		}
+		  //if(OpenContext_OCConfig::need_bigString($this->atomFull)){
+		  if(false){
+			  /*
+			  This gets around size limits for inserting into MySQL.
+			  It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+			  */
+			  $bigString = new BigString;
+			  $bigString->saveCurrentBigString($this->itemUUID, "atomFull", "project", $this->atomFull, $db);
+			  $data["proj_atom"] = OpenContext_OCConfig::get_bigStringValue();
+		  }
+		  else{
+			  $data["proj_atom"] = $this->atomFull;
+		  }
 	
 	
-	
-		$success = false;
-		try{
-			$db->insert("projects", $data);
-			$success = true;
-		}catch(Exception $e){
-			$success = false;
-			$where = array();
-			$where[] = 'project_id = "'.$this->itemUUID.'" ';
-			$db->update("projects", $data, $where);
-			$success = true;
-			//echo $e;
-		}
+	 
+		 $success = false;
+		 try{
+			 $db->insert("projects", $data);
+			 $success = true;
+		 }catch(Exception $e){
+			 $success = false;
+			 $where = array();
+			 $where[] = 'project_id = "'.$this->itemUUID.'" ';
+			 $db->update("projects", $data, $where);
+			 $success = true;
+			 //echo $e;
+		 }
 	
 		$db->closeConnection();
 		return $success;

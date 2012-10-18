@@ -32,11 +32,19 @@ class OpenContext_ProjectReviewAnnotate {
 	
 		return $output;
 	}//end function
-		
+	
+	//$itemXML is a simple xml object
 	public static function addProjectReviewStatus($projectUUID, $itemXML, $nameSpaceArray){
 		
 		$projObj = new Project;
 		$projectEditStatus = $projObj->getEditStatusByID($projectUUID);
+		
+		$itemXML = OpenContext_ProjectReviewAnnotate::XMLmodify($projectEditStatus, $itemXML, $nameSpaceArray);
+		
+		return $itemXML;
+	}
+	
+	public static function XMLmodify($projectEditStatus, $itemXML, $nameSpaceArray){
 		
 		foreach($nameSpaceArray as $prefix => $uri){
 			@$itemXML->registerXPathNamespace($prefix, $uri);
@@ -52,6 +60,7 @@ class OpenContext_ProjectReviewAnnotate {
 		
 		return $itemXML;
 	}
+	
 	
 }//end class declaration
 

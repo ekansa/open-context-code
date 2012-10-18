@@ -205,26 +205,26 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																		<div class="properties">
 																				<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) !=0">
 																						<h5>Media Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
-																								<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
-																										<thead>
+																						<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
+																								<thead>
+																										<tr>
+																												<th>Variable</th>
+																												<th>Value</th>
+																										</tr>
+																								</thead>
+																								<tbody> 
+																										<xsl:for-each select="arch:resource/arch:properties/arch:property[oc:show_val/text()]">
 																												<tr>
-																														<th>Variable</th>
-																														<th>Value</th>
+																														<td>
+																																<xsl:value-of select="oc:var_label"/>
+																														</td>
+																														<td>
+																																<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																														</td>
 																												</tr>
-																										</thead>
-																										<tbody> 
-																												<xsl:for-each select="arch:resource/arch:properties/arch:property[oc:show_val/text()]">
-																														<tr>
-																																<td>
-																																		<xsl:value-of select="oc:var_label"/>
-																																</td>
-																																<td>
-																																		<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
-																																</td>
-																														</tr>
-																												 </xsl:for-each>
-																										</tbody>
-																								</table>
+																										 </xsl:for-each>
+																								</tbody>
+																						</table>
 																				</xsl:if>
 																				<xsl:if test="count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
 																						<div class="item-notes">
