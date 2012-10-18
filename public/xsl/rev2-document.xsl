@@ -293,8 +293,33 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 										</div><!-- end div for left des cell -->
 										<div id="right_des">
 												<div id="editorial">
-													 <h5>Project Rreview Status</h5>
-													 Peer-reviewed
+														<h5>Project Rreview Status</h5>
+														<div id="project-edit-status">
+																	 <span id="project-edit-stars">
+																			 <xsl:attribute name="title"><xsl:value-of select="//oc:metadata/oc:project_name/@statusDes"/></xsl:attribute>
+																			 <xsl:choose>
+																					 <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 1">
+																							 &#9733;&#9734;&#9734;&#9734;&#9734;
+																					 </xsl:when>
+																					 <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 2">
+																							 &#9733;&#9733;&#9734;&#9734;&#9734;
+																					 </xsl:when>
+																					 <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 3">
+																							 &#9733;&#9733;&#9733;&#9734;&#9734;
+																					 </xsl:when>
+																					 <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 4">
+																							 &#9733;&#9733;&#9733;&#9733;&#9734;
+																					 </xsl:when>
+																					 <xsl:when test="//oc:metadata/oc:project_name/@editStatus = 5">
+																							 &#9733;&#9733;&#9733;&#9733;&#9733;
+																					 </xsl:when>
+																					 <xsl:otherwise>
+																							 (Not applicable)
+																					 </xsl:otherwise>
+																			 </xsl:choose>
+																	 </span>
+																	 <xsl:value-of select="//oc:metadata/oc:project_name/@statusLabel"/>
+															 </div>
 													 <br/>
 													 <br/>
 													 <h5>Suggested Citation</h5>

@@ -402,6 +402,10 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																										  </xsl:if>
 																								</div>
 																						</xsl:if>
+																				
+																						<xsl:if test="count(descendant::arch:properties/arch:property[oc:show_val/text()]) =0 and count(descendant::arch:notes/arch:note) =0 ">
+																								Data creators have not provided any descriptive properties for this item.
+																						</xsl:if>
 																				</div>
 																		</xsl:for-each>
 																</xsl:if>
@@ -483,17 +487,42 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												
 												
 												<div id="editorial" >
-													 <h5>Editorial Status</h5>
-													 Peer-reviewed
-													 <br/>
-													 <br/>
-													 <h5>Suggested Citation</h5>
-													 <div id="citation">
-														  <xsl:value-of select="$citationView"/>
-													 </div>
+														<h5>Project Editorial Status</h5>
+														<div id="project-edit-status">
+																<span id="project-edit-stars">
+																		<xsl:attribute name="title"><xsl:value-of select="//oc:metadata/oc:project_name/@statusDes"/></xsl:attribute>
+																		<xsl:choose>
+																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 1">
+																						&#9733;&#9734;&#9734;&#9734;&#9734;
+																				</xsl:when>
+																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 2">
+																						&#9733;&#9733;&#9734;&#9734;&#9734;
+																				</xsl:when>
+																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 3">
+																						&#9733;&#9733;&#9733;&#9734;&#9734;
+																				</xsl:when>
+																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 4">
+																						&#9733;&#9733;&#9733;&#9733;&#9734;
+																				</xsl:when>
+																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 5">
+																						&#9733;&#9733;&#9733;&#9733;&#9733;
+																				</xsl:when>
+																				<xsl:otherwise>
+																						(Not applicable)
+																				</xsl:otherwise>
+																		</xsl:choose>
+																</span>
+																<xsl:value-of select="//oc:metadata/oc:project_name/@statusLabel"/>
+														</div>
+														<br/>
+														<br/>
+														<h5>Suggested Citation</h5>
+														<div id="citation">
+															 <xsl:value-of select="$citationView"/>
+														</div>
 													 
 													 
-													 <xsl:if test="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public']) != 0">
+														<xsl:if test="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public']) != 0">
 														
 														<br/>
 														<br/>

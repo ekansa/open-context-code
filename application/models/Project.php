@@ -15,6 +15,8 @@ class Project {
     public $createdTime;
     public $updatedTime;
     
+	 public $editStatus; //editorial status, an integer
+	 
     public $shortDes; //short description of the project
     public $longDes; //long description of the project
     public $spaceCount; //spatial unit count
@@ -75,6 +77,8 @@ class Project {
             $this->updatedTime = $result[0]["updated"];
 			$this->archaeoML = $result[0]["proj_archaeoml"];
 			$this->atomFull = $result[0]["proj_atom"];
+			
+			$this->editStatus = $result[0]["edit_status"];
 	   
 			/*
 			$this->accentFix($this->archaeoML, "archaeoML", $db);	
@@ -752,30 +756,65 @@ class Project {
     
     
     
-    
+    function getEditStatusByID($id){
+        
+        $id = $this->security_check($id);
+        $output = false; //no user
+        $db_params = OpenContext_OCConfig::get_db_config();
+        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+	
+	
+        $sql = 'SELECT *
+                FROM projects
+                WHERE project_id = "'.$id.'"
+                LIMIT 1';
+		
+        $result = $db->fetchAll($sql, 2);
+        if($result){
+            
+            $this->noid = $result[0]["noid"];
+            $this->projectUUID = $result[0]["project_id"];
+				$this->itemUUID = $result[0]["project_id"];
+				$this->label = $result[0]["proj_name"];
+				$this->mimeType = self::default_mimeType;
+				$this->shortDes = $result[0]["short_des"];
+				$this->viewCount = $result[0]["view_count"];
+				$this->totalViewCount = $result[0]["total_views"];
+            $this->createdTime = $result[0]["accession"];
+            $this->updatedTime = $result[0]["updated"];
+				$this->editStatus = $result[0]["edit_status"];
+				return $this->editStatus;
+		  }
+		  else{
+				return false;
+		  }
+	 }
+	 
     
     function db_find_personID($personName){
 	
-	$personID = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
-	
-	$sql = "SELECT persons.person_uuid
-	FROM persons
-	WHERE persons.project_id = '".$this->projectUUID."'
-	AND persons.combined_name LIKE '%".$personName."%'	
-	LIMIT 1;
-	";
-	
-	$result = $db->fetchAll($sql, 2);
-        if($result){
-	    $personID = $result[0]["person_uuid"];
-	}
-	
-	$db->closeConnection();
-	return $personID;
+		  $personID = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+				 $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+		  
+		  $sql = "SELECT persons.person_uuid
+		  FROM persons
+		  WHERE persons.project_id = '".$this->projectUUID."'
+		  AND persons.combined_name LIKE '%".$personName."%'	
+		  LIMIT 1;
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+				 if($result){
+				$personID = $result[0]["person_uuid"];
+		  }
+		  
+		  $db->closeConnection();
+		  return $personID;
     }
     
     

@@ -219,9 +219,9 @@
 }
 
 #selected_filters {
-	border: thin solid #CCCCCC;
+	border: 1px solid #9FB6CD;
+	background-color: #F9F9F9;
 	width: 84%;
-	background-color: #F5F5DC;
 	display: block;
 	padding:2%;
 	border-top-left-radius: 7px;

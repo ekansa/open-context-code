@@ -34,6 +34,7 @@ class projectsController extends Zend_Controller_Action
                 projects.total_views,
                 projects.view_count,
 					 projects.hero_pict,
+					 projects.edit_status,
                 DATE_FORMAT(projects.accession, '%Y-%m-%d') as proj_pub
                 FROM projects
                 WHERE projects.project_id != '0'
@@ -68,12 +69,12 @@ class projectsController extends Zend_Controller_Action
     
     
     public function indexAction(){
-	//check for referring links
-	OpenContext_SocialTracking::update_referring_link('projects', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
-        $AllAtomURI = OpenContext_OCConfig::get_host_config();
-        $AllAtomURI .= "/projects/.atom";
-        $xml_string = file_get_contents($AllAtomURI);
-        $this->view->xml_string = $xml_string;
+		//check for referring links
+		OpenContext_SocialTracking::update_referring_link('projects', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
+			  $AllAtomURI = OpenContext_OCConfig::get_host_config();
+			  $AllAtomURI .= "/projects/.atom";
+			  $xml_string = file_get_contents($AllAtomURI);
+			  $this->view->xml_string = $xml_string;
     }//end index action
     
     
@@ -86,58 +87,53 @@ class projectsController extends Zend_Controller_Action
 		//check for referring links
 		OpenContext_SocialTracking::update_referring_link('project', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
 		
-                $db_params = OpenContext_OCConfig::get_db_config();
-                $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-				$db->getConnection();
-				
-				$sql = "SET collation_connection = utf8_general_ci;";
-				$db->query($sql, 2);
-				$sql = "SET NAMES utf8;";
-				$db->query($sql, 2);
-				
-                $sql = 'SELECT projects.proj_name, projects.proj_atom,
-                    projects.total_views,
-                    projects.view_count
-                    FROM projects
-                    WHERE projects.project_id = "'.$itemUUID.'"
-                    LIMIT 1';
+		$db_params = OpenContext_OCConfig::get_db_config();
+		$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		$db->getConnection();
 		
-                $result = $db->fetchAll($sql, 2);
-                 
-                if($result){
-		    
-					$proj = new Project ;
-					$proj->getByID($itemUUID);
-		    
-		    $proj_name = $result[0]["proj_name"];
-                    $proj_atom = $result[0]["proj_atom"];
-                    $view_count = $result[0]["view_count"];
-                    $sp_view_count = $result[0]["total_views"];
-                    
-		    
-		    $proj_atom = OpenContext_OCConfig::updateNamespace($proj_atom, $itemUUID, "proj_atom", "project");
-		    
-                    $view_count++; // increment it up one.
-                    $where_term = 'project_id = "'.$itemUUID.'"';
-		    $data = array('view_count' => $view_count); 
-		    $n = $db->update('projects', $data, $where_term);
-                    $db->closeConnection();
-                    
-                    $xml_string = $proj_atom; 
-                    $rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
-                    $xml_string = OpenContext_ProjectAtomJson::project_atom_feed($proj_atom, $view_count, $sp_view_count, $rank);
-                }
-                else{
-                    $db->closeConnection();
-		    $this->view->requestURI = $this->_request->getRequestUri(); 
-		    return $this->render('404error');
-                }
-                
-                
-                $this->view->xml_string = $xml_string;
-                
-                //$this->view->result = $result;
-                
+		$sql = "SET collation_connection = utf8_general_ci;";
+		$db->query($sql, 2);
+		$sql = "SET NAMES utf8;";
+		$db->query($sql, 2);
+		
+		$sql = 'SELECT projects.proj_name, projects.proj_atom,
+			 projects.total_views,
+			 projects.view_count
+			 FROM projects
+			 WHERE projects.project_id = "'.$itemUUID.'"
+			 LIMIT 1';
+
+		$result = $db->fetchAll($sql, 2);
+		 
+		if($result){
+
+		  $proj = new Project ;
+		  $proj->getByID($itemUUID);
+			
+		  $proj_name = $result[0]["proj_name"];
+		  $proj_atom = $result[0]["proj_atom"];
+		  $view_count = $result[0]["view_count"];
+		  $sp_view_count = $result[0]["total_views"];
+					 
+		
+		  $proj_atom = OpenContext_OCConfig::updateNamespace($proj_atom, $itemUUID, "proj_atom", "project");
+		
+		  $view_count++; // increment it up one.
+		  $where_term = 'project_id = "'.$itemUUID.'"';
+		  $data = array('view_count' => $view_count); 
+		  $n = $db->update('projects', $data, $where_term);
+		  $db->closeConnection();
+					 
+		  $xml_string = $proj_atom; 
+		  $rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
+		  $xml_string = OpenContext_ProjectAtomJson::project_atom_feed($proj_atom, $view_count, $sp_view_count, $rank);
+		  $this->view->xml_string = $xml_string;
+	  }
+	  else{
+		  $db->closeConnection();
+		  $this->view->requestURI = $this->_request->getRequestUri(); 
+		  return $this->render('404error');
+	  }
 	}
     
     

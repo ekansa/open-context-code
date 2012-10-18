@@ -44,6 +44,9 @@ class subjectsController extends Zend_Controller_Action {
 		$itemFound = $spaceItem->getByID($itemUUID);
 		
 		if($itemFound){
+			$XML = simplexml_load_string($spaceItem->archaeoML);
+			$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
+			$spaceItem->archaeoML = $XML->asXML();
 			header("Content-type: application/xml");
 			echo $spaceItem->archaeoML;
 		}
@@ -71,19 +74,19 @@ class subjectsController extends Zend_Controller_Action {
 				$response = $solr->search($uuid_query, 0, 1, array (/* you can include other parameters here */));
 			
 				foreach (($response->response->docs) as $doc) {
-				$doc->atom_full = str_replace('www.opencontext.org/subjects', 'ishmael.ischool.berkeley.edu/subjects', $doc->atom_full);	
-				$doc->atom_full = str_replace('http://opencontext/subjects', $host.'/subjects', $doc->atom_full);
-
-				$atomXML = simplexml_load_string($doc->atom_full);
-				$atomXML->registerXPathNamespace("oc", "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
-				$atomXML->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
-				$atomXML->registerXPathNamespace("arch", "http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd");
-				//$atomXML = OpenContext_RDFannotate::spaceEntitiesCheck($atomXML);
-		
-				foreach ($atomXML->xpath("//arch:spatialUnit") as $act_archaeoML) {
-					$output = $act_archaeoML->saveXML();
-					$XMLgood = true;	
-				}
+					$doc->atom_full = str_replace('www.opencontext.org/subjects', 'ishmael.ischool.berkeley.edu/subjects', $doc->atom_full);	
+					$doc->atom_full = str_replace('http://opencontext/subjects', $host.'/subjects', $doc->atom_full);
+	
+					$atomXML = simplexml_load_string($doc->atom_full);
+					$atomXML->registerXPathNamespace("oc", "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
+					$atomXML->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
+					$atomXML->registerXPathNamespace("arch", "http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd");
+					//$atomXML = OpenContext_RDFannotate::spaceEntitiesCheck($atomXML);
+			
+					foreach ($atomXML->xpath("//arch:spatialUnit") as $act_archaeoML) {
+						$output = $act_archaeoML->saveXML();
+						$XMLgood = true;	
+					}
 				}
 			} catch (Exception $e) {
 				echo $e->getMessage(), "\n";
@@ -165,6 +168,7 @@ class subjectsController extends Zend_Controller_Action {
 				}
 						    
 				$XML = OpenContext_RDFannotate::spaceEntitiesCheck($XML, $spaceItem->nameSpaces());
+				$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
 				$this->view->XML = $XML;
 			}
 			else{
@@ -203,7 +207,8 @@ class subjectsController extends Zend_Controller_Action {
 							OpenContext_SocialTracking::update_project_viewtracking($XML, $spaceItem->nameSpaces());
 							$XML = OpenContext_SocialTracking::update_space_viewtracking($XML, $spaceItem->nameSpaces());
 						}
-									
+						
+						$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
 						$XML = OpenContext_RDFannotate::spaceEntitiesCheck($XML, $spaceItem->nameSpaces());
 						$this->view->XML = $XML;
 						$this->view->itemClass = $spaceItem->getClassName($spaceItem->archaeoML);

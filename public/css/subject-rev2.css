@@ -249,10 +249,13 @@ div.item-multi-obs {
 	border-bottom-left-radius: 7px;
 	border-bottom-right-radius: 7px;
 	border: 4px solid #9FB6CD;
-	/* background-color: #F5F5DC; */
 	background-color: #F9F9F9;
 	display: block;
 	padding:2%;
+}
+#project-edit-stars {
+	color: #EE7600;
+	margin-right: 2%;
 }
 p.tinyText {
 	font-size: 80%;
