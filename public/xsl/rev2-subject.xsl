@@ -183,65 +183,78 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 								<div id="main_description_row">
 										<div id="left_des">
 												
-												<div style="width:100%;">
+												<div>
 														<xsl:choose>
-																<xsl:when test="$num_Obs != 0">
-																		<ul class="nav nav-tabs" id="obsTabs">
-																				<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
-																						<xsl:choose>
-																								<xsl:when test="(@obsNumber = '100')">
-																										<!-- do nothing -->
-																								</xsl:when>
-																								<xsl:when test="(@obsNumber != '100') and ((@obsNumber &lt; '0') or (oc:obs_metadata/oc:type = 'Preliminary')) ">
-																										<xsl:call-template name="obsLinks">
-																												<xsl:with-param name="totalObs" select="$num_Obs"/>
-																												<xsl:with-param name="obsPos" select="position()"/>
-																												<xsl:with-param name="notCurrent" select="1"/>
-																												<xsl:with-param name="max_Tabs" select="$max_Tabs"/>
-																										</xsl:call-template>
-																								</xsl:when>
-																								<xsl:when test="(position() &gt;= $max_Tabs) and ($num_Obs &gt; $max_Tabs)">
-																										<!-- do nothing -->
-																								</xsl:when>
-																								<xsl:otherwise>
-																										<xsl:call-template name="obsLinks">
-																												<xsl:with-param name="totalObs" select="$num_Obs"/>
-																												<xsl:with-param name="obsPos" select="position()"/>
-																												<xsl:with-param name="notCurrent" select="0"/>
-																												<xsl:with-param name="max_Tabs" select="$max_Tabs"/>
-																										</xsl:call-template>
-																								</xsl:otherwise>
-																						</xsl:choose>
-																				</xsl:for-each>
-																				<xsl:if test="$num_Obs &gt; $max_Tabs">
-																						
-																						<li class="dropdown" id="more-obs-menu">
-																								<a href="#more-obs-menu" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret">.</b></a>
-																								<ul class="dropdown-menu">
-																										<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
-																												<xsl:if test="(position() &gt;= $max_Tabs) and (@obsNumber != '100')">
-																														<li>																					
-																																<a data-toggle="tab"><xsl:attribute name="href">#obs-<xsl:value-of select="position()"/></xsl:attribute>Obs. <xsl:value-of select="position()"/></a>
-																														</li>
-																												</xsl:if>
-																										</xsl:for-each>
-																								</ul>
-																						</li>
-																						
-																				</xsl:if>
-																		</ul>
+																<xsl:when test="$num_Obs !=0">
+																		
+																		<xsl:if test="$num_Obs &gt; 1">
+																				<xsl:attribute name="class">item-multi-obs</xsl:attribute>
+																				<ul class="nav nav-tabs" id="obsTabs">
+																						<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
+																								<xsl:choose>
+																										<xsl:when test="(@obsNumber = '100')">
+																												<!-- do nothing -->
+																										</xsl:when>
+																										<xsl:when test="(@obsNumber != '100') and ((@obsNumber &lt; '0') or (oc:obs_metadata/oc:type = 'Preliminary')) ">
+																												<xsl:call-template name="obsLinks">
+																														<xsl:with-param name="totalObs" select="$num_Obs"/>
+																														<xsl:with-param name="obsPos" select="position()"/>
+																														<xsl:with-param name="notCurrent" select="1"/>
+																														<xsl:with-param name="max_Tabs" select="$max_Tabs"/>
+																												</xsl:call-template>
+																										</xsl:when>
+																										<xsl:when test="(position() &gt;= $max_Tabs) and ($num_Obs &gt; $max_Tabs)">
+																												<!-- do nothing -->
+																										</xsl:when>
+																										<xsl:otherwise>
+																												<xsl:call-template name="obsLinks">
+																														<xsl:with-param name="totalObs" select="$num_Obs"/>
+																														<xsl:with-param name="obsPos" select="position()"/>
+																														<xsl:with-param name="notCurrent" select="0"/>
+																														<xsl:with-param name="max_Tabs" select="$max_Tabs"/>
+																												</xsl:call-template>
+																										</xsl:otherwise>
+																								</xsl:choose>
+																						</xsl:for-each>
+																						<xsl:if test="$num_Obs &gt; $max_Tabs">
+																								
+																								<li class="dropdown" id="more-obs-menu">
+																										<a href="#more-obs-menu" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret">.</b></a>
+																										<ul class="dropdown-menu">
+																												<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
+																														<xsl:if test="(position() &gt;= $max_Tabs) and (@obsNumber != '100')">
+																																<li>																					
+																																		<a data-toggle="tab"><xsl:attribute name="href">#obs-<xsl:value-of select="position()"/></xsl:attribute>Obs. <xsl:value-of select="position()"/></a>
+																																</li>
+																														</xsl:if>
+																												</xsl:for-each>
+																										</ul>
+																								</li>
+																								
+																						</xsl:if>
+																				</ul>
+																		</xsl:if>
+																		<xsl:if test="$num_Obs = 1">
+																				<xsl:attribute name="class">item-multi-obs</xsl:attribute>
+																		</xsl:if>
 																</xsl:when>
 																<xsl:otherwise>
+																		
 																</xsl:otherwise>
 														</xsl:choose>
 														
 														<div>
 																<xsl:if test="$num_Obs != 0">
-																		<xsl:attribute name="class">tab-content</xsl:attribute>
+																		<xsl:if test="$num_Obs != 1">
+																				<xsl:attribute name="class">tab-content</xsl:attribute>
+																		</xsl:if>
+																		<xsl:if test="$num_Obs = 1">
+																				<xsl:attribute name="class">item-single-obs</xsl:attribute>
+																		</xsl:if>
 																		<xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation">
 																				<div>
 																						<xsl:attribute name="id">obs-<xsl:value-of select="position()"/></xsl:attribute>
-																						<xsl:if test="position() = 1">
+																						<xsl:if test="position() = 1 and $num_Obs != 1">
 																								<xsl:attribute name="class">tab-pane fade in active</xsl:attribute>
 																						</xsl:if>
 																						<xsl:if test="position() != 1">
@@ -252,7 +265,10 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																										  <xsl:if test="count(descendant::arch:properties/arch:property[oc:show_val/text()]) !=0">
 																												<xsl:choose>
 																														<xsl:when test="oc:obs_metadata/oc:name">
-																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/>: Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span></h5>
+																																<h5><xsl:value-of select="oc:obs_metadata/oc:name"/>: Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)<!--<span style="margin-left:25px;">[Observation <xsl:value-of select="position()"/>]</span> --></h5>
+																														</xsl:when>
+																														<xsl:when test="$num_Obs = 1">
+																																<h5>Descriptive Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
 																														</xsl:when>
 																														<xsl:otherwise>
 																																<h5>Observation <xsl:value-of select="position()"/>: Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
@@ -388,6 +404,11 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																						</xsl:if>
 																				</div>
 																		</xsl:for-each>
+																</xsl:if>
+														
+																<xsl:if test="$num_Obs = 0">
+																		<xsl:attribute name="class">item-single-obs</xsl:attribute>
+																		Data creators have not provided any descriptive properties for this item.
 																</xsl:if>
 														</div>
 												</div>

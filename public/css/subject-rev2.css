@@ -213,6 +213,17 @@ div.person-links div{
 	padding:2%;
 	margin-top: 5%;
 }
+div.item-single-obs {
+	padding:2%;
+	width: 95%;
+	margin-bottom: 5%;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #DDD;
+}
+div.item-multi-obs {
+	width:100%;
+}
 #media-preview-des {
 	/*
 	border-width: 1px;
