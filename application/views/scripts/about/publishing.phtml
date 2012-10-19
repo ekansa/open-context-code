@@ -19,6 +19,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
 		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
 		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/general-item-rev2.css" rel="stylesheet" type="text/css" /> 
 		
       <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
 		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
@@ -268,7 +269,9 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 								
 						  </div>
 						  <!--end about-slides div -->
-						  
+					 
+					 </div>
+					 <div id="review">
 						  <h3>Peer-Review</h3>
 						  <p>All content published on Open Context must first see approval by the editorial staff and relevant
 						  members of the editorial board (depending on disciplinary specialization). We do not reject data for lack of
@@ -284,6 +287,76 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 						  comments will be posted publicly associated with a dataset. The dataset will also be specially
 						  marked as 'peer-reviewed'.</p>
 						  
+						  <div id="editorial-status">
+								<h4>Editorial Status</h4>
+								<p>Open Context indicates the editorial status of projects with 1 to 5 stars. These stars are displayed
+								on every record belonging to a project. Please note, the editorial status applies to a project as a whole.
+								They do not mean that each record necessarily received editorial scrutiny.
+								</p>
+								<table class="table table-striped table-condensed table-bordered" id="edit-status-table">
+									 <thead>
+										  <tr>
+												<th>Stars</th>
+												<th>Editorial Status</th>
+										  </tr>
+									 </thead>
+									 <tbody>
+										  <tr id="edit-stars-5">
+												<td>
+													 <span class="project-edit-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+												</td>
+												<td>
+													 <h5>Peer-reviewed</h5>
+													 In addition to seeing reviews and edits from the managing editor and the Editorial Board,
+													 at least two outside, independent experts (not affiliated with Open Context) reviewed the
+													 project. 
+												</td>
+										  </tr>
+										  <tr id="edit-stars-4">
+												<td>
+													 <span class="project-edit-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+												</td>
+												<td>
+													 <h5>Editorial board reviewed</h5>
+													 Open Context's managing editors and members of the Editorial Board reviewed the project. 
+												</td>
+										  </tr>
+										  <tr id="edit-stars-3">
+												<td>
+													 <span class="project-edit-stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span>
+												</td>
+												<td>
+													 <h5>Managing editor reviewed</h5>
+													 Open Context's managing editors closely reviewed and edited a project. 
+												</td>
+										  </tr>
+										  <tr id="edit-stars-2">
+												<td>
+													 <span class="project-edit-stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span>
+												</td>
+												<td>
+													 <h5>Minimal editorial acceptance</h5>
+													 Open Context's managing editors accepted a project's dataset even though it may lack
+													 important documentation and supplemental information. In some cases, the primary
+													 value of the project maybe to serve instructional or public outreach goals, rather than
+													 research uses.
+												</td>
+										  </tr>
+										  <tr id="edit-stars-1">
+												<td>
+													 <span class="project-edit-stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span>
+												</td>
+												<td>
+													 <h5>Demonstration, Minimal editorial acceptance</h5>
+													 Open Context's managing editors accepted a project's dataset even though it lacked
+													 important documentation and supplemental information. Primarily, these project datasets
+													 served as demonstrations or proof-of-concept applications of Open Context, rather than research
+													 purposes.
+												</td>
+										  </tr>
+									 </tbody>
+								</table>
+						  </div>  
 					 </div>
 			 
 				<div id="data-prep">

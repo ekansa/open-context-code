@@ -52,6 +52,9 @@ Heaader grey: #666666;
 #right_sidebar h3 {
 	margin-top: 2%;
 }
+#right_sidebar h4 {
+	margin-top: 2%;
+}
 
 .gksm-custom-menu-widget {
 	margin: 0;
@@ -209,6 +212,13 @@ div.list_tab_cell {
 	padding-right:2%;
 }
 
+/* About -Publishing specific styles */
+#edit-status-table {
+	width:80%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:2%;
+}
 
 /* About -Services specific styles */
 #parameters {
