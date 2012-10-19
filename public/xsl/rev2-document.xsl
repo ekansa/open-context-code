@@ -181,7 +181,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 												<div style="width:100%;">
 														
 														<div id="preview">
-																<h5>Document Contents:</h5>
+																<h5>Document Contents</h5>
 																<div id="document-content">
 																		<xsl:value-of select="arch:resource/arch:content/arch:internalDocument/arch:string" disable-output-escaping="yes"/>
 																</div>

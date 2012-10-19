@@ -239,19 +239,26 @@
 										
 										
 										<div id="preview">
-											<h5>Content Associated with this Project</h5>
-											<p class="bodyText">Items in these categories have been viewed: <strong><xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count"/></strong> times. (Ranked: <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@rank"/> of  <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@pop"/>)</p>
-												<div class="list_tab" style="width:100%;">
-														<xsl:for-each select="atom:feed/atom:entry">
-																<xsl:if test="./atom:category/@term ='category' ">
-																		<div class="list_tab_row">
-																				<div class="list_tab_cell_icon"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
-																				<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
-																				<div class="list_tab_cell"><xsl:value-of select="./atom:content"/></div>
-																		</div>
-																</xsl:if>
-														</xsl:for-each>
-												</div>
+												<h5>Content Associated with this Project</h5>
+												
+												<xsl:if test="atom:feed/atom:entry/atom:category/@term ='category' ">
+														<p class="bodyText">Items in these categories have been viewed: <strong><xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count"/></strong> times. (Ranked: <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@rank"/> of  <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@pop"/>)</p>
+														<div class="list_tab" style="width:100%;">
+																<xsl:for-each select="atom:feed/atom:entry">
+																		<xsl:if test="./atom:category/@term ='category' ">
+																				<div class="list_tab_row">
+																						<div class="list_tab_cell_icon"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
+																						<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
+																						<div class="list_tab_cell"><xsl:value-of select="./atom:content"/></div>
+																				</div>
+																		</xsl:if>
+																</xsl:for-each>
+														</div>
+												</xsl:if>
+												
+												<xsl:if test="//oc:metadata/oc:project_name/@editStatus = 0">
+														Project dataset is forthcomming, and not yet available.
+												</xsl:if>
 										</div>
 										
 										
@@ -322,7 +329,7 @@
 																				  &#9733;&#9733;&#9733;&#9733;&#9733;
 																		  </xsl:when>
 																		  <xsl:otherwise>
-																				  (Not applicable)
+																				  Forthcomming
 																		  </xsl:otherwise>
 																  </xsl:choose>
 														  </span>
@@ -339,17 +346,22 @@
 								
 										<div id="all_root" class="bodyText">
 												<h5>Browse this Project</h5>
-												<div class="list_tab">
-														<xsl:for-each select="atom:feed/atom:entry">
-																<xsl:if test="./atom:category/@term ='context' ">
-																		<div class="list_tab_row">
-																				<div class="list_tab_cell"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
-																				<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
-																				<div  class="list_tab_cell"><div style="padding-left:4px"><xsl:value-of select="./atom:content"/></div></div>
-																		</div>
-																</xsl:if>
-													</xsl:for-each>
-												</div>
+												<xsl:if test="atom:feed/atom:entry/atom:category/@term ='context' ">
+														<div class="list_tab">
+																<xsl:for-each select="atom:feed/atom:entry">
+																		<xsl:if test="./atom:category/@term ='context' ">
+																				<div class="list_tab_row">
+																						<div class="list_tab_cell"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
+																						<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@type='application/xhtml+xml']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
+																						<div  class="list_tab_cell"><div style="padding-left:4px"><xsl:value-of select="./atom:content"/></div></div>
+																				</div>
+																		</xsl:if>
+															</xsl:for-each>
+														</div>
+												</xsl:if>
+												<xsl:if test="//oc:metadata/oc:project_name/@editStatus = 0">
+														Project dataset is forthcomming, and not yet available to browse or use.
+												</xsl:if>
 										</div>
 								
 								
