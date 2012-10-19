@@ -453,7 +453,7 @@ div.item_sample_val{
 	word-break: break-word;
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;
-        hyphens: auto;
+    hyphens: auto;
 }
 span.item_cat_label {
 	font-weight: bold;

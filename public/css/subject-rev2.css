@@ -186,6 +186,15 @@ table.prop-tab {
 	margin-bottom: 3%;
 	width:96%;
 }
+table.prop-tab td{
+	min-width: 80px;
+	-ms-word-break: break-all;
+	word-break: break-all;
+	word-break: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+    hyphens: auto;
+}
 div.item-notes {
 	margin-left: 0px;
 	margin-right: 0px;
