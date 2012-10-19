@@ -299,7 +299,7 @@
 					
 								</div> <!-- end left_des cell -->
 								<div id="right_des">
-								
+										<div id="ed-spacer"><br/></div>
 										<div id="editorial">
 												<h5>Project Rreview Status</h5>
 												<div id="project-edit-status">

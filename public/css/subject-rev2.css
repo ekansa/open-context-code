@@ -235,7 +235,8 @@ div.item-multi-obs {
 }
 #document-content {
 	padding: 2%;
-	background-color: #FFF8DC;
+	background-color: #F7F4E9;
+	/* border: 1px solid #9FB6CD; */
 	font-family: Tahoma, Geneva, sans-serif;
 	margin-bottom: 3%;
 }
