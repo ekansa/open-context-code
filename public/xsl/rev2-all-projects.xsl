@@ -122,6 +122,7 @@ BEGIN Container for main page content
 					<thead>
                     <tr>
                         <th>Project</th>
+								<th>Editorial Status</th>
                         <th>Description</th>
                         <th>Primary People</th>
                         <th>Keywords</th>
@@ -145,8 +146,33 @@ BEGIN Container for main page content
 									<a><xsl:attribute name="href">../projects/<xsl:value-of select="arch:project/@UUID"/></xsl:attribute><xsl:value-of select="arch:project/arch:name/arch:string" /></a>
 								</td>
 								<td>
-										<xsl:if test="arch:project/oc:metadata/oc:project_name/@pub_status = 'forthcoming'"><span style="color:#191970; font-weight:bold;">[<em>Forthcoming Project</em>] </span> 
-										</xsl:if>
+									<span class="project-edit-stars">
+										<xsl:attribute name="title"><xsl:value-of select="arch:project/oc:metadata/oc:project_name/@statusDes"/></xsl:attribute>
+										<xsl:choose>
+												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 1">
+														&#9733;&#9734;&#9734;&#9734;&#9734;
+												</xsl:when>
+												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 2">
+														&#9733;&#9733;&#9734;&#9734;&#9734;
+												</xsl:when>
+												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 3">
+														&#9733;&#9733;&#9733;&#9734;&#9734;
+												</xsl:when>
+												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 4">
+														&#9733;&#9733;&#9733;&#9733;&#9734;
+												</xsl:when>
+												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 5">
+														&#9733;&#9733;&#9733;&#9733;&#9733;
+												</xsl:when>
+												<xsl:otherwise>
+														(Forthcomming)
+												</xsl:otherwise>
+										</xsl:choose>
+								</span>
+									
+									
+								</td>
+								<td>
 										<xsl:value-of select="arch:project/arch:notes/arch:note[@type='short_des']/arch:string" disable-output-escaping="yes" /></td>
 								<td>
 								<xsl:for-each select="atom:author">

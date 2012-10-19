@@ -18,64 +18,69 @@ class projectsController extends Zend_Controller_Action
 	 
 	 
 	  
-    //this function retrieves an atom feed for all projects
-    //this function is called if a project UUID is absent
-    public function all_atom(){
+   //this function retrieves an atom feed for all projects
+   //this function is called if a project UUID is absent
+   public function all_atom(){
         
-			$all_project_feed_string = false;
-        
-			$db_params = OpenContext_OCConfig::get_db_config();
-			$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-                               
-			$db->getConnection();
-			$this->setUTFconnection($db);
-		
-			$sql = "SELECT projects.proj_atom,
-                projects.total_views,
-                projects.view_count,
-					 projects.hero_pict,
-					 projects.edit_status,
-                DATE_FORMAT(projects.accession, '%Y-%m-%d') as proj_pub
-                FROM projects
-                WHERE projects.project_id != '0'
-						ORDER BY projects.accession DESC
-                ";
-		
-			$result = $db->fetchAll($sql, 2);
-			if($result){
-        
-            $proj_atom = array();
-            $proj_dates = array();
-            foreach($result as $act_result){
-                if(strlen($act_result["proj_atom"])>0){
-							$heroLink = "<link rel=\"enclosure\" href=\"".$act_result['hero_pict']."\" title=\"Illustrative image\" />";
-							$atom = $act_result["proj_atom"];
-							$atom = str_replace("</id>", "</id>".chr(13).$heroLink.chr(13), $atom); 
-							$proj_atom[] = $atom;
-                }
-                $proj_dates[] = strtotime($act_result["proj_pub"]);
-            }//end loop
-            $last_date = max($proj_dates);
-            $all_project_feed_string = OpenContext_ProjectAtomJson::all_project_atom_feed($proj_atom, $last_date);
+		$all_project_feed_string = false;
+	  
+		$db_params = OpenContext_OCConfig::get_db_config();
+		$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+									 
+		$db->getConnection();
+		$this->setUTFconnection($db);
+	
+		$sql = "SELECT projects.proj_atom,
+				 projects.total_views,
+				 projects.view_count,
+				 projects.hero_pict,
+				 projects.edit_status,
+				 DATE_FORMAT(projects.accession, '%Y-%m-%d') as proj_pub
+				 FROM projects
+				 WHERE projects.project_id != '0'
+					ORDER BY projects.accession DESC
+				 ";
+	
+		$result = $db->fetchAll($sql, 2);
+		if($result){
+	  
+			$proj_atom = array();
+			$proj_dates = array();
+			$proj = new Project ;
+			foreach($result as $act_result){
+				$projectEditStatus = $act_result["edit_status"];
+				if(strlen($act_result["proj_atom"])>0){
+						$heroLink = "<link rel=\"enclosure\" href=\"".$act_result['hero_pict']."\" title=\"Illustrative image\" />";
+						$atom = $act_result["proj_atom"];
+						$atom = str_replace("</id>", "</id>".chr(13).$heroLink.chr(13), $atom);
+						$XML = simplexml_load_string($atom);
+						$XML = OpenContext_ProjectReviewAnnotate::XMLmodify($projectEditStatus, $XML, $proj->nameSpaces());
+						$atom = $XML->asXML();
+						$proj_atom[] = $atom;
+				}
+				$proj_dates[] = strtotime($act_result["proj_pub"]);
+			}//end loop
+			$last_date = max($proj_dates);
+			$all_project_feed_string = OpenContext_ProjectAtomJson::all_project_atom_feed($proj_atom, $last_date);
+ 
+	  }//end case with result
+	  
+	  $db->closeConnection();
+	  
+	  return $all_project_feed_string;
     
-        }//end case with result
-        
-        $db->closeConnection();
-        
-        return $all_project_feed_string;
-    
-    }//end all atom function
+   }//end all atom function
     
     
     
-    public function indexAction(){
+   public function indexAction(){
 		//check for referring links
 		OpenContext_SocialTracking::update_referring_link('projects', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
-			  $AllAtomURI = OpenContext_OCConfig::get_host_config();
-			  $AllAtomURI .= "/projects/.atom";
-			  $xml_string = file_get_contents($AllAtomURI);
-			  $this->view->xml_string = $xml_string;
-    }//end index action
+		$AllAtomURI = OpenContext_OCConfig::get_host_config();
+		$AllAtomURI .= "/projects/.atom";
+		$xml_string = file_get_contents($AllAtomURI);
+		$this->view->xml_string = $xml_string;
+   }//end index action
     
     
     
@@ -114,44 +119,39 @@ class projectsController extends Zend_Controller_Action
 	}
     
     
-        public function atomAction() {
+   public function atomAction() {
                 
-            // get the space uuid from the uri
-			$itemUUID = $this->_request->getParam('proj_uuid');
-                
-			//echo "UUID:".$itemUUID;
-			
-			if($itemUUID == "0"){
-				$itemUUID = false;
-			}
-			
-			if(strlen($itemUUID)>0){
-				$proj = new Project ;
-				$itemFound = $proj->getByID($itemUUID);
-				
-				if($itemFound){
-					$proj_atom = $proj->atomFull;
-					$view_count = $proj->viewCount;
-					$sp_view_count = $proj->totalViewCount;
-							
-					//$proj_atom = OpenContext_OCConfig::updateNamespace($proj_atom, $itemUUID, "proj_atom", "project");
+		// get the space uuid from the uri
+		$itemUUID = $this->_request->getParam('proj_uuid');
+		if($itemUUID == "0"){
+			$itemUUID = false;
+		}
 		
-					$xml_string = $proj_atom; 
-					$rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
-					$xml_string = OpenContext_ProjectAtomJson::project_atom_feed($proj_atom, $view_count, $sp_view_count, $rank);
-					
-				}
-				else{
+		if(strlen($itemUUID)>0){
+			$proj = new Project ;
+			$itemFound = $proj->getByID($itemUUID);
 			
-					$this->view->requestURI = $this->_request->getRequestUri(); 
-					return $this->render('404error');
-                }
-            }//end case with an id requested
-            else{
-                $xml_string = $this->all_atom(); //get string of all project atom feed data
-            }//end case with no id requested
-                
-        $this->view->xml_string = $xml_string;
+			if($itemFound){
+				$proj_atom = $proj->atomFull;
+				$view_count = $proj->viewCount;
+				$sp_view_count = $proj->totalViewCount;
+				
+				$xml_string = $proj_atom; 
+				$rank = OpenContext_SocialTracking::rank_project_viewcounts($itemUUID);
+				$xml_string = OpenContext_ProjectAtomJson::project_atom_feed($proj_atom, $view_count, $sp_view_count, $rank);
+				
+			}
+			else{
+		
+				$this->view->requestURI = $this->_request->getRequestUri(); 
+				return $this->render('404error');
+			}
+		}//end case with an id requested
+		else{
+			$xml_string = $this->all_atom(); //get string of all project atom feed data
+		}//end case with no id requested
+				 
+	  $this->view->xml_string = $xml_string;
 	}//end atom function
         
 	
