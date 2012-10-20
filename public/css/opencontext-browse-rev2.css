@@ -594,3 +594,47 @@ div.filter_row{
 	border-top: thin solid #CCCCCC;
 	background-color:#fff;
 }
+
+
+/* General Search result css */
+ div.controlCell {
+	display:table-cell; text-align:center; vertical-align:middle;
+}
+div.resultCell {
+	display: table-cell;
+	text-align: left;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top:8px;
+	padding-bottom:12px;
+}
+
+div.colorRow {
+	display:table-row;
+	background-color: #fffdbe;
+}
+div.whiteRow {
+	display:table-row;
+}
+
+.highlight
+{
+background: #CEDAEB;
+color: #000000;
+}
+
+.highlight_important
+{
+background: #F8DCB8;
+color: #000000;
+}
+.snippet
+{
+	color: #707070;
+	-ms-word-break: break-all;
+	word-break: break-all;
+	word-break: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	hyphens: auto;
+}

@@ -147,27 +147,29 @@ BEGIN Container for main page content
 								</td>
 								<td>
 									<span class="project-edit-stars">
-										<xsl:attribute name="title"><xsl:value-of select="arch:project/oc:metadata/oc:project_name/@statusDes"/></xsl:attribute>
-										<xsl:choose>
-												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 1">
-														&#9733;&#9734;&#9734;&#9734;&#9734;
-												</xsl:when>
-												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 2">
-														&#9733;&#9733;&#9734;&#9734;&#9734;
-												</xsl:when>
-												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 3">
-														&#9733;&#9733;&#9733;&#9734;&#9734;
-												</xsl:when>
-												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 4">
-														&#9733;&#9733;&#9733;&#9733;&#9734;
-												</xsl:when>
-												<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 5">
-														&#9733;&#9733;&#9733;&#9733;&#9733;
-												</xsl:when>
-												<xsl:otherwise>
-														(Forthcomming)
-												</xsl:otherwise>
-										</xsl:choose>
+										<xsl:attribute name="title"><xsl:value-of select="arch:project/oc:metadata/oc:project_name/@statusDes"/> (Click for more)</xsl:attribute>
+										<a href="../about/publishing#editorial-status">
+												<xsl:choose>
+														<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 1">
+																&#9733;&#9734;&#9734;&#9734;&#9734;
+														</xsl:when>
+														<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 2">
+																&#9733;&#9733;&#9734;&#9734;&#9734;
+														</xsl:when>
+														<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 3">
+																&#9733;&#9733;&#9733;&#9734;&#9734;
+														</xsl:when>
+														<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 4">
+																&#9733;&#9733;&#9733;&#9733;&#9734;
+														</xsl:when>
+														<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 5">
+																&#9733;&#9733;&#9733;&#9733;&#9733;
+														</xsl:when>
+														<xsl:otherwise>
+																(Forthcomming)
+														</xsl:otherwise>
+												</xsl:choose>
+										</a>
 								</span>
 									
 									

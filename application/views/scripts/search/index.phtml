@@ -74,7 +74,6 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <title><?php echo 'Open Context Search: ('.$numFound.' Items Showing)'; ?></title>
         <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
-        <link href="<?php echo $host; ?>/components/css/browse" rel="stylesheet" type="text/css" /> 
         <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo $this->facetURI_Atom; ?>" />
         <link rel="alternate" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->currentAtom; ?>" />
         
@@ -90,61 +89,13 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
         
         <link rel="last" type="application/atom+xml" title="Atom feed of results" href="<?php echo $this->lastPage_XHTML; ?>" />
         <link rel="search" type="application/opensearchdescription+xml" href="<?php echo $host."/search/search/.xml"; ?>" title="Open Context Open Search Service" />
-        <!--
-        <link href="<?php echo $host; ?>/components/css/browse" rel="stylesheet" type="text/css" /> 
-        -->
+        
         <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
         <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
         <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
         <link href="<?php echo $host; ?>/css/opencontext-browse-rev2.css" rel="stylesheet" type="text/css" />
         
         <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
-        <style type="text/css">
-        
-            div.controlCell {
-                display:table-cell; text-align:center; vertical-align:middle;
-            }
-            div.resultCell {
-                display: table-cell;
-                text-align: left;
-                padding-left: 4px;
-                padding-right: 4px;
-                padding-top:8px;
-                padding-bottom:12px;
-            }
-            
-            div.colorRow {
-                display:table-row;
-                background-color: #fffdbe;
-            }
-            div.whiteRow {
-                display:table-row;
-            }
-            
-            .highlight
-            {
-            background: #CEDAEB;
-            color: #000000;
-            }
-            
-            .highlight_important
-            {
-            background: #F8DCB8;
-            color: #000000;
-            }
-            .snippet
-            {
-                color: #707070;
-                -ms-word-break: break-all;
-                word-break: break-all;
-                word-break: break-word;
-                -webkit-hyphens: auto;
-                -moz-hyphens: auto;
-                hyphens: auto;
-            }
-            
-        
-        </style>
         
         
         <script type="text/javascript">
@@ -284,6 +235,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                         <div id="filter_options">
                             <h3>Open Context Search</h3>
                             <p>Click on one of the links below to further limit your search results.</p>
+                            <div id="search_sort_block">
                             <!-- facet sorting options -->
                             <?php
                             
@@ -292,6 +244,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                             echo $SortOptionsObj->makeFacetSortLinks();
                             
                             ?>
+                            </div>
                         </div>
                         
                         <div id="all_facets">

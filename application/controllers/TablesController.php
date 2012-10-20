@@ -17,31 +17,31 @@ class tablesController extends Zend_Controller_Action
   
   
   public function indexAction(){
-    OpenContext_SocialTracking::update_referring_link('tables', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
-    $db_params = OpenContext_OCConfig::get_db_config();
-    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-    $db->getConnection();
-    $result=$db->fetchAll("SELECT * FROM dataset ORDER BY created_on DESC");
-    $page=$this->_getParam('page',1);
-    @$paginator = Zend_Paginator::factory($result);
-    if($paginator){
-      $paginator->setItemCountPerPage(10);
-      $paginator->setCurrentPageNumber($page);
-    }
-    $lastUpdate = strtotime(OpenContext_OCConfig::last_update());
-    $lastUpdate = strtotime("2010-05-20 17:40:33");
-    
-    foreach($paginator as $table){
-      $dataCurrent = true;
-      if($table['num_records'] != 'no' ){  
-        if($lastUpdate >=  strtotime($table['created_on'])){
-          $dataCurrent = OpenContext_TableOutput::tableCurrentCheck($table['cache_id'], $table['set_uri'], $table['num_records']);
+      OpenContext_SocialTracking::update_referring_link('tables', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
+      $db_params = OpenContext_OCConfig::get_db_config();
+      $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+      $db->getConnection();
+      $result=$db->fetchAll("SELECT * FROM dataset ORDER BY created_on DESC");
+      $page=$this->_getParam('page',1);
+      @$paginator = Zend_Paginator::factory($result);
+      if($paginator){
+        $paginator->setItemCountPerPage(10);
+        $paginator->setCurrentPageNumber($page);
+      }
+      $lastUpdate = strtotime(OpenContext_OCConfig::last_update());
+      $lastUpdate = strtotime("2010-05-20 17:40:33");
+      
+      foreach($paginator as $table){
+        $dataCurrent = true;
+        if($table['num_records'] != 'no' ){  
+          if($lastUpdate >=  strtotime($table['created_on'])){
+            $dataCurrent = OpenContext_TableOutput::tableCurrentCheck($table['cache_id'], $table['set_uri'], $table['num_records']);
+          }
         }
       }
-    }
-    
-    $this->view->all_tables=$paginator;
-    $db->closeConnection();
+      
+      $this->view->all_tables=$paginator;
+      $db->closeConnection();
   }
     
     
@@ -110,10 +110,10 @@ class tablesController extends Zend_Controller_Action
     OpenContext_SocialTracking::update_referring_link('tables', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
     
     if(!$this->_request->getParam('partID')){
-      $partID = false;
+        $partID = false;
     }
     else{
-      $partID = $this->_request->getParam('partID');
+        $partID = $this->_request->getParam('partID');
     }
     $this->view->partID = $partID;
     
@@ -140,15 +140,10 @@ class tablesController extends Zend_Controller_Action
       $tableObj->getByID($tableId);
       $tableObj->get_jsonFile();
       if($tableObj->get_jsonFile()){
-      //if($tableObj->get_json_urlFile()){
         $jsonString = $tableObj->jsonData;
         $jsonString = (string)$jsonString;
-        //echo "<br/>Memory: ".memory_get_usage() . "\n"; // 36640
         unset($tableObj);
-        //echo "<br/>Memory: ".memory_get_usage() . "\n"; // 36640
         $result = json_decode($jsonString, true);
-        //header('Content-Type: application/json; charset=utf8');
-        //echo $jsonString; // 36640
       }
       else{
         unset($tableObj);
@@ -173,11 +168,10 @@ class tablesController extends Zend_Controller_Action
       }
       $tableMetadata = OpenContext_TableOutput::noid_check($tableId, $tableMetadata);
       
-      
       $this->view->table_metadata = $tableMetadata; 
       $host = OpenContext_OCConfig::get_host_config();
       $this->view->google_link=generateAuthSubRequestLink($host."/tables/googleservice?tableid=".$tableId);
-      }
+    }
     else{
       //echo "Failure!";
       //echo "table id: $tableId";
