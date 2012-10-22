@@ -846,6 +846,8 @@ class Table {
 	 
 	 public $citeString; //string of HTML for citation
 	 public $citeURI; //citation URL for the table
+	 public $csvURI; //link to CSV representation of the table
+	 public $queryURL; //link to the query that makes the table
 	 
 	 //process table metadata for display
 	 function tableMetadataFormat($tableID, $table_metadata){
@@ -853,20 +855,21 @@ class Table {
 		  $host = OpenContext_OCConfig::get_host_config();
 		  //a few temporary hacks to 'fix' some bad data
 		  $table_metadata["table_name"] = str_replace(" Searh", " Search", $table_metadata["table_name"]);
+		  if(strlen($table_metadata["table_name"])<2){
+				$table_metadata["table_name"] = "[Not labeled, Records: ".$table_metadata["numFound"]."]";
+		  }
+		  
 		  $qLink = htmlentities($table_metadata['setURI']);
 		  if(!stristr($qLink, $host)){
 				$qLink = $host.$qLink;
 		  }
 		  else{
 				$qLink = str_replace('http://opencontext.org/createtab/setfields', $host.'/sets', $qLink);
-		  }		  
-		  $table_metadata['setURI'] = "<a href=\"".$qLink."\" title=\"Original query used to select these records\">".$qLink."</a>";
+		  }
 		  
-		  unset($table_metadata["uri"]);
-		  unset($table_metadata["setHash"]);
-		  unset($table_metadata["cache_id"]);
-		  
+		  $this->queryURL = $qLink; //link to query to create the table
 		  $this->showTabName = $table_metadata["table_name"];
+		  $this->checkCurrentData($tableID);
 		  
 		  
 		  $creatorArray = array();
@@ -915,12 +918,28 @@ class Table {
 		  $this->DCcontributors =  $contribArray;
 		  $this->showContributors = $contribArrayShow;
 		  
-		  $this->citeURI = $host."/tables/".OpenContext_TableOutput::tableID_toURL($tableID);
-		  $this->makeCitationString($table_metadata);
+		  $tableURLid = OpenContext_TableOutput::tableID_toURL($tableID);
+		  $this->citeURI = $host."/tables/".$tableURLid;
+		  $this->csvURI = $host."/tables/".$tableURLid.".csv";
 		  
+		  //now indicate links to other segments for download
+		  $this->tableSegments($tableID, $host, $table_metadata);
+		  
+		  //now format the table citation
+		  $this->makeCitationString($table_metadata);
+	 
+		  if(!isset($table_metadata["setLastPublished"])){
+				$table_metadata["setLastPublished"] = false;
+		  }
+		  if(!isset($table_metadata["setLastUpdate"])){
+				$table_metadata["setLastUpdate"] = false;
+		  }
+	 
+		  return $table_metadata;
 	 }//end function
 	 
 	 
+	 //make a bibliographic citation for the current table
 	 function makeCitationString($table_metadata){
 	 
 		  $citationString = "<p class=\"authors\">".implode(", ", $this->showContributors)."</p>".chr(13);
@@ -937,13 +956,74 @@ class Table {
 	 }
 	 
 	 
+	 public $showSegmentNote;
+	 
+	 //indicate other segments of the table (for large sets)
+	 function tableSegments($tableID, $host, $table_metadata){
+		  
+		  $numRecords = $table_metadata["numFound"];
+		  if(array_key_exists("table_segments", $table_metadata)){
+				$currentTab = $table_metadata["table_segments"]["currentTab"];
+				$recsPerTable = $table_metadata["table_segments"]["recsPerTable"];
+				$totalTab = $table_metadata["table_segments"]["totalTabs"];
+				$tableMin = (($currentTab -1 ) * $recsPerTable) + 1;
+				$tableMax = $currentTab * $recsPerTable;
+				if($tableMax > $numRecords){
+					 $tableMax = $numRecords;
+				}
+				$table_Part_Of = "This table is part ".$currentTab." of ".$totalTab.", containing ".$tableMin." to ".$tableMax." of ".$numRecords ." total records.";
+				$table_Part_Of .= "<br/>";
+				
+				$urlID = OpenContext_TableOutput::tableID_toURL($tableID);
+				if(stristr($urlID, "/")){
+					 $idArray = explode("/",$urlID);
+					 $idPrefix = $idArray[0];
+				}
+				else{
+					 $idPrefix = $urlID;
+				}
+				
+				if($currentTab > 1){
+					 $previousTabNum = $currentTab - 1;
+					 if($previousTabNum > 1){
+						  $previousTabID = "/".$previousTabNum;
+					 }
+					 else{
+						  $previousTabID = "";
+					 }
+					 $previousURL =  $host."/tables/".$idPrefix.$previousTabID;
+					 $table_Part_Of .= "(<a href=\"".$previousURL."\">Previous Part [$previousTabNum]</a>)";
+				}
+				
+				if($currentTab < $totalTab){
+					 $nextTabNum = $currentTab+1;
+					 $nextTabID = "/".$nextTabNum;
+					 $nextURL =  $host."/tables/".$idPrefix.$nextTabID;
+					 $table_Part_Of .= " (<a href=\"".$nextURL."\">Next Part [$nextTabNum]</a>)";
+				}
+				
+				if($totalTab < 2){
+					 $this->showSegmentNote = "This download has all $numRecords records.";
+				}
+				else{
+					 $this->showSegmentNote = $table_Part_Of;
+				}
+				
+		  }
+		  else{
+				$this->showSegmentNote = "This download has all $numRecords records.";
+		  }
+
+	 }//end function
+	 
+	 
+	 
     
     function checkCurrentData($tableID){
 		  $this->dataCurrent = true;
 		  $tableID = $this->security_check($tableID);
 		  //Give most recent table links
 		  $db_params = OpenContext_OCConfig::get_db_config();
-		  
 		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
 		  $db->getConnection();
 		 
@@ -967,6 +1047,47 @@ class Table {
 		  }
 	 }
 	 
+	 function otherTables($tableID){
+		  
+		  $host = OpenContext_OCConfig::get_host_config(); 
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  
+		  $select = $db->select()
+				->from(array('t' => 'dataset'),
+				array('cache_id', 'table_name', 'num_records'))
+				->where('cache_id != ?', $tableID)
+				->limit(5)
+				->order('created_on DESC');
+				
+				/*  
+				$sql = $select->__toString();
+				echo "$sql\n";
+				*/
+	 
+		  $stmt = $select->query();
+		  $result = $stmt->fetchAll();
+		  $output = array();
+		  if($result){
+				foreach($result as $row){
+					 $newRecord = array();
+					 $newRecord["num_records"] = $row["num_records"];
+					 $newRecord["cache_id"] = OpenContext_TableOutput::tableID_toURL($row["cache_id"]);
+					 $newRecord["uri"] = $host."/tables/".$newRecord["cache_id"];
+					 if(strlen($row["table_name"])<1){
+						  $newRecord["table_name"] = "[Not labeled, Records: ".$row["num_records"]." ]";
+					 }
+					 else{
+						  $newRecord["table_name"] = $row["table_name"];
+					 }
+					 $output[] = $newRecord;
+				}
+		  }
+		  
+		  $db->closeConnection();
+		  return $output;
+	 }
 	 
 	 
     

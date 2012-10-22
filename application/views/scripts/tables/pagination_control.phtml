@@ -3,6 +3,7 @@ See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
 -->
 <?php if ($this->pageCount): ?>
   <div class="paginator" style="text-align:right;">
+    Page through table records: 
   <!-- Previous page link -->
     <?php if (isset($this->previous)): ?>
       <a href="<?php echo $this->url.'?page='.$this->previous; ?>">&lt; Previous</a> 

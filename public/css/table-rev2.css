@@ -1,0 +1,94 @@
+/* Open Context Layout About */
+
+/*
+Content area: 1000px;
+Header blue: #003B66;
+Heaader grey: #666666;
+*/
+
+#main_content {
+	width: 90%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom: 2%;
+	min-height:400px;
+	display:table;
+	border-collapse: collapse;
+}
+#bottomBuffer{
+	width:100%;
+	padding:3%;
+}
+#intro-row {
+	display:table-row;
+}
+#intro-cell {
+	display:table-cell;
+	padding-right: 2%;
+}
+#csv-download {
+	margin-top: 5%;
+}
+#otabs-cell{
+	width: 25%;
+	display:table-cell;
+	vertical-align: top;
+}
+#otabs {
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	border: 4px solid #9FB6CD;
+	background-color: #F9F9F9;
+	display: block;
+	padding:2%;
+}
+
+
+#meta-area{
+	width: 90%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom: 2%;
+}
+#metadata {
+	border-collapse: collapse;
+	border: thin solid #fffdbe;
+}
+#metadata tr:nth-child(odd){
+	background-color:#fffdbe;
+}
+#metadata tr:nth-child(even){
+	background-color:#fff;
+}
+#metadata td {
+	padding: 2px;
+}
+
+#tab-area{
+	width: 90%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom: 5%;
+}
+.paginator { font-size:11px; padding:5px 0px 5px 0px;line-height:22px; margin:0px; text-align:center; }
+.paginator a:link, .paginator a:visited { padding:2px 6px; border:solid 1px #ccc; background:white; text-decoration:none; }
+.paginator a.showall { padding:0 !important; border:none !important; }
+.paginator a.showall:hover { color:#036 !important; background:transparent !important; }
+.paginator .end { border-width:2px !important; margin-right:6px; }
+.paginator .this-page { padding:2px 6px; font-weight:bold; font-size:13px; vertical-align:top; }
+.paginator a:hover { color:white; background:#5b80b2; border-color:#036; }
+
+.breadcrumb{margin:10px 0px 0px 20px;padding:0px;font-size:11px;}
+
+#tab-box {
+	border: 1px solid #9FB6CD;
+}
+.double-scroll{
+   width: 100%;
+}
+#tab-fields {
+	
+}
+

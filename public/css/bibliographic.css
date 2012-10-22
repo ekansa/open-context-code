@@ -5,7 +5,7 @@
 }
 .pub-date {
 	margin-right:3%;
-	width:12%;
+	min-width:12%;
 	float:left;
 }
 .ref-title-pub {
