@@ -12,6 +12,7 @@ Heaader grey: #666666;
 #item_top_tab {
 	display:table;
    border-collapse: collapse;
+	width:100%;
 }
 #item_top_row {
 	display:table-row;
@@ -19,6 +20,7 @@ Heaader grey: #666666;
 #item_top_icon_cell {
 	display:table-cell;
 	vertical-align: top;
+	width: 40px;
 }
 #item_top_name_cell {
 	display:table-cell;
@@ -31,6 +33,25 @@ Heaader grey: #666666;
 #item_top_name_cell h1{
 	font-size: medium;
 	line-height:95%;
+}
+#item_top_name_cell h2{
+	font-size: medium;
+}
+#item_top_pers_name_cell {
+	display:table-cell;
+	vertical-align:top;
+	text-align:left;
+	padding-left:1%;
+	padding-right:5%;
+	width: 50%;
+	line-height:90%;
+}
+#item_top_pers_name_cell h1{
+	font-size: medium;
+	line-height:95%;
+}
+#item_top_pers_name_cell h2{
+	font-size: medium;
 }
 #item_top_des_cell {
 	display:table-cell;
@@ -45,6 +66,7 @@ Heaader grey: #666666;
 	text-align: right;
 	vertical-align:top;
 }
+
 #main_description {
 	width:95%;
 	margin-top:10px;

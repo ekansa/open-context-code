@@ -49,8 +49,8 @@ class Person {
         $output = false; //no user
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
         
         $sql = 'SELECT *
                 FROM persons
@@ -63,27 +63,27 @@ class Person {
             $this->noid = $result[0]["noid"];
             $this->projectUUID = $result[0]["project_id"];
             $this->sourceID = $result[0]["source_id"];
-	    $this->itemUUID = $result[0]["person_uuid"];
-	    $this->label = $result[0]["combined_name"];
-	    
-	    $this->mimeType = self::default_mimeType;
-	    
-	    $this->viewCount = $result[0]["view_count"];
-	    $this->spViewCount = $result[0]["sp_view_count"];
-            $this->createdTime = $result[0]["created"];
-            $this->updatedTime = $result[0]["updated"];
-	    
-	    $this->atomFull = $result[0]["atom_entry"];
-	    $this->atomEntry = $result[0]["atom_entry"];
-	    $this->archaeoML = $result[0]["archaeoML"];
-	    
-	    $this->xhtml_rel = "alternate";
-	    $this->atom_rel = "self";
+				$this->itemUUID = $result[0]["person_uuid"];
+				$this->label = $result[0]["combined_name"];
+				
+				$this->mimeType = self::default_mimeType;
+				
+				$this->viewCount = $result[0]["view_count"];
+				$this->spViewCount = $result[0]["sp_view_count"];
+					  $this->createdTime = $result[0]["created"];
+					  $this->updatedTime = $result[0]["updated"];
+				
+				$this->atomFull = $result[0]["atom_entry"];
+				$this->atomEntry = $result[0]["atom_entry"];
+				$this->archaeoML = $result[0]["archaeoML"];
+				
+				$this->xhtml_rel = "alternate";
+				$this->atom_rel = "self";
 	    
             $output = true;
         }
         
-	$db->closeConnection();
+		  $db->closeConnection();
     
         return $output;
     }
@@ -91,20 +91,20 @@ class Person {
 
     function addViewCount(){
 	
-	$db_params = OpenContext_OCConfig::get_db_config();
+		  $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
 	
-	$view_count = $this->viewCount;
-	$view_count++; // increment it up one.
+		  $view_count = $this->viewCount;
+		  $view_count++; // increment it up one.
         $where_term = 'person_uuid = "'.$this->itemUUID.'"';
-	$data = array('view_count' => $view_count); 
-	$n = $db->update('persons', $data, $where_term);
+		  $data = array('view_count' => $view_count); 
+		  $n = $db->update('persons', $data, $where_term);
         $db->closeConnection();
 	
-	$this->viewCount = $view_count;
-	return $view_count;
+		  $this->viewCount = $view_count;
+		  return $view_count;
     }
 
     
@@ -112,32 +112,32 @@ class Person {
     //this function gets an item's Atom entry. It's used for making the general
     //feed read by the CDL's archival services.
     function getItemEntry($id){
-	$this->getByID($id);
-	$this->DOM_AtomCreate($this->archaeoML );
-	return $this->atomEntry;
+		  $this->getByID($id);
+		  $this->DOM_AtomCreate($this->archaeoML );
+		  return $this->atomEntry;
     }
     
     //this function gets an item's ArchaeoML. It's used for indexing in Solr
     function getItemXML($id){
-	$this->getByID($id);
-	return $this->archaeoML;
+		  $this->getByID($id);
+		  return $this->archaeoML;
     }
     
     
     //this function fixes XML for the latest schema
     function namespace_fix($xmlString){
 	
-	//$goodNamespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
-	$goodNamespaceURI = self::OC_namespaceURI;
-	
-	$old_namespaceURIs = array("http://about.opencontext.org/schema/person_schema_v1.xsd",
-				      "http://www.opencontext.org/database/schema/person_schema_v1.xsd");
-	
-	foreach($old_namespaceURIs as $oldNamespace){
-	    $xmlString = str_replace($oldNamespace, $goodNamespaceURI, $xmlString);
-	}
-	
-	return $xmlString;
+		  //$goodNamespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
+		  $goodNamespaceURI = self::OC_namespaceURI;
+		  
+		  $old_namespaceURIs = array("http://about.opencontext.org/schema/person_schema_v1.xsd",
+							  "http://www.opencontext.org/database/schema/person_schema_v1.xsd");
+		  
+		  foreach($old_namespaceURIs as $oldNamespace){
+				$xmlString = str_replace($oldNamespace, $goodNamespaceURI, $xmlString);
+		  }
+		  
+		  return $xmlString;
     }
     
     
@@ -145,23 +145,23 @@ class Person {
     
     function versionUpdate($id, $db = false){
 	
-	if(!$db){
-	    $db_params = OpenContext_OCConfig::get_db_config();
-	    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	    $db->getConnection();
-	    $this->setUTFconnection($db);
-	}
-	
-	$sql = 'SELECT archaeoML AS archaeoML
-                FROM persons
-                WHERE person_uuid = "'.$id.'"
-                LIMIT 1';
-		
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-	    $xmlString = $result[0]["archaeoML"];
-	    OpenContext_DeleteDocs::saveBeforeUpdate($id, "person", $xmlString);
-	}
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+		  }
+		  
+		  $sql = 'SELECT archaeoML AS archaeoML
+							FROM persons
+							WHERE person_uuid = "'.$id.'"
+							LIMIT 1';
+			  
+				 $result = $db->fetchAll($sql, 2);
+				 if($result){
+				$xmlString = $result[0]["archaeoML"];
+				OpenContext_DeleteDocs::saveBeforeUpdate($id, "person", $xmlString);
+		  }
 	
     }//end function
     
@@ -171,14 +171,14 @@ class Person {
         
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
-	
-	if(!$this->noid){
-	    $this->noid = false;
-	}
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+		  
+		  if(!$this->noid){
+				$this->noid = false;
+		  }
     
-	$data = array("noid" => $this->noid,
+		  $data = array("noid" => $this->noid,
 		      "project_id" => $this->projectUUID,
 		      "source_id" => $this->sourceID,
 		      "person_uuid" => $this->itemUUID,
@@ -190,83 +190,70 @@ class Person {
 		      "created" => $this->createdTime,
 		      );
 	
-	if($versionUpdate){
-	    $this->versionUpdate($this->itemUUID, $db); //save previous version history
-	    unset($data["created"]);
-	}
+		  if($versionUpdate){
+				$this->versionUpdate($this->itemUUID, $db); //save previous version history
+				unset($data["created"]);
+		  }
+		  
+		  if(!$this->archaeoML){
+				$this->archaeoML = $this->archaeoML;
+		  }
 	
-	if(!$this->archaeoML){
-	    $this->archaeoML = $this->archaeoML;
-	}
-	
-	if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
-	    /*
-	    This gets around size limits for inserting into MySQL.
-	    It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-	    */
-	    $bigString = new BigString;
-	    $bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "person", $this->archaeoML, $db);
-	    $data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
-	}
-	else{
-	    $data["archaeoML"] = $this->archaeoML;
-	}
-	
-	if(OpenContext_OCConfig::need_bigString($this->atomFull)){
-	    /*
-	    This gets around size limits for inserting into MySQL.
-	    It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-	    */
-	    $bigString = new BigString;
-	    $bigString->saveCurrentBigString($this->itemUUID, "atomFull", "person", $this->atomFull, $db);
-	    $data["atom_entry"] = OpenContext_OCConfig::get_bigStringValue();
-	}
-	else{
-	    $data["atom_entry"] = $this->atomFull;
-	}
-
-
-
-	$success = false;
-	try{
-	    $db->insert("persons", $data);
-	    $success = true;
-	}catch(Exception $e){
-	    $success = false;
-	    $where = array();
-	    $where[] = 'person_uuid = "'.$this->itemUUID.'" ';
-	    $db->update("persons", $data, $where);
-	    $success = $this->getByID($this->itemUUID);
-	}
-
-	$db->closeConnection();
-	return $success;
+		  if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
+				/*
+				This gets around size limits for inserting into MySQL.
+				It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+				*/
+				$bigString = new BigString;
+				$bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "person", $this->archaeoML, $db);
+				$data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
+		  }
+		  else{
+				$data["archaeoML"] = $this->archaeoML;
+		  }
+		  
+		  if(OpenContext_OCConfig::need_bigString($this->atomFull)){
+				/*
+				This gets around size limits for inserting into MySQL.
+				It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+				*/
+				$bigString = new BigString;
+				$bigString->saveCurrentBigString($this->itemUUID, "atomFull", "person", $this->atomFull, $db);
+				$data["atom_entry"] = OpenContext_OCConfig::get_bigStringValue();
+		  }
+		  else{
+				$data["atom_entry"] = $this->atomFull;
+		  }
+	  
+	  
+	  
+		  $success = false;
+		  try{
+				$db->insert("persons", $data);
+				$success = true;
+		  }catch(Exception $e){
+				$success = false;
+				$where = array();
+				$where[] = 'person_uuid = "'.$this->itemUUID.'" ';
+				$db->update("persons", $data, $where);
+				$success = $this->getByID($this->itemUUID);
+		  }
+	  
+		  $db->closeConnection();
+		  return $success;
     }//end function
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ 
     
     function nameSpaces(){
-	$nameSpaceArray = array("oc" => self::OC_namespaceURI,
+		  $nameSpaceArray = array("oc" => self::OC_namespaceURI,
 			   "dc" => OpenContext_OCConfig::get_namespace("dc"),
 			   "arch" => OpenContext_OCConfig::get_namespace("arch", "person"),
 			   "gml" => OpenContext_OCConfig::get_namespace("gml"),
 			   "kml" => OpenContext_OCConfig::get_namespace("kml"));
 	
-	return $nameSpaceArray;
+		  return $nameSpaceArray;
     }
     
     
