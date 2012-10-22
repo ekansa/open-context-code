@@ -15,15 +15,14 @@ public static function AboutNavMenu($activePage, $host = false){
     
    $pageArray = array("index"=> array("uri"=>"/about/", "name"=>"About", "title"=> "Introductory overview"),
                       "uses"=> array("uri"=>"/about/uses/", "name"=>"Uses", "title"=> "Research and instructional purposes"),
+                      "publishing"=> array("uri"=>"/about/publishing", "name"=>"Publishing", "title"=> "Policies and instructions on how to publish with Open Context"),
+                       "estimate"=> array("uri"=>"/about/estimate", "name"=>"Grant Seekers", "title"=> "Help with preparing grants, including the NSF Data Access Plan"),
                       "concepts"=> array("uri"=>"/about/concepts", "name"=>"Concepts", "title"=> "Ontologies and data models"),
                       "technology"=> array("uri"=>"/about/technology", "name"=>"Technology", "title"=> "Software applications and standards"),
                       "services"=> array("uri"=>"/about/services", "name"=>"Services", "title"=> "Machine-readable data and interoperability"),
-                      "publishing"=> array("uri"=>"/about/publishing", "name"=>"Publishing", "title"=> "Policies and instructions on how to publish with Open Context"),
-                      "estimate"=> array("uri"=>"/about/estimate", "name"=>"Grant Seekers", "title"=> "Help with preparing grants, including the NSF Data Access Plan"),
                       "biblio"=> array("uri"=>"/about/bibliography", "name"=>"Bibliography", "title"=> "Publications related to Open Context"),
                       "privacy"=> array("uri"=>"/about/privacy", "name"=>"Privacy", "title"=> "Open Context's Privacy Policy"),
                       "ip"=> array("uri"=>"/about/intellectual-property", "name"=>"Intellectual Property", "title"=> "Open Context's IP Recommendations"),
-                      "blog"=> array("uri"=>"http://ux.opencontext.org/blog/", "name"=>"Weblog", "title"=> "Open Context project weblog"),
                       "people"=> array("uri"=>"/about/people", "name"=>"People", "title"=> "Editors and software developers"),
                       "sponsors"=> array("uri"=>"/about/sponsors", "name"=>"Sponsors", "title"=> "Funding and organizational partners")
                       );

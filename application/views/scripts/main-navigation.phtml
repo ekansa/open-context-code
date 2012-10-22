@@ -33,6 +33,10 @@ $navTabArray = array("index"=> array("uri"=>"/",
                                        "name"=> "Details",
                                        "title"=> "Use the Browse or Lightbox feature and select an item for detailed view",
                                         "active"=> false),
+                      "blog"=> array("uri"=>"http://ux.opencontext.org/blog/",
+                                       "name"=> "Weblog",
+                                       "title"=> "Heritage Bytes Blog: News and Updates about Open Context",
+                                        "active"=> false),
                       "accounts"=> array("uri"=>"/auth/",
                                        "name"=> "My Account",
                                        "title"=> "Manage your password and notification settings",
@@ -110,7 +114,13 @@ else{
             //$element->setAttribute("class", "headerNavTabLink");
         }
         $elementA = $dom->createElement("a");
-        $elementA->setAttribute("href", $host.$tabData["uri"]);
+        if(!stristr($tabData["uri"], "http://")){
+            $elementA->setAttribute("href", $host.$tabData["uri"]);
+        }
+        else{
+            $elementA->setAttribute("href", $tabData["uri"]);
+        }
+        
         $elementA->setAttribute("title", $tabData["title"]);
         $elementAtext = $dom->createTextNode($tabData["name"]);
         $elementA->appendChild($elementAtext);
