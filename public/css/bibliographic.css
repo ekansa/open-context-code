@@ -29,3 +29,9 @@ div.ref-links {
 	display: block;
 	width:100%;
 }
+ul.orcid-pubs {
+	list-style: none;
+}
+ul.orcid-pubs li {
+	margin-bottom: 2%;
+}

@@ -157,11 +157,11 @@ class Person {
 							WHERE person_uuid = "'.$id.'"
 							LIMIT 1';
 			  
-				 $result = $db->fetchAll($sql, 2);
-				 if($result){
-				$xmlString = $result[0]["archaeoML"];
-				OpenContext_DeleteDocs::saveBeforeUpdate($id, "person", $xmlString);
-		  }
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+			  $xmlString = $result[0]["archaeoML"];
+			  OpenContext_DeleteDocs::saveBeforeUpdate($id, "person", $xmlString);
+		 }
 	
     }//end function
     
@@ -452,6 +452,45 @@ class Person {
 	}//end make spatialAtomCreate function
     
     
+	 
+	 public function addLinkedData($personXML_string, $predicateURI, $objectURI){
+		  $person_dom = new DOMDocument("1.0", "utf-8");
+		  $person_dom->loadXML($personXML_string);
+		  $person_dom->formatOutput = true;
+		  $xpath = new DOMXpath($person_dom);
+			  
+		  // Register OpenContext's namespace
+		  $xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "person"));
+		  $xpath->registerNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "person"));
+		  $xpath->registerNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		  
+		  $query = "//oc:metadata/oc:links";
+		  $linksNodeList = $xpath->query($query, $person_dom);
+		  
+		  if($linksNodeList->item(0) == null){
+				$query = "//oc:metadata";
+				$metadataNodeList = $xpath->query($query, $person_dom);
+				$metadataNode = $metadataNodeList->item(0);
+				$linksNode = $person_dom->createElement("oc:links");
+				$metadataNode->appendChild($linksNode);
+		  }
+		  else{
+				$linksNode = $linksNodeList->item(0);
+		  }
+		  
+		  $query = "//oc:metadata/oc:links/oc:link[@rel='$predicateURI' and text()= '$objectURI']";
+		  $sameNodeList = $xpath->query($query, $person_dom);
+		  if($sameNodeList->item(0)  == null){
+				$linkNode = $person_dom->createElement("oc:link");
+				$linkNode->setAttribute("rel", $predicateURI);
+				$linkText = $person_dom->createTextNode($objectURI);
+				$linkNode->appendChild($linkText);
+				$linksNode->appendChild($linkNode);
+		  }
+		  
+		  $personXML_string = $person_dom->saveXML();
+		  return $personXML_string;
+	 }
     
     
     
@@ -707,25 +746,25 @@ class Person {
     
     function db_find_personID($personName){
 	
-	$personID = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	
-	$sql = "SELECT persons.person_uuid
-	FROM persons
-	WHERE persons.project_id = '".$this->projectUUID."'
-	AND persons.combined_name LIKE '%".$personName."%'	
-	LIMIT 1;
-	";
-	
-	$result = $db->fetchAll($sql, 2);
-        if($result){
-	    $personID = $result[0]["person_uuid"];
-	}
-	
-	$db->closeConnection();
-	return $personID;
+		  $personID = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  
+		  $sql = "SELECT persons.person_uuid
+		  FROM persons
+		  WHERE persons.project_id = '".$this->projectUUID."'
+		  AND persons.combined_name LIKE '%".$personName."%'	
+		  LIMIT 1;
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+				 if($result){
+				$personID = $result[0]["person_uuid"];
+		  }
+		  
+		  $db->closeConnection();
+		  return $personID;
     }
     
     

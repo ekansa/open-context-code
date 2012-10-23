@@ -11,7 +11,7 @@ class ORCID {
 public $orcID;
 public $profileObj; //object from JSON response
 public $APIresponse;
-const APIuri = "http://orcid.org/"; //base uri API
+const APIuri = "http://pub.orcid.org/"; //base uri API
 
 
 //get an ORCID from an ORCID URI
@@ -23,68 +23,35 @@ function uriToORCID($orcidURI){
 function getProfile($orcidURI){
     $this->uriToORCID($orcidURI);
     $jsonString = false;
-    $jsonString = $this->APIgetProfile();
-    if(!$jsonString){
-        return false;
-    }
-    else{
-        $this->profileObj = Zend_Json::decode($jsonString);
-        if(!$this->profileObj){
-            $response = $this->APIresponse;
-            $jsonString = $response->getBody();
-            $jsonString = $this->gzdecode($jsonString);
-            $this->profileObj = Zend_Json::decode($jsonString);
-            if(!$this->profileObj){
-                $this->profileObj = "no decode";
-                return false;
-            }
-            else{
-                 return true;
-            }
-        }
-        else{
-            return true;
-        }
-    }
+    return $this->APIgetProfile();
 }
 
 
 //this function gets a public profile
-function APIgetProfile($bodyOnly = true){
+function APIgetProfile(){
 
-    $requestURI = self::APIuri.$this->orcID."/orcid-record";
+    $requestURI = self::APIuri.$this->orcID."/orcid-profile";
    
     $client = new Zend_Http_Client($requestURI);
     $client->setHeaders('Accept', 'application/orcid+json');
     
     $response = $client->request("GET"); //send the request, using the POST method
-    $this->APIresponse = $response;
-    if(!$response){
-        //error in API request
-        return false;
+    if($response){
+        $this->APIresponse = $response;
+        return $response;
     }
     else{
-        //good request
-        if(!$bodyOnly){
-            return $response;
-        }
-        else{
-            return $response->getBody();
-        }
+        return fals;
     }
-   
 }
 
 
-function gzdecode($data){
-  $g=tempnam('/tmp','ff');
-  @file_put_contents($g,$data);
-  ob_start();
-  readgzfile($g);
-  $d=ob_get_clean();
-  return $d;
-}
 
+function returnResponse($response){
+    
+    header("Content-Type: application/json; charset=utf8");
+    echo $response->getBody();
+}
 
 
 }//end class

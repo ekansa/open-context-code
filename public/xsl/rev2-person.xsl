@@ -180,14 +180,35 @@
 										<div id="proj-all-des">
 											<h5>Description</h5>
 											
-												<div id="proj-abstract">
+												<div id="abstract">
 														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:notes/arch:note) = 0" >
-															<p class="bodyText">(This item has no additional notes)</p>
+															<p id="no-notes" class="bodyText">(This item has no additional notes)</p>
 														</xsl:if>
 														
 														<xsl:for-each select="atom:feed/atom:entry/arch:person/arch:notes/arch:note">
 															<div class="bodyText"><xsl:value-of select="arch:string" disable-output-escaping="yes" /></div><br/>
 														</xsl:for-each>
+														
+														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/oc:metadata/oc:links/oc:link) != 0" >
+																<div id="person-links">
+																		<xsl:for-each select="atom:feed/atom:entry/arch:person/oc:metadata/oc:links/oc:link">
+																			<h5>Linked Data:
+																				<a>
+																						<xsl:attribute name="class">person-link</xsl:attribute>
+																						<xsl:attribute name="id">plink-<xsl:value-of select="position()"/></xsl:attribute>
+																						<xsl:attribute name="rel"><xsl:value-of select="@rel"/></xsl:attribute>
+																						<xsl:attribute name="href"><xsl:value-of select="."/></xsl:attribute>
+																						<xsl:value-of select="."/>
+																				</a>
+																			</h5>
+																			<div>
+																				<xsl:attribute name="id">plink-data-<xsl:value-of select="position()"/></xsl:attribute>
+																				<br/>
+																			</div>
+																		</xsl:for-each>
+																</div>
+														</xsl:if>
+														
 												</div>
 												
 										</div>
@@ -262,7 +283,7 @@
 										
 										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:properties/arch:property[oc:show_val/text()]) !=0 ">
 												<div class="properties">
-														<h5>Project Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:person/arch:properties/arch:property[oc:show_val/text()])"/> properties)</h5>
+														<h5>Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:person/arch:properties/arch:property[oc:show_val/text()])"/> properties)</h5>
 														<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
 																<thead>
 																		<tr>

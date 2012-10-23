@@ -142,6 +142,9 @@ class personsController extends Zend_Controller_Action
 				$this->_helper->viewRenderer->setNoRender();
 				header('Content-type: application/xml', true);
 				
+				//$person->archaeoML = $person->addLinkedData($person->archaeoML, "http://xmlns.com/foaf/0.1/isPrimaryTopicOf", "http://orcid.org/0000-0001-7920-5321");
+				//OpenContext_NewDocs::personAdd($person->archaeoML);
+				
 				$XML = simplexml_load_string($person->archaeoML);
 				$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($person->projectUUID, $XML, $person->nameSpaces());
 				$person->archaeoML = $XML->asXML();

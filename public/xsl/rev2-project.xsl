@@ -181,7 +181,7 @@
 										<div id="proj-all-des">
 											<h5>Project / Collection Overview</h5>
 											
-												<div id="proj-abstract">
+												<div id="abstract">
 														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:notes/arch:note) = 0" >
 															<p class="bodyText">(This item has no additional notes)</p>
 														</xsl:if>
