@@ -104,8 +104,6 @@ class personsController extends Zend_Controller_Action
 		  }
 		
 	}//end atom function
-        
-    
     
     public function jsonAction() {
 		  // get the person uuid from the uri

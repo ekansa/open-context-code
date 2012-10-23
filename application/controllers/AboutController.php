@@ -10,7 +10,29 @@ ini_set("max_execution_time", "0");
 
 class aboutController extends Zend_Controller_Action
 {   
-      
+    
+	  public function orcAction(){
+		  $this->_helper->viewRenderer->setNoRender();
+		  $ORCID = new ORCID;
+		  $success = $ORCID->getProfile("http://orcid.org/0000-0001-5620-4764");
+		  
+		  echo print_r($ORCID);
+		  
+		  header('Content-type: application/json', true);
+		  echo Zend_Json::decode($ORCID->profileObj);
+		
+		  /*  
+		  if($success){
+				header('Content-type: application/json', true);
+				echo Zend_Json::decode($ORCID->profileObj);
+		  }
+		  else{
+				echo "FRAK!";
+		  }
+		  */
+	 }
+	 
+	  
     public function indexAction()
     {
 		  OpenContext_SocialTracking::update_referring_link('about', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
