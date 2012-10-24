@@ -470,7 +470,16 @@ class Person {
 		  if($linksNodeList->item(0) == null){
 				$query = "//oc:metadata";
 				$metadataNodeList = $xpath->query($query, $person_dom);
-				$metadataNode = $metadataNodeList->item(0);
+				if($metadataNodeList->item(0) == null){
+					 $query = "//arch:person";
+					 $personNodeList = $xpath->query($query, $person_dom);
+					 $personNode = $personNodeList->item(0);
+					 $metadataNode = $person_dom->createElement("oc:metadata");
+					 $personNode->appendChild($metadataNode);
+				}
+				else{
+					 $metadataNode = $metadataNodeList->item(0);
+				}
 				$linksNode = $person_dom->createElement("oc:links");
 				$metadataNode->appendChild($linksNode);
 		  }

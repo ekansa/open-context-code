@@ -49,7 +49,7 @@ class Property {
         $output = false; //no user
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		$db->getConnection();
+		  $db->getConnection();
         
         $sql = 'SELECT *
                 FROM properties 
@@ -112,40 +112,40 @@ class Property {
     //this function gets an item's Atom entry. It's used for making the general
     //feed read by the CDL's archival services.
     function getItemEntry($id){
-	$this->getByID($id);
-	$this->DOM_AtomCreate($this->archaeoML );
-	return $this->atomEntry;
+		  $this->getByID($id);
+		  $this->DOM_AtomCreate($this->archaeoML );
+		  return $this->atomEntry;
     }
     
     //this function gets an item's ArchaeoML. It's used for indexing in Solr
     function getItemXML($id){
-	$this->getByID($id);
-	return $this->archaeoML;
+		  $this->getByID($id);
+		  return $this->archaeoML;
     }
     
     
     //this function fixes XML for the latest schema
     function namespace_fix($xmlString, $field, $db, $doUpdate = true){
 	
-	//$goodNamespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
-	$goodNamespaceURI = self::OC_namespaceURI;
-	
-	$old_namespaceURIs = array("http://about.opencontext.org/schema/property_schema_v1.xsd",
-				      "http://www.opencontext.org/database/schema/property_schema_v1.xsd");
-	
-	foreach($old_namespaceURIs as $oldNamespace){
-	    if(stristr($xmlString, $oldNamespace)){
-		$xmlString = str_replace($oldNamespace, $goodNamespaceURI, $xmlString);
-		if($doUpdate){
-		    $where = array();
-		    $where[] = "property_uuid = '".$this->itemUUID."' ";
-		    $data = array($field => $xmlString);
-		    $db->update("properties", $data, $where);
-		}
-	    }
-	}
-	
-	return $xmlString;
+		  //$goodNamespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
+		  $goodNamespaceURI = self::OC_namespaceURI;
+		  
+		  $old_namespaceURIs = array("http://about.opencontext.org/schema/property_schema_v1.xsd",
+							  "http://www.opencontext.org/database/schema/property_schema_v1.xsd");
+		  
+		  foreach($old_namespaceURIs as $oldNamespace){
+				if(stristr($xmlString, $oldNamespace)){
+			  $xmlString = str_replace($oldNamespace, $goodNamespaceURI, $xmlString);
+			  if($doUpdate){
+					$where = array();
+					$where[] = "property_uuid = '".$this->itemUUID."' ";
+					$data = array($field => $xmlString);
+					$db->update("properties", $data, $where);
+			  }
+				}
+		  }
+		  
+		  return $xmlString;
     }
     
     
@@ -155,22 +155,22 @@ class Property {
     
     function versionUpdate($id, $db = false){
 	
-	if(!$db){
-	    $db_params = OpenContext_OCConfig::get_db_config();
-	    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	    $db->getConnection();
-	}
-	
-	$sql = 'SELECT prop_archaeoml AS archaeoML
-                FROM properties
-                WHERE property_uuid = "'.$id.'"
-                LIMIT 1';
-		
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-	    $xmlString = $result[0]["archaeoML"];
-	    OpenContext_DeleteDocs::saveBeforeUpdate($id, "property", $xmlString);
-	}
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+		  }
+		  
+		  $sql = 'SELECT prop_archaeoml AS archaeoML
+							FROM properties
+							WHERE property_uuid = "'.$id.'"
+							LIMIT 1';
+			  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$xmlString = $result[0]["archaeoML"];
+				OpenContext_DeleteDocs::saveBeforeUpdate($id, "property", $xmlString);
+		  }
 	
     }//end function
     
@@ -180,7 +180,7 @@ class Property {
         
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
     
 	$data = array(//"noid" => $this->noid,
 		      "project_id" => $this->projectUUID,
@@ -610,6 +610,32 @@ class Property {
     
     
     
+	 function documentProperties($itemXMLstring, $nameSpaceArray, $db = false){
+	
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+		  }
+		  
+		  
+		  $itemXML = simplexml_load_string($itemXMLstring);
+		  
+		  foreach($nameSpaceArray as $prefix => $uri){
+				@$itemXML->registerXPathNamespace($prefix, $uri);
+		  }
+			
+		  foreach($itemXML->xpath("//arch:properties/arch:property") as $property){
+				
+				
+				
+		  }
+		  
+		  
+	 }
+	 
+	 
+	 
     
     
     

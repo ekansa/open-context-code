@@ -793,6 +793,8 @@ class OpenContext_XMLtoItems {
 			$actPropData = array();
 			$actPropData["project_id"] = $projectUUID;
 			$actPropData["source_id"] = $sourceID;
+			$actVarData = $actPropData;
+			$actValData = $actPropData;
 					
 			foreach($act_prop->xpath("oc:propid") as $act_prop_result){
 				$actPropData["property_uuid"] = $act_prop_result."";
@@ -824,11 +826,17 @@ class OpenContext_XMLtoItems {
 				}
 			}
 			
+			if($act_prop->xpath("oc:var_label")){
+				foreach($act_prop->xpath("oc:var_label" as $act_prop_result){
+					$actPropData["value_uuid"] = $act_prop_result."";
+				}
+			}
+			
 			$propData[] = $actPropData;
 			unset($actPropData);
 		}
 		
-		return array("props"=>$propData);
+		return array("props"=>$propData, "vars" => $varData, "vals" => $valData);
 	}
 	
 	
