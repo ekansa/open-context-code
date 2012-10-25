@@ -610,7 +610,7 @@ class Property {
     
     
     
-	 function documentProperties($itemXMLstring, $nameSpaceArray, $db = false){
+	 function documentProperties($projectUUID, $sourceID, $itemUUID, $itemType, $itemXMLstring, $nameSpaceArray, $db = false){
 	
 		  if(!$db){
 				$db_params = OpenContext_OCConfig::get_db_config();
@@ -620,18 +620,28 @@ class Property {
 		  
 		  
 		  $itemXML = simplexml_load_string($itemXMLstring);
-		  
 		  foreach($nameSpaceArray as $prefix => $uri){
 				@$itemXML->registerXPathNamespace($prefix, $uri);
 		  }
-			
-		  foreach($itemXML->xpath("//arch:properties/arch:property") as $property){
-				
-				
-				
+		  
+		  //deal with observations first
+		  OpenContext_XMLtoItems::obs_props_Retrieve($projectUUID, $sourceID, $itemUUID, $itemType, $itemXML, $db);
+		  
+		  //now add properties, variables, and values.
+		  $dataToAdd = OpenContext_XMLtoItems::itemPropsRetrieve($projectUUID, $sourceID, $itemXML);
+		  
+		  $keyArray = array("props" => "properties", "vars" => "var_tab", "vals" => "val_tab");
+		  
+		  foreach($dataToAdd as $key => $dataRecs){
+				$table = $keyArray[$key];
+				foreach($dataRecs as $data){
+					 try {
+						  $db->insert($table, $data);
+					 } catch (Exception $e) {
+    
+					 }
+				}
 		  }
-		  
-		  
 	 }
 	 
 	 

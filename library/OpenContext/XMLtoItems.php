@@ -500,6 +500,7 @@ class OpenContext_XMLtoItems {
 		if ($itemXML->xpath("//arch:observation")) {   //case where properties are in observations
 			foreach ($itemXML->xpath("//arch:observation") as $act_obs){
 				
+				$obsNumber = 1;
 				if($act_obs->xpath("@obsNumber")){
 					foreach($act_obs->xpath("@obsNumber") as $obsNumber){
 						$obsNumber = $obsNumber +0;
@@ -795,6 +796,9 @@ class OpenContext_XMLtoItems {
 			$actPropData["source_id"] = $sourceID;
 			$actVarData = $actPropData;
 			$actValData = $actPropData;
+			
+			$doVal = true;
+					
 					
 			foreach($act_prop->xpath("oc:propid") as $act_prop_result){
 				$actPropData["property_uuid"] = $act_prop_result."";
@@ -802,16 +806,14 @@ class OpenContext_XMLtoItems {
 			
 			foreach($act_prop->xpath("arch:variableID") as $act_prop_result){
 				$actPropData["variable_uuid"] = $act_prop_result."";
-			}
-			
-			foreach($act_prop->xpath("arch:variableID") as $act_prop_result){
-				$actPropData["variable_uuid"] = $act_prop_result."";
+				$actVarData["variable_uuid"] = $actPropData["variable_uuid"];
 			}
 			
 			
 			if($act_prop->xpath("arch:valueID")){
 				foreach($act_prop->xpath("arch:valueID") as $act_prop_result){
 					$actPropData["value_uuid"] = $act_prop_result."";
+					$actValData["value_uuid"] = $actPropData["value_uuid"];
 				}
 			}
 			else{
@@ -822,18 +824,46 @@ class OpenContext_XMLtoItems {
 					}
 					foreach($act_prop->xpath("arch:decimal") as $act_prop_result){
 						$actPropData["val_num"] = $act_prop_result."";
-					}	
+					}
+					$doVal = false;
+					
+					if(($act_prop->xpath("arch:integer/@href"))||($act_prop->xpath("arch:decimal/@href"))){
+						foreach($act_prop->xpath("arch:integer/@href") as $act_prop_result){
+							$actVarData["unitURI"] = $act_prop_result."";
+						}
+						foreach($act_prop->xpath("arch:decimal/@href") as $act_prop_result){
+							$actVarData["unitURI"] = $act_prop_result."";
+						}
+					}
 				}
 			}
 			
 			if($act_prop->xpath("oc:var_label")){
-				foreach($act_prop->xpath("oc:var_label" as $act_prop_result){
-					$actPropData["value_uuid"] = $act_prop_result."";
+				foreach($act_prop->xpath("oc:var_label") as $act_prop_result){
+					$actVarData["var_label"] = $act_prop_result."";
+				}
+			}
+			if($act_prop->xpath("oc:var_label/@type")){
+				foreach($act_prop->xpath("oc:var_label/@type") as $act_prop_result){
+					$actVarData["var_type"] = $act_prop_result."";
+					$actVarData["var_type"] = strtolower($actVarData["var_type"]);
+				}
+			}
+			if($act_prop->xpath("oc:show_val")){
+				foreach($act_prop->xpath("oc:show_val") as $act_prop_result){
+					$actValData["val_text"] = $act_prop_result."";
 				}
 			}
 			
+			
 			$propData[] = $actPropData;
 			unset($actPropData);
+			$varData[] = $actVarData;
+			unset($actVarData);
+			if($doVal){
+				$valData[] = $actValData;
+			}
+			unset($actValData);
 		}
 		
 		return array("props"=>$propData, "vars" => $varData, "vals" => $valData);
