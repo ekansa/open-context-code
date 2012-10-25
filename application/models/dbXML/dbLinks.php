@@ -5,14 +5,60 @@ class dbXML_dbLinks  {
    
     public $doRecip; //do reciprical links
    
-    public $contain_hash;
-    public $children; //array of child items
-    public $containment; //array of parent items, ranked top to lowest parent
-    public $defaultContainOnly; //only look for 1 containment tree for parents
+    public $links;
+    public $spaceLinks; //array of spatial items
+    public $mediaLinks; //array of media items
+    public $personLinks; //array of linked persons
+    public $documentLinks; //array of linked diary / narrative / document items
+    
+    public $contributors; //array of Dublin Core contributor people
+    public $creators; //array of Dublin Core creator people
+    
+    //useful data for first linked spatial item
+    /*
+    public $firstSpaceUUID; //uuid of the first space UUID
+    public $f_geoLat;
+    public $f_geoLon;
+    public $f_geoGML;
+    public $f_geoKML;
+    public $f_geoSource;
+    public $f_geoSourceName;
+    public $f_chronoArray;
+    */
+    public $firstSpaceObj; //object for the first space item
+    public $projRootSpaceObj; //object for the first project root item
+    
+    //possible roles for people linked to an observation
+    //that get counted as a Dublin Core "creator"
+    public $relToCreator = array("Principle Investigator",
+				 "Directed by",
+				 "Director",
+				 "Editor",
+				 "Co-Editor");
+    
+    //possible roles for people linked to an observation
+    //that get counted as a Dublin Core "contributor"
+    public $relToContributor = array("Observer",
+				     "Creator",
+				     "Principle Author / Analyst",
+				     "Editor",
+				     "Curator",
+				     "o_Creator",
+				     "Illustrator",
+				     "Recorded by",
+				     "Analyst",
+				     "Photographed by",
+				     "Catalogued by",
+				     "Excavated by",
+					 "Area supervisor"
+					 );
     
     public $dbName;
     public $dbPenelope;
     public $db;
+    
+    
+    
     
     public function initialize($db = false){
         if(!$db){
@@ -23,67 +69,767 @@ class dbXML_dbLinks  {
         
         $this->db = $db;
         $this->doRecip = false;
+		  $this->links = false;
+		  $this->spaceLinks = false;
+		  $this->mediaLinks = false;
+		  $this->personLinks = false;
+		  $this->firstSpaceObj = false;
+		  $this->projRootSpaceObj = false;
+		  $this->contributors = false;
+		  $this->creators = false;
+		  $this->documentLinks = false;
     }
     
-    public function getLinks($id){
+    public function getLinks($id, $obsNumbers = false){
         
-        if($this->dbPenelope){
-            $found = $this->pen_getFromOrigin($id);
-        }
-        else{
-            $found = $this->oc_getFromOrigin($id);
+		  if(!is_array($obsNumbers)){
+				$obsNumbers = array(0 => false);
+		  }
+	
+		  foreach($obsNumbers as $obs){
+				
+				if(strlen($obs)<1){
+					 $obs = false;
+				} 
+				$this->getSpaceFromOrigin($id, $obs);
+				$this->getMediaFromOrigin($id, $obs);
+				$this->getPersonsFromOrigin($id, $obs);
+				$this->getDocumentsFromOrigin($id, $obs);
+		  }
+		  
+		  $this->getMediaFromOrigin($id); //now with no observation limits
+		  //$this->getDocumentsFromOrigin($id);
+    }
+    
+    
+    
+    public function getPersonsFromOrigin($id, $obs = false){
+        $found = false;
+        $db = $this->db;
+
+		  if(!$obs){
+				$obsTerm = "";
+		  }
+		  else{
+				$obsTerm = " AND links.origin_obs = $obs ";
+		  }
+		  
+		  $sql = "SELECT links.targ_uuid, links.link_type, links.targ_obs,
+		  persons.combined_name, persons.last_name, persons.first_name, persons.mid_init
+		  FROM links 
+		  JOIN persons ON persons.person_uuid = links.targ_uuid
+		  WHERE links.origin_uuid = '".$id."'
+		  AND (links.targ_type LIKE '%person%'  )
+		  $obsTerm
+
+		  ";
+
+		  //echo $sql;
+        $result = $db->fetchAll($sql, 2);
+		  
+        if($result){
+	    
+				if(!$obs){
+					 $obsNum = 1;
+				}
+				else{
+					 $obsNum = $obs;
+				}
+	    
+            $oldLinks = $this->links;
+				if(!is_array($oldLinks)){
+					 $oldLinks = array();
+					 $oldLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $oldLinks)){
+						  $oldLinks[$obsNum] = array();
+					 }
+				}
+				$personLinks = $this->personLinks;
+				if(!is_array($personLinks)){
+					 $personLinks = array();
+					 $personLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $personLinks)){
+						  $personLinks[$obsNum] = array();
+					 }
+				}
+				$contributors = $this->contributors;
+				if(!is_array($contributors)){
+					 $contributors = array();
+				}
+				$creators = $this->creators;
+				if(!is_array($personLinks)){
+					 $creators = array();
+				}
+				
+				foreach($result as $row){
+		
+					 $linkedUUID = $row["targ_uuid"];
+					 $linkType = $row["link_type"];
+					 $linkedName = $row["combined_name"];
+					 
+					 $citationType = false;
+					 foreach($this->relToContributor as $contribType){
+						  if(stristr($linkType, $contribType)){
+								$citationType = "contributor";
+								if(!array_key_exists($linkedUUID, $contributors)){
+									 $contributors[$linkedUUID] = $linkedName;
+									 $this->contributors = $contributors;
+								}
+						  }
+					 }
+					 foreach($this->relToCreator as $createType){
+						  if(stristr($linkType, $createType)){
+								$citationType = "creator";
+								if(is_array($creators)){
+									 if(!array_key_exists($linkedUUID, $creators)){
+										  $creators[$linkedUUID] = $linkedName;
+										  $this->creators = $creators;
+									 }
+								}
+						  }
+					 }
+		
+					 $actPersonLinkArray = array("linkedName" => $linkedName,
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID,
+									 "cite" => $citationType
+									 );
+		
+					 $obsHash = sha1($obs.$linkedUUID.$linkType);
+					 if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+						  $oldLinks[$obsNum][$obsHash] = array("type" => "person",
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID);
+					 }
+					 if(!array_key_exists($obsHash, $personLinks[$obsNum])){
+						  $personLinks[$obsNum][$obsHash] = $actPersonLinkArray;
+					 }
+				
+				}//end loop
+	    
+				$this->links = $oldLinks;
+				$this->personLinks = $personLinks;
         }
         
         return $found;
-    }
+    } //end function
     
-    public function pen_getSpaceFromOrigin($id, $obs = false){
+    
+    
+    public function getDocumentsFromOrigin($id, $obs = false){
         $found = false;
         $db = $this->db;
         
-        $sql = "SELECT *
-        FROM w_links 
-        JOIN w_space ON w_space.uuid = w_links.targ_uuid
-        WHERE w_links.origin_uuid = '".$id."'
-        ORDER BY 
-        ";
-        
+	
+		 
+		  if(!$obs){
+				$obsTerm = "";
+		  }
+		  else{
+				$obsTerm = " AND links.origin_obs = $obs ";
+		  }
+		  
+		  $sql = "SELECT links.targ_uuid, links.link_type, links.targ_obs,
+		  diary.diary_label
+		  FROM links 
+		  JOIN diary ON diary.uuid = links.targ_uuid
+		  WHERE links.origin_uuid = '".$id."'
+		  AND (links.targ_type LIKE '%diary%' OR links.targ_type LIKE '%narrative%' OR links.targ_type LIKE '%document%' )
+		  $obsTerm
+		  ORDER BY diary.diary_label	
+		  ";
+		 
+		  
+		  //echo $sql;
+	
         $result = $db->fetchAll($sql, 2);
         if($result){
-            $this->projectUUID = $result[0]["fk_project_uuid"];
-            $this->sourceID = $result[0]["tab_name"];
-            $this->contain_hash = $result[0]["hash_fcntxt"];
-            $this->classID = $result[0]["class_uuid"];
-	    $this->label = $result[0]["space_label"];
-            $this->classLabelGet($this->classID);
+	    
+				if(!$obs){
+					 $obsNum = 1;
+				}
+				else{
+					 $obsNum = $obs;
+				}
+	    
+            $oldLinks = $this->links;
+				if(!is_array($oldLinks)){
+					 $oldLinks = array();
+					 $oldLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $oldLinks)){
+						  $oldLinks[$obsNum] = array();
+					 }
+				}
+				$documentLinks = $this->documentLinks;
+				if(!is_array($documentLinks)){
+					 $documentLinks = array();
+					 $documentLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $documentLinks)){
+						  $documentLinks[$obsNum] = array();
+					 }
+				}
+	    
+				foreach($result as $row){
+			 
+					 $linkedUUID = $row["targ_uuid"];
+					 $linkType = $row["link_type"];
+					 $linkedName = $row["diary_label"];
+					 
+					 $actDocLinkArray = array("linkedName" => $linkedName,
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID);
+					 
+					 $obsHash = sha1($obs.$linkedUUID.$linkType);
+					 if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+						  $oldLinks[$obsNum][$obsHash] = array("type" => "resource",
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID);
+					 }
+					 if(!array_key_exists($obsHash, $documentLinks[$obsNum])){
+						  $documentLinks[$obsNum][$obsHash] = $actDocLinkArray;
+					 }
+			 
+				}//end loop
+	    
+				$this->links = $oldLinks;
+				$this->documentLinks = $documentLinks;
         }
         
         return $found;
-    }
+    } //end function
     
-    public function oc_itemGet(){
+    
+    
+    
+    public function getMediaFromOrigin($id, $obs = false){
         $found = false;
         $db = $this->db;
         
-        $sql = "SELECT *
-        FROM space
-        WHERE uuid = '".$this->itemUUID."' ";
+		  if(!$obs){
+				$obsTerm = "";
+		  }
+		  else{
+				$obsTerm = " AND links.origin_obs = $obs ";
+		  }
+		  
+		  $sql = "SELECT links.targ_uuid, links.link_type, links.targ_obs,
+		  resource.res_label, resource.res_archml_type, resource.mime_type,
+		  resource.ia_thumb, resource.ia_preview, resource.ia_fullfile, labeling_options.labelVarUUID
+		  FROM links 
+		  JOIN resource ON resource.uuid = links.targ_uuid
+		  LEFT JOIN labeling_options ON (resource.source_id = labeling_options.source_id
+					 AND resource.project_id = labeling_options.project_id
+					 AND labeling_options.doc_type LIKE '%media%'
+					 AND labeling_options.relType = 'link')
+		  
+		  WHERE links.origin_uuid = '".$id."'
+		  AND (links.targ_type LIKE '%media%' OR links.targ_type LIKE '%resource%' )
+		  $obsTerm
+		  ORDER BY resource.res_number, resource.res_label	
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		 
+        if($result){
+	    
+				if(!$obs){
+					 $obsNum = 1;
+				}
+				else{
+					 $obsNum = $obs;
+				}
+	    
+				$oldLinks = $this->links;
+				if(!is_array($oldLinks)){
+					 $oldLinks = array();
+					 $oldLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $oldLinks)){
+						  $oldLinks[$obsNum] = array();
+					 }
+				}
+	    
+				$mediaLinks = $this->mediaLinks;
+				if(!is_array($mediaLinks)){
+					 $mediaLinks = array();
+					 $mediaLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $mediaLinks)){
+						  $mediaLinks[$obsNum] = array();
+					 }
+				}
+	    
+				foreach($result as $row){
+		
+					 $linkedUUID = $row["targ_uuid"];
+					 $linkType = $row["link_type"];
+					 $linkedName = $row["res_label"];
+					 $archaeoMLtype = $row["res_archml_type"];
+					 $thumbURI = $row["ia_thumb"];
+					 $labelVarUUID = $row["labelVarUUID"];
+					 
+					 $actMediaLinkArray = array("linkedName" => $linkedName,
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID,
+									 "archaeoMLtype" => $archaeoMLtype,
+									 "thumbURI" => $thumbURI);
+					 
+					 if(strlen($labelVarUUID)>1){
+						  $sql = "SELECT val_tab.val_text
+						  FROM observe
+						  JOIN properties ON observe.property_uuid = properties.property_uuid
+						  JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
+						  WHERE observe.subject_uuid = '$linkedUUID'
+						  AND properties.variable_uuid = '$labelVarUUID'
+						  LIMIT 1;
+						  ";
+						  
+						  $resultB = $db->fetchAll($sql, 2);
+						  if($resultB){
+								$actMediaLinkArray["descriptor"] = $resultB[0]["val_text"];
+						  }
+					 }
+		
+					 $obsHash = sha1($obsNum.$linkedUUID.$linkType);
+					 if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+						  $oldLinks[$obsNum][$obsHash] = array("type" => "resource",
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID);
+					 }
+					 if(!array_key_exists($obsHash, $mediaLinks[$obsNum])){
+						  $mediaLinks[$obsNum][$obsHash] = $actMediaLinkArray;
+					 }
+					 
+				}//end loop
+					  
+				$this->links = $oldLinks;
+				$this->mediaLinks = $mediaLinks;
+		  }
+			
+		  return $found;
+    } //end function
+    
+    
+    
+    
+    
+    public function getSpaceFromOrigin($id, $obs = false){
+        $found = false;
+        $db = $this->db;
         
+		  if(!$obs){
+				$obsTerm = "";
+		  }
+		  else{
+				$obsTerm = " AND links.origin_obs = $obs ";
+		  }
+		  
+		  $sql = "SELECT links.targ_uuid, links.link_type, links.targ_obs, space.class_uuid, space.space_label
+		  FROM links 
+		  JOIN space ON space.uuid = links.targ_uuid
+		  WHERE links.origin_uuid = '".$id."'
+		  AND (links.targ_type LIKE '%locations%' OR links.targ_type LIKE '%spatial%' OR links.targ_type LIKE '%space%')
+		  $obsTerm
+		  ORDER BY space.class_uuid, space.label_sort, space.space_label
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  
+		  if($result){
+		  
+				if(!$obs){
+					 $obsNum = 1;
+				}
+				else{
+					 $obsNum = $obs;
+				}
+				
+				$oldLinks = $this->links;
+				if(!is_array($oldLinks)){
+					 $oldLinks = array();
+					 $oldLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $oldLinks)){
+						  $oldLinks[$obsNum] = array();
+					 }
+				}
+				$spaceLinks = $this->spaceLinks;
+				if(!is_array($spaceLinks)){
+					 $spaceLinks = array();
+					 $spaceLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $spaceLinks)){
+						  $spaceLinks[$obsNum] = array();
+					 }
+				}
+		  
+				foreach($result as $row){
+		 
+					 $linkedUUID = $row["targ_uuid"];
+					 $linkType = $row["link_type"];
+					 $linkedName = $row["space_label"];
+					 $classUUID = $row["class_uuid"];
+					 
+					 $spaceObj = $this->getSpaceData($linkedUUID);
+					 
+					 $fullContain = array();
+					 $containArray = $spaceObj->containment;
+					 foreach($containArray as $treeKey => $containArray){
+						  foreach($containArray as $containItem){
+								$containObj = new dbXML_dbSpace;
+								$containObj->initialize($db);
+								$containObj->dbPenelope = true;
+								$containObj->getByID($containItem);
+								$fullContain[$treeKey][] = array("itemUUID" => $containItem,
+												 "label" => $containObj->label,
+												 "className" => $containObj->className,
+												 "smallClassIcon" => $containObj->smallClassIcon
+												 );
+						  }
+					 }
+		 
+					 $actSpLinkArray = array("linkedName" => $linkedName,
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID,
+									 "classID" => $classUUID,
+									 "className" => $spaceObj->className,
+									 "largeClassIcon" => $spaceObj->largeClassIcon,
+									 "smallClassIcon" => $spaceObj->smallClassIcon,
+									 "containment" => $fullContain
+									 );
+		 
+					 if(!$this->firstSpaceObj){
+						  $this->firstSpaceObj = $actSpLinkArray;
+					 }
+		 
+					 unset($spaceObj);
+					 //$actSpLinkArray = $this->classLinkLabelGet($classUUID, $actSpLinkArray);
+		 
+					 $obsHash = sha1($obs.$linkedUUID.$linkType);
+					 if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+						  $oldLinks[$obsNum][$obsHash] = array("type" => "spatialUnit",
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID);
+					 }
+					 if(!array_key_exists($obsHash, $spaceLinks[$obsNum])){
+						  $spaceLinks[$obsNum][$obsHash] = $actSpLinkArray;
+					 }
+		 
+				}//end loop
+		  
+				$this->links = $oldLinks;
+				$this->spaceLinks = $spaceLinks;
+		  }
+        return $found;
+    } //end function
+    
+    
+    public function getSpaceFromTarg($id, $obs = false){
+        $found = false;
+        $db = $this->db;
+
+		  if(!$obs){
+				$obsTerm = "";
+		  }
+		  else{
+				$obsTerm = " AND links.targ_obs = $obs ";
+		  }
+		  
+		  $sql = "SELECT links.origin_uuid, links.link_type, links.origin_obs, space.class_uuid, space.space_label
+		  FROM links 
+		  JOIN space ON space.uuid = links.origin_uuid
+		  WHERE links.targ_uuid = '".$id."'
+		  AND (links.origin_type LIKE '%locations%' OR links.origin_type LIKE '%spatial%' OR links.origin_type LIKE '%space%')
+		  $obsTerm
+		  ORDER BY space.class_uuid, space.label_sort,  space.space_label
+		  ";
+	
+	
         $result = $db->fetchAll($sql, 2);
         if($result){
-            $this->projectUUID = $result[0]["project_id"];
-            $this->sourceID = $result[0]["source_id"];
-            $this->contain_hash = $result[0]["contain_hash"];
-            $this->classID = $result[0]["class_uuid"];
-	    $this->label = $result[0]["space_label"];
-            $this->classLabelGet($this->classID);
+	    
+				if(!$obs){
+					 $obsNum = 1;
+				}
+				else{
+					 $obsNum = $obs;
+				}
+	    
+            $oldLinks = $this->links;
+				if(!is_array($oldLinks)){
+					 $oldLinks = array();
+					 $oldLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $oldLinks)){
+						  $oldLinks[$obsNum] = array();
+					 }
+				}
+				$spaceLinks = $this->spaceLinks;
+				if(!is_array($spaceLinks)){
+					 $spaceLinks = array();
+					 $spaceLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $spaceLinks)){
+						  $spaceLinks[$obsNum] = array();
+					 }
+				}
+	    
+				foreach($result as $row){
+			  
+					 $linkedUUID = $row["origin_uuid"];
+					 $linkType = $row["link_type"];
+					 $linkedName = $row["space_label"];
+					 $classUUID = $row["class_uuid"];
+					 $spaceObj = $this->getSpaceData($linkedUUID);
+					 
+					 $fullContain = array();
+					 $containArray = $spaceObj->containment;
+					 foreach($containArray as $treeKey => $containArray){
+						  foreach($containArray as $containItem){
+								$containObj = new dbXML_dbSpace;
+								$containObj->initialize($db);
+								$containObj->dbPenelope = true;
+								$containObj->getByID($containItem);
+								$fullContain[$treeKey][] = array("itemUUID" => $containItem,
+												 "label" => $containObj->label,
+												 "className" => $containObj->className,
+												 "smallClassIcon" => $containObj->smallClassIcon
+												 );
+								 }
+						  }
+		
+						  $actSpLinkArray = array("linkedName" => $linkedName,
+										  "linkType" => $linkType,
+										  "linkedUUID" => $linkedUUID,
+										  "classID" => $classUUID,
+										  "className" => $spaceObj->className,
+										  "largeClassIcon" => $spaceObj->largeClassIcon,
+										  "smallClassIcon" => $spaceObj->smallClassIcon,
+										  "containment" => $fullContain
+										  );
+		
+						  if(!$this->firstSpaceObj){
+								$this->firstSpaceObj = $actSpLinkArray;
+						  }
+		
+		
+						  unset($spaceObj);
+						  //$actSpLinkArray = $this->classLinkLabelGet($classUUID, $actSpLinkArray);
+				  
+						  $obsHash = sha1($obs.$linkedUUID.$linkType);
+						  if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+								$oldLinks[$obsNum][$obsHash] = array("type" => "spatialUnit",
+										  "linkType" => $linkType,
+										  "linkedUUID" => $linkedUUID);
+						  }
+						  if(!array_key_exists($obsHash, $spaceLinks[$obsNum])){
+								$spaceLinks[$obsNum][$obsHash] = $actSpLinkArray;
+						  }
+		
+					 }//end loop
+	    
+				$this->links = $oldLinks;
+				$this->spaceLinks = $spaceLinks;
         }
         
         return $found;
-    }
+    }//end function
+    
+    
+    public function makeProjRootLinks($rootIDs){
+		  $db = $this->db;
+		  
+		  if($this->dbPenelope && is_array($rootIDs)){
+	    
+				$obsNum = 1; //main obs
+				$oldLinks = $this->links;
+				if(!is_array($oldLinks)){
+					  $oldLinks = array();
+					  $oldLinks[$obsNum] = array();
+				}
+				else{
+					  if(!array_key_exists($obsNum, $oldLinks)){
+							$oldLinks[$obsNum] = array();
+					  }
+				}
+				$spaceLinks = $this->spaceLinks;
+				if(!is_array($spaceLinks)){
+					 $spaceLinks = array();
+					 $spaceLinks[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $spaceLinks)){
+						  $spaceLinks[$obsNum] = array();
+					 }
+				}
+	    
+				foreach($rootIDs as $rootID){
+			  
+					 $sql = "SELECT space.class_uuid, space.space_label
+					 FROM space
+					 WHERE space.uuid = '".$rootID."'
+					 ORDER BY space.label_sort
+					 ";
+					 
+					 $result = $db->fetchAll($sql, 2);
+					 if($result){
+						  $obs = 1; //root main obs
+						  $row = $result[0];
+						  $linkedUUID = $rootID;
+						  $linkType = "project root";
+						  $linkedName = $row["space_label"];
+						  $classUUID = $row["class_uuid"];
+						  $spaceObj = $this->getSpaceData($linkedUUID);
+						  
+						  $fullContain = array();
+						  $containArray = $spaceObj->containment;
+						  foreach($containArray as $treeKey => $containArray){
+								foreach($containArray as $containItem){
+									 $containObj = new dbXML_dbSpace;
+									 $containObj->initialize($db);
+									 $containObj->dbPenelope = true;
+									 $containObj->getByID($containItem);
+									 $fullContain[$treeKey][] = array("itemUUID" => $containItem,
+												"label" => $containObj->label,
+												"className" => $containObj->className,
+												"smallClassIcon" => $containObj->smallClassIcon
+												);
+								}
+						  }
+					
+						  $actSpLinkArray = array("linkedName" => $linkedName,
+									 "linkType" => $linkType,
+									 "linkedUUID" => $linkedUUID,
+									 "classID" => $classUUID,
+									 "className" => $spaceObj->className,
+									 "largeClassIcon" => $spaceObj->largeClassIcon,
+									 "smallClassIcon" => $spaceObj->smallClassIcon,
+									 "containment" => $fullContain
+									 );
+					
+						  //$actSpLinkArray = $this->classLinkLabelGet($classUUID, $actSpLinkArray);
+						  if(!$this->projRootSpaceObj){
+								$this->projRootSpaceObj = $actSpLinkArray;
+						  }
+					
+						  $obsHash = sha1($obs.$linkedUUID.$linkType);
+						  if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+								$oldLinks[$obsNum][$obsHash] = array("type" => "spatialUnit",
+										  "linkType" => $linkType,
+										  "linkedUUID" => $linkedUUID);
+						  }
+						  if(!array_key_exists($obsHash, $spaceLinks[$obsNum])){
+								$spaceLinks[$obsNum][$obsHash] = $actSpLinkArray;
+						  }
+					 }
+				}//end loop
+				
+				$this->links = $oldLinks;
+				$this->spaceLinks = $spaceLinks;
+		  }
+	
+    }//end funciton
+    
+    
+    public function makeProjPersonLinks($projectUUID){
+		  $db = $this->db;
+		  
+		  if($this->dbPenelope){
+				
+				$sql = "SELECT DISTINCT links.targ_uuid, 
+				persons.combined_name, persons.last_name, persons.first_name, persons.mid_init
+				FROM links 
+				JOIN persons ON persons.uuid = links.targ_uuid
+				WHERE links.project_id = '".$projectUUID."'
+				AND links.targ_type LIKE 'person'
+				
+				UNION
+				
+				SELECT DISTINCT links.targ_uuid, 
+				users.combined_name, users.last_name, users.first_name, users.mid_init
+				FROM links 
+				JOIN users ON users.uuid = links.targ_uuid
+				WHERE links.project_id = '".$projectUUID."'
+				AND links.targ_type LIKE 'person'
+				
+				";
+				
+				$result = $db->fetchAll($sql, 2);
+				if($result){
+					 $obsNum = 1; //main obs
+					 $oldLinks = $this->links;
+					 if(!is_array($oldLinks)){
+						  $oldLinks = array();
+						  $oldLinks[$obsNum] = array();
+					 }
+					 else{
+						  if(!array_key_exists($obsNum, $oldLinks)){
+								$oldLinks[$obsNum] = array();
+						  }
+					 }
+			  
+					 $personLinks = $this->personLinks;
+					 if(!is_array($personLinks)){
+						  $personLinks = array();
+						  $personLinks[$obsNum] = array();
+					 }
+					 else{
+						  if(!array_key_exists($obsNum, $personLinks)){
+								$personLinks[$obsNum] = array();
+						  }
+					 }
+			  
+					 foreach($result as $row){
+						  
+						  $linkedUUID = $row["targ_uuid"];
+						  $linkType = "Project Participant";
+						  $citationType = false;
+						  $linkedName = $row["combined_name"];
+						  
+						  $actPersonLinkArray = array("linkedName" => $linkedName,
+									"linkType" => $linkType,
+									"linkedUUID" => $linkedUUID,
+									"cite" => $citationType
+									);
+						  
+						  $obsHash = sha1($obsNum.$linkedUUID.$linkType);
+						  if(!array_key_exists($obsHash, $oldLinks[$obsNum])){
+								$oldLinks[$obsNum][$obsHash] = array("type" => "person",
+										  "linkType" => $linkType,
+										  "linkedUUID" => $linkedUUID);
+						  }
+						  if(!array_key_exists($obsHash, $personLinks[$obsNum])){
+								$personLinks[$obsNum][$obsHash] = $actPersonLinkArray;
+						  }
+						  
+					 }//end loop
+			  
+					 $this->links = $oldLinks;
+					 $this->personLinks = $personLinks;
+				}
+		  }
+	
+    }//end funciton
+    
+    
+    
     
     //same for both penelope and open context
-    public function classLabelGet($classID){
+    public function classLinkLabelGet($classID, $linkArray = false){
         $db = $this->db;
         
         $sql = "SELECT *
@@ -94,119 +840,32 @@ class dbXML_dbLinks  {
         
         $result = $db->fetchAll($sql, 2);
         if($result){
-            $this->className = $result[0]["class_label"];
-            $this->largeClassIcon = $result[0]["class_icon"];
-            $this->smallClassIcon = $result[0]["sm_class_icon"];
-        }
-    }
-    
-    
-    public function getChildren(){
-        if($this->dbPenelope){
-            $this->pen_getChildren();
-        }
-        else{
-            $this->oc_getChildren();
-        }
-    }
-    
-    public function pen_getChildren(){
-        $db = $this->db;
-        
-        $parentID = $this->itemUUID;
-        
-        $sql = "SELECT w_space_contain.child_uuid as itemUUID, w_space.class_uuid as classID, w_space.space_label as label
-        FROM w_space_contain
-        JOIN w_space ON space.uuid = w_space_contain.child_uuid
-        WHERE parent_uuid = '".$parentID."'
-        ";
-        
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-            $this->children = $result;
-        }
-        else{
-            $this->children = false;
-        }
-    
-    }
-    
-    public function oc_getChildren(){
-        $db = $this->db;
-        
-        $parentID = $this->itemUUID;
-        
-        $sql = "SELECT space_contain.child_uuid as itemUUID, space.class_uuid as classID, space.space_label as label
-        FROM space_contain
-        JOIN space ON space.uuid = space_contain.child_uuid
-        WHERE space_contain.parent_uuid = '".$parentID."'
-        ORDER BY space.class_uuid, space.space_label
-        ";
-        
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-            $this->children = $result;
-        }
-        else{
-            $this->children = false;
-        }
-    
-    }
-    
-    
-    public function getParents(){
-        $this->getNextParent($this->itemUUID);
-    }
-    
-    
-    public function getNextParent($actChild){
-        $db = $this->db;
-        
-        if($this->dbPenelope){
-            $sql = "SELECT parent_uuid
-            FROM w_space_contain
-            WHERE child_uuid = '".$actChild."'
-            ";
-        }
-        else{
-            $sql = "SELECT parent_uuid
-            FROM space_contain
-            WHERE child_uuid = '".$actChild."'
-            ";
-        }
-        
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-            $oldContain = $this->containment;
-            $newContain = array();
-            $i = 1;
-            foreach($result as $row){
-                $newParent = $row["parent_uuid"];
-                
-                if(!stristr($newParent, "root")){ //no root items in tree
-                    if(is_array($oldContain)){
-                        foreach($oldContain as $treeName => $treeItems){
-                            $newContain[$treeName][] =  $newParent; //add the new parent, it's at index 0, the first in list
-                            foreach($treeItems as $olderItem){
-                                $newContain[$treeName][] = $olderItem; //add the older parents items after the new parent
-                            }
-                        }
-                    }
-                    else{
-                        $treeName= "default";
-                        $newContain[$treeName][0] =  $newParent;
-                    } 
-                    
-                    $this->containment = $newContain;
-                    $this->getNextParent($newParent);
-                }
-                
-                $i++;
-                if($i>1){
-                    break;
-                }
-            }
-        }//end case with parents
+				if(is_array($linkArray)){
+					 $linkArray["className"] = $result[0]["class_label"];
+					 $linkArray["largeClassIcon"] = $result[0]["class_icon"];
+					 $linkArray["smallClassIcon"] = $result[0]["sm_class_icon"];
+					 return $linkArray;
+				}
+				else{
+					 return $result[0]["class_label"];
+				}
+		  }
+		  else{
+				return false;
+		  }
     }//end function
+    
+    
+    public function getSpaceData($spaceUUID){
+		  $spaceObj = new dbXML_dbSpace;
+		  $spaceObj->initialize($this->db);
+		  $spaceObj->dbPenelope = $this->dbPenelope;
+		  $spaceObj->getByID($spaceUUID);
+		  $spaceObj->getParents();
+		  $spaceObj->getGeo();
+		  $spaceObj->getChrono();
+		  
+		  return $spaceObj;
+    }
     
 }  
