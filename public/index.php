@@ -223,6 +223,15 @@ $router->addRoute('allAtom', $allAtomRoute);
 $propViewRoute = new Zend_Controller_Router_Route('properties/:property_uuid', array('controller' => 'properties', 'action' => 'view'));
 // Add it to the router
 $router->addRoute('propertiesView', $propViewRoute); // 'subjects refers to a unique route name
+
+$propXMLRoute = new Zend_Controller_Router_Route_Regex('properties/(.*)\.xml',
+                                                array('controller' => 'properties', 'action' => 'xml'),
+                                                array(1 => 'property_uuid'), 'properties/%s.xml');
+
+// add it to the router
+$router->addRoute('propertiesXML', $propXMLRoute);
+
+
 // person atom
 $propAtomRoute = new Zend_Controller_Router_Route_Regex('properties/(.*)\.atom',
                                                 array('controller' => 'properties', 'action' => 'atom'),
@@ -230,6 +239,14 @@ $propAtomRoute = new Zend_Controller_Router_Route_Regex('properties/(.*)\.atom',
 
 // add it to the router
 $router->addRoute('propertiesAtom', $propAtomRoute);
+
+$propJSONRoute = new Zend_Controller_Router_Route_Regex('properties/(.*)\.json',
+                                                array('controller' => 'properties', 'action' => 'json'),
+                                                array(1 => 'property_uuid'), 'properties/%s.json');
+
+// add it to the router
+$router->addRoute('propertiesJSON', $propJSONRoute);
+
 
 
 
