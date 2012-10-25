@@ -152,7 +152,8 @@
 								</div>
 								<div id="item_top_pers_name_cell">
 										<h1><xsl:value-of select="atom:feed/atom:entry/arch:person/arch:name/arch:string"/></h1>
-										<h2>Project: <xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:project_name"/></h2>
+										<h2>Project: <a><xsl:attribute name="href">../projects/<xsl:if test="//arch:person/@ownedBy !=0"><xsl:value-of select="//arch:person/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="//arch:person/oc:metadata/oc:project_name"/></a>
+										</h2>
 								</div>       
 								
 								<div id="item_top_view_cell">Number of Views: <strong><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:social_usage/oc:item_views[@type!='spatialCount']/oc:count"/></strong>
