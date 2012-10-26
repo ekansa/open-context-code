@@ -337,7 +337,7 @@ class lightboxController extends Zend_Controller_Action {
 	$output = array("numFound" => $SolrSearch->numFound,
 			"offset" => $SolrSearch->offset,
 			"published" => $SolrSearch->lastPublished,
-			"updateed" => $SolrSearch->lastUpdate,
+			"updated" => $SolrSearch->lastUpdate,
 			"sorting" => $SolrSearch->sortType,
 			"summary" => $summaryObj,
 			"facets" => $FacetURLs->FacetURLs,
