@@ -662,49 +662,49 @@ class OpenContext_FacetQuery {
 			}//end case with taxonomies to query
 				
 		
-		//add any taxonomy parameters to the facet query
-		if ($taxa_fq_string && $param_array["fq"]) {
-			$param_array["fq"] .= $taxa_fq_string;
-		} elseif ($taxa_fq_string && !$param_array["fq"]) {
-			$param_array["fq"] = substr($taxa_fq_string, 3); //  if we're not appending to an existing $param_array['fq'] ,remove the leading '&& '
-		}
+			//add any taxonomy parameters to the facet query
+			if ($taxa_fq_string && $param_array["fq"]) {
+				$param_array["fq"] .= $taxa_fq_string;
+			} elseif ($taxa_fq_string && !$param_array["fq"]) {
+				$param_array["fq"] = substr($taxa_fq_string, 3); //  if we're not appending to an existing $param_array['fq'] ,remove the leading '&& '
+			}
 		
 		
 		
 		
-				// array to store tags. we'll use this to help build the query for solr
-				$tag = array();
+			// array to store tags. we'll use this to help build the query for solr
+			$tag = array();
+			
+			// string to store the tag filter query (fq) for solr
+			$tag_fq_string = null;
+			
+			// TAGS
+			//$tag_array = $param_array['tag'];
+			$tag_array = OpenContext_FacetQuery::test_param_key("tag", $requestParams);
+			if (($tag_array) && (is_array($tag_array))) {
+				foreach ($tag_array as $tag) {
+					$tag_fq_string .= OpenContext_FacetQuery::ORparser("user_tag", $tag, true, true, true, false);
+				}         
+			}//end case of tags
 				
-				// string to store the tag filter query (fq) for solr
-				$tag_fq_string = null;
-				
-				// TAGS
-				//$tag_array = $param_array['tag'];
-				$tag_array = OpenContext_FacetQuery::test_param_key("tag", $requestParams);
-				if (($tag_array) && (is_array($tag_array))) {
-					foreach ($tag_array as $tag) {
-			$tag_fq_string .= OpenContext_FacetQuery::ORparser("user_tag", $tag, true, true, true, false);
-					}         
-				}//end case of tags
-				
 		
 		
-		//Linked Data, search by URI of linking relationship (predicate)
-		$linkRelation = OpenContext_FacetQuery::test_param_key("relURI", $requestParams);
-		if($linkRelation){
-			//treat as array of linked URIs (to use same code)
-			$requestParams["rel"][]= $linkRelation;
-		}
-		
-		//Linked Data search by target URI
-		$linkTarget = OpenContext_FacetQuery::test_param_key("targURI", $requestParams);
-		if($linkTarget){
-			if ($param_array["fq"]) {
-			$param_array["fq"] .= OpenContext_FacetQuery::ORparser("top_lent_taxon", $linkTarget, true, true, true, false);
-					} else {
-						$param_array["fq"] = OpenContext_FacetQuery::ORparser("top_lent_taxon", $linkTarget, false, true, true, false);
-					}
-		}
+			//Linked Data, search by URI of linking relationship (predicate)
+			$linkRelation = OpenContext_FacetQuery::test_param_key("relURI", $requestParams);
+			if($linkRelation){
+				//treat as array of linked URIs (to use same code)
+				$requestParams["rel"][]= $linkRelation;
+			}
+			
+			//Linked Data search by target URI
+			$linkTarget = OpenContext_FacetQuery::test_param_key("targURI", $requestParams);
+			if($linkTarget){
+				if ($param_array["fq"]) {
+					$param_array["fq"] .= OpenContext_FacetQuery::ORparser("top_lent_taxon", $linkTarget, true, true, true, false);
+				} else {
+					$param_array["fq"] = OpenContext_FacetQuery::ORparser("top_lent_taxon", $linkTarget, false, true, true, false);
+				}
+			}
 		
 		//linkedData search by URI for relation, and target (if "::"), we'll skip or queries for now
 		$act_relations_fields = false;
@@ -738,6 +738,38 @@ class OpenContext_FacetQuery {
 			
 			}//end loop through linking relations
 			
+		}
+		
+		
+		$rangeData = OpenContext_FacetQuery::test_param_key("range", $requestParams);
+		if($rangeData){
+			if(!is_array($rangeData)){
+				$rangeData = array($rangeData);
+			}
+			foreach($rangeData as $rangeFieldSettings){
+				if(stristr($rangeFieldSettings, "::") && stristr($rangeFieldSettings, ",")){
+					$rangeFieldParams = explode("::", $rangeFieldSettings);
+					$rawSettings = $rangeFieldParams[count($rangeFieldParams)-1]; //the last item in the array
+					$rangeField = str_replace("::".$rawSettings, "", $rangeFieldSettings); //the actual field name
+					if(substr_count($rawSettings, ",") >= 2){
+						$settings = explode(",", $rawSettings);
+						if(count($settings) == 3){
+							$rangeField = sha1($rangeField)."_tax_dec";
+						}
+						elseif(count($settings) == 4){
+							$rangeField = sha1($rangeField)."_tax_cal";
+							$settings[0] = date("Y-m-d", strtotime($settings[0]));
+							$settings[0] = $settings[0]."T00:00:00.001Z";
+							$settings[1] = date("Y-m-d", strtotime($settings[1]));
+							$settings[1] = $settings[1]."T00:00:00.001Z";
+						}
+						$param_array["facet.range"][] = $rangeField;
+						$param_array["f.".$rangeField.".facet.range.start"] = $settings[0]; //1st number in the settings array as start
+						$param_array["f.".$rangeField.".facet.range.end"] = $settings[1]; //2nd number in the settins array as end
+						$param_array["f.".$rangeField.".facet.range.gap"] = $settings[2]; //3rd number in the settins array as gap
+					}
+				}
+			}
 		}
 		
 		
