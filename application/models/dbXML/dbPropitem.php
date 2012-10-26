@@ -284,17 +284,12 @@ class dbXML_dbPropitem  {
     
     public function propertySummary(){
 	
-		  if($this->dbPenelope){
-				$subjectTypeArray = $this->pen_obsItemTypes;  
-		  }
-		  else{
-				$subjectTypeArray = $this->oc_obsItemTypes;
-		  }
+		  $subjectTypeArray = $this->pen_obsItemTypes;  
 		  $varType = $this->varType;
 		  
 		  if($varType == "integer" || $varType == "decimal" || stristr($varType, "calend")){
 				foreach($subjectTypeArray as $subjectType => $value){
-			  $this->getNumericSummary($subjectType);
+					 $this->getNumericSummary($subjectType);
 				}
 		  }
 		  elseif($varType == "boolean" || $varType == "ordinal" || stristr($varType, "nominal")){
