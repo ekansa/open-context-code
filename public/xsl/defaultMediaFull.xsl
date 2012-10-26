@@ -131,9 +131,11 @@
 <xsl:attribute name="href">http://opencontext.org/media/<xsl:value-of select="arch:resource/@UUID"/>.atom</xsl:attribute>
 </link>
 
-<link href="/css/default_banner.css" rel="stylesheet" type="text/css" />
-<link href="/css/default_media.css" rel="stylesheet" type="text/css" />
-<link href="/css/opencontext_style.css" rel="stylesheet" type="text/css" />
+<link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+<link href="/css/subject-rev2.css" rel="stylesheet" type="text/css" />
+<link href="/css/general-item-rev2.css" rel="stylesheet" type="text/css" />
 
 <link typeof="ocsem:media">
 		<xsl:attribute name="href">http://opencontext.org/media/<xsl:value-of select="arch:resource/@UUID"/>/full</xsl:attribute>
@@ -144,98 +146,196 @@
 
 <body>
 
-    <h1 style='color:#2E2E2E;'>Open Context: <xsl:value-of select="arch:resource/arch:name/arch:string"/> (<a><xsl:attribute name="href">../projects/<xsl:if test="arch:resource/@ownedBy !=0"><xsl:value-of select="arch:resource/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:resource/oc:metadata/oc:project_name"/></a> - <xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:item_class/oc:name"/>) [<a><xsl:attribute name="href">http://opencontext.org/media/<xsl:value-of select="//arch:resource/@UUID"/></xsl:attribute>Go Back</a>]</h1>
-    <div id="fullImage" class="bodyText" style="padding-left:2px;">
-		<a><xsl:attribute name="href"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:resourceURI"/></xsl:attribute>
-		   <xsl:attribute name="title">Download File</xsl:attribute>
-		   <img> 
-				<xsl:attribute name="src"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:resourceURI"/></xsl:attribute>
-				<xsl:attribute name="alt"><xsl:value-of select="arch:resource/arch:name/arch:string"/></xsl:attribute>
-		   </img>
-		</a>
-		<br/>
-		<xsl:for-each select="arch:resource/arch:links/oc:space_links/oc:link/oc:context/oc:tree[@id='default']">
-                       <xsl:if test="position() = 1">
-				Context: 
-						   <xsl:for-each select="oc:parent">
-							<a><xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a> /
-							</xsl:for-each> 
-						</xsl:if>
-                    </xsl:for-each>
-                    
-                    <a><xsl:attribute name="href">../subjects/<xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:id"/></xsl:attribute><xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:name"/></a> (Linked item)
-		
-		<span style="margin-left:50px;">
-		Project Keywords:
-		<em> 
-		<xsl:choose>
-			<xsl:when test="//arch:DublinCoreMetadata/arch:subject">
-				<xsl:for-each select="//arch:DublinCoreMetadata/arch:subject">
-						<xsl:if test="position() = 1">
-								<xsl:value-of select="."/> 
-						</xsl:if>
-						<xsl:if test="position() != 1">
-						, <xsl:value-of select="."/>
-						</xsl:if>
-				</xsl:for-each> 
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:for-each select="//oc:metadata/dc:subject">
-						<xsl:if test="position() = 1">
-								<xsl:value-of select="."/> 
-						</xsl:if>
-						<xsl:if test="position() != 1">
-						, <xsl:value-of select="."/>
-						</xsl:if>
-				</xsl:for-each>
-			</xsl:otherwise>
-		</xsl:choose>
-		</em>
-		</span>
-		<br/>
-		
-		<p class="subHeader">Description (<xsl:value-of select="count(descendant::arch:resource/arch:properties/arch:property)"/> properties)</p>
-		<table style="border:none; padding:1px;">
-			 <xsl:for-each select="arch:resource/arch:properties/arch:property">
-				  <tr>
-					<td width='95'>
-						<xsl:value-of select="oc:var_label"/>            </td>
-					<td> </td>
-					<td>
-						<a>
-							<xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>
-							<xsl:choose>
-							<xsl:when test="contains(oc:show_val, 'http://')">
-							(Outside Link)
+    <h1>Open Context: <xsl:value-of select="arch:resource/arch:name/arch:string"/> (<a><xsl:attribute name="href">../projects/<xsl:if test="arch:resource/@ownedBy !=0"><xsl:value-of select="arch:resource/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:resource/oc:metadata/oc:project_name"/></a> - <xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:item_class/oc:name"/>) [<a><xsl:attribute name="href">http://opencontext.org/media/<xsl:value-of select="//arch:resource/@UUID"/></xsl:attribute>Go Back</a>]</h1>
+    <div id="fullImage" style="padding-left:2px; text-align:left;">
+				<a><xsl:attribute name="href"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:resourceURI"/></xsl:attribute>
+					<xsl:attribute name="title">Download File</xsl:attribute>
+					<img> 
+						<xsl:attribute name="src"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:resourceURI"/></xsl:attribute>
+						<xsl:attribute name="alt"><xsl:value-of select="arch:resource/arch:name/arch:string"/></xsl:attribute>
+					</img>
+				</a>
+				<br/>
+				<xsl:for-each select="arch:resource/arch:links/oc:space_links/oc:link/oc:context/oc:tree[@id='default']">
+									  <xsl:if test="position() = 1">
+						<strong>Context:</strong> 
+									<xsl:for-each select="oc:parent">
+									<a><xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a> /
+									</xsl:for-each> 
+								</xsl:if>
+								  </xsl:for-each>
+								  
+								  <a><xsl:attribute name="href">../subjects/<xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:id"/></xsl:attribute><xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:name"/></a> (Linked item)
+				
+				<br/>
+				<br/>
+				<h4>Project Keywords</h4>
+				<span style="text-align:left; max-width: 400px;">
+						<em> 
+						<xsl:choose>
+							<xsl:when test="//arch:DublinCoreMetadata/arch:subject">
+								<xsl:for-each select="//arch:DublinCoreMetadata/arch:subject">
+										<xsl:if test="position() = 1">
+												<xsl:value-of select="."/> 
+										</xsl:if>
+										<xsl:if test="position() != 1">
+										, <xsl:value-of select="."/>
+										</xsl:if>
+								</xsl:for-each> 
 							</xsl:when>
 							<xsl:otherwise>
-							<xsl:value-of select="oc:show_val"/>
+								<xsl:for-each select="//oc:metadata/dc:subject">
+										<xsl:if test="position() = 1">
+												<xsl:value-of select="."/> 
+										</xsl:if>
+										<xsl:if test="position() != 1">
+										, <xsl:value-of select="."/>
+										</xsl:if>
+								</xsl:for-each>
 							</xsl:otherwise>
-							</xsl:choose></a></td>
-				  </tr>
-			  </xsl:for-each>
-			  <xsl:if test="count(descendant::arch:resource/arch:properties/arch:property) = 0">
-				<tr><td><xsl:value-of select="arch:resource/oc:metadata/oc:no_props"/></td></tr>
-			  </xsl:if>
-		</table>
-		<br/>
-		<p class="bodyText"><span style='text-decoration:underline;'>Suggested Citation:</span><br/><xsl:value-of select="$citationView"/></p>
+						</xsl:choose>
+						</em>
+				</span>
+				<br/>
+				<br/>
+				
+				<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) !=0 or count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
+						<div class="properties" style="text-align:left; max-width:600px;">
+								<xsl:if test="count(descendant::arch:resource/arch:properties/arch:property[oc:show_val/text()]) !=0">
+										<h5>Media Properties (<xsl:value-of select="count(descendant::arch:properties/arch:property[oc:show_val/text()])"/>)</h5>
+										<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
+												<thead>
+														<tr>
+																<th>Variable</th>
+																<th>Value</th>
+														</tr>
+												</thead>
+												<tbody> 
+														<xsl:for-each select="arch:resource/arch:properties/arch:property[oc:show_val/text()]">
+																<tr>
+																		<td>
+																				<xsl:value-of select="oc:var_label"/>
+																		</td>
+																		<td>
+																				<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																		</td>
+																</tr>
+														 </xsl:for-each>
+												</tbody>
+										</table>
+								</xsl:if>
+								<xsl:if test="count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
+										<div class="item-notes">
+												<h5>Item Notes</h5>
+												<xsl:for-each select="arch:resource/arch:notes/arch:note">
+														<div class="item-note">
+																<xsl:value-of select="arch:string" disable-output-escaping="yes" />
+														</div>
+												</xsl:for-each>
+										</div>
+								</xsl:if>
+								<xsl:if test="count(descendant::arch:resource/arch:links/oc:space_links/oc:link) != 0" >
+										<div class="item-links" style="text-align:left; max-width:600px;">
+												<h5>Linked Items (<xsl:value-of select="count(descendant::arch:resource/arch:links/oc:space_links/oc:link)"/> items)</h5>
+												<div class="list_tab">
+														<xsl:for-each select="arch:resource/arch:links/oc:space_links/oc:link[position() mod 2 = 1]">
+																<div class="list_tab_row">
+																		<div class="list_tab_cell_icon">	
+																				<a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																					<xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																					<xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
+																				</img></a>
+																		</div>
+																		<div class="list_tab_cell"><a>
+																				<xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																				</a> ( <xsl:value-of select="oc:relation"/> )
+																		</div>
+																	 
+																		<xsl:for-each select="following-sibling::oc:link[1]">
+																				<div class="list_tab_cell_icon">	
+																				  <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																					  <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
+																					  <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
+																				  </img></a>
+																				</div>
+																				<div class="list_tab_cell"><a>
+																						<xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
+																						</a> ( <xsl:value-of select="oc:relation"/> )
+																				</div>
+																		</xsl:for-each>
+																</div>
+														</xsl:for-each>
+												</div>
+										</div>
+								</xsl:if>
+								</div>
+				</xsl:if>
+				<br/>
+				<br/>
+				<h5>Suggested Citation</h5>
+				<div id="citation" style="width: 400px;">
+						<xsl:value-of select="$citationView"/>
+				</div>
+				<br/>
+				<br/>
      </div>
  
- <div class="tinyText" id="licarea"> 
-To the extent to which copyright applies, this content is licensed with:<a>
-		<xsl:attribute name="rel">license</xsl:attribute>
-		<xsl:attribute name="href"><xsl:value-of select="arch:resource/oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute><xsl:value-of select="arch:resource/oc:metadata/oc:copyright_lic/oc:lic_name"/>
-            <xsl:value-of select="arch:resource/oc:metadata/oc:copyright_lic/oc:lic_vers"/>&#32;License
-	</a> Attribution Required: <a href='javascript:showCite()'>Citation</a>, and hyperlinks for online uses.
-	<div style="width:0px; overflow:hidden;">
-		<a xmlns:cc="http://creativecommons.org/ns#">
-			<xsl:attribute name="href"><xsl:value-of select="arch:resource/oc:metadata/dc:identifier"/></xsl:attribute>
-			<xsl:attribute name="property">cc:attributionName</xsl:attribute>
-			<xsl:attribute name="rel">cc:attributionURL</xsl:attribute>
-			<xsl:value-of select="$citation"/>
-		</a>
-	</div>
+ <div id="licarea" style="width: 600px; text-align: left;"> 
+		<h5>Copyright Licensing</h5>
+		<div class="list_tab" >
+			 <div class="list_tab_row">
+				  <div id="license-icon">
+						<xsl:choose>
+							 <xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+								  <a>
+										<xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+										<img> 
+										  <xsl:attribute name="src"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_icon_URI"/></xsl:attribute>
+										  <xsl:attribute name="alt"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/></xsl:attribute>
+										</img>
+								  </a>
+							 </xsl:when>
+							 <xsl:otherwise>
+								  <a href="http://creativecommons.org/licenses/by/3.0/">
+										<img src="http://i.creativecommons.org/l/by/3.0/88x31.png" alt="Creative Commons Attribution 3.0 License" />
+								  </a>
+							 </xsl:otherwise>
+						</xsl:choose>
+				  </div>
+				  <div id="license-text">
+						To the extent to which copyright applies, this content is licensed with:
+						<a>
+							 <xsl:attribute name="rel">license</xsl:attribute>
+							 <xsl:choose>
+								  <xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+										<xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+								  </xsl:when>
+								  <xsl:otherwise>
+										  <xsl:attribute name="href">http://creativecommons.org/licenses/by/3.0/</xsl:attribute>
+								  </xsl:otherwise>
+							 </xsl:choose>
+							 <xsl:choose>
+								  <xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI">
+										Creative Commons <xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/>&#32;<xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_vers"/>&#32;License
+								  </xsl:when>
+								  <xsl:otherwise>
+										  Creative Commons Attribution 3.0&#32;License
+								  </xsl:otherwise>
+							 </xsl:choose>
+						</a>
+						Attribution Required: Citation, and hyperlinks for online uses.
+						<div style="display:none; width:0px; overflow:hidden;">
+							<abbr class="unapi-id"><xsl:attribute name="title"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier"/></abbr>
+							<a xmlns:cc="http://creativecommons.org/ns#">
+								<xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute>
+								<xsl:attribute name="property">cc:attributionName</xsl:attribute>
+								<xsl:attribute name="rel">cc:attributionURL</xsl:attribute>
+								<xsl:value-of select="$citation"/>
+							</a>
+						</div>
+				  </div>
+			 </div>
+		</div>
 </div>
  
  
