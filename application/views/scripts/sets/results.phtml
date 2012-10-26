@@ -14,12 +14,12 @@ $requestURI = $this->requestURI;
 $request_array = explode('?', $requestURI, 2);
 
 $atomFullDoc = new DOMDocument("1.0", "utf-8");
-	
+
 $root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
-	
+
 // add newlines and indent the output - this is at least useful for debugging and making the output easier to read
 $atomFullDoc->formatOutput = true;
-	
+
 $root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
 $root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
 $root->setAttribute("xmlns:arch", "http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd");
@@ -29,7 +29,7 @@ $root->setAttribute("xmlns:kml", "http://www.opengis.net/kml/2.2");
 $root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
 //xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
 //$root->setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
-	
+
 $atomFullDoc->appendChild($root);
 
 
@@ -262,7 +262,7 @@ if($numFound>0){
       //echo $itemEntries->sql;
       
       foreach($idEntryArray as $itemUUID => $atomEntry){
-	 
+
 	 if(strlen($atomEntry)<10){
 	    $spaceItem = New Subject;
 	    $spaceItem->getByID($itemUUID);
@@ -273,7 +273,7 @@ if($numFound>0){
 	       $spaceItem->kml_in_Atom = true; // it doesn't validate, but it is really useful
 	       $fullAtom = $spaceItem->DOM_spatialAtomCreate($spaceItem->newArchaeoML);
 	       $spaceItem->update_atom_entry();
-	       
+
 	       //echo var_dump($spaceItem);
 	    }
 	    //echo var_dump($spaceItem);
@@ -285,7 +285,7 @@ if($numFound>0){
 	    $doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $atomEntry);
 	    $contentFragment->appendXML($doc);  // $atom_content from short atom entry
 	 }
-	 
+
 	 unset($itemEntries);
 	 //add KML time span data
 	 /*
@@ -298,7 +298,7 @@ if($numFound>0){
 	 $contentFragment->formatOutput = true;
 	 */
        }
-	   
+
      
        $root->appendChild($contentFragment);
        
