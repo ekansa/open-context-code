@@ -456,21 +456,21 @@ $router->addRoute('setsTMap', $setsTMAPRoute);
 //-------
 //Map
 // the HTML version
-$mapViewRoute = new Zend_Controller_Router_Route_Regex('map/(.*)', array('controller' => 'map', 'action' => 'index'), array(1 => 'default_context_path'), 'map/%s/');
+$mapViewRoute = new Zend_Controller_Router_Route_Regex('maps/(.*)', array('controller' => 'maps', 'action' => 'index'), array(1 => 'default_context_path'), 'maps/%s/');
 
-$router->addRoute('mapView', $mapViewRoute);
+$router->addRoute('mapsView', $mapViewRoute);
 
 
 // the JSON TimeMap data (for AJAX interactions)
-$mapJsonRoute = new Zend_Controller_Router_Route_Regex('map/details/(.*)\.json', array('controller' => 'map', 'action' => 'mapjson'), array(1 => 'default_context_path'), 'map/details/%s/');
+$mapJsonRoute = new Zend_Controller_Router_Route_Regex('maps/details/(.*)\.json', array('controller' => 'maps', 'action' => 'mapjson'), array(1 => 'default_context_path'), 'maps/details/%s/');
 
-$router->addRoute('mapJson', $mapJsonRoute);
+$router->addRoute('mapsJson', $mapJsonRoute);
 
 
 // the JSON TimeMap initial dataset (from projects)
-$mapStartJsonRoute = new Zend_Controller_Router_Route_Regex('map/start/(.*)\.json', array('controller' => 'map', 'action' => 'startjson'), array(1 => 'default_context_path'), 'map/start/%s/');
+$mapTimeMapJSONRoute = new Zend_Controller_Router_Route('maps/time-map.json', array('controller' => 'maps', 'action' => 'timemapjson'));
 
-$router->addRoute('mapStartJson', $mapStartJsonRoute);
+$router->addRoute('mapsTimeMapJSON', $mapTimeMapJSONRoute);
 
 
 //------------------
