@@ -21,23 +21,16 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title><?php echo 'Open Context: Data Publication for Cultural Heritage and Field Research'; ?></title> 
-        <link href="/components/css/home" type="text/css" rel="stylesheet"/>
+        <title>Open Context: Data Publication for Cultural Heritage and Field Research</title> 
         <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
         <script src="<?php echo $GMapURI; ?>" type="text/javascript"></script> 
-        <!--
-        <script type="text/javascript">
-            Timeline_ajax_url='http://static.alexandriaarchive.org/js/timeline/timeline_ajax/simile-ajax-api.js';
-            Timeline_urlPrefix='http://static.alexandriaarchive.org/js/timeline/timeline_js/';
-            Timeline_parameters='bundle=true';
-        </script>
-        -->
         
-        <!--
-        <script type="text/javascript" src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js"></script>
-        -->
         
-        <!-- -->
+        <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+        
+        
         <script type="text/javascript" src="../js/timemap2/lib/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="../js/timemap2/lib/mxn/mxn.js?(googlev3)"></script>
         <script type="text/javascript" src="http://opencontext.org/js/timemap/lib/timeline-2.3.0.js"></script>
@@ -45,10 +38,7 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
         <script src="http://opencontext.org/js/timemap2/src/loaders/json.js" type="text/javascript"></script>
         <script src="../js/timemap2/oc.js" type="text/javascript"></script>
         
-        <!-- Some protest of crap legislation-->
-       
-        
-        
+     
         <script type="text/javascript">
             var tm;
             var timeMapURL = "<?php echo $host; ?>/map/start/.json";
@@ -155,66 +145,32 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
             }
         </script>
         
-        <!--
-	<script src="http://static.alexandriaarchive.org/js/timeline/timeline_js/timeline-api.js" type="text/javascript"></script>
-        -->
-        <!--
-        <script src="http://static.alexandriaarchive.org/js/timeline/timeline_js/timeline-api.js" type="text/javascript"></script>
-        -->
-        <!--
-        <script src="http://opencontext.org/js/timemap2/src/timemap.js" type="text/javascript"></script>
-        -->
-        <!--
-        <script src="components/js/home" type="text/javascript"></script>
-        -->
+      
   </head>
 
-  <body onload="onLoadTM();" >     
-    <div id="oc_logo">
-	<a href="<?php echo $host;?>" title="Open Context (Home)"><img alt="Open Context Logo" src="http://static.alexandriaarchive.org/images/general/oc_logo.jpg" border="0" /></a>
-    </div>
-    <div id="oc_tagline">
-	<img alt="Open Context Tagline" src="http://static.alexandriaarchive.org/images/general/oc_tagline.jpg" />
-    </div>
-    <div id="oc_beta">
-	<img alt="Beta Stamp" src="http://static.alexandriaarchive.org/images/general/oc_betastamp.jpg" />
-    </div>
-   
-   <div id="oc_top_search">
-	<form method="get" action="<?php echo $host;?>/search/" id="search-form">
-	<div id="search_box">
-	<input type='text' name='q' class='tinyText' value='Search' size='30' onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-	</div>
-	<div id="search_cntrl">
-	    <input class="oc_top_sbutton" type="submit" value="" />
-	</div>
-	</form>
-    </div>
-   
-   
-   <!-- 
-    Navigation tabs
-    -->    
-    <?php echo OpenContext_NavMenus::GeneralNavMenu("index"); ?>
+  <body onload="onLoadTM();" >
         
-	
-<!--
-BEGIN Container for main page content
---> 
-    <div id="main_page" > 
-        <!--Begin code for showing available facets-->
-        <div id="main_content">
-            
-	    <div id="welcome_box">
-		<div class="pageHeader" id="welcome_main">Welcome to<br/>Open Context</div>
-		<div id='welcome_text_box'>
-		    <p class="bodyText" id="welcome_text">Use Open Context to discover, reference, and publish primary data and documentation collected in archaeology and other field sciences by professional researchers. <em style="color:#8B2323;" title="Drag / scroll through the timeline and sites will come and go on the map">Scroll</em> through the timeline and map below to begin exploring data, images, reports and field documentation.</p>
-                    
-		</div>
-		<div style="position: relative; clear:both; width:700px;"></div>
-	    </div>
-	    
-	    <div id="timemap">
+        <!-- 
+            Logo,
+        -->    
+        <?php echo $this->render('header.phtml'); //reader document top ?>
+           
+        <!-- 
+            Navigation tabs, search box
+        -->
+        <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+        
+        
+        <div id="main">
+            <div id="main_content">
+                <div id="intro-row">
+                    <div id="intro-cell">
+                        <h1>Welcome to Open Context</h1>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="timemap">
                 <div id="timelinecontainer">
                   <div id="timeline"></div>
                 </div>
@@ -224,36 +180,9 @@ BEGIN Container for main page content
             </div>
             
             
-	    <div style='text-align:right; margin-right:14px; color:#666666; margin-top:20px; height:30px;' class='tinyText'>
-		Timeline and mapping credit: <a href='http://code.google.com/p/timemap/' title='Project home and source code' style='color:#8B3E2F;'>Timemap.js</a> library by <a href='http://www.nickrabinowitz.com/' title='Project lead' style='color:#8B3E2F;'>Nick Rabinowitz</a> using <a href='http://www.simile-widgets.org/timeline/' title='Timeline home and source code' style='color:#8B3E2F;'>Timeline</a> by the <a href='http://simile.mit.edu/' title='SIMILIE Project Home' style='color:#8B3E2F;'>SIMILE Project</a>
-	    </div>
-
-	    <div style='text-align:right; margin-right:14px; margin-top:5px;'>
-		<p class="bodyText" style="color:#666666; ">Content last updated: <br/><em><?php echo $lastUpdate ?></em></p>
-	    </div>
-   
-        <!--
-        END of div container for placing main page content
-        -->
-        <div id="bottom_cont"> 
-          <br /> 
-          <br /> 
-        </div> 
-        <!--
-        END Code for showing the database-like content
-        -->
-   
-     </div>
-    <br />
-    
-        <div id="footer"> 
-            <div id="w3c_val_logo"> 
-              <a href="http://validator.w3.org/check?uri=referer"> 
-                <img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="31" width="88" /> 
-              </a> 
-            </div>     
         </div>
-   
-     </div>
+        <!-- end main div -->
+        
+        <?php echo $this->render('footer.phtml'); //reader document footer ?>
     </body>
 </html>    
