@@ -277,42 +277,7 @@ class OpenContext_SocialTracking {
 		
 	}//end function
 	
-	
-	
-	public static function rank_project_viewcounts($proj_uuid){
-		//spatial item is a simple xml object for an spatial item's Atom xml
-		$db_params = OpenContext_OCConfig::get_db_config();
-		$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		$db->getConnection();
-		
-		$rank = false;
-			
-		$sql = 'SELECT 1 + COUNT( * ) AS rank
-			FROM projects AS p1
-			JOIN projects AS p2 ON ( p1.total_views > p2.total_views
-			AND p2.project_id =  "'.$proj_uuid.'" ) 
-			LIMIT 1';
-		
-		$result = $db->fetchAll($sql, 2);
-		if($result){
-			$rank_val = $result[0]["rank"];
-			
-			$query = 'SELECT COUNT(*) AS rowcount FROM projects';
-			$result_b = $db->fetchAll($query, 2);
-			$total_pop = $result_b[0]["rowcount"];
-			
-			$rank = array("rank"=>$rank_val, "pop"=>$total_pop);
-			
-		}//end case with a result
-				
-		$db->closeConnection();
-		
-		
-		return $rank;
-		
-	}//end function
-	
-	
+
 	public static function rank_subproject_viewcounts($subproj_uuid){
 		//spatial item is a simple xml object for an spatial item's Atom xml
 		$db_params = OpenContext_OCConfig::get_db_config();
