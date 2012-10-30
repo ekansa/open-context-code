@@ -79,7 +79,7 @@ class Project {
 				$this->atomFull = $result[0]["proj_atom"];
 				
 				$this->editStatus = $result[0]["edit_status"];
-	   
+				$this->rootPath = $result[0]["root_path"];
 			/*
 			$this->accentFix($this->archaeoML, "archaeoML", $db);	
 			$this->accentFix($this->atomFull, "atom", $db);

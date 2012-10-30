@@ -214,6 +214,8 @@ class projectsController extends Zend_Controller_Action
 				$output = array();
 				$output["label"] = $proj->label;
 				$output["uri"] = $host."/projects/".$proj->projectUUID;
+				$output["cacheID"] = "pTM_".md5($proj->projectUUID);
+				$output["editStatus"] = $proj->editStatus +0;
 				$output["item_view_count"] = $proj->viewCount +0;
 				$output["ranking"] = $proj->rankProjectViewcounts();
 				
@@ -223,14 +225,32 @@ class projectsController extends Zend_Controller_Action
 				$output["metadata"] = $metadataObj->publicMetadata();
 				$output["descriptions"] = $proj->getXMLProjectDescriptions($proj->projectUUID, $proj->archaeoML);
 				
-				$jsonQuery = $host."/sets/".$proj->rootPath.".json?proj=".urlencode($proj->label);
-				$output["href-proj-sets"] = $jsonQuery;
+				if(substr($proj->rootPath, 0, 1) == "/"){
+					$setPath = "/sets".$proj->rootPath;
+				}
+				else{
+					$setPath = "/sets/".$proj->rootPath;
+				}
+		
+				$jsonQuery = $host.$setPath.".json?proj=".urlencode($proj->label);
+				$output["href-proj-sets"] = $host.$setPath."?proj=".urlencode($proj->label);
+				$output["href-proj-sets-json"] = $jsonQuery;
 				@$jsonString = file_get_contents($jsonQuery);
 				if($jsonString != false){
 					@$sets = Zend_Json::decode($jsonString);
 					if($sets != false){
-						$output["contexts"] = $sets["facets"]["context"];
-						$output["categories"] = $sets["facets"]["category"];
+						if(isset($sets["facets"]["context"])){
+							$output["contexts"] = $sets["facets"]["context"];
+						}
+						else{
+							$output["contexts"] = array();
+						}
+						if(isset($sets["facets"]["category"])){
+							$output["categories"] = $sets["facets"]["category"];
+						}
+						else{
+							$output["categories"] = array();
+						}
 						$output["size"] = $sets["numFound"];
 						$output["updated"] = $sets["updated"];
 					}
