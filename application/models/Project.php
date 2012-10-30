@@ -12,6 +12,8 @@ class Project {
     
     public $label;
     public $viewCount;
+	 public $rank;
+	 public $rankPopulation;
     public $createdTime;
     public $updatedTime;
     
@@ -118,6 +120,44 @@ class Project {
 		  $db->closeConnection();
 		  return $viewCount;
 	 }
+	 
+	 function rankProjectViewcounts($proj_uuid = false){
+		  
+		  if(!$proj_uuid){
+				$proj_uuid = $this->projectUUID;
+		  }
+
+		  //spatial item is a simple xml object for an spatial item's Atom xml
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  
+		  $rank = false;
+			  
+		  $sql = 'SELECT 1 + COUNT( * ) AS rank
+			  FROM projects AS p1
+			  JOIN projects AS p2 ON ( p1.total_views > p2.total_views
+			  AND p2.project_id =  "'.$proj_uuid.'" ) 
+			  LIMIT 1';
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$rank_val = $result[0]["rank"];
+				
+				$query = 'SELECT COUNT(*) AS rowcount FROM projects WHERE projects.project_id != "0"
+                AND projects.project_id != "2" ';
+				$result_b = $db->fetchAll($query, 2);
+				$total_pop = $result_b[0]["rowcount"];
+				
+				$this->rank = $rank_val;
+				$this->rankPopulation = $total_pop;
+				
+				$ranking = array("rank"=>$rank_val, "pop"=>$total_pop);
+		  }//end case with a result
+		  $db->closeConnection();
+		  return $ranking;
+	}//end function
+	 
 	 
 	 
     //used to fix legacy non utf8 problem
@@ -304,6 +344,35 @@ class Project {
     
     
     
+	 function getXMLProjectDescriptions($projectUUID, $archaeML_string = false){
+		  
+		  if(!$archaeML_string){
+				$archaeML_string = $this->getItemXML($projectUUID);
+		  }
+		  
+		  @$itemXML = simplexml_load_string($archaeML_string);
+		  if($itemXML != false){
+				$nameSpaceArray = $this->nameSpaces();
+				foreach($nameSpaceArray as $prefix => $uri){
+					 @$itemXML->registerXPathNamespace($prefix, $uri);
+				}
+				
+				// get project short description
+				foreach($itemXML->xpath("//arch:notes/arch:note[@type='short_des']/arch:string") as $xpathResult){
+					$this->shortDes = (string)$xpathResult;
+				}
+				// get project long description
+				foreach($itemXML->xpath("//arch:notes/arch:note[@type='long_des']/arch:string") as $xpathResult){
+					$this->longDes = (string)$xpathResult;
+				}
+				return array("short" => strip_tags($this->shortDes), "long" => strip_tags($this->longDes));
+		  }
+		  else{
+				return false;
+		  }
+	 }
+	 
+	 
     
     
     

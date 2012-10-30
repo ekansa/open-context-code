@@ -36,7 +36,7 @@ class OpenContext_ProjectAtomJson {
 		
 		$host = OpenContext_OCConfig::get_host_config();
 		
-		//$proj_atom_string = mb_convert_encoding($proj_atom_string, "utf-8");
+		$proj_atom_string = mb_convert_encoding($proj_atom_string, "utf-8");
 		$proj_dom = new DOMDocument("1.0", "utf-8");
 		//$proj_dom = new DOMDocument("1.0");
                 $proj_dom->loadXML($proj_atom_string);

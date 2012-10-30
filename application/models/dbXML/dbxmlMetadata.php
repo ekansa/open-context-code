@@ -23,6 +23,9 @@ class dbXML_dbxmlMetadata {
     public $licenseIconURI; //uri to license icon
     
     
+	 public $metadata;
+	 
+	 
     public $dbName;
     public $dbPenelope;
     public $db;
@@ -66,12 +69,20 @@ class dbXML_dbxmlMetadata {
     
     
     //do when you're only metadata for a location/object, media, document, person, etc. item
-    public function getProjectMeta($projectUUID){
+	 // $itemObj is a project item object
+    public function getProjectMeta($projectUUID, $itemObj = false){
     
         $db = $this->db;
 		  
-		  $itemObj = New Project;
-        $itemXMLstring = $itemObj->getItemXML($projectUUID);
+		  if(!$itemObj){
+				$itemObj = New Project;
+				$itemXMLstring = $itemObj->getItemXML($projectUUID);
+		  }
+		  else{
+				//case where we have an itemObj already
+				$itemXMLstring = $itemObj->archaeoML;
+		  }
+		  
 		  if($itemXMLstring != false){
 				$nameSpaceArray = $itemObj->nameSpaces();
 				$itemXML = simplexml_load_string($itemXMLstring);
@@ -121,7 +132,7 @@ class dbXML_dbxmlMetadata {
 				foreach ($itemXML->xpath("//oc:metadata/oc:pub_date") as $xpathResult){
 					$xpathResult = (string)$xpathResult;
 					$this->projCreatedXML = $xpathResult;
-					$this->projCreatedHuman = date("Y/m/d H:i:s", strtotime($this->projCreatedXML));
+					$this->projCreatedHuman = date("Y-m-d", strtotime($this->projCreatedXML));
 				}
 		  
 				foreach ($itemXML->xpath("//oc:metadata/oc:copyright_lic/oc:lic_name") as $xpathResult){
@@ -147,6 +158,47 @@ class dbXML_dbxmlMetadata {
     } //end function
     
    
+	public function publicMetadata(){
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $output = array();
+		  if(is_array($this->projSubjects)){
+				foreach($this->projSubjects as $key => $subArray){
+					 $output["subjects"][] = $subArray;
+				}
+		  }
+		  else{
+				$output["subjects"] = false;
+		  }
+		  if(is_array($this->projCoverages)){
+				foreach($this->projCoverages as $key => $subArray){
+					 $output["coverages"][] = $subArray;
+				}
+		  }
+		  else{
+				$output["coverages"] = false;
+		  }
+		  if(is_array($this->projCreators)){
+				foreach($this->projCreators as $key => $subArray){
+					 $subArray["uri"] = $host."/persons/".$subArray["itemUUID"];
+					 $output["creators"][] = $subArray;
+				}
+		  }
+		  else{
+				$output["creators"] = false;
+		  }
+		  
+		  $output["created"] = $this->projCreatedHuman;
+		  $output["licensing"] = array("uri" => $this->licenseURI,
+												 "name" => $this->licenseName,
+												 "version" => $this->licenseVersion,
+												 "iconURI" => $this->licenseIconURI);
+		  
+		  return $output;
+	}
+	
+	
+	
+	
 	 //extract the item UUID from a URI
 	 public function URItoUUID($OCuri){
 		  $expodeURI = explode("/", $OCuri);
