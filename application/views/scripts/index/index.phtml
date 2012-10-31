@@ -27,6 +27,7 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
         
         
         <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+        <link href="/css/home-rev2.css" rel="stylesheet" type="text/css" />
 		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
 		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
         
@@ -37,11 +38,12 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
         <script src="http://opencontext.org/js/timemap2/src/timemap.js" type="text/javascript"></script>
         <script src="http://opencontext.org/js/timemap2/src/loaders/json.js" type="text/javascript"></script>
         <script src="../js/timemap2/oc.js" type="text/javascript"></script>
+        <script src="../js/timemap2/circle_icons.js" type="text/javascript"></script>
         
      
         <script type="text/javascript">
             var tm;
-            var timeMapURL = "<?php echo $host; ?>/map/start/.json";
+            var timeMapURL = "<?php echo $host; ?>/maps/time-map.json";
             
             function onLoadTM() {
                 // add new interval
@@ -100,6 +102,17 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
                             unit:     Timeline.DateTime.FTK
                         }
                     ];
+                
+                var alphas = ["ff", "ee", "dd", "cc", "bb", "aa", "99", "88", "77", "66"];
+                var colors = ["300350", "38034C", "490343", "680433", "680433", "7E0327", "7E0327", "8A0320", "C10404", "C10404"];
+                for (var awe = 1; awe < 10 ; awe++) {
+                    // Create a new theme and add it to the TimeMap.themes namespace
+                    TimeMap.themes["theme-size-" + awe] = TimeMapTheme.createCircleTheme({
+                        size: 5 + (awe * 8),
+                        color: colors[awe]
+                    });
+                }
+                
                 
                 
                 tm = TimeMap.init({
@@ -166,6 +179,9 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
                 <div id="intro-row">
                     <div id="intro-cell">
                         <h1>Welcome to Open Context</h1>
+                    </div>
+                    <div id="into-cellB">
+                        <br/>
                     </div>
                 </div>
             </div>

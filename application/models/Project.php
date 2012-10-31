@@ -38,7 +38,7 @@ class Project {
     public $xhtml_rel; // value for link rel attribute for XHTML version ("self" or "alternate")
     public $atom_rel; //value for link rel attribute for Atom version ("self" or "alternate")
     
-    public $geoCurrent; //check if geo-reference is current.
+    public $draftGeoTime; //array of draft geo coordinates
     
     public $newArchaeoML;
     
@@ -80,6 +80,11 @@ class Project {
 				
 				$this->editStatus = $result[0]["edit_status"];
 				$this->rootPath = $result[0]["root_path"];
+				
+				if($this->editStatus == 0){
+					 $this->draftGeoTime = Zend_Json::decode($result[0]["draftGeoTime"]);
+				}
+				
 			/*
 			$this->accentFix($this->archaeoML, "archaeoML", $db);	
 			$this->accentFix($this->atomFull, "atom", $db);
@@ -111,10 +116,37 @@ class Project {
 		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
 		  $db->getConnection();
 		  $this->setUTFconnection($db);
-
+		  
+		  
+		  
 		  $viewCount = $viewCount + 1;
 		  $where_term = 'project_id = "'.$id.'"';
-		  $data = array('view_count' => $viewCount); 
+		  $data = array('view_count' => $viewCount);
+		  
+		  /*
+		   //just to add geo data to pending projects without geo referencing
+		   
+		  if($id == "01D080DF-2F6B-4F59-BCF0-87543AC89574"){
+				$draftGeo = array("minLat" => 30.297018,
+										"minLon" => 25.48169,
+										"maxLat" => 39.368279,
+										"maxLon" => 41.258057,
+										"timeStart" => -1400,
+										"timeEnd" => -600
+										);
+				
+				$draftGeo = array("minLat" => 31.498889,
+										"minLon" => 35.785556,
+										"maxLat" => 31.498889,
+										"maxLon" => 35.785556,
+										"timeStart" => -2700,
+										"timeEnd" => 1200
+										);
+				$draftGeoJSON = Zend_Json::encode($draftGeo);
+				$data["draftGeoTime"] = $draftGeoJSON;
+		  }
+		  */
+		  
 		  $n = $db->update('projects', $data, $where_term);
 		  $this->viewCount = $viewCount;
 		  $db->closeConnection();

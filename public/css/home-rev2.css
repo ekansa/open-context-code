@@ -1,0 +1,95 @@
+/* Open Context Layout About */
+
+/*
+Content area: 1000px;
+Header blue: #003B66;
+Heaader grey: #666666;
+*/
+
+#main_content {
+	width: 90%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom: 2%;
+	min-height:400px;
+	display:table;
+	border-collapse: collapse;
+}
+#bottomBuffer{
+	width:100%;
+	padding:3%;
+}
+#intro-row {
+	display:table-row;
+}
+#intro-cell {
+	display:table-cell;
+	padding-right: 2%;
+}
+#csv-download {
+	margin-top: 5%;
+}
+#into-cellB{
+	width: 25%;
+	display:table-cell;
+	vertical-align: top;
+}
+#otabs {
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	border: 4px solid #9FB6CD;
+	background-color: #F9F9F9;
+	display: block;
+	padding:2%;
+}
+
+div#timemap {
+	padding: 1em;
+	margin-bottom: 5%;
+}
+
+div#timelinecontainer{
+	width: 100%;
+	height: 35%;
+}
+
+div#timeline{
+	width: 100%;
+	height: 100%;
+	font-size: 10px;
+	background: #CCCCCC;
+	border-color: #D7D7D7;
+  border-width: thin;
+  border-style: solid;
+}
+
+div#mapcontainer {
+	width: 100%;
+	height: 70%;
+	border-color: #D7D7D7;
+	border-width: thin;
+	border-style: solid;
+}
+
+#timemap {
+   height: 870px;
+}
+
+div#map {
+	width: 100%;
+	height: 100%;
+	background: #EEEEEE;
+}
+
+div.infotitle {
+    font-size: 14px;
+    font-weight: bold;
+    width: 200px;
+}
+div.infodescription {
+    font-size: 14px;
+    font-style: italic;
+    width: 200px;
+}

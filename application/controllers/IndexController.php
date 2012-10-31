@@ -63,7 +63,12 @@ class indexController extends Zend_Controller_Action
 		
     }
     
-    
+	 //this is for the timemap js, for some reason it likes to request __history__.html
+	 public function historyAction() {
+		  $this->_helper->viewRenderer->setNoRender();
+		  header("Content-Type: text/plain");
+		  echo true;
+	 }
     
     public function rssProjectsRss2PhpAction() {
 		$this->_helper->viewRenderer->setNoRender();

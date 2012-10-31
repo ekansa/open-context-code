@@ -648,7 +648,9 @@ $robotsRoute = new Zend_Controller_Router_Route('robots.txt', array('controller'
 $router->addRoute('robotsIn', $robotsRoute); // 'search route
 
 
-
+$historyRoute = new Zend_Controller_Router_Route('__history__.html', array('controller' => 'index', 'action' => 'history'));
+// Add it to the router
+$router->addRoute('historyIndex', $historyRoute); // 'search route
 
 
 

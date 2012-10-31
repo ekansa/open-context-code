@@ -244,6 +244,10 @@ class projectsController extends Zend_Controller_Action
 						}
 						else{
 							$output["contexts"] = array();
+							if($proj->editStatus == 0){
+								$output["draftGeoTime"] = $proj->draftGeoTime;
+							}
+							
 						}
 						if(isset($sets["facets"]["category"])){
 							$output["categories"] = $sets["facets"]["category"];
