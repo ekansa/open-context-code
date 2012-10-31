@@ -83,15 +83,19 @@ class Projects {
 																		"point" => array("lat" => $actContext["geoTime"]["geoLat"], "lon" => $actContext["geoTime"]["geoLong"])
                                                       );
 									 
-									 $innerHTML = "<br/><div style='width:300px; height: 150px; padding:4px;'>";
-									 $innerHTML .= "<div style='float:left; width:40px;'><img src='../images/item_view/project_icon.jpg' border='0' ></img>";
+									 $innerHTML = "<div class=\"info-box\">";
+									 $innerHTML .= "<div class=\"info-tab\">";
+									 $innerHTML .= "<div class=\"info-row\">";
+									 $innerHTML .= "<div class=\"info-icon-cell\"><img src='../images/item_view/project_icon.jpg' border='0' ></img>";
 									 $innerHTML .= "</div>";
-									 $innerHTML .= "<div style='float:right; width:300px; margin-left:4px;'>";
-									 $innerHTML .= "<p class='bodyText'>As part of the <a href='".$project["uri"]."'><em>".$project["label"];
+									 $innerHTML .= "<div class=\"info-t-cell\">";
+									 $innerHTML .= "As part of the <a href='".$project["uri"]."'><em>".$project["label"];
 									 $innerHTML .= "</em></a> project, <strong>".$workingContexts[$timeSpanHash]["title"]."</strong> contains ".$actContext["count"]." items.";
 									 $innerHTML .= "</div>";
-									 $innerHTML .= "<div style='clear:both; width:100%; margin-left:44px;'>";
-									 $innerHTML .= "<p class='bodyText'>(<a href='".$project["href-proj-sets"]."'>Click here</a>) to browse in this project.</p>";
+									 $innerHTML .= "</div>";
+									 $innerHTML .= "</div>";
+									 $innerHTML .= "<div class=\"info-browse\">";
+									 $innerHTML .= "[<a href='".$project["href-proj-sets"]."'>Click here</a>] to browse in this project.";
 									 $innerHTML .= "</div>";
 									 $innerHTML .= "</div>";
 									 
@@ -140,15 +144,19 @@ class Projects {
 																									"lon"=> $workingContexts[$timeSpanHash]["prep-geo"]["minLon"]);
 									 
 									 
-									 $innerHTML = "<div style='width:345px; padding:4px;'>";
-									 $innerHTML .= "<div style='float:left; width:40px;'><img src='../images/item_view/project_icon.jpg' border='0' ></img>";
+									 $innerHTML = "<div class=\"info-box\">";
+									 $innerHTML .= "<div class=\"info-tab\">";
+									 $innerHTML .= "<div class=\"info-row\">";
+									 $innerHTML .= "<div class=\"info-icon-cell\"><img src='../images/item_view/project_icon.jpg' border='0' ></img>";
 									 $innerHTML .= "</div>";
-									 $innerHTML .= "<div style='float:right; width:300px; margin-left:4px;'>";
-									 $innerHTML .= "<p class='bodyText'>As part of the <a href='".$project["uri"]."'><em>".$project["label"];
+									 $innerHTML .= "<div class=\"info-t-cell\">";
+									 $innerHTML .= "As part of the <a href='".$project["uri"]."'><em>".$project["label"];
 									 $innerHTML .= "</em></a> project, there are several contexts including: <strong>".$workingContexts[$timeSpanHash]["title"]."</strong>";
 									 $innerHTML .= "</div>";
-									 $innerHTML .= "<div style='clear:both; width:100%; margin-left:44px;'>";
-									 $innerHTML .= "<p class='bodyText'>(<a href='".$project["href-proj-sets"]."'>Click here</a>) to browse contexts in this project.</p>";
+									 $innerHTML .= "</div>";
+									 $innerHTML .= "</div>";
+									 $innerHTML .= "<div class=\"info-browse\">";
+									 $innerHTML .= "[<a href='".$project["href-proj-sets"]."'>Click here</a>] to browse in this project.";
 									 $innerHTML .= "</div>";
 									 $innerHTML .= "</div>";
 									 $workingContexts[$timeSpanHash]["options"]["infoHtml"] = $innerHTML;
@@ -163,6 +171,19 @@ class Projects {
 						  
 						  if(count($project["contexts"])== 0 && $project["editStatus"] == 0){
 								
+								$innerHTML = "<div class=\"info-box\">";
+								$innerHTML .= "<div class=\"info-tab\">";
+								$innerHTML .= "<div class=\"info-row\">";
+								$innerHTML .= "<div class=\"info-icon-cell\"><img src='../images/item_view/project_icon.jpg' border='0' ></img>";
+								$innerHTML .= "</div>";
+								$innerHTML .= "<div class=\"info-t-cell\">";
+								$innerHTML .= "The <a href='".$project["uri"]."'><em>".$project["label"];
+								$innerHTML .= "</em></a> project is forthcoming.";
+								$innerHTML .= "</div>";
+								$innerHTML .= "</div>";
+								$innerHTML .= "</div>";
+								$innerHTML .= "</div>";
+								
 								$workingContext = array("count"=> 1,
                                                       "used"=> false,
                                                       "start"=> $project["draftGeoTime"]["timeStart"],
@@ -173,10 +194,10 @@ class Projects {
 																						  "maxLat" => $project["draftGeoTime"]["maxLat"],
 																						  "maxLon" => $project["draftGeoTime"]["maxLon"]),
                                                       "itemTotal" => 0,
-                                                      "title" => "Forthcomming: ".$project["label"],
+                                                      "title" => "Forthcoming: ".$project["label"],
                                                       "options" => array(
-																								"infoHtml" => "<a href='".$project["uri"]."'><em>".$project["label"]."</em></a> is forthcomming.",
-																								"theme" => "purple"
+																								"infoHtml" => $innerHTML,
+																								"theme" => "purple-f"
 																						  )
                                                       );
 								
@@ -191,15 +212,19 @@ class Projects {
 																				"lon"=> $workingContext["prep-geo"]["maxLon"]);
 								$workingContext["polygon"][] = array("lat"=> $workingContext["prep-geo"]["maxLat"],
 																				"lon"=> $workingContext["prep-geo"]["minLon"]);
+								unset($workingContext["polygon"]);
 								$workingContexts[md5($project["uri"])] = $workingContext;
 								unset($workingContext);
-						  }//end case with 0 count countexts and forthcomming status
+						  }//end case with 0 count countexts and forthcoming status
 					 }//end case with contexts
 				}//end loop through projects
 				
 				//fix size, help out chrome with intelligible json
 				foreach($workingContexts as $key => $actContext){
 					 unset($actContext["prep-geo"]);
+					 unset($actContext["count"]);
+					 unset($actContext["used"]);
+					 
 					 if($chrome){
 						  if(($actContext["start"] + 0) < 0){
 								$actContext["start"] = abs($actContext["start"] + 0)." BC";
@@ -219,7 +244,7 @@ class Projects {
 					 if(!isset($actContext["options"]["theme"])){
 						  $actContext["options"]["theme"] = "theme-size-".$actSize;
 					 }
-					
+					 //unset($actContext["options"]["theme"]);
 					 
 					 $timeMapObj[] = $actContext;
 				}

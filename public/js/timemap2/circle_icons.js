@@ -3,6 +3,11 @@
  * Create the URL for a Google Charts circle image.
  */
 TimeMapTheme.getCircleUrl = function(size, color, alpha) {
+    
+    if(color.substring(0,3) === "rgb"){
+        color = RGBtoHex(color);
+    }
+    
     return "http://chart.apis.google.com/" + 
         "chart?cht=it&chs=" + size + "x" + size + 
         "&chco=" + color + ",00000001,ffffff01" +
@@ -38,4 +43,9 @@ TimeMapTheme.createCircleTheme = function(opts) {
         color: opts.color
     });
 };
- 
+
+
+function RGBtoHex(c) {
+    var m = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(c);
+    return m ? (1 << 24 | m[1] << 16 | m[2] << 8 | m[3]).toString(16).substr(1) : c;
+}

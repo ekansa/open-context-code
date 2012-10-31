@@ -377,7 +377,7 @@
 												</xsl:if>
 												
 												<xsl:if test="//oc:metadata/oc:project_name/@editStatus = 0">
-														Project dataset is forthcomming, and not yet available.
+														Project dataset is forthcoming, and not yet available.
 												</xsl:if>
 										</div>
 										
