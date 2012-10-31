@@ -14,6 +14,15 @@ TimeMapTheme.getCircleUrl = function(size, color, alpha) {
         "&chf=bg,s,00000000|a,s,000000" + alpha + "&ext=.png";
 };
 
+TimeMapTheme.getCircleShadowUrl = function(size) {
+    alpha = "bb";
+    color = "8A8A8A";
+    return "http://chart.apis.google.com/" + 
+        "chart?cht=it&chs=" + size + "x" + size + 
+        "&chco=" + color + ",00000001,ffffff01" +
+        "&chf=bg,s,00000000|a,s,000000" + alpha + "&ext=.png";
+};
+
 /**
  * Create a timemap theme with matching event icons and sized map circles
  *  
@@ -35,8 +44,9 @@ TimeMapTheme.createCircleTheme = function(opts) {
     opts = $.extend(defaults, opts);
     return new TimeMapTheme({
         icon: TimeMapTheme.getCircleUrl(opts.size, opts.color, opts.alpha),
-        iconShadow: null,
-        iconShadowSize: [0,0],
+        iconShadow:TimeMapTheme.getCircleShadowUrl(opts.size+2),
+        //iconShadow: null,
+        iconShadowSize: [52, 32],
         iconSize: [opts.size, opts.size],
         iconAnchor: [opts.size/2, opts.size/2],
         eventIcon: TimeMapTheme.getCircleUrl(opts.eventIconSize, opts.color, opts.eventAlpha),
@@ -48,4 +58,13 @@ TimeMapTheme.createCircleTheme = function(opts) {
 function RGBtoHex(c) {
     var m = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(c);
     return m ? (1 << 24 | m[1] << 16 | m[2] << 8 | m[3]).toString(16).substr(1) : c;
+}
+function circleURL(size, color, alpha){
+    if(color.substring(0,3) === "rgb"){
+        color = RGBtoHex(color);
+    }
+    return "http://chart.apis.google.com/" + 
+        "chart?cht=it&chs=" + size + "x" + size + 
+        "&chco=" + color + ",00000001,ffffff01" +
+        "&chf=bg,s,00000000|a,s,000000" + alpha + "&ext=.png";
 }

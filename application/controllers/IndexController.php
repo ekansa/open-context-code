@@ -14,25 +14,12 @@ class indexController extends Zend_Controller_Action
 				header('Location: '.$reDirectURI);
 				exit;
 		  }
-		  
-		  
-		  OpenContext_SocialTracking::update_referring_link('home', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
-		  
-		  $useragent = @$_SERVER['HTTP_USER_AGENT'];
-			  if(strstr($useragent,"MSIE 6")||strstr($useragent,"MSIE 7")||strstr($useragent,"MSIE")){
-				return $this->render('ieindex'); // re-render the estimate form
-		  }
-	
     }
     
     public function robotsAction() {
 		  $this->_helper->viewRenderer->setNoRender();
 		  $host = OpenContext_OCConfig::get_host_config();
-		  
-		  
-		  
-		  
-		  
+
 		  $robots = "
 		  User-agent:*\r\n
 		  Crawl-Delay:0.5\r\n

@@ -63,6 +63,7 @@ class Projects {
 				$maxContextCount = 0;
 				
 				$workingContexts = array(); //limit number of contexts that have the same timespans
+				$workingSort = array();
 				$timeMapObj = array();
 				foreach($projectsJSON as $project){
 					 if($this->keyArrayCheck("contexts", $project)){
@@ -166,7 +167,8 @@ class Projects {
 								if($workingContexts[$timeSpanHash]["itemTotal"] > $maxContextCount){
 									 $maxContextCount = $workingContexts[$timeSpanHash]["itemTotal"];
 								}
-	
+								
+								$workingSort[$timeSpanHash] = $workingContexts[$timeSpanHash]["itemTotal"];
 						  }//end loop through contexts
 						  
 						  if(count($project["contexts"])== 0 && $project["editStatus"] == 0){
@@ -197,7 +199,7 @@ class Projects {
                                                       "title" => "Forthcoming: ".$project["label"],
                                                       "options" => array(
 																								"infoHtml" => $innerHTML,
-																								"theme" => "purple-f"
+																								"theme" => "forthcoming"
 																						  )
                                                       );
 								
@@ -214,13 +216,18 @@ class Projects {
 																				"lon"=> $workingContext["prep-geo"]["minLon"]);
 								unset($workingContext["polygon"]);
 								$workingContexts[md5($project["uri"])] = $workingContext;
+								$workingSort[md5($project["uri"])] = 0;
 								unset($workingContext);
 						  }//end case with 0 count countexts and forthcoming status
 					 }//end case with contexts
 				}//end loop through projects
 				
+				//now sort by the number of items, decenting order..
+				arsort($workingSort);
+
 				//fix size, help out chrome with intelligible json
-				foreach($workingContexts as $key => $actContext){
+				foreach($workingSort as $key => $sortValue){
+					 $actContext = $workingContexts[$key];
 					 unset($actContext["prep-geo"]);
 					 unset($actContext["count"]);
 					 unset($actContext["used"]);
@@ -249,6 +256,10 @@ class Projects {
 					 $timeMapObj[] = $actContext;
 				}
 				unset($workingContexts);
+				
+				
+				
+				
 				
 				
 		  }

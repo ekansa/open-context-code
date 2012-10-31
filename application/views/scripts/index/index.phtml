@@ -16,9 +16,8 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
 ?>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!DOCTYPE html>
+<html lang="en"> 
     <head> 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Open Context: Data Publication for Cultural Heritage and Field Research</title> 
@@ -41,10 +40,42 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
         <script src="../js/timemap2/oc.js" type="text/javascript"></script>
         <script src="../js/timemap2/circle_icons.js" type="text/javascript"></script>
         
+        <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+        <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-collapse.js" type="text/javascript"></script>
      
         <script type="text/javascript">
             var tm;
             var timeMapURL = "<?php echo $host; ?>/maps/time-map.json";
+            
+            
+            var numRangeThemes = 9;
+            var redRange = [255,255];
+            var greenRange = [200,0];
+            var blueRange = [0,0];
+            var alphaRange = [225,150];
+            
+            //calculates a new color between a range
+            function rangeDiff(colorRange, themeNumber, doHex){
+                var colorDif = (colorRange[1] - colorRange[0]) / numRangeThemes;
+                var newColor = colorRange[0]+ (colorDif * themeNumber);
+                newColor = Math.round(newColor);
+                if(doHex){
+                    newColor =  newColor.toString(16);
+                }
+                return newColor;
+            }
+            
+            function addLegendImage(actSize, actColor, actAlpha){
+                var recCells = document.getElementById("legend-cells");
+                var legCell = document.createElement("div");
+                legCell.setAttribute("class", "div-cell-leg");
+                var legImage = document.createElement("img");
+                var imageSRC = circleURL(actSize, actColor, actAlpha);
+                legImage.setAttribute("src", imageSRC);
+                legCell.appendChild(legImage);
+                recCells.appendChild(legCell);
+           
+            }
             
             function onLoadTM() {
                 // add new interval
@@ -104,25 +135,25 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
                         }
                     ];
                 
-                
-                //var alphas = ["00", "0f", "1e", "2d", "3c", "4b", "5a", "69", "78", "87"];
-                var alphas = ["dc", "cd", "be", "af", "a0", "91", "87", "78", "69", "69"];
-                //var colors = ["300350", "38034C", "490343", "680433", "680433", "7E0327", "7E0327", "8A0320", "C10404", "C10404"];
-                var colors = ["rgb(255,120,0)", "rgb(255,100,0)", "rgb(255,80,0)", "rgb(255,60,0)", "rgb(255,50,0)", "rgb(255,40,0)", "rgb(255,30,0)", "rgb(255,20,0)", "rgb(255,10,0)", "rgb(255,0,0)"];
-                //var colors = ["FF5A00", "FF5000", "FF4600", "FF3C00", "FF3200", "FF2800", "FF1E00", "FF1400", "FF0A00", "FF0000"];
-                for (var awe = 1; awe < 10 ; awe++) {
+
+                var actColor = "rgb(" + redRange[0] + "," + greenRange[0] + "," + blueRange[0] + ")";
+                var actAlpha = alphaRange[0].toString(16); 
+                for (var awe = 1; awe <= numRangeThemes ; awe++) {
                     // Create a new theme and add it to the TimeMap.themes namespace
+                    var actSize = 12 + (awe * 4);
                     TimeMap.themes["theme-size-" + awe] = TimeMapTheme.createCircleTheme({
-                        size: 12 + (awe * 4),
-                        color: colors[awe],
-                        alpha: alphas[awe]
+                        size: actSize,
+                        color: actColor,
+                        alpha: actAlpha
                     });
-                   
+                    addLegendImage(actSize, actColor, actAlpha);
+                    actColor = "rgb(" + rangeDiff(redRange, awe, 0) + "," +rangeDiff(greenRange, awe, 0) + "," + rangeDiff(blueRange, awe, 0) + ")";
+                    actAlpha = rangeDiff(alphaRange, awe, 1);
                 }
                
-                TimeMap.themes["purple-f"] = TimeMapTheme.createCircleTheme({
+                TimeMap.themes["forthcoming"] = TimeMapTheme.createCircleTheme({
                         size: 20,
-                        color: "rgb(187,7,237)"
+                        color: "rgb(30,1,200)"
                         //color: "BB07ED"
                     });
                
@@ -199,6 +230,61 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
                 </div>
             </div>
     
+    
+    
+            <div id="timemap">
+                <div class="accordion" id="accordion2">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                          <div class="div-tab">
+                              <div class="div-row">
+                                  <div class="div-cell">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                        Timeline
+                                      </a>
+                                  </div>
+                                  <div id="proj-size">
+                                        <div class="div-tab">
+                                            <div class="div-row">
+                                                <div class="div-cell" style="width:22%;">
+                                                    <h5>Number of Records</h5>
+                                                </div>
+                                                <div class="div-cell" style="padding-left:4px; padding-right:6px;">50</div>
+                                                <div id="legend-cells"></div>
+                                                <div class="div-cell" style="text-align: left;">150,000</div>
+                                            </div>
+                                        </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div id="collapseOne" class="accordion-body collapse">
+                          <div class="accordion-inner">
+                              
+                              <div id="timelinecontainer">
+                                  <div id="timeline"></div>
+                              </div>
+                              
+                          </div>
+                        </div>
+                        
+                        <div id="mapcontainer">
+                            <div id="map"></div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                </div>
+                
+                
+                
+            </div>
+    
+    
+            <!--
+    
             <div id="timemap">
                 <div id="timelinecontainer">
                   <div id="timeline"></div>
@@ -208,10 +294,11 @@ $lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
                 </div>
             </div>
             
-            
+            -->
         </div>
         <!-- end main div -->
         
         <?php echo $this->render('footer.phtml'); //reader document footer ?>
+        
     </body>
 </html>    
