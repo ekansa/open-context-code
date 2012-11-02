@@ -859,27 +859,27 @@ class SolrSearch{
 	//this gives Solr two chances to respond, with a .5 second delay
 	function pingSolr($solr){
 	    
-		if ($solr->ping()) {
-			return true;
-		}
-		else{
-			sleep(.5);
-			if ($solr->ping()) {
-			    return true;
-			}
-			else{
-			    
-			    $solrError = new SolrError;
-			    $solrError->restartSolr();
-			    sleep(.75);
-			    if ($solr->ping()) {
-				return true;
-			    }
-			    else{
-				return false;
-			    }
-			}
-		}
+        if ($solr->ping()) {
+           return true;
+        }
+        else{
+            sleep(.5);
+            if ($solr->ping()) {
+                return true;
+            }
+            else{
+                
+                $solrError = new SolrError;
+                $solrError->restartSolr();
+                sleep(.75);
+                if ($solr->ping()) {
+                   return true;
+                }
+                else{
+                   return false;
+                }
+            }
+        }
 		
 	}
 	
@@ -2062,5 +2062,27 @@ class SolrSearch{
 			
 		  return $itemResults;    
     }//end function
+
+
+
+
+    //general search, just get back a resposnse without processing
+    function generalSearch(){
+        try {
+			
+            $response = $solr->search($this->query,
+                                 $this->offset,
+                                 $this->number_recs,
+                                 $this->param_array);
+                      
+            $this->queryString = $solr->queryString;
+            $rawResponse = Zend_Json::decode($response->getRawResponse());
+            return $rawResponse;
+				
+		  } catch (Exception $e) {
+				$this->solrDown = true;
+            return false;
+		  }
+    }
 
 }//end class

@@ -47,6 +47,8 @@ class dbXML_dbPropitem  {
     public $propertiesObj; //object for properties
     public $linksObj; // object for links
     public $metadataObj; //object for metadata
+	 
+	 public $solrResults; //results from a solr search to summarize a property
     
     private $pen_obsItemTypes = array("space" => "spatial",
 				  "media" => "media",
@@ -64,6 +66,7 @@ class dbXML_dbPropitem  {
 										 "image" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
 										 "media" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
 										 "documents" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=document")
+										);
 	 
 	 
     public $dbName;
@@ -121,15 +124,12 @@ class dbXML_dbPropitem  {
         $this->itemUUID = $id;
         $found = false;
         
-        if($this->dbPenelope){
-            $found = $this->pen_itemGet();
-				if($found){
-					 $this->pen_getVarDescription();
-				}
-        }
-        else{
-            $found = $this->oc_itemGet();
-        }
+       
+        $found = $this->pen_itemGet();
+		  if($found){
+				//$this->pen_getVarDescription();
+		  }
+       
         
         return $found;
     }
@@ -365,6 +365,9 @@ class dbXML_dbPropitem  {
 	 
 	 
 	 //use solr to get the propety summaries we need
+	 
+	 
+	 /*
 	 public function solrDBpropertySummary(){
 	
 		  $subjectTypeArray = $this->pen_obsItemTypes;  
@@ -381,7 +384,7 @@ class dbXML_dbPropitem  {
     }//end function
 	 
 	 
-	 public solrDBgetRange(){
+	 public function solrDBgetRange(){
 		  $db = $this->db;
 		  $varType = $this->varType;
 		  $sql = "SELECT 	min(properties.val_num) as numMin,
@@ -399,39 +402,60 @@ class dbXML_dbPropitem  {
 				$calMin = $result[0]["calMin"];
 				$calMax = $result[0]["calMax"];
 				
+				$metadataObj = $this->metadataObj;
+				$projectName = $metadataObj->projectName;
+				
 				if(stristr($varType, "calend")){
-					 $requestParams = array("range" => ($this->varLabel."::"."($calMin, $calMax, +1YEAR)";
+					 $requestParams = array("range" => ($this->varLabel."::"."(".$calMin.",".$calMax.","."+1YEAR,c)"),
+													"proj" => $projectName
+													);
 				}
+				else{
+					 $requestParams = array("range" => ($this->varLabel."::"."(".$numMin.",".$numMax.","."15)"),
+													"proj" => $projectName
+													);
+				}
+				echo "here";
 				
-				
+				$solrResults = array();
 				$SolrSearch = new SolrSearch;
-				foreach($this->solrTypes as $sType => $typeParams){
-					 $SolrSearch->initialize();
-					 
-					 if($sType == "spatial"){
-						  $SolrSearch->spatial = true; //do a search of spatial items in Open Context
+				$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+				if ($SolrSearch->pingSolr($solr)) {
+					 foreach($this->solrTypes as $sType => $typeParams){
+						  $SolrSearch->initialize();
+						  
+						  if($sType == "spatial"){
+								$SolrSearch->spatial = true; //do a search of spatial items in Open Context
+						  }
+						  elseif($sType == "image"){
+								 $SolrSearch->image = true;
+						  }
+						  elseif($sType == "media"){
+								 $SolrSearch->media = true;
+						  }
+							elseif($sType == "document"){
+								 $SolrSearch->document = true;
+						  }
+						  
+						  $DocumentTypes = $this->makeDocumentTypeArray();
+						  $param_array = array();
+						  $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
+						  $param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, 1);
+						  unset($param_array["facet.field"]);
+						  unset($param_array["bq"]);
+						  
+						  $SolrSearch->offset = 0;
+						  $SolrSearch->number_recs = 0;
+						  $SolrSearch->param_array = $param_array;
+						  $SolrSearch->query = "*:*";
+						  //$solrResults[$sType] = $SolrSearch->generalSearch();
 					 }
-					 elseif($sType == "image"){
-						   $SolrSearch->image = true;
-					 }
-					 elseif($sType == "media"){
-						   $SolrSearch->media = true;
-					 }
-					  elseif($sType == "document"){
-						   $SolrSearch->document = true;
-					 }
 					 
-					 $DocumentTypes = $this->makeDocumentTypeArray();
-					 $param_array = array();
-					 $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
-					 
-					 
+					 $this->solrResults = $solrResults;
 				}
-				
-				
 		  }
 	 }
-	 
+	 */
 	 
     
     //get numeric summary, very costly!

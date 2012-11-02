@@ -43,8 +43,6 @@ class propertiesController extends Zend_Controller_Action
 		  $db = $itemObj->db;
 		  $itemObj->dbPenelope = true;
 		  $itemObj->getByID($itemUUID);
-		  //$itemObj->propertySummary();
-		  $itemObj->solrDBpropertySummary();
 		
 		  $propsObj = new dbXML_dbProperties;
 		  $propsObj->initialize($db);
@@ -64,6 +62,7 @@ class propertiesController extends Zend_Controller_Action
 		  $itemObj->metadataObj = $metadataObj;
 	 
 		  $itemObj->makeQueryVal();
+		  $itemObj->solrDBpropertySummary();
 		
 		  $xmlItem = new dbXML_xmlProperty;
 		  $xmlItem->itemObj = $itemObj;
@@ -72,6 +71,7 @@ class propertiesController extends Zend_Controller_Action
 		  $xmlItem->addPropDetails();
 		  $xmlItem->addPropsLinks();
 		  $xmlItem->addMetadata();
+		  
 		  
 		  $doc = $xmlItem->doc;
 		  header('Content-Type: application/xml; charset=utf8');
@@ -96,8 +96,9 @@ class propertiesController extends Zend_Controller_Action
 		  $db = $itemObj->db;
 		  $itemObj->dbPenelope = true;
 		  $itemObj->getByID($itemUUID);
-		  $itemObj->propertySummary();
+		  
 		
+		/*
 		  $propsObj = new dbXML_dbProperties;
 		  $propsObj->initialize($db);
 		  $propsObj->dbPenelope = true;
@@ -114,8 +115,10 @@ class propertiesController extends Zend_Controller_Action
 		  $metadataObj->initialize($db);
 		  $metadataObj->getMetadata($itemObj->projectUUID);
 		  $itemObj->metadataObj = $metadataObj;
-	 
+		  
 		  $itemObj->makeQueryVal();
+		  //$itemObj->solrDBpropertySummary();
+		*/ 
 		  header('Content-Type: application/json; charset=utf8');
 		  echo Zend_Json::encode($itemObj);
 	 }
