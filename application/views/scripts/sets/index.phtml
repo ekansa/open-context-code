@@ -515,10 +515,12 @@ BEGIN Container for main page content
                                     <a href="<?php echo $resItem["uri"]; ?>">
                                         <img src="<?php echo $resItem["thumbIcon"]; ?>" alt="Thumbnail for <?php echo $resItem["label"]; ?>" />
                                     </a>
+                                    
                                     <?php }//end case with a different thumbnails
                                             elseif(is_array($resItem["var_vals"])){
                                     ?> 
                                             <div class="item_sample_data_tab">
+                                               
                                                 <?php
                                                     $sd = 0;
                                                     $maxSampleRecs = 3;

@@ -43,7 +43,8 @@ class propertiesController extends Zend_Controller_Action
 		  $db = $itemObj->db;
 		  $itemObj->dbPenelope = true;
 		  $itemObj->getByID($itemUUID);
-		  $itemObj->propertySummary();
+		  //$itemObj->propertySummary();
+		  $itemObj->solrDBpropertySummary();
 		
 		  $propsObj = new dbXML_dbProperties;
 		  $propsObj->initialize($db);

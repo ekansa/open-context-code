@@ -613,98 +613,98 @@ class SolrSearch{
     
     function addResultFields($doc, $actDocOutput){
 	
-	$actDocOutput["pub_date"] = $doc->pub_date;
-	$actDocOutput["update"] = $doc->pub_date;
-	
-	if($this->allDocs || $this->table){
-	    $actDocOutput["item_label"] = $doc->item_label;
-	    $actDocOutput["item_type"] = $doc->item_type;
-	    
-	    if(!empty($doc->item_class)){
-			$actDocOutput["item_class"] = $doc->item_class;
-	    }
-	    else{
-			$actDocOutput["item_class"] = null;
-	    }
-	    if(!empty($doc->creator)){
-			$actDocOutput["creator"] = $doc->creator;
-	    }
-	    else{
-			$actDocOutput["creator"] = null;
-	    }
-	    if(!empty($doc->contributor)){
-			$actDocOutput["contributor"] = $doc->contributor;
-	    }
-	    else{
-			$actDocOutput["contributor"] = null;
-	    }
-	    if(!empty($doc->project_name)){
-			$actDocOutput["project_name"] = $doc->project_name;
-	    }
-	    else{
-			$actDocOutput["project_name"] = null;
-	    }
-	    
-	    $docTypeArray = $this->docTypeArray;
-	    if(array_key_exists($doc->item_type, $docTypeArray)){
-		$host = OpenContext_OCConfig::get_host_config();
-		if(!stristr($doc->uuid, "http://")){
-			$actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
-		}
-		else{
-			$actDocOutput["href"] = $doc->uuid;
-		}
-	    }
-	}
-	if($this->substance){
-	    $actDocOutput["item_label"] = $doc->item_label;
-	    $actDocOutput["pub_date"] = $doc->pub_date;
-	    $actDocOutput["update"] = $doc->pub_date;
-	}
-	
-	if($this->spatial || $this->image || $this->document || $this->project){
-	    
-	    $docTypeArray = $this->docTypeArray;
-	    if(array_key_exists($doc->item_type, $docTypeArray)){
-		$host = OpenContext_OCConfig::get_host_config();
-		if(!stristr($doc->uuid, "http://")){
-			$actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
-		}
-		else{
-			$actDocOutput["href"] = $doc->uuid;
-		}
-	    }
-	    
-	    if(!empty($doc->time_span)){
-		$actDocOutput["time_span"] = $doc->time_span;
-	    }
-	    if(!empty($doc->geo_lat)){
-		$actDocOutput["geo_lat"] = $doc->geo_lat;
-	    }
-	    if(!empty($doc->geo_long)){
-		$actDocOutput["geo_long"] = $doc->geo_long;
-	    }
-	    if(!empty($doc->geo_point)){
-		$actDocOutput["geo_point"] = $doc->geo_point;
-	    }
-	    if(!empty($doc->project_name)){
-		$actDocOutput["project_name"] = $doc->project_name;
-	    }
-	    if(!empty($doc->item_class)){
-		$actDocOutput["item_class"] = $doc->item_class;
-	    }
-	    if(!empty($doc->creator)){
-		$actDocOutput["creator"] = $doc->creator;
-	    }
-	    if(!empty($doc->contributor)){
-		$actDocOutput["contributor"] = $doc->contributor;
-	    }
-	    if(!empty($doc->var_vals)){
-		$actDocOutput["var_vals"] = $doc->var_vals;
-	    }
-	}
-	
-	return $actDocOutput;
+		  $actDocOutput["pub_date"] = $doc->pub_date;
+		  $actDocOutput["update"] = $doc->pub_date;
+		  
+		  if($this->allDocs || $this->table){
+				$actDocOutput["item_label"] = $doc->item_label;
+				$actDocOutput["item_type"] = $doc->item_type;
+				
+				if(!empty($doc->item_class)){
+				  $actDocOutput["item_class"] = $doc->item_class;
+				}
+				else{
+				  $actDocOutput["item_class"] = null;
+				}
+				if(!empty($doc->creator)){
+				  $actDocOutput["creator"] = $doc->creator;
+				}
+				else{
+				  $actDocOutput["creator"] = null;
+				}
+				if(!empty($doc->contributor)){
+				  $actDocOutput["contributor"] = $doc->contributor;
+				}
+				else{
+				  $actDocOutput["contributor"] = null;
+				}
+				if(!empty($doc->project_name)){
+				  $actDocOutput["project_name"] = $doc->project_name;
+				}
+				else{
+				  $actDocOutput["project_name"] = null;
+				}
+				
+				$docTypeArray = $this->docTypeArray;
+				if(array_key_exists($doc->item_type, $docTypeArray)){
+					 $host = OpenContext_OCConfig::get_host_config();
+					 if(!stristr($doc->uuid, "http://")){
+						 $actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
+					 }
+					 else{
+						 $actDocOutput["href"] = $doc->uuid;
+					 }
+				}
+		  }
+		  if($this->substance){
+				$actDocOutput["item_label"] = $doc->item_label;
+				$actDocOutput["pub_date"] = $doc->pub_date;
+				$actDocOutput["update"] = $doc->pub_date;
+		  }
+		  
+		  if($this->spatial || $this->image || $this->document || $this->project){
+				
+				$docTypeArray = $this->docTypeArray;
+				if(array_key_exists($doc->item_type, $docTypeArray)){
+					 $host = OpenContext_OCConfig::get_host_config();
+					 if(!stristr($doc->uuid, "http://")){
+						 $actDocOutput["href"] = $host.$docTypeArray[$doc->item_type]["href"].$doc->uuid;
+					 }
+					 else{
+						 $actDocOutput["href"] = $doc->uuid;
+					 }
+				}
+				
+				if(!empty($doc->time_span)){
+					 $actDocOutput["time_span"] = $doc->time_span;
+				}
+				if(!empty($doc->geo_lat)){
+					 $actDocOutput["geo_lat"] = $doc->geo_lat;
+				}
+				if(!empty($doc->geo_long)){
+					 $actDocOutput["geo_long"] = $doc->geo_long;
+				}
+				if(!empty($doc->geo_point)){
+					 $actDocOutput["geo_point"] = $doc->geo_point;
+				}
+				if(!empty($doc->project_name)){
+					 $actDocOutput["project_name"] = $doc->project_name;
+				}
+				if(!empty($doc->item_class)){
+					 $actDocOutput["item_class"] = $doc->item_class;
+				}
+				if(!empty($doc->creator)){
+					 $actDocOutput["creator"] = $doc->creator;
+				}
+				if(!empty($doc->contributor)){
+					 $actDocOutput["contributor"] = $doc->contributor;
+				}
+				if(!empty($doc->var_vals)){
+					 $actDocOutput["var_vals"] = Zend_Json::decode($doc->var_vals);
+				}
+		  }
+		  
+		  return $actDocOutput;
     }
     
     
@@ -733,125 +733,125 @@ class SolrSearch{
     //composes query for SOLR
     function buildSolrQuery(){
 	
-		$this->queryPageRecs(); //set page and offset parameters for query
-		$this->set_offset();
-		$this->set_default_context(); //set default context path
-		$this->checkTaxaPeopleFacets(); //check to see if we need to get taxa and people facets
-		$this->makeGeoFromRequestParam(); //make geo parameters, if needed	
-		
-		$requestParams = $this->requestParams;
-		$slashCount = $this->slashCount;
-		$context_depth = $this->context_depth;
-		
-		$extendedFacets = OpenContext_FacetQuery::unfold_deep_parameters($requestParams, $slashCount);
-		
-		
-		$DocumentTypes = $this->makeDocumentTypeArray();
-		
-		$param_array = array();
-		$param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
-		$param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, $context_depth);
-			
-		//echo "here's the context depth:".print_r($param_array); 
-		
-		
-		$param_array = $this->requestSorting($param_array); //set sorting (if needed)
-		$param_array = $this->addFacetFields($param_array);
-		
-		if($this->table && !$this->allDocs){
-			//get rid of the project facet for tables, it's not needed or wanted.
-			
-			$fixedFacets = array();
-			foreach($param_array["facet.field"] as $facetField){
-			if($facetField != "project_name" && $facetField != "creator"){
-				$fixedFacets[] = $facetField ;
-			}
-			}
-			$param_array["facet.field"] = $fixedFacets;
-			unset($fixedFacets);
-			$this->showPeopleFacets = true;
-		}
-		
-		if($this->showTaxaFacets){
-			$param_array["facet.field"][] = "top_taxon";
-		}
-		if($this->showPeopleFacets){
-			$param_array["facet.field"][] = "person_link";
-		}
-		else{
-			if(array_search("creator", $param_array["facet.field"])){
-				$badKey = array_search("creator", $param_array["facet.field"]);
-				unset($param_array["facet.field"][$badKey]);
-			}
-		}
-		
-		
-		if($this->reconcile){
-			//reconcilation doesn't need many facets, remove superfluous ones
-			$skipFacets = array("project_name", "creator", "item_class", "person_link",
-								"contributor", "image_media_count", "other_binary_media_count",
-								"diary_count");
-				
-			$fixedFacets = array();
-			foreach($param_array["facet.field"] as $facetField){
-				if(!in_array($facetField, $skipFacets)){
-					$fixedFacets[] = $facetField ;
+		  $this->queryPageRecs(); //set page and offset parameters for query
+		  $this->set_offset();
+		  $this->set_default_context(); //set default context path
+		  $this->checkTaxaPeopleFacets(); //check to see if we need to get taxa and people facets
+		  $this->makeGeoFromRequestParam(); //make geo parameters, if needed	
+		  
+		  $requestParams = $this->requestParams;
+		  $slashCount = $this->slashCount;
+		  $context_depth = $this->context_depth;
+		  
+		  $extendedFacets = OpenContext_FacetQuery::unfold_deep_parameters($requestParams, $slashCount);
+		  
+		  
+		  $DocumentTypes = $this->makeDocumentTypeArray();
+		  
+		  $param_array = array();
+		  $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
+		  $param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, $context_depth);
+			  
+		  //echo "here's the context depth:".print_r($param_array); 
+		  
+		  
+		  $param_array = $this->requestSorting($param_array); //set sorting (if needed)
+		  $param_array = $this->addFacetFields($param_array);
+		  
+		  if($this->table && !$this->allDocs){
+			  //get rid of the project facet for tables, it's not needed or wanted.
+			  
+			  $fixedFacets = array();
+			  foreach($param_array["facet.field"] as $facetField){
+			  if($facetField != "project_name" && $facetField != "creator"){
+				  $fixedFacets[] = $facetField ;
+			  }
+			  }
+			  $param_array["facet.field"] = $fixedFacets;
+			  unset($fixedFacets);
+			  $this->showPeopleFacets = true;
+		  }
+		  
+		  if($this->showTaxaFacets){
+			  $param_array["facet.field"][] = "top_taxon";
+		  }
+		  if($this->showPeopleFacets){
+			  $param_array["facet.field"][] = "person_link";
+		  }
+		  else{
+				if(array_search("creator", $param_array["facet.field"])){
+					$badKey = array_search("creator", $param_array["facet.field"]);
+					unset($param_array["facet.field"][$badKey]);
 				}
-			}
-			$param_array["facet.field"] = $fixedFacets;
-			unset($fixedFacets);
-		}
-
-		
-		
-		$default_context_path = $this->default_context_path;
-		if (!$default_context_path) {
-		    $query = "*:*";
-			// otherwise, query for the default context path.
-		} else {
-		    $query = "default_context_path:" . $default_context_path . "*";
-		}    
-			
-		$contextArray = Opencontext_FacetQuery::defaultContextORparser("default_context_path", $this->original_default_context_path);
-		$query = $contextArray["query"];
-		if(!stristr($query, "default_context_path")){
-		    $query = "*:*";
-		}
-		
-		if($this->geoParam != false){
-			$query = "(".$query.") && (".$this->geoParam.")";
-			if(is_array($this->geoFacets)){
-				foreach($this->geoFacets as $geoFacet){
-					 $param_array["facet.field"][] = $geoFacet;
-				}
-			}
-		}
-		
-		unset($param_array["bq"]);
-		//$param_array["bq"][] = "{item_type:site^10}";
-		//$param_array["fq"] .= " && item_type:site^10";
-		//$param_array["bq"][] = "!item_type:project^5";
-		
-		
-		if($this->allDocs){
-			//$query .= "&hl=true";
-			$param_array["hl"] = "true";
-			$param_array["hl.fl"] = "full_text";
-			$param_array["hl.fragsize"] = 140;
-			$param_array['hl.simple.pre'] = '<strong>';
-			$param_array['hl.simple.post'] = '</strong>';
-		}
-		
-		if($this->facetSort){
-		    $param_array["facet.sort"] = "index";
-		}
-		
-		
-		//$query .= " item_type:site^10";
-		$this->param_array = $param_array;
-		$this->query = $query;
-		
-		//echo print_r($param_array);
+		  }
+		  
+		  
+		  if($this->reconcile){
+			  //reconcilation doesn't need many facets, remove superfluous ones
+			  $skipFacets = array("project_name", "creator", "item_class", "person_link",
+								  "contributor", "image_media_count", "other_binary_media_count",
+								  "diary_count");
+				  
+			  $fixedFacets = array();
+			  foreach($param_array["facet.field"] as $facetField){
+				  if(!in_array($facetField, $skipFacets)){
+					  $fixedFacets[] = $facetField ;
+				  }
+			  }
+			  $param_array["facet.field"] = $fixedFacets;
+			  unset($fixedFacets);
+		  }
+  
+		  
+		  
+		  $default_context_path = $this->default_context_path;
+		  if (!$default_context_path) {
+				$query = "*:*";
+			  // otherwise, query for the default context path.
+		  } else {
+				$query = "default_context_path:" . $default_context_path . "*";
+		  }    
+			  
+		  $contextArray = Opencontext_FacetQuery::defaultContextORparser("default_context_path", $this->original_default_context_path);
+		  $query = $contextArray["query"];
+		  if(!stristr($query, "default_context_path")){
+				$query = "*:*";
+		  }
+		  
+		  if($this->geoParam != false){
+			  $query = "(".$query.") && (".$this->geoParam.")";
+			  if(is_array($this->geoFacets)){
+				  foreach($this->geoFacets as $geoFacet){
+						$param_array["facet.field"][] = $geoFacet;
+				  }
+			  }
+		  }
+		  
+		  unset($param_array["bq"]);
+		  //$param_array["bq"][] = "{item_type:site^10}";
+		  //$param_array["fq"] .= " && item_type:site^10";
+		  //$param_array["bq"][] = "!item_type:project^5";
+		  
+		  
+		  if($this->allDocs){
+			  //$query .= "&hl=true";
+			  $param_array["hl"] = "true";
+			  $param_array["hl.fl"] = "full_text";
+			  $param_array["hl.fragsize"] = 140;
+			  $param_array['hl.simple.pre'] = '<strong>';
+			  $param_array['hl.simple.post'] = '</strong>';
+		  }
+		  
+		  if($this->facetSort){
+				$param_array["facet.sort"] = "index";
+		  }
+		  
+		  
+		  //$query .= " item_type:site^10";
+		  $this->param_array = $param_array;
+		  $this->query = $query;
+		  
+		  //echo print_r($param_array);
 	
     }
     
@@ -885,77 +885,76 @@ class SolrSearch{
 	
 	
     function execute_search(){
-	/*
-	echo "<br/>Query: ".$this->query;
-	echo "<br/>".$this->number_recs;
-	echo "<br/>".var_dump($this->param_array);
-	*/
-	
-	$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
-	//$solr->setDefaultTimeout(5.0);
-	if ($this->pingSolr($solr)) {
-	//if (true) {
-	    try {
-	
-            $response = $solr->search(	$this->query,
-                                 $this->offset,
-                                 $this->number_recs,
-                                 $this->param_array);
-                      
-            $this->queryString = $solr->queryString;
-            $docs_array = array();
-            
-            foreach (($response->response->docs) as $doc) {
-                
-                $actDocOutput = array("uuid" => $doc->uuid);
-                if(!$this->rawDocsArray){
-                  $actDocOutput = $this->addResultFields($doc, $actDocOutput);
-                }
-                else{
-                  $allDoc = (array)$doc;
-                  $arrayKey = array_keys($allDoc);
-                  $actDocOutput = $allDoc[$arrayKey[1]]; //second key has the fields and data we want in an array
-                  //echo print_r($actDocOutput);
-                }
-                
-                $docs_array[] = $actDocOutput ;
-            }
-            
-            $rawResponse = Zend_Json::decode($response->getRawResponse());
-            $reponse = $rawResponse['response'];
-            $numFound = $reponse['numFound'];
-            $this->numFound = $numFound;
-            $this->documentsArray =  $docs_array;
-            
-            if(isset($rawResponse['facet_counts'])){
-                $this->facets =  $rawResponse['facet_counts'];
-            }
-            $this->pseudoBoost();
-            $this->getGeoTiles();
+		  /*
+		  echo "<br/>Query: ".$this->query;
+		  echo "<br/>".$this->number_recs;
+		  echo "<br/>".var_dump($this->param_array);
+		  */
+		  
+		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+		  //$solr->setDefaultTimeout(5.0);
+		  if ($this->pingSolr($solr)) {
+		  //if (true) {
+				 try {
+			
+					 $response = $solr->search(	$this->query,
+												 $this->offset,
+												 $this->number_recs,
+												 $this->param_array);
+								  
+					 $this->queryString = $solr->queryString;
+					 $docs_array = array();
+					 
+					 foreach (($response->response->docs) as $doc) {
+						  
+						  $actDocOutput = array("uuid" => $doc->uuid);
+						  if(!$this->rawDocsArray){
+								$actDocOutput = $this->addResultFields($doc, $actDocOutput);
+						  }
+						  else{
+							 $allDoc = (array)$doc;
+							 $arrayKey = array_keys($allDoc);
+							 $actDocOutput = $allDoc[$arrayKey[1]]; //second key has the fields and data we want in an array
+							 //echo print_r($actDocOutput);
+						  }
+						  
+						  $docs_array[] = $actDocOutput ;
+					 }
+					 
+					 $rawResponse = Zend_Json::decode($response->getRawResponse());
+					 $reponse = $rawResponse['response'];
+					 $numFound = $reponse['numFound'];
+					 $this->numFound = $numFound;
+					 $this->documentsArray =  $docs_array;
+					 
+					 if(isset($rawResponse['facet_counts'])){
+						  $this->facets =  $rawResponse['facet_counts'];
+					 }
+					 $this->pseudoBoost();
+					 $this->getGeoTiles();
+				
+				} catch (Exception $e) {
+					 $this->solrDown = true;
+					 $this->queryString = $solr->queryString;
+					 $solrError = new SolrError;
+					 $requestParams = $this->requestParams;
+					 $requestParams["solrError"] = (string)$e;
+					 $this->requestParams = $requestParams;
+					 $solrError->initialize($this->requestParams);
+				}
+	  
+		  } else {
+				 //die("unable to connect to the solr server. exiting...");
+				 //echo OpenContext_OCConfig::getSolrDownMessage();
+				 //die("Upgrade in progress, unable to connect to the solr server. exiting...");
+				 
+				$this->solrDown = true;
+				$solrError = new SolrError;
+				$solrError->initialize($this->requestParams);
 		
-	    } catch (Exception $e) {
-            $this->solrDown = true;
-            $this->queryString = $solr->queryString;
-            $solrError = new SolrError;
-            $requestParams = $this->requestParams;
-            $requestParams["solrError"] = (string)$e;
-            $this->requestParams = $requestParams;
-            $solrError->initialize($this->requestParams);
-	    }
-
-	} else {
-	    //die("unable to connect to the solr server. exiting...");
-	    //echo OpenContext_OCConfig::getSolrDownMessage();
-	    //die("Upgrade in progress, unable to connect to the solr server. exiting...");
-	    
-	    $this->solrDown = true;
-	    $solrError = new SolrError;
-	    $solrError->initialize($this->requestParams);
-
-	}
-	
-	
-	$this->makeAltLinks(); //now that search results are found, make some links
+		  }
+		  
+		  $this->makeAltLinks(); //now that search results are found, make some links
     }
     
     
@@ -964,25 +963,25 @@ class SolrSearch{
     */
     function pseudoBoost(){
 	
-	if($this->allDocs){
-	    $highRankArray = array(); //highest ranking array
-	    $secRankArray = array(); //next ranking
-	    $restArray = array(); //everything else
-	    foreach($this->documentsArray as $doc){
-		if($doc["item_type"] == "site"){
-		    $highRankArray[] = $doc;
-		}
-		elseif($doc["item_type"] == "project"){
-		    $secRankArray[] = $doc;
-		}
-		else{
-		    $restArray[] = $doc;
-		}
-	    }
-	    
-	    $newDocs = array_merge($highRankArray, $secRankArray, $restArray);
-	    $this->documentsArray = $newDocs;
-	}
+		  if($this->allDocs){
+				$highRankArray = array(); //highest ranking array
+				$secRankArray = array(); //next ranking
+				$restArray = array(); //everything else
+				foreach($this->documentsArray as $doc){
+					 if($doc["item_type"] == "site"){
+						  $highRankArray[] = $doc;
+					 }
+					 elseif($doc["item_type"] == "project"){
+						  $secRankArray[] = $doc;
+					 }
+					 else{
+						  $restArray[] = $doc;
+					 }
+				}
+				
+				$newDocs = array_merge($highRankArray, $secRankArray, $restArray);
+				$this->documentsArray = $newDocs;
+		  }
     }
     
     
@@ -990,66 +989,66 @@ class SolrSearch{
     //another Solr Query to get the last updated time
     function getLatestTime($doUpdate = true){
 	
-	$param_array = $this->param_array;
-	$query = $this->query;
-	
-	if(isset($param_array["facet"])){
-	    unset($param_array["facet"]);
-	}
-	if(isset($param_array["facet.mincount"])){
-	    unset($param_array["facet.mincount"]);
-	}
-	if(isset($param_array["facet.field"])){
-	    unset($param_array["facet.field"]);
-	}
-	if(isset($param_array["facet.field"])){
-	    unset($param_array["facet.query"]);
-	}
-	
-	if($doUpdate){
-	    $param_array["sort"] = "update desc";
-	}
-	else{
-	    $param_array["sort"] = "pub_date desc";
-	}
-	
-	$lastUpdate = false;
-	$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
-	//if ($this->pingSolr($solr)) {
-	if (true) {
-	    try {
-	
-		$response = $solr->search($query,
-					0, //offset
-					1, //number of records
-					$param_array);
-                
-		foreach (($response->response->docs) as $doc) {
-		    if($doUpdate){
-				$this->lastUpdate = $doc->update;
-		    }
-		    else{
-				$this->lastPublished = $doc->pub_date;
-		    }
-		}
-		
-		$rawResponse = Zend_Json::decode($response->getRawResponse());
-		
-	    } catch (Exception $e) {
-		$this->solrDown = true;
-		$solrError = new SolrError;
-		$requestParams = $this->requestParams;
-		$requestParams["solrError"] = $e;
-		$this->requestParams = $requestParams;
-		$solrError->initialize($this->requestParams);
-	    }
-
-	} else {
-	    //die("unable to connect to the solr server. exiting...");
-	    //echo OpenContext_OCConfig::getSolrDownMessage();
-	    //die("Upgrade in progress, unable to connect to the solr server. exiting...");
-	    $this->solrDown = true;
-	}
+		  $param_array = $this->param_array;
+		  $query = $this->query;
+		  
+		  if(isset($param_array["facet"])){
+				unset($param_array["facet"]);
+		  }
+		  if(isset($param_array["facet.mincount"])){
+				unset($param_array["facet.mincount"]);
+		  }
+		  if(isset($param_array["facet.field"])){
+				unset($param_array["facet.field"]);
+		  }
+		  if(isset($param_array["facet.field"])){
+				unset($param_array["facet.query"]);
+		  }
+		  
+		  if($doUpdate){
+				$param_array["sort"] = "update desc";
+		  }
+		  else{
+				$param_array["sort"] = "pub_date desc";
+		  }
+		  
+		  $lastUpdate = false;
+		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+		  //if ($this->pingSolr($solr)) {
+		  if (true) {
+				try {
+		  
+			  $response = $solr->search($query,
+						  0, //offset
+						  1, //number of records
+						  $param_array);
+							
+			  foreach (($response->response->docs) as $doc) {
+					if($doUpdate){
+					  $this->lastUpdate = $doc->update;
+					}
+					else{
+					  $this->lastPublished = $doc->pub_date;
+					}
+			  }
+			  
+			  $rawResponse = Zend_Json::decode($response->getRawResponse());
+			  
+				} catch (Exception $e) {
+					  $this->solrDown = true;
+					  $solrError = new SolrError;
+					  $requestParams = $this->requestParams;
+					  $requestParams["solrError"] = $e;
+					  $this->requestParams = $requestParams;
+					  $solrError->initialize($this->requestParams);
+				}
+	  
+		  } else {
+				//die("unable to connect to the solr server. exiting...");
+				//echo OpenContext_OCConfig::getSolrDownMessage();
+				//die("Upgrade in progress, unable to connect to the solr server. exiting...");
+				$this->solrDown = true;
+		  }
 	
     }//end funciton
     
@@ -1617,175 +1616,174 @@ class SolrSearch{
     //Use some of this object's properties and atom-feed-string to make an array (for JSON output) of spatial (location/object) item search results
     function atom_to_object($atom_string){
 	
-		$allResults = array();
-		$host = OpenContext_OCConfig::get_host_config();	
-	
-		@$atomXML = simplexml_load_string($atom_string);
-	
-		if($atomXML){
-	
-			$atomXML->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
-			$atomXML->registerXPathNamespace("opensearch", "http://a9.com/-/spec/opensearch/1.1/");
-			
-			$resultCount = $this->numFound;
-			
-			$resultSubTitle = OpenContext_ResultAtom::get_xml_string($atomXML, "/default:feed/default:subtitle");
-			$first_PageURI = $this->firstPage_XHTML;
-			$last_PageURI = $this->lastPage_XHTML;
-			$next_PageURI = $this->nextPage_XHTML;
-			$prev_PageURI = $this->prevPage_XHTML;
-			
-			$docTypeArray = $this->docTypeArray;
-			$resultArrayURIKey = array();
-			if(is_array($this->documentsArray)){
-				foreach($this->documentsArray as $doc){
-					$uriKey = $host.$docTypeArray["spatial"]["href"].$doc["uuid"];
-					$resultArrayURIKey[$uriKey] = $doc;
-				}//end loop
-			}
-			
-			
-			$eee = count($resultArrayURIKey);
-			$iii = 0;
-			if($eee>0){
+		  $allResults = array();
+		  $host = OpenContext_OCConfig::get_host_config();	
+	  
+		  @$atomXML = simplexml_load_string($atom_string);
+	  
+		  if($atomXML){
+	  
+				$atomXML->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
+				$atomXML->registerXPathNamespace("opensearch", "http://a9.com/-/spec/opensearch/1.1/");
 				
-				foreach ($atomXML->xpath("/default:feed/default:entry") as $AtomEntry) {
-					$AtomEntry->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
-					$AtomEntry->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
-					$AtomEntry->registerXPathNamespace("geo", OpenContext_OCConfig::get_namespace("georss"));
-					$AtomEntry->registerXPathNamespace("kml", OpenContext_OCConfig::get_namespace("kml"));
-					
-					$geoLat = false;
-					$geoLon = false;
-					$kmlBegin = false;
-					$kmlEnd = false;
-					
-					$entryURI = false;
-					foreach($AtomEntry->xpath("./default:id") as $idNode){
-						$entryURI = (string)$idNode;
-					}
-					
-					if($AtomEntry->xpath("./geo:point")){
-						foreach($AtomEntry->xpath("./geo:point") as $geoNode){
-							$geo = (string)$geoNode;
-							$geoData = explode(" ", $geo);
-							$geoLat = $geoData[0] +0;
-							$geoLon = $geoData[1] +0;
-						}
-					}
-					else{
-						$resultArrayURIKey[$entryURI] = $doc;
-						if(stristr($doc["geo_point"], ",")){
-							$geoData = explode(",", $doc["geo_point"]);
-						}
-						else{
-							$geoData = explode(" ", $doc["geo_point"]);
-						}
-						$geoLat = $geoData[0] +0;
-						$geoLon = $geoData[1] +0;
-					}
-					
-					if(isset($doc["time_span"])){
-						$timeData = explode(" ", $doc["time_span"]);
-						$kmlBegin = $timeData[0] +0;
-						$kmlEnd = $timeData[1] +0;
-					}
-					else{
-						$kmlBegin = false;
-						$kmlEnd = false;
-					}
-					
-					foreach ($AtomEntry->xpath("./default:content") as $entry) {
-					
-						
-						$entry->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
-						$entry->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
-						
-						foreach ($entry->xpath("./xhtml:div") AS $act_content){
-							$act_content->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
-							foreach($act_content->xpath(".//xhtml:div[@class='class_name']") as $act_class){
-								$itemCat = $act_class."";
-							}
-							foreach($act_content->xpath(".//xhtml:div[@class='project_name']") as $act_proj){
-								$itemProject = $act_proj."";
-							}
-							foreach($act_content->xpath(".//xhtml:div[@class='class_icon']/xhtml:img/@src") as $act_icon){
-								$itemIcon = $act_icon."";
-							}
-							foreach($act_content->xpath(".//xhtml:div[@class='item_label']") as $act_label){
-								$itemLabel = $act_label."";
-							}
-							foreach($act_content->xpath(".//xhtml:div[@class='context']") as $itemContextXML){
-								$itemContext = $itemContextXML->asXML();
-							}
-							$itemThumb = false;
-							if($act_content->xpath(".//xhtml:div[@class='item_thumb']//xhtml:img/@src")){
-								foreach($act_content->xpath(".//xhtml:div[@class='item_thumb']//xhtml:img/@src") as $act_thumb){
-									$itemThumb = $act_thumb."";
+				$resultCount = $this->numFound;
+				
+				$resultSubTitle = OpenContext_ResultAtom::get_xml_string($atomXML, "/default:feed/default:subtitle");
+				$first_PageURI = $this->firstPage_XHTML;
+				$last_PageURI = $this->lastPage_XHTML;
+				$next_PageURI = $this->nextPage_XHTML;
+				$prev_PageURI = $this->prevPage_XHTML;
+				
+				$docTypeArray = $this->docTypeArray;
+				$resultArrayURIKey = array();
+				if(is_array($this->documentsArray)){
+					 foreach($this->documentsArray as $doc){
+						 $uriKey = $host.$docTypeArray["spatial"]["href"].$doc["uuid"];
+						 $resultArrayURIKey[$uriKey] = $doc;
+					 }//end loop
+				}
+			  
+			  
+			  $eee = count($resultArrayURIKey);
+			  $iii = 0;
+			  if($eee>0){
+				  
+					 foreach ($atomXML->xpath("/default:feed/default:entry") as $AtomEntry) {
+						  $AtomEntry->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
+						  $AtomEntry->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
+						  $AtomEntry->registerXPathNamespace("geo", OpenContext_OCConfig::get_namespace("georss"));
+						  $AtomEntry->registerXPathNamespace("kml", OpenContext_OCConfig::get_namespace("kml"));
+						  
+						  $geoLat = false;
+						  $geoLon = false;
+						  $kmlBegin = false;
+						  $kmlEnd = false;
+						  
+						  $entryURI = false;
+						  foreach($AtomEntry->xpath("./default:id") as $idNode){
+							  $entryURI = (string)$idNode;
+						  }
+						  
+						  if($AtomEntry->xpath("./geo:point")){
+								foreach($AtomEntry->xpath("./geo:point") as $geoNode){
+									$geo = (string)$geoNode;
+									$geoData = explode(" ", $geo);
+									$geoLat = $geoData[0] +0;
+									$geoLon = $geoData[1] +0;
 								}
-							}
-							if(!$itemThumb){
-								$itemThumb = $itemIcon;
-							}
-							
-						}
-						
-						$var_vals = false;
-						if(is_array($this->documentsArray)){
-						    foreach($this->documentsArray as $doc){
-							if(isset($doc["href"])){
-							    if($doc["href"] == $entryURI){
-								if(isset($doc["var_vals"])){
-								    $var_vals = Zend_json::decode($doc["var_vals"]);
+						  }
+						  else{
+								$resultArrayURIKey[$entryURI] = $doc;
+								if(stristr($doc["geo_point"], ",")){
+									$geoData = explode(",", $doc["geo_point"]);
 								}
-								break;
-							    }
-							}
-							else{
-							    $var_vals = "no href";
-							}
-						    }
-						}
-						else{
-						    $var_vals = "no docs";
-						}
-						
-						
-						$resultItem = array("uri"=>$entryURI,
-									"category"=>$itemCat,
-									"catIcon"=>$itemIcon,
-									"project"=>$itemProject,
-									"label"=>$itemLabel,
-									"context"=> $itemContext,
-									"thumbIcon"=>$itemThumb,
-									"var_vals" => $var_vals,
-									"geoTime" => array("geoLat" => $geoLat,
-											   "geoLong" => $geoLon,
-											   "timeBegin" => $kmlBegin,
-											   "timeEnd" => $kmlEnd
-											   ));
-						
-						
-					
-					}//end loop through entries
-			
-				$allResults[] = $resultItem;
-				$iii++;
-			}//Atom Entries
-		}//end case with entries
-		
-	}//end case with atom content
-	
-	
-	$resultObject = array("resultCount"=>$resultCount,
-			      "firstURI"=>$first_PageURI,
-			      "lastURI"=>$last_PageURI,
-			      "prevURI"=>$prev_PageURI,
-			      "nextURI"=>$next_PageURI,
-			      "items"=>$allResults
-			      );
-	
-	return $resultObject;
+								else{
+									$geoData = explode(" ", $doc["geo_point"]);
+								}
+								$geoLat = $geoData[0] +0;
+								$geoLon = $geoData[1] +0;
+						  }
+						  
+						  if(isset($doc["time_span"])){
+							  $timeData = explode(" ", $doc["time_span"]);
+							  $kmlBegin = $timeData[0] +0;
+							  $kmlEnd = $timeData[1] +0;
+						  }
+						  else{
+							  $kmlBegin = false;
+							  $kmlEnd = false;
+						  }
+						  
+						  foreach ($AtomEntry->xpath("./default:content") as $entry) {
+							  $entry->registerXPathNamespace("default", "http://www.w3.org/2005/Atom");
+							  $entry->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
+								
+								foreach ($entry->xpath("./xhtml:div") AS $act_content){
+									 $act_content->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
+									 foreach($act_content->xpath(".//xhtml:div[@class='class_name']") as $act_class){
+										 $itemCat = $act_class."";
+									 }
+									 foreach($act_content->xpath(".//xhtml:div[@class='project_name']") as $act_proj){
+										 $itemProject = $act_proj."";
+									 }
+									 foreach($act_content->xpath(".//xhtml:div[@class='class_icon']/xhtml:img/@src") as $act_icon){
+										 $itemIcon = $act_icon."";
+									 }
+									 foreach($act_content->xpath(".//xhtml:div[@class='item_label']") as $act_label){
+										 $itemLabel = $act_label."";
+									 }
+									 foreach($act_content->xpath(".//xhtml:div[@class='context']") as $itemContextXML){
+										 $itemContext = $itemContextXML->asXML();
+									 }
+									 $itemThumb = false;
+									 if($act_content->xpath(".//xhtml:div[@class='item_thumb']//xhtml:img/@src")){
+										 foreach($act_content->xpath(".//xhtml:div[@class='item_thumb']//xhtml:img/@src") as $act_thumb){
+											 $itemThumb = $act_thumb."";
+										 }
+									 }
+									 if(!$itemThumb){
+										 $itemThumb = $itemIcon;
+									 }
+								}
+							  
+								$var_vals = false;
+								$entryIDarray = explode("/", $entryURI);
+								$entryUUID = $entryIDarray[count($entryIDarray)-1];
+								if(is_array($this->documentsArray)){
+									 foreach($this->documentsArray as $doc){
+										  if(isset($doc["href"])){
+												if(strstr($doc["href"],$entryUUID)){
+													 if(isset($doc["var_vals"])){
+														  //$var_vals = Zend_json::decode($doc["var_vals"]);
+														  $var_vals = $doc["var_vals"];
+													 }
+													 break;
+												}
+										  }
+										  else{
+												$var_vals = "no href";
+										  }
+									 }
+								}
+								else{
+									 $var_vals = "no docs";
+								}
+							  
+							  $resultItem = array("uri"=>$entryURI,
+										  "category"=>$itemCat,
+										  "catIcon"=>$itemIcon,
+										  "project"=>$itemProject,
+										  "label"=>$itemLabel,
+										  "context"=> $itemContext,
+										  "thumbIcon"=>$itemThumb,
+										  "var_vals" => $var_vals,
+										  "geoTime" => array("geoLat" => $geoLat,
+													  "geoLong" => $geoLon,
+													  "timeBegin" => $kmlBegin,
+													  "timeEnd" => $kmlEnd
+													  ));
+							  
+							  
+						  
+						  }//end loop through entries
+				 
+					 $allResults[] = $resultItem;
+					 $iii++;
+				 }//Atom Entries
+		  }//end case with entries
+		  
+	  }//end case with atom content
+	  
+	  
+	  $resultObject = array("resultCount"=>$resultCount,
+					  "firstURI"=>$first_PageURI,
+					  "lastURI"=>$last_PageURI,
+					  "prevURI"=>$prev_PageURI,
+					  "nextURI"=>$next_PageURI,
+					  "items"=>$allResults
+					  );
+	  
+	  return $resultObject;
     }//end function atom_to_object
 
 
@@ -1796,288 +1794,273 @@ class SolrSearch{
     //makes an atom feed of spatial (location / object) items
     function makeImageAtomFeed(){
 	
-	// the number of results per page. Note: the actual number of results per page is set in the controller as an argument to the solr query.
-	// the resulstPerPage variable helps us calculate the link and opensearch elements
-	$resultsPerPage = $this->number_recs;
-	$requestParams =$this->requestParams;
-	$fixedParams = $requestParams;
-	$fixedParams["action"] = "index";
-	$host = OpenContext_OCConfig::get_host_config();
-	$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
-	
-	$filters = "";
-	$firstLoop = true;
-	if(count($summaryObj)<1){
-	    $filters = "[None]";
-	}//case without filters
-	else{
-	    foreach($summaryObj as $filter){
-		
-		$filter['value'] = str_replace("&#8220; ", "'", $filter['value']);
-		$filter['value'] = str_replace(" &#8221;", "'", $filter['value']);
-		$actFilter = $filter['filter'].": ".$filter['value'];
-		if($firstLoop){
-		    $filters = $actFilter;
-		}
-		else{
-		     $filters .= "; ".$actFilter;
-		}
-	    $firstLoop = false;
-	    }//end loop
-	}//case with filters
-	
-	$atomFullDoc = new DOMDocument("1.0", "utf-8");
-		
-	$root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
-		
-	// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
-	$atomFullDoc->formatOutput = true;
-		
-	$root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
-	$root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
-	$root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
-	$root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
-	//xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
-	//$root->setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
-		
-	$atomFullDoc->appendChild($root);
-	
-	
-	// Feed Title 
-	$feedTitle = $atomFullDoc->createElement("title");
-	$feedTitleText = $atomFullDoc->createTextNode("Open Context Image Query Results");
-	$feedTitle->appendChild($feedTitleText);
-	$root->appendChild($feedTitle);
-	
-	
-	// Prepare the feed's subtitle
-	$offset = $this->offset;
-	$numFound = $this->numFound;
-	
-	
-	
-	// Display the number of items found and handle paging. 
-	$first = $offset + 1;
-	$last = $offset + $resultsPerPage;
-	
-	// make sure the last page, which will usually contain fewer than 10 items, displays the correct number of items.
-	if ($numFound < $last) {
-	   $subTitleText = 'images ' . $first . ' to ' . $numFound . ' out of ' . $numFound . ' images'; 
-	} else {
-	    $subTitleText = 'images ' . $first . ' to ' . $last . ' out of ' . $numFound . ' images';
-	}
-	$subTitleText .= ". Sorted by: ".$this->sortType;
-	//$subTitleText .= ". Filtered by -- ".$filters;
-	
-	$feedSubtitle = $atomFullDoc->createElement("subtitle");
-	$feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
-	$feedSubtitle->appendChild($feedSubtitleText);
-	$root->appendChild($feedSubtitle);
-	
-	
-	// Feed updated element (as opposed to the entry updated element)
-	$feedUpdated = $atomFullDoc->createElement("updated");
-	$updatedTime = OpenContext_OCConfig::last_update();
-	// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-	$feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastUpdate)));
-	$feedUpdated->appendChild($feedUpdatedText);
-	$root->appendChild($feedUpdated);
-	
-	$totalResults = $atomFullDoc->createElement('opensearch:totalResults');
-	$totalResultsText = $atomFullDoc->createTextNode($numFound);
-	$totalResults->appendChild($totalResultsText);
-	$root->appendChild($totalResults);
-	
-	$startIndex = $atomFullDoc->createElement('opensearch:startIndex');
-	$startIndexText = $atomFullDoc->createTextNode($first);
-	$startIndex->appendChild($startIndexText);
-	$root->appendChild($startIndex);
-	
-	$itemsPerPage = $atomFullDoc->createElement('opensearch:itemsPerPage');
-	$itemsPerPageText = $atomFullDoc->createTextNode($resultsPerPage);
-	$itemsPerPage->appendChild($itemsPerPageText);
-	$root->appendChild($itemsPerPage);
-	
-	// prepare link elements
-    
-	// feed (self) link element
-	$feedLink = $atomFullDoc->createElement("link");
-	$feedLink->setAttribute("rel", "self");
-	$feedLink->setAttribute("href", $this->currentAtom);
-	$root->appendChild($feedLink);
-	
-	// feed license link element
-	$feedLink = $atomFullDoc->createElement("link");
-	$feedLink->setAttribute("rel", "license");
-	$feedLink->setAttribute("type", "text/html");
-	$feedLink->setAttribute("href", "http://creativecommons.org/licenses/by/3.0/");
-	$root->appendChild($feedLink);
-	    
-	// feed (facets) link element
-	$feedLink = $atomFullDoc->createElement("link");
-	$feedLink->setAttribute("rel", "http://opencontext.org/about/services#atom-facets");
-	$feedLink->setAttribute("type", "application/atom+xml");
-	$feedLink->setAttribute("href", $this->facetURI_Atom);
-	$root->appendChild($feedLink);
-	    
-	    
-	// feed (HTML representation) link element
-	$feedLink = $atomFullDoc->createElement("link");
-	$feedLink->setAttribute("rel", "alternate");
-	$feedLink->setAttribute("type", "application/xhtml+xml");
-	$feedLink->setAttribute("href", $this->currentXHTML);
-	$root->appendChild($feedLink);
-	
-	// feed (JSON representation) link element
-	$feedLink = $atomFullDoc->createElement("link");
-	$feedLink->setAttribute("rel", "alternate");
-	$feedLink->setAttribute("type", "application/json");
-	$feedLink->setAttribute("href", $this->currentJSON);
-	$root->appendChild($feedLink);
-	
-	    
-	    
-	//prepare the first link
-	$feedFirstLink = $atomFullDoc->createElement("link");
-	$feedFirstLink->setAttribute("rel", "first");
-	$feedFirstLink->setAttribute("href", $this->firstPage_Atom);
-	$feedFirstLink->setAttribute("type", "application/atom+xml");
-	$root->appendChild($feedFirstLink);
-	    
-	    
-	// create last link
-	$feedLastLink = $atomFullDoc->createElement('link');
-	$feedLastLink->setAttribute('rel', 'last');
-	$feedLastLink->setAttribute('href', $this->lastPage_Atom);
-	$feedLastLink->setAttribute("type", "application/atom+xml");
-	$root->appendChild($feedLastLink);
-    
-	//previous page link
-	if($this->prevPage_Atom != false){
-	    $previousLink = $atomFullDoc->createElement('link');
-	    $previousLink->setAttribute('rel', 'previous');
-	    $previousLink->setAttribute('href', $this->prevPage_Atom);
-	    $previousLink->setAttribute("type", "application/atom+xml");
-	    $root->appendChild($previousLink);    
-	}
-	
-	//next page link
-	if($this->nextPage_Atom != false){
-	    $nextLink = $atomFullDoc->createElement('link');
-	    $nextLink->setAttribute('rel', 'next');
-	    $nextLink->setAttribute('href', $this->nextPage_Atom);
-	    $nextLink->setAttribute("type", "application/atom+xml");
-	    $root->appendChild($nextLink);    
-	}
-    
-	//add feed id, use current link
-	$feedId = $atomFullDoc->createElement("id");
-	$feedIdText = $atomFullDoc->createTextNode($this->currentAtom);
-	$feedId->appendChild($feedIdText);
-	$root->appendChild($feedId);
-	
-	if($numFound>0){
-	   $docs_array = $this->documentsArray;
-	   
-	   $okEntries = false; //no atom entries found, don't make a document fragment, fail gracefully
-	   $contentFragment = $atomFullDoc->createDocumentFragment();
-	   
-	   
-	   if ($docs_array) {
-	      
-		foreach($docs_array as $mediaDoc){
-		   
-		    $itemUUID = $mediaDoc["uuid"];
-		    $mediaItem = New Media;
-		    $mediaItem->getByID($itemUUID);
-		    
-		    $doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $mediaItem->atomEntry);
-		    if(strlen($doc)>10){
-			$contentFragment->appendXML($doc);  // $atom_content from short atom entry
-			$root->appendChild($contentFragment);
-			$okEntries = true;
-		    }
-		    unset($mediaItem);
-		   
-		}//end loop
-	       
-	    }//end doc array
-	}//num found low
-	
-	$resultString = $atomFullDoc->saveXML();
-	
-	// Note: simpleXML will add a 'default:' prefix to the XHTML content.  We don't want this, so remove it.
-	$resultString = str_replace('default:', '' , $resultString);
-	
-	return $resultString;
-    }//end function
+		  // the number of results per page. Note: the actual number of results per page is set in the controller as an argument to the solr query.
+		  // the resulstPerPage variable helps us calculate the link and opensearch elements
+		  $resultsPerPage = $this->number_recs;
+		  $requestParams =$this->requestParams;
+		  $fixedParams = $requestParams;
+		  $fixedParams["action"] = "index";
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
+		  
+		  $filters = "";
+		  $firstLoop = true;
+		  if(count($summaryObj)<1){
+				$filters = "[None]";
+		  }//case without filters
+		  else{
+				foreach($summaryObj as $filter){
+			  
+					 $filter['value'] = str_replace("&#8220; ", "'", $filter['value']);
+					 $filter['value'] = str_replace(" &#8221;", "'", $filter['value']);
+					 $actFilter = $filter['filter'].": ".$filter['value'];
+					 if($firstLoop){
+						  $filters = $actFilter;
+					 }
+					 else{
+							$filters .= "; ".$actFilter;
+					 }
+					  $firstLoop = false;
+				}//end loop
+		  }//case with filters
+		  
+		  $atomFullDoc = new DOMDocument("1.0", "utf-8");
+			  
+		  $root = $atomFullDoc->createElementNS("http://www.w3.org/2005/Atom", "feed");
+			  
+		  // add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+		  $atomFullDoc->formatOutput = true;
+			  
+		  $root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+		  $root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+		  $root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+		  $root->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+		  //xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+		  //$root->setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
+			  
+		  $atomFullDoc->appendChild($root);
+		  
+		  
+		  // Feed Title 
+		  $feedTitle = $atomFullDoc->createElement("title");
+		  $feedTitleText = $atomFullDoc->createTextNode("Open Context Image Query Results");
+		  $feedTitle->appendChild($feedTitleText);
+		  $root->appendChild($feedTitle);
+		  
+		  
+		  // Prepare the feed's subtitle
+		  $offset = $this->offset;
+		  $numFound = $this->numFound;
+		  
+		  
+		  
+		  // Display the number of items found and handle paging. 
+		  $first = $offset + 1;
+		  $last = $offset + $resultsPerPage;
+		  
+		  // make sure the last page, which will usually contain fewer than 10 items, displays the correct number of items.
+		  if ($numFound < $last) {
+			  $subTitleText = 'images ' . $first . ' to ' . $numFound . ' out of ' . $numFound . ' images'; 
+		  } else {
+				$subTitleText = 'images ' . $first . ' to ' . $last . ' out of ' . $numFound . ' images';
+		  }
+		  $subTitleText .= ". Sorted by: ".$this->sortType;
+		  //$subTitleText .= ". Filtered by -- ".$filters;
+		  
+		  $feedSubtitle = $atomFullDoc->createElement("subtitle");
+		  $feedSubtitleText = $atomFullDoc->createTextNode($subTitleText);
+		  $feedSubtitle->appendChild($feedSubtitleText);
+		  $root->appendChild($feedSubtitle);
+		  
+		  
+		  // Feed updated element (as opposed to the entry updated element)
+		  $feedUpdated = $atomFullDoc->createElement("updated");
+		  $updatedTime = OpenContext_OCConfig::last_update();
+		  // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+		  $feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($this->lastUpdate)));
+		  $feedUpdated->appendChild($feedUpdatedText);
+		  $root->appendChild($feedUpdated);
+		  
+		  $totalResults = $atomFullDoc->createElement('opensearch:totalResults');
+		  $totalResultsText = $atomFullDoc->createTextNode($numFound);
+		  $totalResults->appendChild($totalResultsText);
+		  $root->appendChild($totalResults);
+		  
+		  $startIndex = $atomFullDoc->createElement('opensearch:startIndex');
+		  $startIndexText = $atomFullDoc->createTextNode($first);
+		  $startIndex->appendChild($startIndexText);
+		  $root->appendChild($startIndex);
+		  
+		  $itemsPerPage = $atomFullDoc->createElement('opensearch:itemsPerPage');
+		  $itemsPerPageText = $atomFullDoc->createTextNode($resultsPerPage);
+		  $itemsPerPage->appendChild($itemsPerPageText);
+		  $root->appendChild($itemsPerPage);
+		  
+		  // prepare link elements
+			
+		  // feed (self) link element
+		  $feedLink = $atomFullDoc->createElement("link");
+		  $feedLink->setAttribute("rel", "self");
+		  $feedLink->setAttribute("href", $this->currentAtom);
+		  $root->appendChild($feedLink);
+		  
+		  // feed license link element
+		  $feedLink = $atomFullDoc->createElement("link");
+		  $feedLink->setAttribute("rel", "license");
+		  $feedLink->setAttribute("type", "text/html");
+		  $feedLink->setAttribute("href", "http://creativecommons.org/licenses/by/3.0/");
+		  $root->appendChild($feedLink);
+				
+		  // feed (facets) link element
+		  $feedLink = $atomFullDoc->createElement("link");
+		  $feedLink->setAttribute("rel", "http://opencontext.org/about/services#atom-facets");
+		  $feedLink->setAttribute("type", "application/atom+xml");
+		  $feedLink->setAttribute("href", $this->facetURI_Atom);
+		  $root->appendChild($feedLink);
+				
+				
+		  // feed (HTML representation) link element
+		  $feedLink = $atomFullDoc->createElement("link");
+		  $feedLink->setAttribute("rel", "alternate");
+		  $feedLink->setAttribute("type", "application/xhtml+xml");
+		  $feedLink->setAttribute("href", $this->currentXHTML);
+		  $root->appendChild($feedLink);
+		  
+		  // feed (JSON representation) link element
+		  $feedLink = $atomFullDoc->createElement("link");
+		  $feedLink->setAttribute("rel", "alternate");
+		  $feedLink->setAttribute("type", "application/json");
+		  $feedLink->setAttribute("href", $this->currentJSON);
+		  $root->appendChild($feedLink);
+		  
+				
+				
+		  //prepare the first link
+		  $feedFirstLink = $atomFullDoc->createElement("link");
+		  $feedFirstLink->setAttribute("rel", "first");
+		  $feedFirstLink->setAttribute("href", $this->firstPage_Atom);
+		  $feedFirstLink->setAttribute("type", "application/atom+xml");
+		  $root->appendChild($feedFirstLink);
+				
+				
+		  // create last link
+		  $feedLastLink = $atomFullDoc->createElement('link');
+		  $feedLastLink->setAttribute('rel', 'last');
+		  $feedLastLink->setAttribute('href', $this->lastPage_Atom);
+		  $feedLastLink->setAttribute("type", "application/atom+xml");
+		  $root->appendChild($feedLastLink);
+			
+		  //previous page link
+		  if($this->prevPage_Atom != false){
+				$previousLink = $atomFullDoc->createElement('link');
+				$previousLink->setAttribute('rel', 'previous');
+				$previousLink->setAttribute('href', $this->prevPage_Atom);
+				$previousLink->setAttribute("type", "application/atom+xml");
+				$root->appendChild($previousLink);    
+		  }
+		  
+		  //next page link
+		  if($this->nextPage_Atom != false){
+				$nextLink = $atomFullDoc->createElement('link');
+				$nextLink->setAttribute('rel', 'next');
+				$nextLink->setAttribute('href', $this->nextPage_Atom);
+				$nextLink->setAttribute("type", "application/atom+xml");
+				$root->appendChild($nextLink);    
+		  }
+			
+		  //add feed id, use current link
+		  $feedId = $atomFullDoc->createElement("id");
+		  $feedIdText = $atomFullDoc->createTextNode($this->currentAtom);
+		  $feedId->appendChild($feedIdText);
+		  $root->appendChild($feedId);
+		  
+		  if($numFound>0){
+			  $docs_array = $this->documentsArray;
+			  
+			  $okEntries = false; //no atom entries found, don't make a document fragment, fail gracefully
+			  $contentFragment = $atomFullDoc->createDocumentFragment();
+			  
+			  
+				if ($docs_array) {
+					
+					 foreach($docs_array as $mediaDoc){
+						 
+						  $itemUUID = $mediaDoc["uuid"];
+						  $mediaItem = New Media;
+						  $mediaItem->getByID($itemUUID);
+						  
+						  $doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $mediaItem->atomEntry);
+						  if(strlen($doc)>10){
+								$contentFragment->appendXML($doc);  // $atom_content from short atom entry
+								$root->appendChild($contentFragment);
+								$okEntries = true;
+						  }
+						  unset($mediaItem);
+						 
+					 }//end loop
+					 
+				 }//end doc array
+		  }//num found low
+		  
+		  $resultString = $atomFullDoc->saveXML();
+		  
+		  // Note: simpleXML will add a 'default:' prefix to the XHTML content.  We don't want this, so remove it.
+		  $resultString = str_replace('default:', '' , $resultString);
+		  
+		  return $resultString;
+	 }//end function
 
-
-
-/*
-Fix for atom feeds of images:
-
-UPDATE resource
-SET atom_entry =  REPLACE(atom_entry, '<link rel="preview"', '<link rel="http://purl.org/dc/terms/hasPart"')
-
-UPDATE resource
-SET atom_entry =  REPLACE(atom_entry, '<link rel="thumbnail"', '<link rel="http://purl.org/dc/terms/hasPart"')
-
-UPDATE resource
-SET atom_entry =  REPLACE(atom_entry, '(tumbnail file)', '(thumbnail file)')
-
-*/
 
 //make JSON object of image search results
     function makeImageObject(){
     
-	$host = OpenContext_OCConfig::get_host_config();
-	$docTypeArray = $this->docTypeArray;
-	$itemResults = array();
-	foreach($this->documentsArray as $doc){
-	    
-	    $mediaItem = New Media;
-	    $mediaItem->getByID($doc["uuid"]);
-	    $mediaItem->XML_fileURIs(); //get the file URIs from the XML document
-	    
-	    $uriItem = $host.$docTypeArray["media"]["href"].$doc["uuid"];
-	    $geoLat = false;
-	    $geoLon = false;
-	    $kmlBegin = false;
-	    $kmlEnd = false;
-	    if(isset($doc["geo_point"])){
-		if(stristr($doc["geo_point"], ",")){
-		    $geoData = explode(",", $doc["geo_point"]);
-		}
-		else{
-		    $geoData = explode(" ", $doc["geo_point"]);
-		}
-		
-		$geoLat = $geoData[0] +0;
-		$geoLon = $geoData[1] +0;
-	    }
-	    if(isset($doc["time_span"])){
-		$timeData = explode(" ", $doc["time_span"]);
-		$kmlBegin = $timeData[0] +0;
-		$kmlEnd = $timeData[1] +0;
-	    }
-	    
-	    $resultItem = array("uri"=> $uriItem,
-				"project"=>$doc["project_name"],
-				"label"=> $mediaItem->label." (".$doc["project_name"].": ".$doc["item_class"][0].")",
-				"thumbURI"=> $mediaItem->thumbnailURI,
-				"previewURI" => $mediaItem->previewURI,
-				"fullURI" => $mediaItem->previewURI,
-				"geoTime" => array("geoLat" => $geoLat,
-						   "geoLong" => $geoLon,
-						   "timeBegin" => $kmlBegin,
-						   "timeEnd" => $kmlEnd));
-	    
-	    
-	    $itemResults[] = $resultItem;
-	}//end loop
-    
-	return $itemResults;    
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $docTypeArray = $this->docTypeArray;
+		  $itemResults = array();
+		  foreach($this->documentsArray as $doc){
+				
+				$mediaItem = New Media;
+				$mediaItem->getByID($doc["uuid"]);
+				$mediaItem->XML_fileURIs(); //get the file URIs from the XML document
+				
+				$uriItem = $host.$docTypeArray["media"]["href"].$doc["uuid"];
+				$geoLat = false;
+				$geoLon = false;
+				$kmlBegin = false;
+				$kmlEnd = false;
+				if(isset($doc["geo_point"])){
+					  if(stristr($doc["geo_point"], ",")){
+							$geoData = explode(",", $doc["geo_point"]);
+					  }
+					  else{
+							$geoData = explode(" ", $doc["geo_point"]);
+					  }
+					  
+					  $geoLat = $geoData[0] +0;
+					  $geoLon = $geoData[1] +0;
+				}
+				if(isset($doc["time_span"])){
+					  $timeData = explode(" ", $doc["time_span"]);
+					  $kmlBegin = $timeData[0] +0;
+					  $kmlEnd = $timeData[1] +0;
+				}
+				
+				$resultItem = array("uri"=> $uriItem,
+					  "project"=>$doc["project_name"],
+					  "label"=> $mediaItem->label." (".$doc["project_name"].": ".$doc["item_class"][0].")",
+					  "thumbURI"=> $mediaItem->thumbnailURI,
+					  "previewURI" => $mediaItem->previewURI,
+					  "fullURI" => $mediaItem->previewURI,
+					  "geoTime" => array("geoLat" => $geoLat,
+								  "geoLong" => $geoLon,
+								  "timeBegin" => $kmlBegin,
+								  "timeEnd" => $kmlEnd));
+				
+				
+				$itemResults[] = $resultItem;
+		  }//end loop
+			
+		  return $itemResults;    
     }//end function
 
 }//end class

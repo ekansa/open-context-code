@@ -7,112 +7,112 @@ class setsController extends Zend_Controller_Action {
    
    //XHTML view of search results
     public function indexAction() {
-    
-	//$this->_helper->viewRenderer->setNoRender();
-	
-	$requestParams =  $this->_request->getParams();
-	
-	/*
-	if(OpenContext_UserMessages::isSolrDown()){
-	    return $this->render('down');
-	}
-	*/
-	
-	
-	$protect = new Floodprotection; //check to make sure service is not abused by too many requests
-	$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
-	$protect->addedRequests = 2;
-	$protect->userAgent = @$_SERVER['HTTP_USER_AGENT'];
-	$protect->check_ip();
-	if($protect->lock){
-	    sleep($protect->sleepTime);
-	}
-	unset($protect);
-	OpenContext_SocialTracking::update_referring_link('sets', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
-	
-	
-	$SolrSearch = new SolrSearch;
-	$SolrSearch->initialize();
-	$SolrSearch->requestURI = $this->_request->getRequestUri();
-	$SolrSearch->requestParams = $requestParams;
-	$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
-	$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
-	
-	$SolrSearch->spatial = true; //do a search of spatial items in Open Context
-	$SolrSearch->buildSolrQuery();
-	$SolrSearch->execute_search();
-	
-	if($SolrSearch->solrDown){
-	 return $this->render('down');
-	}
-	
-	
-	$SolrSearch->getLatestTime(); //get the last updated
-	//$SolrSearch->getLatestTime(false); //get the last published
-	
-	$this->view->requestURI = $this->_request->getRequestUri(); // for testing
-	$this->view->requestParams = $requestParams;  // for testing
-	$this->view->numFound = $SolrSearch->numFound;
-	$this->view->facets = $SolrSearch->facets;
-	$this->view->docs = $SolrSearch->documentsArray;
-	$this->view->offset = $SolrSearch->offset;
-	$this->view->number_recs = $SolrSearch->number_recs;
-	$this->view->sorting = $SolrSearch->sortType;
-	$this->view->lastUpdate = $SolrSearch->lastUpdate;
-	
-	$this->view->currentXHTML = $SolrSearch->currentXHTML;
-	$this->view->currentJSON = $SolrSearch->currentJSON;
-	$this->view->currentAtom = $SolrSearch->currentAtom;
-	$this->view->currentKML = $SolrSearch->currentKML;
-	$this->view->firstPage_XHTML = $SolrSearch->firstPage_XHTML;
-	$this->view->firstPage_JSON = $SolrSearch->firstPage_JSON;
-	$this->view->firstPage_Atom = $SolrSearch->firstPage_Atom;
-	$this->view->firstPage_KML = $SolrSearch->firstPage_KML;
-	$this->view->prevPage_XHTML = $SolrSearch->prevPage_XHTML;
-	$this->view->prevPage_JSON = $SolrSearch->prevPage_JSON;
-	$this->view->prevPage_Atom = $SolrSearch->prevPage_Atom;
-	$this->view->prevPage_KML = $SolrSearch->prevPage_KML;
-	$this->view->nextPage_XHTML = $SolrSearch->nextPage_XHTML;
-	$this->view->nextPage_JSON = $SolrSearch->nextPage_JSON;
-	$this->view->nextPage_Atom = $SolrSearch->nextPage_Atom;
-	$this->view->nextPage_KML = $SolrSearch->nextPage_KML;
-	$this->view->lastPage_XHTML = $SolrSearch->lastPage_XHTML;
-	$this->view->lastPage_JSON = $SolrSearch->lastPage_JSON;
-	$this->view->lastPage_Atom = $SolrSearch->lastPage_Atom;
-	$this->view->lastPage_KML = $SolrSearch->lastPage_KML;
-	
-	//these are links to facets only
-	$this->view->facetURI_Atom = $SolrSearch->facetURI_Atom;
-	$this->view->facetURI_KML = $SolrSearch->facetURI_KML;
-	$this->view->facetURI_JSON = $SolrSearch->facetURI_JSON;
-	$this->view->geoTileFacets = $SolrSearch->geoTileFacets;
-	
-	if($SolrSearch->numFound < 1){
-	    return $this->render('noresults');
-	}
-	
-	//prep geotile facets
-	$FacetURLs = new FacetURLs;
-	$FacetURLs->setRequestParams($requestParams);
-	$FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
-	$FacetURLs->geoTileFacets();
-	$this->view->geoTileFacets = $FacetURLs->geoTileFacetURLs;
-	
-	
-	
-	//$this->view->result_output = OpenContext_ResultAtom::atom_to_html($SolrSearch->currentAtom, $SolrSearch->makeSpaceAtomFeed()); //generate xhtml result output
-	$atom_string = $SolrSearch->makeSpaceAtomFeed();
-	$this->view->spaceResults = $SolrSearch->atom_to_object($atom_string);
-	
-	/*
-	$output = array("numFound" => $SolrSearch->numFound,
-			"facets" => $SolrSearch->facets,
-			"docs" => $SolrSearch->documentsArray);
-	
-	$this->_helper->viewRenderer->setNoRender();
-	header('Content-Type: application/json; charset=utf8');
-	echo Zend_Json::encode($SolrSearch);
-	*/                                                                                                          
+		  
+		 //$this->_helper->viewRenderer->setNoRender();
+		 
+		 $requestParams =  $this->_request->getParams();
+		 
+		 /*
+		 if(OpenContext_UserMessages::isSolrDown()){
+			  return $this->render('down');
+		 }
+		 */
+		 
+		 
+		 $protect = new Floodprotection; //check to make sure service is not abused by too many requests
+		 $protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
+		 $protect->addedRequests = 2;
+		 $protect->userAgent = @$_SERVER['HTTP_USER_AGENT'];
+		 $protect->check_ip();
+		 if($protect->lock){
+			  sleep($protect->sleepTime);
+		 }
+		 unset($protect);
+		 OpenContext_SocialTracking::update_referring_link('sets', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
+		 
+		 
+		 $SolrSearch = new SolrSearch;
+		 $SolrSearch->initialize();
+		 $SolrSearch->requestURI = $this->_request->getRequestUri();
+		 $SolrSearch->requestParams = $requestParams;
+		 $SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+		 $requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+		 
+		 $SolrSearch->spatial = true; //do a search of spatial items in Open Context
+		 $SolrSearch->buildSolrQuery();
+		 $SolrSearch->execute_search();
+		 
+		 if($SolrSearch->solrDown){
+		  return $this->render('down');
+		 }
+		 
+		 
+		 $SolrSearch->getLatestTime(); //get the last updated
+		 //$SolrSearch->getLatestTime(false); //get the last published
+		 
+		 $this->view->requestURI = $this->_request->getRequestUri(); // for testing
+		 $this->view->requestParams = $requestParams;  // for testing
+		 $this->view->numFound = $SolrSearch->numFound;
+		 $this->view->facets = $SolrSearch->facets;
+		 $this->view->docs = $SolrSearch->documentsArray;
+		 $this->view->offset = $SolrSearch->offset;
+		 $this->view->number_recs = $SolrSearch->number_recs;
+		 $this->view->sorting = $SolrSearch->sortType;
+		 $this->view->lastUpdate = $SolrSearch->lastUpdate;
+		 
+		 $this->view->currentXHTML = $SolrSearch->currentXHTML;
+		 $this->view->currentJSON = $SolrSearch->currentJSON;
+		 $this->view->currentAtom = $SolrSearch->currentAtom;
+		 $this->view->currentKML = $SolrSearch->currentKML;
+		 $this->view->firstPage_XHTML = $SolrSearch->firstPage_XHTML;
+		 $this->view->firstPage_JSON = $SolrSearch->firstPage_JSON;
+		 $this->view->firstPage_Atom = $SolrSearch->firstPage_Atom;
+		 $this->view->firstPage_KML = $SolrSearch->firstPage_KML;
+		 $this->view->prevPage_XHTML = $SolrSearch->prevPage_XHTML;
+		 $this->view->prevPage_JSON = $SolrSearch->prevPage_JSON;
+		 $this->view->prevPage_Atom = $SolrSearch->prevPage_Atom;
+		 $this->view->prevPage_KML = $SolrSearch->prevPage_KML;
+		 $this->view->nextPage_XHTML = $SolrSearch->nextPage_XHTML;
+		 $this->view->nextPage_JSON = $SolrSearch->nextPage_JSON;
+		 $this->view->nextPage_Atom = $SolrSearch->nextPage_Atom;
+		 $this->view->nextPage_KML = $SolrSearch->nextPage_KML;
+		 $this->view->lastPage_XHTML = $SolrSearch->lastPage_XHTML;
+		 $this->view->lastPage_JSON = $SolrSearch->lastPage_JSON;
+		 $this->view->lastPage_Atom = $SolrSearch->lastPage_Atom;
+		 $this->view->lastPage_KML = $SolrSearch->lastPage_KML;
+		 
+		 //these are links to facets only
+		 $this->view->facetURI_Atom = $SolrSearch->facetURI_Atom;
+		 $this->view->facetURI_KML = $SolrSearch->facetURI_KML;
+		 $this->view->facetURI_JSON = $SolrSearch->facetURI_JSON;
+		 $this->view->geoTileFacets = $SolrSearch->geoTileFacets;
+		 
+		 if($SolrSearch->numFound < 1){
+			  return $this->render('noresults');
+		 }
+		 
+		 //prep geotile facets
+		 $FacetURLs = new FacetURLs;
+		 $FacetURLs->setRequestParams($requestParams);
+		 $FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
+		 $FacetURLs->geoTileFacets();
+		 $this->view->geoTileFacets = $FacetURLs->geoTileFacetURLs;
+		 
+		 
+		 
+		 //$this->view->result_output = OpenContext_ResultAtom::atom_to_html($SolrSearch->currentAtom, $SolrSearch->makeSpaceAtomFeed()); //generate xhtml result output
+		 $atom_string = $SolrSearch->makeSpaceAtomFeed();
+		 $this->view->spaceResults = $SolrSearch->atom_to_object($atom_string);
+		 
+		 /*
+		 $output = array("numFound" => $SolrSearch->numFound,
+				 "facets" => $SolrSearch->facets,
+				 "docs" => $SolrSearch->documentsArray);
+		 
+		 $this->_helper->viewRenderer->setNoRender();
+		 header('Content-Type: application/json; charset=utf8');
+		 echo Zend_Json::encode($SolrSearch);
+		 */                                                                                                          
 
     }//end index viewer
 

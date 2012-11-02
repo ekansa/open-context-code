@@ -48,8 +48,8 @@ class Subject {
         $output = false; //no user
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
         
         $sql = 'SELECT *
                 FROM space 
@@ -63,37 +63,37 @@ class Subject {
             $this->projectUUID = $result[0]["project_id"];
             $this->sourceID = $result[0]["source_id"];
             $this->classID = $result[0]["class_uuid"];
-			$this->itemUUID = $result[0]["uuid"];
-			$this->label = $result[0]["space_label"];
-			$this->viewCount = $result[0]["view_count"];
+				$this->itemUUID = $result[0]["uuid"];
+				$this->label = $result[0]["space_label"];
+				$this->viewCount = $result[0]["view_count"];
             $this->createdTime = $result[0]["created"];
             $this->updatedTime = $result[0]["updated"];
 	    
-			$this->atomEntry = $result[0]["atom_entry"];
-			$this->archaeoML = $result[0]["archaeoML"];
+				$this->atomEntry = $result[0]["atom_entry"];
+				$this->archaeoML = $result[0]["archaeoML"];
+			 
+				@$xml = simplexml_load_string($this->archaeoML);
+				if(!$xml  || trim($this->archaeoML) == "big value"){
+					 $bigString = new BigString;
+					 $this->archaeoML = $bigString->get_CurrentBigString($this->itemUUID, "archaeoML", $db);
+				}
 	    
-			@$xml = simplexml_load_string($this->archaeoML);
-			if(!$xml  || trim($this->archaeoML) == "big value"){
-			$bigString = new BigString;
-			$this->archaeoML = $bigString->get_CurrentBigString($this->itemUUID, "archaeoML", $db);
-			}
-	    
-	    //$this->accentFix($this->archaeoML, "archaeoML");
-	    //$this->accentFix($this->atomEntry, "atom");
+				//$this->accentFix($this->archaeoML, "archaeoML");
+				//$this->accentFix($this->atomEntry, "atom");
 	
-			$this->xhtml_rel = "alternate";
-			$this->atom_rel = "self";
-			
-            $output = true;
+				$this->xhtml_rel = "alternate";
+				$this->atom_rel = "self";
+				
+				$output = true;
         }
         
-	$db->closeConnection();
+		  $db->closeConnection();
     
-	if(!$output){
-	    $this->itemUUID = $id;
-	}
-    
-	$this->itemFound = $output;
+		  if(!$output){
+				$this->itemUUID = $id;
+		  }
+			
+		  $this->itemFound = $output;
         return $output;
     }
     
@@ -104,7 +104,7 @@ class Subject {
         $id = $this->security_check($id);
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
         
         $sql = 'SELECT created
                 FROM space
@@ -118,7 +118,7 @@ class Subject {
             $output = true;
         }
         
-	$db->closeConnection();
+		  $db->closeConnection();
     }
     
     
@@ -126,23 +126,23 @@ class Subject {
     
     function versionUpdate($id, $db = false){
 	
-	if(!$db){
-	    $db_params = OpenContext_OCConfig::get_db_config();
-	    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	    $db->getConnection();
-	    $this->setUTFconnection($db);
-	}
-	
-	$sql = 'SELECT *
-                FROM space
-                WHERE uuid = "'.$id.'"
-                LIMIT 1';
-		
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-	    $xmlString = $result[0]["archaeoML"];
-	    OpenContext_DeleteDocs::saveBeforeUpdate($id, "spatial", $xmlString);
-	}	
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+		  }
+		  
+		  $sql = 'SELECT *
+							FROM space
+							WHERE uuid = "'.$id.'"
+							LIMIT 1';
+			  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$xmlString = $result[0]["archaeoML"];
+				OpenContext_DeleteDocs::saveBeforeUpdate($id, "spatial", $xmlString);
+		  }	
     }//end function
     
     
@@ -152,66 +152,66 @@ class Subject {
         
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
-    
-	if(!$this->noid){
-	    $this->noid = false;
-	}
-    
-	$data = array("noid" => $this->noid,
-		      "project_id" => $this->projectUUID,
-		      "source_id" => $this->sourceID,
-		      "class_uuid" => $this->classID, 
-		      "uuid" => $this->itemUUID,
-		      "space_label" => $this->label,
-		      "contain_hash" => $this->contain_hash,
-		      "created" => $this->createdTime,
-		      "atom_entry" => $this->atomEntry
-		      );
-	
-	if($versionUpdate){
-	    $this->versionUpdate($this->itemUUID, $db); //save previous version history
-	    unset($data["created"]);
-	}
-	
-	if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
-	    /*
-	    This gets around size limits for inserting into MySQL.
-	    It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-	    */
-	    $bigString = new BigString;
-	    $bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "spatial", $this->archaeoML, $db);
-	    $data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
-	    $updateOK = true;
-	}
-	else{
-	    
-	    $data["archaeoML"] = $this->archaeoML;
-	    $updateOK = true;
-	}
-
-	$success = false;
-	try{
-	    $db->insert("space", $data);
-	    $success = true;
-	}catch(Exception $e){
-	    $success = false;
-	    $where = array();
-	    $where[] = 'uuid = "'.$this->itemUUID.'" ';
-	    $db->update("space", $data, $where);
-	    $success = $this->getByID($this->itemUUID);
-	}
-
-	$db->closeConnection();
-	return $success;
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+			
+		  if(!$this->noid){
+				$this->noid = false;
+		  }
+			
+		  $data = array("noid" => $this->noid,
+					  "project_id" => $this->projectUUID,
+					  "source_id" => $this->sourceID,
+					  "class_uuid" => $this->classID, 
+					  "uuid" => $this->itemUUID,
+					  "space_label" => $this->label,
+					  "contain_hash" => $this->contain_hash,
+					  "created" => $this->createdTime,
+					  "atom_entry" => $this->atomEntry
+					  );
+		  
+		  if($versionUpdate){
+				$this->versionUpdate($this->itemUUID, $db); //save previous version history
+				unset($data["created"]);
+		  }
+		  
+		  if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
+				/*
+				This gets around size limits for inserting into MySQL.
+				It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+				*/
+				$bigString = new BigString;
+				$bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "spatial", $this->archaeoML, $db);
+				$data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
+				$updateOK = true;
+		  }
+		  else{
+				
+				$data["archaeoML"] = $this->archaeoML;
+				$updateOK = true;
+		  }
+	  
+		  $success = false;
+		  try{
+				$db->insert("space", $data);
+				$success = true;
+		  }catch(Exception $e){
+				$success = false;
+				$where = array();
+				$where[] = 'uuid = "'.$this->itemUUID.'" ';
+				$db->update("space", $data, $where);
+				$success = $this->getByID($this->itemUUID);
+		  }
+	  
+		  $db->closeConnection();
+		  return $success;
     }//end function
     
     
      //used to fix legacy non utf8 problem
     function accentFix($xmlString, $XMLtype){
 	
-	$stringArray = array(
+		  $stringArray = array(
 			0 => array("bad" => "Christian Aug&amp;#233;", "good" => "Christian Augé"),
 			1 => array("bad" => "G&#252;rdil", "good" => "Gürdil"),
 			2 => array("bad" => "G&#xFC;rdil", "good" => "Gürdil"),
@@ -232,32 +232,32 @@ class Subject {
 			17 => array("bad" => "PÄ±narbaÅŸÄ±", "good" => "Pınarbaşı")
 			);
 	
-	//echo $xmlString;
-	$change = false;
-	foreach($stringArray as $checks){
-		$badString = $checks["bad"];
-		$goodString = $checks["good"];
-		//echo $badString ." ".$goodString;
-		if(mb_stristr($xmlString, $badString)){
-		    //echo "here!!";
-		    //$xmlString = str_replace($badString, $goodString, $xmlString);
-		    $xmlString = mb_eregi_replace($badString, $goodString, $xmlString);
-		    $change = true;
-		}
-	}
-	
-	if($change){
-	    $newXML = $xmlString;
-	    @$xml = simplexml_load_string($newXML);
-	    if($XMLtype == "atom" && $xml){
-		$this->atomEntry = $newXML;
-		$this->update_atom_entry();
-	    }
-	    elseif($XMLtype == "archaeoML" && $xml){
-		$this->archaeoML = $newXML;
-		$this->committ_update_archaeoML();
-	    }
-	}
+		  //echo $xmlString;
+		  $change = false;
+		  foreach($stringArray as $checks){
+			  $badString = $checks["bad"];
+			  $goodString = $checks["good"];
+			  //echo $badString ." ".$goodString;
+			  if(mb_stristr($xmlString, $badString)){
+					//echo "here!!";
+					//$xmlString = str_replace($badString, $goodString, $xmlString);
+					$xmlString = mb_eregi_replace($badString, $goodString, $xmlString);
+					$change = true;
+			  }
+		  }
+		  
+		  if($change){
+				$newXML = $xmlString;
+				@$xml = simplexml_load_string($newXML);
+				if($XMLtype == "atom" && $xml){
+					 $this->atomEntry = $newXML;
+					 $this->update_atom_entry();
+				}
+				elseif($XMLtype == "archaeoML" && $xml){
+					 $this->archaeoML = $newXML;
+					 $this->committ_update_archaeoML();
+				}
+		  }
 	
     }//end function
     
@@ -265,39 +265,39 @@ class Subject {
     
     //useful function for updating archaeoML, especially if new children items added
     function updateArchaeoML($id, $archaeoML, $db = false){
-	if(!$db){
-	    $db_params = OpenContext_OCConfig::get_db_config();
-	    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	    $db->getConnection();
-	    $this->setUTFconnection($db);
-	}
-	
-	@$xmlOK = simplexml_load_string($archaeoML);
-	$status = false; //not a success
-	
-	if($xmlOK){ //only do this if XML is valid
-	    $this->versionUpdate($id, $db); //save the existing version before messing with it
-	    $where = array();
-	    $data = array();
-	    if(OpenContext_OCConfig::need_bigString($archaeoML)){
-		/*
-		This gets around size limits for inserting into MySQL.
-		It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-		*/
-		$bigString = new BigString;
-		$bigString->saveCurrentBigString($id, "archaeoML", "spatial", $archaeoML, $db);
-		$data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
-	    }
-	    else{
-		$data["archaeoML"] = $archaeoML;
-	    }
-	    
-	    $where[] = 'uuid = "'.$id.'" ';
-	    $db->update("space", $data, $where);
-	    $status = true;
-	}
-	unset($xmlOK);
-	return $status;
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+		  }
+		  
+		  @$xmlOK = simplexml_load_string($archaeoML);
+		  $status = false; //not a success
+		  
+		  if($xmlOK){ //only do this if XML is valid
+				$this->versionUpdate($id, $db); //save the existing version before messing with it
+				$where = array();
+				$data = array();
+				if(OpenContext_OCConfig::need_bigString($archaeoML)){
+					 /*
+					 This gets around size limits for inserting into MySQL.
+					 It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+					 */
+					 $bigString = new BigString;
+					 $bigString->saveCurrentBigString($id, "archaeoML", "spatial", $archaeoML, $db);
+					 $data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
+				}
+				else{
+					 $data["archaeoML"] = $archaeoML;
+				}
+				
+				$where[] = 'uuid = "'.$id.'" ';
+				$db->update("space", $data, $where);
+				$status = true;
+		  }
+		  unset($xmlOK);
+		  return $status;
     }//end function
     
     
@@ -306,29 +306,33 @@ class Subject {
     //this function gets an item's Atom entry. It's used for making the general
     //feed read by the CDL's archival services.
     function getItemEntry($id){
-	
-	$this->getByID($id);
-	if(strlen($this->archaeoML)<10){
-	    $this->archaeoML_update($this->archaeoML);
-	    $fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
-	    $this->update_atom_entry();
-	}
-	
-	return $this->atomEntry;
+		  $this->getByID($id);
+		  if(strlen($this->archaeoML)<10){
+				$this->archaeoML_update($this->archaeoML);
+				$fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
+				$this->update_atom_entry();
+		  }
+		  
+		  return $this->atomEntry;
     }
     
     
     //this function gets an item's ArchaeoML. It's used for indexing in Solr
     function getItemXML($id){
-	
-	$this->getByID($id);
-	if(strlen($this->archaeoML)<10){
-	    $this->archaeoML_update($this->archaeoML);
-	    $fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
-	    $this->update_atom_entry();
-	}
-	
-	return $this->archaeoML;
+		  $found = $this->getByID($id);
+		  if($found){
+				if(strlen($this->archaeoML)<10){
+					 $this->archaeoML_update($this->archaeoML);
+					 $fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
+					 $this->update_atom_entry();
+				}
+				
+				$this->booleanFix();
+				return $this->archaeoML;
+		  }
+		  else{
+				return false;
+		  }
     }
     
     
@@ -336,35 +340,35 @@ class Subject {
     
     function update_atom_entry(){
 	
-	$updateOK = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
+		  $updateOK = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
 	
-	@$xml = simplexml_load_string($this->atomEntry); 
-	if($xml){
-	    $data = array("atom_entry" => $this->atomEntry);
-	    $where = array();
-	    $where[] = 'uuid = "'.$this->itemUUID.'" ';
-	    $db->update("space", $data, $where);
-	    $updateOK = true;
-	}
-	
-	unset($spatialItem);
-	$db->closeConnection();
-	return $updateOK;
+		  @$xml = simplexml_load_string($this->atomEntry); 
+		  if($xml){
+				$data = array("atom_entry" => $this->atomEntry);
+				$where = array();
+				$where[] = 'uuid = "'.$this->itemUUID.'" ';
+				$db->update("space", $data, $where);
+				$updateOK = true;
+		  }
+		  
+		  unset($spatialItem);
+		  $db->closeConnection();
+		  return $updateOK;
     }
     
     
     function nameSpaces(){
-	$nameSpaceArray = array("oc" => self::OC_namespaceURI,
-			   "dc" => OpenContext_OCConfig::get_namespace("dc"),
-			   "arch" => OpenContext_OCConfig::get_namespace("arch", "spatial"),
-			   "gml" => OpenContext_OCConfig::get_namespace("gml"),
-			   "kml" => OpenContext_OCConfig::get_namespace("kml"));
-	
-	return $nameSpaceArray;
+		  $nameSpaceArray = array("oc" => self::OC_namespaceURI,
+					  "dc" => OpenContext_OCConfig::get_namespace("dc"),
+					  "arch" => OpenContext_OCConfig::get_namespace("arch", "spatial"),
+					  "gml" => OpenContext_OCConfig::get_namespace("gml"),
+					  "kml" => OpenContext_OCConfig::get_namespace("kml"));
+		  
+		  return $nameSpaceArray;
     }
     
     
@@ -1061,36 +1065,36 @@ class Subject {
     
     //this function fixes XML for the latest schema
     function namespace_fix($xmlString){
-	
-	//$goodNamespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
-	$goodNamespaceURI = self::OC_namespaceURI;
-	
-	$old_namespaceURIs = array("http://about.opencontext.org/schema/space_schema_v1.xsd",
-				      "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
-	
-	foreach($old_namespaceURIs as $oldNamespace){
-	    $xmlString = str_replace($oldNamespace, $goodNamespaceURI, $xmlString);
-	}
-	
-	return $xmlString;
+		  
+		  //$goodNamespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
+		  $goodNamespaceURI = self::OC_namespaceURI;
+		  
+		  $old_namespaceURIs = array("http://about.opencontext.org/schema/space_schema_v1.xsd",
+							  "http://www.opencontext.org/database/schema/space_schema_v1.xsd");
+		  
+		  foreach($old_namespaceURIs as $oldNamespace){
+				$xmlString = str_replace($oldNamespace, $goodNamespaceURI, $xmlString);
+		  }
+		  
+		  return $xmlString;
     }
     
     //this function cleans ArchaeoML to fix old versions of the data
     function archaeoml_fix($xmlString){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/subjects/";
-	
-	$bad_array = array("http://www.opencontext.org/database/space.php?item=",
-			   "http://ishmael.ischool.berkeley.edu/subjects/",
-			   "http://opencontext/subjects/",
-			   "http://www.opencontext.org/subjects/",
-			   "http://testing.opencontext.org/subjects/");
-	
-	foreach($bad_array as $badLink){
-	    $xmlString = str_replace($badLink, $baseURI, $xmlString);
-	}
-	
-	return $xmlString;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/subjects/";
+		  
+		  $bad_array = array("http://www.opencontext.org/database/space.php?item=",
+					  "http://ishmael.ischool.berkeley.edu/subjects/",
+					  "http://opencontext/subjects/",
+					  "http://www.opencontext.org/subjects/",
+					  "http://testing.opencontext.org/subjects/");
+		  
+		  foreach($bad_array as $badLink){
+				$xmlString = str_replace($badLink, $baseURI, $xmlString);
+		  }
+		  
+		  return $xmlString;
     }
     
     
@@ -1098,90 +1102,89 @@ class Subject {
     //and uses the correct namespace
     function archaeoML_update($xmlString){
 	
-	$archaeoML = false;
-	$xmlString = $this->archaeoml_fix($xmlString);
-	$xmlString = $this->namespace_fix($xmlString);
-	@$spatialItem = simplexml_load_string($xmlString);
-	if($spatialItem){
-	    //valid XML, OK to add to database
-	    $spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $spatialItem->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $spatialItem->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	    $spatialItem = $this->obsNumber_Add($spatialItem);
-	    $spatialItem = $this->propLinks_Add($spatialItem);
-	    $spatialItem = $this->spaceLinks_Add($spatialItem);
-	    $spatialItem = $this->mediaLinks_Add($spatialItem);
-	    $spatialItem = $this->documentLinks_Add($spatialItem);
-	    $spatialItem = $this->personLinks_Add($spatialItem);
-	    $spatialItem = $this->parentLinks_Add($spatialItem);
-	    $spatialItem = $this->childLinks_Add($spatialItem);
-	    $spatialItem = $this->metaLinks_Add($spatialItem);
-	    $spatialItem = $this->geoUpdate($spatialItem);
-	    $spatialItem = $this->chronoUpdate($spatialItem);
-	    
-	    //if no database item, add it
-	    if(!$this->itemFound){
-		$this->database_add($spatialItem);
-	    }
-	    
-	    $archaeoML = $spatialItem->asXML();
-	    
-	    $archaeoML = str_replace('<?xml version="1.0"?>', '', $archaeoML);
-	    $doc = new DOMDocument('1.0', 'UTF-8');
-	    $doc->loadXML($archaeoML);
-	    $doc->formatOutput = true;
-	    $archaeoML = $doc->saveXML();
-	    
-	    $this->archaeoML = $archaeoML;
-	    unset($spatialItem);
-	    $this->committ_update_archaeoML();
-	}
-	
-	return $archaeoML;
+		  $archaeoML = false;
+		  $xmlString = $this->archaeoml_fix($xmlString);
+		  $xmlString = $this->namespace_fix($xmlString);
+		  @$spatialItem = simplexml_load_string($xmlString);
+		  if($spatialItem){
+				//valid XML, OK to add to database
+				$spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$spatialItem->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$spatialItem->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+				$spatialItem = $this->obsNumber_Add($spatialItem);
+				$spatialItem = $this->propLinks_Add($spatialItem);
+				$spatialItem = $this->spaceLinks_Add($spatialItem);
+				$spatialItem = $this->mediaLinks_Add($spatialItem);
+				$spatialItem = $this->documentLinks_Add($spatialItem);
+				$spatialItem = $this->personLinks_Add($spatialItem);
+				$spatialItem = $this->parentLinks_Add($spatialItem);
+				$spatialItem = $this->childLinks_Add($spatialItem);
+				$spatialItem = $this->metaLinks_Add($spatialItem);
+				$spatialItem = $this->geoUpdate($spatialItem);
+				$spatialItem = $this->chronoUpdate($spatialItem);
+				
+				//if no database item, add it
+				if(!$this->itemFound){
+					 $this->database_add($spatialItem);
+				}
+				
+				$archaeoML = $spatialItem->asXML();
+				
+				$archaeoML = str_replace('<?xml version="1.0"?>', '', $archaeoML);
+				$doc = new DOMDocument('1.0', 'UTF-8');
+				$doc->loadXML($archaeoML);
+				$doc->formatOutput = true;
+				$archaeoML = $doc->saveXML();
+				
+				$this->archaeoML = $archaeoML;
+				unset($spatialItem);
+				$this->committ_update_archaeoML();
+		  }
+		  
+		  return $archaeoML;
     }
     
     
     
     function committ_update_archaeoML(){
 	
-	$updateOK = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
-	
-	@$spatialItem = simplexml_load_string($this->archaeoML); 
-	if($spatialItem){
-	    
-	    if(!OpenContext_OCConfig::need_bigString($this->archaeoML)){
-	        //new archaeoML does NOT need to be treated as a big string
-		$data = array("archaeoML" => $this->archaeoML);
-		$where = array();
-		$where[] = 'uuid = "'.$this->itemUUID.'" ';
-		$db->update("space", $data, $where);
-		$updateOK = true;
-	    }
-	    else{
-		/*
-		This gets around size limits for inserting into MySQL.
-		It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-		*/
-		//$this->big_value_insert("archaeoML", $this->archaeoML, $db);
-		$bigStringObj = new BigString;
-		$bigStringObj->saveCurrentBigString($this->itemUUID, "archaeoML", "spatial", $this->archaeoML, $db);
-		
-		$data = array("archaeoML" => OpenContext_OCConfig::get_bigStringValue());
-		$where = array();
-		$where[] = 'uuid = "'.$this->itemUUID.'" ';
-		$db->update("space", $data, $where);
-		$updateOK = true;
-		
-	    }
-	}
-	
-	unset($spatialItem);
-	$db->closeConnection();
-	return $updateOK;
+		  $updateOK = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+		  
+		  @$spatialItem = simplexml_load_string($this->archaeoML); 
+		  if($spatialItem){
+				
+				if(!OpenContext_OCConfig::need_bigString($this->archaeoML)){
+					 //new archaeoML does NOT need to be treated as a big string
+					 $data = array("archaeoML" => $this->archaeoML);
+					 $where = array();
+					 $where[] = 'uuid = "'.$this->itemUUID.'" ';
+					 $db->update("space", $data, $where);
+					 $updateOK = true;
+					  }
+					  else{
+					 /*
+					 This gets around size limits for inserting into MySQL.
+					 It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+					 */
+					 //$this->big_value_insert("archaeoML", $this->archaeoML, $db);
+					 $bigStringObj = new BigString;
+					 $bigStringObj->saveCurrentBigString($this->itemUUID, "archaeoML", "spatial", $this->archaeoML, $db);
+					 
+					 $data = array("archaeoML" => OpenContext_OCConfig::get_bigStringValue());
+					 $where = array();
+					 $where[] = 'uuid = "'.$this->itemUUID.'" ';
+					 $db->update("space", $data, $where);
+					 $updateOK = true;
+				}
+		  }
+		  
+		  unset($spatialItem);
+		  $db->closeConnection();
+		  return $updateOK;
     }
     
     
@@ -1189,264 +1192,264 @@ class Subject {
     
     //add observation numbers if not present
     function obsNumber_Add($spatialItem){
-	$obsNum = 1;
-	foreach($spatialItem->xpath("//arch:observation") as $obs){
-	    $obs->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $obs->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $obsNumFound = false;
-	    foreach($obs->xpath("@obsNumber") as $obsAt){
-		$obsNumFound = true;
-	    }
-	    if(!$obsNumFound){
-		$obs->addAttribute("obsNumber", $obsNum);
-	    }
-	$obsNum++;
-	}
-	
-	return $spatialItem;
+		  $obsNum = 1;
+		  foreach($spatialItem->xpath("//arch:observation") as $obs){
+				$obs->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$obs->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$obsNumFound = false;
+				foreach($obs->xpath("@obsNumber") as $obsAt){
+					 $obsNumFound = true;
+				}
+				if(!$obsNumFound){
+					 $obs->addAttribute("obsNumber", $obsNum);
+				}
+		  $obsNum++;
+		  }
+		  
+		  return $spatialItem;
     }
     
     
     //for those flaky cases with nothing in the MySQL database
     function database_add($spatialItem){
 	
-	// get the item_label
-	foreach ($spatialItem->xpath("//arch:spatialUnit/arch:name/arch:string") as $item_label) {
-	    $item_label = $item_label."";
-	}
-	
-	// get the item_id
-	foreach($spatialItem->xpath("//arch:spatialUnit/@UUID") as $item_result) {
-	    $uuid = $item_result."";
-	}
-	
-	// get the item_id
-	foreach($spatialItem->xpath("//arch:spatialUnit/@ownedBy") as $item_result) {
-	    $project_id = $item_result."";
-	}
-	
-	// get the item_id
-	foreach($spatialItem->xpath("//arch:spatialUnit/oc:item_class/oc:name") as $item_result) {
-	    $item_class = $item_result."";
-	    $classID = OpenContext_XMLtoItems::class_id_lookup($item_class);
-	}
-	
-	$this->itemUUID = $uuid;
-	
-	$data = array("uuid" => $uuid,
-		      "project_id" => $project_id,
-		      "space_label" => $item_label, 
-		      "class_uuid" => $classID 
-		       );
-	
-	$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	try{
-	    $db->insert("space", $data);
-	}catch(Exception $e){
-	    
-	}
+		  // get the item_label
+		  foreach ($spatialItem->xpath("//arch:spatialUnit/arch:name/arch:string") as $item_label) {
+				$item_label = $item_label."";
+		  }
+		  
+		  // get the item_id
+		  foreach($spatialItem->xpath("//arch:spatialUnit/@UUID") as $item_result) {
+				$uuid = $item_result."";
+		  }
+		  
+		  // get the item_id
+		  foreach($spatialItem->xpath("//arch:spatialUnit/@ownedBy") as $item_result) {
+				$project_id = $item_result."";
+		  }
+		  
+		  // get the item_id
+		  foreach($spatialItem->xpath("//arch:spatialUnit/oc:item_class/oc:name") as $item_result) {
+				$item_class = $item_result."";
+				$classID = OpenContext_XMLtoItems::class_id_lookup($item_class);
+		  }
+		  
+		  $this->itemUUID = $uuid;
+		  
+		  $data = array("uuid" => $uuid,
+					  "project_id" => $project_id,
+					  "space_label" => $item_label, 
+					  "class_uuid" => $classID 
+						);
+		  
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  try{
+				$db->insert("space", $data);
+		  }catch(Exception $e){
+				
+		  }
     }
     
     
     
     //add property links if not present
     function propLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/properties/";
-	
-	foreach($spatialItem->xpath("//arch:property/oc:propid") as $prop){
-	    $prop->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $prop->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($prop->xpath("@href") as $propAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		$propID = $prop."";
-		$prop->addAttribute("href", $baseURI.$propID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/properties/";
+		  
+		  foreach($spatialItem->xpath("//arch:property/oc:propid") as $prop){
+				$prop->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$prop->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($prop->xpath("@href") as $propAt){
+					  $linkFound = true;
+				}
+				if(!$linkFound){
+					  $propID = $prop."";
+					  $prop->addAttribute("href", $baseURI.$propID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     
     //add space links, if not present
     function spaceLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/subjects/";
-	
-	foreach($spatialItem->xpath("//oc:space_links/oc:link") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/subjects/";
+		  
+		  foreach($spatialItem->xpath("//oc:space_links/oc:link") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     
     
     //add media links if not present
     function mediaLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/media/";
-	
-	foreach($spatialItem->xpath("//oc:media_links/oc:link") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/media/";
+		  
+		  foreach($spatialItem->xpath("//oc:media_links/oc:link") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     //add documents links if not present
     function documentLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/documents/";
-	
-	foreach($spatialItem->xpath("//oc:diary_links/oc:link") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/documents/";
+		  
+		  foreach($spatialItem->xpath("//oc:diary_links/oc:link") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     //add person links if not present
     function personLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/persons/";
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/persons/";
+		  
+		  $contributors = array();
+		  $creators = array();
+		  foreach($spatialItem->xpath("//oc:metadata/dc:contributor") as $contrib){
+				$actContrib = $contrib."";
+				if(!in_array($actContrib, $contributors)){
+					 $contributors[] = $actContrib;
+				}
+		  }
+		  foreach($spatialItem->xpath("//oc:metadata/dc:creator") as $create){
+				$actCreate = $create."";
+				if(!in_array($actCreate, $creators)){
+					 if(in_array($actCreate, $contributors)){
+						  //only add to creator list if not already in the contributor list
+						  $key = array_search($actCreate, $contributors);
+						  unset($contributors[$key]);
+					 }
+					 $creators[] = $actCreate;
+				}
+		  }
 	
-	$contributors = array();
-	$creators = array();
-	foreach($spatialItem->xpath("//oc:metadata/dc:contributor") as $contrib){
-	    $actContrib = $contrib."";
-	    if(!in_array($actContrib, $contributors)){
-		$contributors[] = $actContrib;
-	    }
-	}
-	foreach($spatialItem->xpath("//oc:metadata/dc:creator") as $create){
-	    $actCreate = $create."";
-	    if(!in_array($actCreate, $creators)){
-		if(in_array($actCreate, $contributors)){
-		    //only add to creator list if not already in the contributor list
-		    $key = array_search($actCreate, $contributors);
-		    unset($contributors[$key]);
-		}
-		$creators[] = $actCreate;
-	    }
-	}
-	
-	foreach($spatialItem->xpath("//oc:person_links/oc:link") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    $citeFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    foreach($link->xpath("@href") as $linkAt){
-		$citeFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	    if(!$citeFound){
-		foreach($link->xpath("oc:name") as $itemName){
-		    $itemName = $itemName."";
-		}
-		if(in_array($itemName, $contributors)){
-		    $link->addAttribute("cite", "contributor");
-		}
-		if(in_array($itemName, $creators)){
-		    $link->addAttribute("cite", "creator");
-		}
-	    }
-	    
-	}
-	
-	return $spatialItem;
+		  foreach($spatialItem->xpath("//oc:person_links/oc:link") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				$citeFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				foreach($link->xpath("@href") as $linkAt){
+					 $citeFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+				if(!$citeFound){
+					 foreach($link->xpath("oc:name") as $itemName){
+						  $itemName = $itemName."";
+					 }
+					 if(in_array($itemName, $contributors)){
+						  $link->addAttribute("cite", "contributor");
+					 }
+					 if(in_array($itemName, $creators)){
+						  $link->addAttribute("cite", "creator");
+					 }
+				}
+				
+		  }
+		  
+		  return $spatialItem;
     }
     
     //add parent links if not present
     function parentLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/subjects/";
-	
-	foreach($spatialItem->xpath("//oc:parent") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/subjects/";
+		  
+		  foreach($spatialItem->xpath("//oc:parent") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     //add children links if not present
     function childLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/subjects/";
-	
-	foreach($spatialItem->xpath("//oc:child") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/subjects/";
+		  
+		  foreach($spatialItem->xpath("//oc:child") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     
@@ -1454,137 +1457,176 @@ class Subject {
     //add links if not present to geo and chrono metadata sources
     //add children links if not present
     function metaLinks_Add($spatialItem){
-	$host = OpenContext_OCConfig::get_host_config();
-	$baseURI = $host."/subjects/";
-	
-	foreach($spatialItem->xpath("//oc:metasource") as $link){
-	    $link->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	    $linkFound = false;
-	    foreach($link->xpath("@href") as $linkAt){
-		$linkFound = true;
-	    }
-	    if(!$linkFound){
-		foreach($link->xpath("oc:source_id") as $itemID){
-		    $itemID = $itemID."";
-		}
-		$link->addAttribute("href", $baseURI.$itemID);
-	    }
-	}
-	
-	return $spatialItem;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $baseURI = $host."/subjects/";
+		  
+		  foreach($spatialItem->xpath("//oc:metasource") as $link){
+				$link->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$link->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+				$linkFound = false;
+				foreach($link->xpath("@href") as $linkAt){
+					 $linkFound = true;
+				}
+				if(!$linkFound){
+					 foreach($link->xpath("oc:source_id") as $itemID){
+						  $itemID = $itemID."";
+					 }
+					 $link->addAttribute("href", $baseURI.$itemID);
+				}
+		  }
+		  
+		  return $spatialItem;
     }
     
     
+	 function booleanFix($spatialItem = false){
+		  
+		  $change = false;
+		  $trueVals = array("1", "yes", "true");
+		  $falseVals = array("0", "no", "false");
+		  
+		  if(!$spatialItem){
+				$spatialItem = simplexml_load_string($this->archaeoML);
+				$nameSpaceArray = $this->nameSpaces();
+				foreach($nameSpaceArray as $prefix => $uri){
+					 @$spatialItem->registerXPathNamespace($prefix, $uri);
+				}
+		  }
+		  
+		  if($spatialItem->xpath("//arch:properties/arch:property[oc:var_label/@type = 'boolean']")){
+				foreach($spatialItem->xpath("//arch:properties/arch:property[oc:var_label/@type = 'boolean']/oc:show_val") as $boolVal){
+					 $textVal = (string)$boolVal;
+					 $textVal = strtolower($textVal);
+					 if(in_array($textVal, $trueVals) && $textVal != "true"){
+						  $boolVal[0] = "true";
+						  $change = true;
+					 }
+					 elseif(in_array($textVal, $falseVals) && $textVal != "false"){
+						  $boolVal[0] = "false";
+						  $change = true;
+					 }
+				}
+		  }
+		  
+		  if($change && $this->itemUUID){
+				$this->archaeoML = $spatialItem->asXML();
+				$this->createUpdate(false); //save the edits
+		  }
+		  
+		  return $spatialItem;
+    }
+	 
+	 
+	 
     
     
     //this updates geo spatial coordinates to reflect the latest version
     function geoUpdate($spatialItem){
 	
-	$db_params = OpenContext_OCConfig::get_db_config();
+		  $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
 	
-	$spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
-	foreach($spatialItem->xpath("//oc:geo_reference") as $geo){
-	    $geo->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    $real_Lat = false;
-	    foreach($geo->xpath("oc:metasource/oc:source_id") as $id){
-		$id = $id."";
-		
-		$sql = "SELECT *
-		FROM geo_space
-		WHERE geo_space.uuid = '".$id."'
-		LIMIT 1";
-		
-		$result = $db->fetchAll($sql, 2);
-		if($result){
-		    $real_Lat = $result[0]["latitude"] + 0;
-		    $real_Lon = $result[0]["longitude"] + 0;
-		}
-	    }
+		  $spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
+		  foreach($spatialItem->xpath("//oc:geo_reference") as $geo){
+				$geo->registerXPathNamespace("oc", self::OC_namespaceURI);
+				$real_Lat = false;
+				foreach($geo->xpath("oc:metasource/oc:source_id") as $id){
+					 $id = $id."";
+					 
+					 $sql = "SELECT *
+					 FROM geo_space
+					 WHERE geo_space.uuid = '".$id."'
+					 LIMIT 1";
+					 
+					 $result = $db->fetchAll($sql, 2);
+					 if($result){
+						  $real_Lat = $result[0]["latitude"] + 0;
+						  $real_Lon = $result[0]["longitude"] + 0;
+					 }
+				}
+		  
+				foreach($geo->xpath("oc:geo_lat") as $geoLat){
+					 $geoLatNum = $geoLat;
+					 $geoLatNum = $geoLatNum + 0;
+				}
+				foreach($geo->xpath("oc:geo_long") as $geoLong){
+					 $geoLongNum = $geoLong;
+					 $geoLongNum = $geoLongNum + 0;
+				}
+		  
+				$this->geoCurrent = true;
+				if($real_Lat != false){
+					 if($real_Lat != $geoLatNum || $real_Lon != $geoLongNum){
+						  $geoLat[0] = $real_Lat;
+						  $geoLong[0] = $real_Lon;
+						  $this->geoCurrent = false;
+						  //echo var_dump($geo);
+					 }
+				}
+		  }
 	
-	    foreach($geo->xpath("oc:geo_lat") as $geoLat){
-		$geoLatNum = $geoLat;
-		$geoLatNum = $geoLatNum + 0;
-	    }
-	    foreach($geo->xpath("oc:geo_long") as $geoLong){
-		$geoLongNum = $geoLong;
-		$geoLongNum = $geoLongNum + 0;
-	    }
-	
-	    $this->geoCurrent = true;
-	    if($real_Lat != false){
-		if($real_Lat != $geoLatNum || $real_Lon != $geoLongNum){
-		    $geoLat[0] = $real_Lat;
-		    $geoLong[0] = $real_Lon;
-		    $this->geoCurrent = false;
-		    //echo var_dump($geo);
-		}
-	    }
-	}
-	
-	$db->closeConnection();
-	return $spatialItem;
+		  $db->closeConnection();
+		  return $spatialItem;
     }
     
 
     //this updates chronological range to reflect the latest version
     function chronoUpdate($spatialItem){
 	
-	$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
-	
-	$spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
-	foreach($spatialItem->xpath("//oc:tag[@type='chronological']") as $chrono){
-	    $chrono->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    
-	    foreach($chrono->xpath("oc:name") as $tagName){
-	    }
-	    
-	    $real_Start = false;
-	    foreach($chrono->xpath("oc:chrono/oc:metasource/oc:source_id") as $id){
-		$id = $id."";
-		
-		$sql = "SELECT *
-		FROM initial_chrono_tag
-		WHERE initial_chrono_tag.uuid = '".$id."'
-		LIMIT 1";
-		
-		$result = $db->fetchAll($sql, 2);
-		if($result){
-		    $real_Start = $result[0]["start_time"] + 0;
-		    $real_End = $result[0]["end_time"] + 0;
-		}
-	    }
-	
-	    foreach($chrono->xpath("oc:chrono/oc:time_start") as $timeStart){
-		$timeStartNum = $timeStart;
-		$timeStartNum = $timeStartNum + 0;
-	    }
-	    foreach($chrono->xpath("oc:chrono/oc:time_finish") as $timeEnd){
-		$timeEndNum = $timeEnd;
-		$timeEndNum = $timeEndNum + 0;
-	    }
-	
-	    $this->chronoUpdate = true; //default to up-to-date chronology
-	    if($real_Start != false){
-		if($real_Start != $timeStartNum || $real_End != $timeEndNum){
-		    $timeStart[0] = $real_Start;
-		    $timeEnd[0] = $real_End;
-		    $this->chronoUpdate = false; //XML in datastore is NOT uptodate on chronology
-		    $dateRange = OpenContext_DateRange::bce_ce_note($real_Start)." - ".OpenContext_DateRange::bce_ce_note($real_End);
-		    $dateRange = "(".$dateRange.")";
-		    $tagName[0] = $dateRange;
-		}
-	    }
-	}
-	
-	$db->closeConnection();
-	return $spatialItem;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+		  
+		  $spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
+		  foreach($spatialItem->xpath("//oc:tag[@type='chronological']") as $chrono){
+				$chrono->registerXPathNamespace("oc", self::OC_namespaceURI);
+				
+				foreach($chrono->xpath("oc:name") as $tagName){
+				}
+				
+				$real_Start = false;
+				foreach($chrono->xpath("oc:chrono/oc:metasource/oc:source_id") as $id){
+					 $id = $id."";
+					 
+					 $sql = "SELECT *
+					 FROM initial_chrono_tag
+					 WHERE initial_chrono_tag.uuid = '".$id."'
+					 LIMIT 1";
+					 
+					 $result = $db->fetchAll($sql, 2);
+					 if($result){
+						  $real_Start = $result[0]["start_time"] + 0;
+						  $real_End = $result[0]["end_time"] + 0;
+					 }
+				}
+		  
+				foreach($chrono->xpath("oc:chrono/oc:time_start") as $timeStart){
+					  $timeStartNum = $timeStart;
+					  $timeStartNum = $timeStartNum + 0;
+				}
+				foreach($chrono->xpath("oc:chrono/oc:time_finish") as $timeEnd){
+					  $timeEndNum = $timeEnd;
+					  $timeEndNum = $timeEndNum + 0;
+				}
+		  
+				$this->chronoUpdate = true; //default to up-to-date chronology
+				if($real_Start != false){
+					 if($real_Start != $timeStartNum || $real_End != $timeEndNum){
+						  $timeStart[0] = $real_Start;
+						  $timeEnd[0] = $real_End;
+						  $this->chronoUpdate = false; //XML in datastore is NOT uptodate on chronology
+						  $dateRange = OpenContext_DateRange::bce_ce_note($real_Start)." - ".OpenContext_DateRange::bce_ce_note($real_End);
+						  $dateRange = "(".$dateRange.")";
+						  $tagName[0] = $dateRange;
+					 }
+				}
+		  }
+		  
+		  $db->closeConnection();
+		  return $spatialItem;
     }
     
 
@@ -1595,82 +1637,82 @@ class Subject {
     
     function find_personID($spatialItem, $personName){
 	
-	$personID = false;
-	foreach ($spatialItem->xpath("//arch:observation/arch:links/oc:person_links/oc:link") as $personLink) {
-	    $personLink->registerXPathNamespace("oc", self::OC_namespaceURI);
-	    foreach($personLink->xpath("oc:name") as $link_personName){
-		if($link_personName."" == $personName){
-		    foreach($personLink->xpath("oc:id") as $link_personID){
-			$personID = $link_personID."";
-		    }
-		}
-	    }
-	    
-	}
-	
-	if(!$personID){
-	    //try via database lookup
-	    $personID = $this->db_find_personID($personName);
-	}
-	
-	return $personID;
+		  $personID = false;
+		  foreach ($spatialItem->xpath("//arch:observation/arch:links/oc:person_links/oc:link") as $personLink) {
+				$personLink->registerXPathNamespace("oc", self::OC_namespaceURI);
+				foreach($personLink->xpath("oc:name") as $link_personName){
+					 if($link_personName."" == $personName){
+						  foreach($personLink->xpath("oc:id") as $link_personID){
+								$personID = $link_personID."";
+						  }
+					 }
+				}
+				
+		  }
+		  
+		  if(!$personID){
+				//try via database lookup
+				$personID = $this->db_find_personID($personName);
+		  }
+		  
+		  return $personID;
     }
     
     
     function db_find_personID($personName){
 	
-	$personID = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
+		  $personID = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	$this->setUTFconnection($db);
-	
-	$sql = "SELECT persons.person_uuid
-	FROM persons
-	WHERE persons.project_id = '".$this->projectUUID."'
-	AND persons.combined_name LIKE '%".$personName."%'	
-	LIMIT 1;
-	";
-	
-	$result = $db->fetchAll($sql, 2);
-        if($result){
-	    $personID = $result[0]["person_uuid"];
-	}
-	
-	$db->closeConnection();
-	return $personID;
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+		  
+		  $sql = "SELECT persons.person_uuid
+		  FROM persons
+		  WHERE persons.project_id = '".$this->projectUUID."'
+		  AND persons.combined_name LIKE '%".$personName."%'	
+		  LIMIT 1;
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$personID = $result[0]["person_uuid"];
+		  }
+		  
+		  $db->closeConnection();
+		  return $personID;
     }
     
     function atom_pubDate(){
 		
-	$db_params = OpenContext_OCConfig::get_db_config();
-	$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		    
-	$db->getConnection();
-	$this->setUTFconnection($db);
-	 
-	$sql = "SELECT space.created, space.updated
-	FROM space
-	WHERE space.uuid = '".$this->itemUUID."'
-	LIMIT 1; ";
-	
-	//echo $sql;
-	
-	$result = $db->fetchAll($sql, 2);
-	$pubDate = false;
-	     
-	if($result){
-		$createdDate = $result[0]["created"];
-		$updatedDate = $result[0]["updated"];
-		$pubDate = $createdDate;
-		if(!$createdDate){
-			$pubDate = $updatedDate;
-		}
-	}
-	
-	
-	$db->closeConnection();
-	return $pubDate;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+					
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+			
+		  $sql = "SELECT space.created, space.updated
+		  FROM space
+		  WHERE space.uuid = '".$this->itemUUID."'
+		  LIMIT 1; ";
+		  
+		  //echo $sql;
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  $pubDate = false;
+				 
+		  if($result){
+			  $createdDate = $result[0]["created"];
+			  $updatedDate = $result[0]["updated"];
+			  $pubDate = $createdDate;
+			  if(!$createdDate){
+				  $pubDate = $updatedDate;
+			  }
+		  }
+		  
+		  
+		  $db->closeConnection();
+		  return $pubDate;
 	}
     
     

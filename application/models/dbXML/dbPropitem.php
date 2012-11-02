@@ -54,12 +54,18 @@ class dbXML_dbPropitem  {
 				  "person" => "person",
 				  "document" => "diary");
     
-     private $oc_obsItemTypes = array("space" => "%spatial%",
+    private $oc_obsItemTypes = array("space" => "%spatial%",
 				  "media" => "%resource%",
 				  "project" => "%project%",
 				  "person" => "%person%",
 				  "document" => "%diary%");
     
+	 private $solrTypes = array("spatial" => array("queryPath" => "/sets/", "pubQueryParam" => false),
+										 "image" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
+										 "media" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
+										 "documents" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=document")
+	 
+	 
     public $dbName;
     public $dbPenelope;
     public $db;
@@ -230,7 +236,7 @@ class dbXML_dbPropitem  {
 		  WHERE linked_data.itemUUID = '$itemUUID' AND linked_data.linkedType = 'type' ";
 		  
 		  $result = $db->fetchAll($sql, 2);
-				 if($result){
+		  if($result){
 				$output = array();
 				$output = $result[0];
 		  }
@@ -355,8 +361,80 @@ class dbXML_dbPropitem  {
 		  }
     }//end funciton
     
+	 
+	 
+	 
+	 //use solr to get the propety summaries we need
+	 public function solrDBpropertySummary(){
+	
+		  $subjectTypeArray = $this->pen_obsItemTypes;  
+		  $varType = $this->varType;
+		  
+		  if($varType == "integer" || $varType == "decimal" || stristr($varType, "calend")){
+				$this->solrDBgetRange();
+		  }
+		  elseif($varType == "boolean" || $varType == "ordinal" || stristr($varType, "nominal")){
+				
+				
+		  }//end case for nomimal, boolean, ordinal
+	
+    }//end function
+	 
+	 
+	 public solrDBgetRange(){
+		  $db = $this->db;
+		  $varType = $this->varType;
+		  $sql = "SELECT 	min(properties.val_num) as numMin,
+								max(properties.val_num) as numMax,
+								min(properties.val_date) as calMin,
+								max(properties.val_date) as calMax,
+				FROM properties
+				WHERE properties.variable_uuid = '".$this->varUUID."'
+				";
+	
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$numMin = $result[0]["numMin"];
+				$numMax = $result[0]["numMax"];
+				$calMin = $result[0]["calMin"];
+				$calMax = $result[0]["calMax"];
+				
+				if(stristr($varType, "calend")){
+					 $requestParams = array("range" => ($this->varLabel."::"."($calMin, $calMax, +1YEAR)";
+				}
+				
+				
+				$SolrSearch = new SolrSearch;
+				foreach($this->solrTypes as $sType => $typeParams){
+					 $SolrSearch->initialize();
+					 
+					 if($sType == "spatial"){
+						  $SolrSearch->spatial = true; //do a search of spatial items in Open Context
+					 }
+					 elseif($sType == "image"){
+						   $SolrSearch->image = true;
+					 }
+					 elseif($sType == "media"){
+						   $SolrSearch->media = true;
+					 }
+					  elseif($sType == "document"){
+						   $SolrSearch->document = true;
+					 }
+					 
+					 $DocumentTypes = $this->makeDocumentTypeArray();
+					 $param_array = array();
+					 $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
+					 
+					 
+				}
+				
+				
+		  }
+	 }
+	 
+	 
     
-    //get summary of 
+    //get numeric summary, very costly!
     public function getNumericSummary($subjectType){
 	
 		  $db = $this->db;

@@ -733,115 +733,115 @@ class OpenContextItem {
     
     //preliminary interst score calculate
     function interestCalc($socialData = false){
-	$interest_score = $this->interestScore; //default to false / 0.
-	
-	$number_properties = 0;
-	$total_character_length_note = 0;
-	
-	if(!$socialData){
-	    $socialData = $this->socialUse;
-	}
-	
-	//get data about properties, among of text in properties
-	if(is_array($this->variables)){
-	    $number_properties = count($this->variables);
-	    foreach($this->variables as $varVal){
-		$total_character_length_note += strlen($varVal["var"]) + strlen($varVal["val"]);
-	    }
-	}
-	
-	if(is_array($this->alphaNotes)){
-	    foreach($this->alphaNotes as $note){
-		$total_character_length_note += strlen($note);
-	    }
-	}
-	
-	$numPersons = 0;
-	if(is_array($this->linkedPersons)){
-	    $numPersons = count($this->linkedPersons);
-	}
-	
-	$interest_score += $number_properties; 
-	$interest_score += ($total_character_length_note / 100); 
-	$interest_score += ($this->imageLinkNum * 4);
-	$interest_score += ($this->otherLinkNum * 4);
-	$interest_score += ($this->docLinkNum * 2); 
-	$interest_score += ($numPersons * .5); 
-	
-	
-	if($this->geoSelf){ 
-	    $interest_score += 4;
-	    if($this->geoPoly){  
-		$interest_score += 4;
-	    }
-	}
-	
-	if(is_array($this->userTags)){
-	    $interest_score += count($this->userTags) * 1.5;
-	}
-	
-	if(is_array($socialData)){
-	    if(array_key_exists("item_views", $socialData)){
-		$interest_score += $socialData["item_views"] / 100;
-	    }
-	   if(array_key_exists("ext_refs", $socialData)){
-		$interest_score += $socialData["ext_refs"] * 2;
-	    }
-	}
-	
-	$this->interestScore = $interest_score;
-    }
-    
-    
-    
-    /*
-    make nice variables
-    */
-    function remove_redundant_parent_taxa_from_variables(){
-	$variables = $this->variables;
-	$delimCounts = array();
-	$sortOrder = array();
-	$i =0;
-	foreach($variables as $varVal){
-	    $var = trim($varVal['var']);
-	    $delimCounts[$var] = substr_count($var, self::taxonDelim);
-	    $sortOrder[] = $var;
-	}
-	
-	krsort($delimCounts);
-	
-	//echo print_r($delimCounts);
-	
-	$finalVars = array();
-	foreach($delimCounts as $varKey => $delimCount){
-	    
-	    $addVar = true;
-	    $checkKey = $varKey.self::taxonDelim;
-	    $checkKeyLen = strlen($checkKey);
-	    
-	    if(count($finalVars) > 0){
-		foreach($finalVars as $addedVar){   
-		    $varSegment = substr($addedVar, 0, $checkKeyLen);
-		    if($varSegment == $checkKey){ //don't add to the final variable list if variable is a part of the path of an existing item
-			$addVar = false;
-		    }
-		}
-	    }
-	    
-	    if($addVar){
-		$finalVars[] = $varKey;
-	    }
-	}//end loop
-	
-	//now sort them
-	$finalOrderedVars = array();
-	foreach($sortOrder as $actVar){
-	    if(in_array($actVar, $finalVars)){
-		$finalOrderedVars[] = $actVar;
-	    }
-	}
-
-	return $finalOrderedVars;
+		  $interest_score = $this->interestScore; //default to false / 0.
+		  
+		  $number_properties = 0;
+		  $total_character_length_note = 0;
+		  
+		  if(!$socialData){
+				$socialData = $this->socialUse;
+		  }
+		  
+		  //get data about properties, among of text in properties
+		  if(is_array($this->variables)){
+				$number_properties = count($this->variables);
+				foreach($this->variables as $varVal){
+			  $total_character_length_note += strlen($varVal["var"]) + strlen($varVal["val"]);
+				}
+		  }
+		  
+		  if(is_array($this->alphaNotes)){
+				foreach($this->alphaNotes as $note){
+			  $total_character_length_note += strlen($note);
+				}
+		  }
+		  
+		  $numPersons = 0;
+		  if(is_array($this->linkedPersons)){
+				$numPersons = count($this->linkedPersons);
+		  }
+		  
+		  $interest_score += $number_properties; 
+		  $interest_score += ($total_character_length_note / 100); 
+		  $interest_score += ($this->imageLinkNum * 4);
+		  $interest_score += ($this->otherLinkNum * 4);
+		  $interest_score += ($this->docLinkNum * 2); 
+		  $interest_score += ($numPersons * .5); 
+		  
+		  
+		  if($this->geoSelf){ 
+				$interest_score += 4;
+				if($this->geoPoly){  
+					 $interest_score += 4;
+				}
+		  }
+		  
+		  if(is_array($this->userTags)){
+				$interest_score += count($this->userTags) * 1.5;
+		  }
+		  
+		  if(is_array($socialData)){
+				if(array_key_exists("item_views", $socialData)){
+					 $interest_score += $socialData["item_views"] / 100;
+				}
+			  if(array_key_exists("ext_refs", $socialData)){
+					 $interest_score += $socialData["ext_refs"] * 2;
+				}
+		  }
+		  
+		  $this->interestScore = $interest_score;
+	 }//end function
+			
+			
+			
+	 /*
+	 make nice variables
+	 */
+	 function remove_redundant_parent_taxa_from_variables(){
+		  $variables = $this->variables;
+		  $delimCounts = array();
+		  $sortOrder = array();
+		  $i =0;
+		  foreach($variables as $varVal){
+				$var = trim($varVal['var']);
+				$delimCounts[$var] = substr_count($var, self::taxonDelim);
+				$sortOrder[] = $var;
+		  }
+		  
+		  krsort($delimCounts);
+		  
+		  //echo print_r($delimCounts);
+		  
+		  $finalVars = array();
+		  foreach($delimCounts as $varKey => $delimCount){
+				
+				$addVar = true;
+				$checkKey = $varKey.self::taxonDelim;
+				$checkKeyLen = strlen($checkKey);
+				
+				if(count($finalVars) > 0){
+					 foreach($finalVars as $addedVar){   
+						  $varSegment = substr($addedVar, 0, $checkKeyLen);
+						  if($varSegment == $checkKey){ //don't add to the final variable list if variable is a part of the path of an existing item
+								$addVar = false;
+						  }
+					 }
+				}
+				
+				if($addVar){
+					 $finalVars[] = $varKey;
+				}
+		  }//end loop
+		  
+		  //now sort them
+		  $finalOrderedVars = array();
+		  foreach($sortOrder as $actVar){
+				if(in_array($actVar, $finalVars)){
+					 $finalOrderedVars[] = $actVar;
+				}
+		  }
+	  
+		  return $finalOrderedVars;
     }//end function
     
     
@@ -851,33 +851,33 @@ class OpenContextItem {
     */
     function alphaNameSortOrder($alphaName){
 	
-	$alphaName = strtoupper($alphaName);
-	$alphaName  = trim($alphaName);
-	
-	$nameLen = strlen($alphaName);
-	if($nameLen >6){
-	    $nameLen = 6;
-	}
-	
-	$i=0;
-	$sort = 0;
-	while($i < $nameLen){
-	    $character = substr($alphaName, $i, 1);
-	    $ordVal = ord($character)-64;
-	    //echo "$character($ordVal)";
-	    
-	    if($i >0){
-		$ordVal = ($ordVal / 26);
-		$ordVal = $ordVal / pow(10,$i);
-	    }
-	    //echo "($ordVal) ";
-	    
-	    $sort =  $sort + $ordVal;
-	    
-	$i++;
-	}
-	
-	$this->labelSort = $sort;
+		  $alphaName = strtoupper($alphaName);
+		  $alphaName  = trim($alphaName);
+		  
+		  $nameLen = strlen($alphaName);
+		  if($nameLen >6){
+				$nameLen = 6;
+		  }
+		  
+		  $i=0;
+		  $sort = 0;
+		  while($i < $nameLen){
+				$character = substr($alphaName, $i, 1);
+				$ordVal = ord($character)-64;
+				//echo "$character($ordVal)";
+				
+				if($i >0){
+			  $ordVal = ($ordVal / 26);
+			  $ordVal = $ordVal / pow(10,$i);
+				}
+				//echo "($ordVal) ";
+				
+				$sort =  $sort + $ordVal;
+				
+		  $i++;
+		  }
+		  
+		  $this->labelSort = $sort;
     }
     
     
@@ -889,294 +889,295 @@ class OpenContextItem {
     */
     function makeSolrDocument($solrDocument = false){
 	
-	if(!$solrDocument){
-	     $solrDocument = new Apache_Solr_Document();
-	}
-	
-	$solrDocument->uuid = $this->itemUUID;
-	$solrDocument->item_label = $this->itemLabel;  //primary label for item
-	
-	if((!$this->labelSort) || !is_numeric($this->labelSort)){
-	    
-	    if(function_exists("mb_substr_count")){
-		$sort = $this->nameSorter($this->itemLabel); //generate sort based on item label
-	    }
-	    else{
-		$sort = $this->nameSorter_noMB($this->itemLabel); //generate sort based on item label, no multibyte working
-	    }
-	    
-	    if(!is_numeric($sort)){
-		$sort = ord($this->itemLabel);
-	    }
-	    if(!is_numeric($sort)){
-		$sort = 0;
-	    }
-	    $solrDocument->label_sort = $sort; //generate sort based on item label
-	}
-	else{
-	    $solrDocument->label_sort = $this->labelSort; //sort on this score
-	}
-	
-	
-	$solrDocument->pub_date = $this->pubDate; //publication date. this is only created once
-	$solrDocument->update = $this->update; //last date of significant update, a significant update is a change on the item
-	
-	/*
-	$solrDocument->pubdateNum = strtotime($this->pubDate); //publication date. this is only created once
-	$solrDocument->updateNum = strtotime($this->update); //last date of significant update, a significant update is a change on the item
-	*/
-	
-	$solrDocument->project_name = $this->projectName;
-	$solrDocument->project_id = $this->projectUUID;
-	$solrDocument->item_type = $this->documentType; //type of document (spatial, media, etc.)
-	
-	
-	/*
-	Default Contexts: Default contexts are the most important / signifiant hierarchy in a collection's taxonomy
-	They are slash ("/") seperated values, and used to make pretty URLs
-	*/
-	if(!$this->defaultContextPath){
-	    $solrDocument->default_context_path = "ROOT";
-	}
-	else{
-	    $solrDocument->default_context_path = $this->defaultContextPath;
-	}
-	
-	if(is_array($this->defaultContextArray)){
-	    foreach($this->defaultContextArray as $contextItem){
-		$solrField = $contextItem["field"];
-		$solrValue = $contextItem["value"];
-		$solrDocument->$solrField = $solrValue;
-	    }
-	}
-	
-	/*
-	
-	UPDATE linked_data
-	SET linkedURI = REPLACE(linkedURI, 'http://www.eol.org/', 'http://eol.org/')
-	
-	
-	*/
-	
-	/*
-	This enables indexing of hierarchic taxonomies, these are used for faceted searches
-	*/
-	if(is_array($this->properties)){
-	    foreach($this->properties as $prop){
-		$value = $prop["value"];
-		$prefix = $prop["hashPath"];
-		
-		if(!array_key_exists('setType', $prop)){
-		    $prop['setType'] = "nominal";
-		}
-		
-		if($prop['type'] == "integer" && $prop['setType'] == "integer"){
-		    //$solrDocument->setMultiValue($prefix."_tax_int_hr", $value); //human readable variant
-		    $suffix = "_tax_int";
-		}
-		elseif($prop['type'] == "decimal" && $prop['setType'] == "decimal"){
-		    //$solrDocument->setMultiValue($prefix."_tax_dec_hr", $value); //human readable variant
-		    $suffix = "_tax_dec";
-		}
-		elseif($prop['type'] == "integer" && $prop['setType'] == "decimal"){
-		    //$solrDocument->setMultiValue($prefix."_tax_dec_hr", $value); //human readable variant
-		    $suffix = "_tax_dec";
-		}
-		elseif($prop['type'] == "decimal" && $prop['setType'] == "integer"){
-		    //$solrDocument->setMultiValue($prefix."_tax_int_hr", $value); //human readable variant
-		    $solrDocument->setMultiValue($prefix."_tax_int", round($value,0));
-		    $suffix = "_tax_dec";
-		}
-		elseif($prop['type'] == "calendar" && $prop['setType'] == "calendar" ){
-		    $value = date("Y-m-d\TH:i:s\Z", strtotime($value));
-		    //$value = str_replace("Z", ".000Z",  $value);
-		    $suffix = "_tax_cal";
-		}
-		elseif(($prop['setType'] == "integer" || $prop['setType'] == "decimal") && $prop['type'] == "nominal"){
-		    $suffix = "_num_taxon";
-		}
-		elseif($prop['setType'] == "alphanumeric"){
-		    $suffix = "_tax_alpha";
-		}
-		else{
-		    $suffix = "_taxon";
-		}
-		$taxonField = $prefix.$suffix;
-		$solrDocument->setMultiValue($taxonField, $value);
-	    }
-	}
-	
-	/*
-	This is used to index different variables and associated values, these are mainly used for table outputs
-	*/
-	if(is_array($this->variables)){
-	    $keyVarArray = array();
-	   
-	    $niceVariables = $this->remove_redundant_parent_taxa_from_variables(); // removes parent taxon levels, leaves only full taxon
-	    foreach($niceVariables as $niceVar){
-		$solrDocument->setMultiValue("variables", $niceVar); //index list of variable names
-		foreach($this->variables as $varVal){
-		    $var = trim($varVal['var']);
-		    $val = trim($varVal['val']);
-		    if($niceVar == $var){
-				$keyVarArray[$var] = $val;
-		    }
-		}
-	    }
-	    
-	    $solrDocument->var_vals = Zend_Json::encode($keyVarArray);
-		foreach($keyVarArray as $varKey => $val){
-			$solrDocument->setMultiValue("notes", $varKey.": ".$val); //add notes for full-text searches
-	    }
-	}
-	
-	
-	
-	
-	
-	
-	if(is_array($this->classes)){
-	    foreach($this->classes as $class){
-		$solrDocument->setMultiValue("item_class", $class); //class of item (can have multiple)
-	    }
-	}
-	
-	if(is_array($this->linkedPersons)){
-	    foreach($this->linkedPersons as $person){
-		$solrDocument->setMultiValue("person_link", $person);
-	    }
-	}
-	
-	if(is_array($this->linkedPersonURIs)){
-	    foreach($this->linkedPersonURIs as $personURI){
-		$solrDocument->setMultiValue("person_uri", $personURI);
-	    }
-	}
-    
-	if(is_array($this->alphaNotes)){
-	    foreach($this->alphaNotes as $note){
-		$solrDocument->setMultiValue("notes", $note); //add notes for full-text searches
-	    }
-	}
-	
-	
-    
-	//take care of geographic data
-	if(!$this->geo){
-	    $solrDocument->geo_lat = 0; //no geo data, stick in Atlantic
-	    $solrDocument->geo_long = 0; //no geo data, stick in Atlantic
-	    $solrDocument->geo_point = "0,0"; //geo point
-	    $solrDocument->geo_coord = "0,0"; //geo point
-	}
-	else{
-	    $geoData = $this->geo;
-	    $solrDocument->geo_lat = $geoData['lat']; //geo data, latitude
-	    $solrDocument->geo_long = $geoData['lon']; //geo data, longitude
-	    
-	    $geoPoint = "0,0";
-	    if(isset( $geoData['lat']) && isset( $geoData['lon'])){
-		$geoPoint = $geoData['lat'].",".$geoData['lon']; //geo point
-	    }
-	    
-	    $solrDocument->geo_coord = $geoPoint; //geo point, for geospatial queries
-	    $solrDocument->geo_point = $geoPoint; //geo point, for facets
-	    $solrDocument->geo_path = $geoData["geoTile"]["path"]; //geo path
-	    $i = 1;
-	    foreach($geoData["geoTile"]["tiles"] as $tileArray){
-		//$dynamicGeoTileField = $i."_geo_tile";
-		$dynamicGeoTileField = $tileArray["field"]."_geo_tile";
-		$tile = $tileArray["value"];
-		$solrDocument->$dynamicGeoTileField = $tile;
-		if($i >= self::maxZoom){
-		    break; //stop, no need to make tiles deeper than this
-		}
-		$i++;
-	    }
-	}
-    
-	//take care of chronological data
-	if($this->chrono != false){
-	    $chrono = $this->chrono;
-	    $solrDocument->setMultiValue("time_start", $chrono["timeStart"]);
-	    $solrDocument->setMultiValue("time_start_hr", $chrono["timeStart"]);
-	    $solrDocument->setMultiValue("time_end", $chrono["timeEnd"]);
-	    $solrDocument->setMultiValue("time_end_hr", $chrono["timeEnd"]);
-	    $solrDocument->setMultiValue("time_span", $chrono["timeSpan"]);
-	    
-	    if($chrono["chronoTagger"] != false){
-			//$solrDocument->setMultiValue("chrono_creator_name", $chrono["chronoTagger"]); //chrono tag creator
-	    }
-	    if($chrono["chronoSet"] != false){
-			//$solrDocument->setMultiValue("chrono_set_label", $chrono["chronoSet"]); //chrono tag creator
-	    }
-	}
-    
-	//other Dublin Core metadata
-	if(is_array($this->creators)){
-	    foreach($this->creators as $creator){
-		$solrDocument->setMultiValue("creator", $creator);
-	    }
-	}
-	if(is_array($this->contributors)){
-	    foreach($this->contributors as $contributor){
-		$solrDocument->setMultiValue("contributor", $contributor);
-	    }
-	}
-	if(is_array($this->coverages)){
-	    foreach($this->coverages as $coverage){
-		$solrDocument->setMultiValue("coverage", $coverage);
-	    }
-	}
-	if(is_array($this->subjects)){
-	    foreach($this->subjects as $subject){
-		$solrDocument->setMultiValue("subject", $subject);
-	    }
-	}
-	if($this->license != false){
-	    $solrDocument->license_uri = $this->license;
-	}
-	
-	//media counts
-	if($this->imageLinkNum != false){
-	    $solrDocument->image_media_count = $this->imageLinkNum;
-	}
-	else{
-	    $solrDocument->image_media_count = 0;
-	}
-	if($this->otherLinkNum != false){
-	    $solrDocument->other_binary_media_count = $this->otherLinkNum;
-	}
-	else{
-	    $solrDocument->other_binary_media_count = 0;
-	}
-	if($this->docLinkNum != false){
-	    $solrDocument->diary_count = $this->docLinkNum;
-	}
-	else{
-	    $solrDocument->diary_count = 0;
-	}
-	
-	//user generated tags
-	if(is_array($this->userTags)){
-	    foreach($this->userTags as $tag){
-			//$solrDocument->setMultiValue("user_tag", $tag);
-	    }
-	}
-	if(is_array($this->userTagCreators)){
-	    foreach($this->userTagCreators as $tagCreator){
-			//$solrDocument->setMultiValue("tag_creator_name", $tagCreator);
-	    }
-	}
-	
-	if(!$this->interestScore){
-	    $this->interestScore = $this->interestCalc(); //if no interest score, calculate it
-	}
-	if(!$this->interestScore){
-	    $this->interestScore = 0; //if no interest score, calculate it
-	}
-	$solrDocument->interest_score = $this->interestScore; //interest score, for complicated ranking of results
-	
-	return $solrDocument;
+		  if(!$solrDocument){
+				 $solrDocument = new Apache_Solr_Document();
+		  }
+		  
+		  //$solrDocument->id = $this->itemUUID;
+		  $solrDocument->uuid = $this->itemUUID;
+		  $solrDocument->item_label = $this->itemLabel;  //primary label for item
+		  
+		  if((!$this->labelSort) || !is_numeric($this->labelSort)){
+				
+				if(function_exists("mb_substr_count")){
+					 $sort = $this->nameSorter($this->itemLabel); //generate sort based on item label
+				}
+				else{
+					 $sort = $this->nameSorter_noMB($this->itemLabel); //generate sort based on item label, no multibyte working
+				}
+				
+				if(!is_numeric($sort)){
+					 $sort = ord($this->itemLabel);
+				}
+				if(!is_numeric($sort)){
+					 $sort = 0;
+				}
+				$solrDocument->label_sort = $sort; //generate sort based on item label
+		  }
+		  else{
+				$solrDocument->label_sort = $this->labelSort; //sort on this score
+		  }
+		  
+		  
+		  $solrDocument->pub_date = $this->pubDate; //publication date. this is only created once
+		  $solrDocument->update = $this->update; //last date of significant update, a significant update is a change on the item
+		  
+		  /*
+		  $solrDocument->pubdateNum = strtotime($this->pubDate); //publication date. this is only created once
+		  $solrDocument->updateNum = strtotime($this->update); //last date of significant update, a significant update is a change on the item
+		  */
+		  
+		  $solrDocument->project_name = $this->projectName;
+		  $solrDocument->project_id = $this->projectUUID;
+		  $solrDocument->item_type = $this->documentType; //type of document (spatial, media, etc.)
+		  
+		  
+		  /*
+		  Default Contexts: Default contexts are the most important / signifiant hierarchy in a collection's taxonomy
+		  They are slash ("/") seperated values, and used to make pretty URLs
+		  */
+		  if(!$this->defaultContextPath){
+				$solrDocument->default_context_path = "ROOT";
+		  }
+		  else{
+				$solrDocument->default_context_path = $this->defaultContextPath;
+		  }
+		  
+		  if(is_array($this->defaultContextArray)){
+				foreach($this->defaultContextArray as $contextItem){
+					 $solrField = $contextItem["field"];
+					 $solrValue = $contextItem["value"];
+					 $solrDocument->$solrField = $solrValue;
+				}
+		  }
+		  
+		  /*
+		  
+		  UPDATE linked_data
+		  SET linkedURI = REPLACE(linkedURI, 'http://www.eol.org/', 'http://eol.org/')
+		  
+		  
+		  */
+		  
+		  /*
+		  This enables indexing of hierarchic taxonomies, these are used for faceted searches
+		  */
+		  if(is_array($this->properties)){
+				foreach($this->properties as $prop){
+					 $value = $prop["value"];
+					 $prefix = $prop["hashPath"];
+					 
+					 if(!array_key_exists('setType', $prop)){
+						  $prop['setType'] = "nominal";
+					 }
+					 
+					 if($prop['type'] == "integer" && $prop['setType'] == "integer"){
+						  //$solrDocument->setMultiValue($prefix."_tax_int_hr", $value); //human readable variant
+						  $suffix = "_tax_int";
+					 }
+					 elseif($prop['type'] == "decimal" && $prop['setType'] == "decimal"){
+						  //$solrDocument->setMultiValue($prefix."_tax_dec_hr", $value); //human readable variant
+						  $suffix = "_tax_dec";
+					 }
+					 elseif($prop['type'] == "integer" && $prop['setType'] == "decimal"){
+						  //$solrDocument->setMultiValue($prefix."_tax_dec_hr", $value); //human readable variant
+						  $suffix = "_tax_dec";
+					 }
+					 elseif($prop['type'] == "decimal" && $prop['setType'] == "integer"){
+						  //$solrDocument->setMultiValue($prefix."_tax_int_hr", $value); //human readable variant
+						  $solrDocument->setMultiValue($prefix."_tax_int", round($value,0));
+						  $suffix = "_tax_dec";
+					 }
+					 elseif($prop['type'] == "calendar" && $prop['setType'] == "calendar" ){
+						  $value = date("Y-m-d\TH:i:s\Z", strtotime($value));
+						  //$value = str_replace("Z", ".000Z",  $value);
+						  $suffix = "_tax_cal";
+					 }
+					 elseif(($prop['setType'] == "integer" || $prop['setType'] == "decimal") && $prop['type'] == "nominal"){
+						  $suffix = "_num_taxon";
+					 }
+					 elseif($prop['setType'] == "alphanumeric"){
+						  $suffix = "_tax_alpha";
+					 }
+					 else{
+						  $suffix = "_taxon";
+					 }
+					 $taxonField = $prefix.$suffix;
+					 $solrDocument->setMultiValue($taxonField, $value);
+				}
+		  }
+		  
+		  /*
+		  This is used to index different variables and associated values, these are mainly used for table outputs
+		  */
+		  if(is_array($this->variables)){
+				$keyVarArray = array();
+			  
+				$niceVariables = $this->remove_redundant_parent_taxa_from_variables(); // removes parent taxon levels, leaves only full taxon
+				foreach($niceVariables as $niceVar){
+					 $solrDocument->setMultiValue("variables", $niceVar); //index list of variable names
+					 foreach($this->variables as $varVal){
+						  $var = trim($varVal['var']);
+						  $val = trim($varVal['val']);
+						  if($niceVar == $var){
+								$keyVarArray[$var] = $val;
+						  }
+					 }
+				}
+				
+				$solrDocument->var_vals = Zend_Json::encode($keyVarArray);
+				foreach($keyVarArray as $varKey => $val){
+					 $solrDocument->setMultiValue("notes", $varKey.": ".$val); //add notes for full-text searches
+				}
+		  }
+		  
+		  
+		  
+		  
+		  
+		  
+		  if(is_array($this->classes)){
+				foreach($this->classes as $class){
+					 $solrDocument->setMultiValue("item_class", $class); //class of item (can have multiple)
+				}
+		  }
+		  
+		  if(is_array($this->linkedPersons)){
+				foreach($this->linkedPersons as $person){
+					 $solrDocument->setMultiValue("person_link", $person);
+				}
+		  }
+		  
+		  if(is_array($this->linkedPersonURIs)){
+				foreach($this->linkedPersonURIs as $personURI){
+					 $solrDocument->setMultiValue("person_uri", $personURI);
+				}
+		  }
+			
+		  if(is_array($this->alphaNotes)){
+				foreach($this->alphaNotes as $note){
+					 $solrDocument->setMultiValue("notes", $note); //add notes for full-text searches
+				}
+		  }
+		  
+		  
+			
+		  //take care of geographic data
+		  if(!$this->geo){
+				$solrDocument->geo_lat = 0; //no geo data, stick in Atlantic
+				$solrDocument->geo_long = 0; //no geo data, stick in Atlantic
+				$solrDocument->geo_point = "0,0"; //geo point
+				$solrDocument->geo_coord = "0,0"; //geo point
+		  }
+		  else{
+				$geoData = $this->geo;
+				$solrDocument->geo_lat = $geoData['lat']; //geo data, latitude
+				$solrDocument->geo_long = $geoData['lon']; //geo data, longitude
+				
+				$geoPoint = "0,0";
+				if(isset( $geoData['lat']) && isset( $geoData['lon'])){
+					 $geoPoint = $geoData['lat'].",".$geoData['lon']; //geo point
+				}
+				
+				$solrDocument->geo_coord = $geoPoint; //geo point, for geospatial queries
+				$solrDocument->geo_point = $geoPoint; //geo point, for facets
+				$solrDocument->geo_path = $geoData["geoTile"]["path"]; //geo path
+				$i = 1;
+				foreach($geoData["geoTile"]["tiles"] as $tileArray){
+					 //$dynamicGeoTileField = $i."_geo_tile";
+					 $dynamicGeoTileField = $tileArray["field"]."_geo_tile";
+					 $tile = $tileArray["value"];
+					 $solrDocument->$dynamicGeoTileField = $tile;
+					 if($i >= self::maxZoom){
+						  break; //stop, no need to make tiles deeper than this
+					 }
+					 $i++;
+				}
+		  }
+			
+		  //take care of chronological data
+		  if($this->chrono != false){
+				$chrono = $this->chrono;
+				$solrDocument->setMultiValue("time_start", $chrono["timeStart"]);
+				$solrDocument->setMultiValue("time_start_hr", $chrono["timeStart"]);
+				$solrDocument->setMultiValue("time_end", $chrono["timeEnd"]);
+				$solrDocument->setMultiValue("time_end_hr", $chrono["timeEnd"]);
+				$solrDocument->setMultiValue("time_span", $chrono["timeSpan"]);
+				
+				if($chrono["chronoTagger"] != false){
+				  //$solrDocument->setMultiValue("chrono_creator_name", $chrono["chronoTagger"]); //chrono tag creator
+				}
+				if($chrono["chronoSet"] != false){
+				  //$solrDocument->setMultiValue("chrono_set_label", $chrono["chronoSet"]); //chrono tag creator
+				}
+		  }
+			
+		  //other Dublin Core metadata
+		  if(is_array($this->creators)){
+				foreach($this->creators as $creator){
+					 $solrDocument->setMultiValue("creator", $creator);
+				}
+		  }
+		  if(is_array($this->contributors)){
+				foreach($this->contributors as $contributor){
+					 $solrDocument->setMultiValue("contributor", $contributor);
+				}
+		  }
+		  if(is_array($this->coverages)){
+				foreach($this->coverages as $coverage){
+					 $solrDocument->setMultiValue("coverage", $coverage);
+				}
+		  }
+		  if(is_array($this->subjects)){
+				foreach($this->subjects as $subject){
+					 $solrDocument->setMultiValue("subject", $subject);
+				}
+		  }
+		  if($this->license != false){
+				$solrDocument->license_uri = $this->license;
+		  }
+		  
+		  //media counts
+		  if($this->imageLinkNum != false){
+				$solrDocument->image_media_count = $this->imageLinkNum;
+		  }
+		  else{
+				$solrDocument->image_media_count = 0;
+		  }
+		  if($this->otherLinkNum != false){
+				$solrDocument->other_binary_media_count = $this->otherLinkNum;
+		  }
+		  else{
+				$solrDocument->other_binary_media_count = 0;
+		  }
+		  if($this->docLinkNum != false){
+				$solrDocument->diary_count = $this->docLinkNum;
+		  }
+		  else{
+				$solrDocument->diary_count = 0;
+		  }
+		  
+		  //user generated tags
+		  if(is_array($this->userTags)){
+				foreach($this->userTags as $tag){
+				  //$solrDocument->setMultiValue("user_tag", $tag);
+				}
+		  }
+		  if(is_array($this->userTagCreators)){
+				foreach($this->userTagCreators as $tagCreator){
+				  //$solrDocument->setMultiValue("tag_creator_name", $tagCreator);
+				}
+		  }
+		  
+		  if(!$this->interestScore){
+				$this->interestScore = $this->interestCalc(); //if no interest score, calculate it
+		  }
+		  if(!$this->interestScore){
+				$this->interestScore = 0; //if no interest score, calculate it
+		  }
+		  $solrDocument->interest_score = $this->interestScore; //interest score, for complicated ranking of results
+		  
+		  return $solrDocument;
     }//end function for making new solr document
     
     

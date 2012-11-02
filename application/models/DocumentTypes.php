@@ -30,7 +30,7 @@ class DocumentTypes{
 		  foreach($this->solrOutside as $solrkey => $outsideArray){
 				$outsideLink = $outsideArray["linkVal"];
 				if($outsideVal == $outsideLink){
-			  $solrVal = $solrkey; //found the solr value for the outside request value
+					 $solrVal = $solrkey; //found the solr value for the outside request value
 				}
 				
 		  }

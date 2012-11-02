@@ -8,7 +8,7 @@
 
 class SolrDocsIndex {
     
-    const indexDoSize = 25; //number of items to be cached before being indexed
+    const indexDoSize = 50; //number of items to be cached before being indexed
     
     public $solrDocArray; //array of solrDocs to index
     public $db; //database object
@@ -21,37 +21,37 @@ class SolrDocsIndex {
     public $errors = array(); //any errors with solr go here
     
     public function initialize(){
-		$db_params = OpenContext_OCConfig::get_db_config();
-			$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		$db->getConnection();
-		$this->setUTFconnection($db);
-		$this->db = $db;
-		$this->checkTableIndex();
-		$this->solrDocArray = false;
-		$this->toDoList = false;
-		$this->toDoCount = 0;
-		$this->errors = array();
-		$this->totalIndexed = 0;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+		  $this->db = $db;
+		  $this->checkTableIndex();
+		  $this->solrDocArray = false;
+		  $this->toDoList = false;
+		  $this->toDoCount = 0;
+		  $this->errors = array();
+		  $this->totalIndexed = 0;
     }
 
     /*
 
     */
     public function checkRunIndex($only_full_list = true){
-		$this->initialize();
-		$this->getToDoList();
-		if($only_full_list){
-			if(($this->toDoCount >= self::indexDoSize) || $this->forceIndexing){
-				$this->makeSolrDocArray();
-				$this->indexSolrDocs();
-				$this->updateToDoList();
-			}
-			else{
-				$errors = $this->errors;
-				$errors[] = $this->toDoCount." is less than min-batch size: ".self::indexDoSize;
-				$this->errors = $errors;
-			}
-		}
+		  $this->initialize();
+		  $this->getToDoList();
+		  if($only_full_list){
+				if(($this->toDoCount >= self::indexDoSize) || $this->forceIndexing){
+					$this->makeSolrDocArray();
+					$this->indexSolrDocs();
+					$this->updateToDoList();
+				}
+				else{
+					$errors = $this->errors;
+					$errors[] = $this->toDoCount." is less than min-batch size: ".self::indexDoSize;
+					$this->errors = $errors;
+				}
+		  }
     }//end function
 
 
@@ -65,15 +65,15 @@ class SolrDocsIndex {
 			$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
 			
 			if ($solr->ping()) { // if we can ping the solr server...
-			try{
-				$updateResponse = $solr->addDocuments($solrDocArray);
-				$solr->commit();
-			}
-			catch (Exception $e) {
-				$errors = $this->errors;
-				$errors[] = $e->getMessage(); 
-				$this->errors = $errors;
-			}
+				try{
+					$updateResponse = $solr->addDocuments($solrDocArray);
+					$solr->commit();
+				}
+				catch (Exception $e) {
+					$errors = $this->errors;
+					$errors[] = $e->getMessage(); 
+					$this->errors = $errors;
+				}
 			}
 			else{
 			$errors = $this->errors;
@@ -93,11 +93,11 @@ class SolrDocsIndex {
 		if(count($this->errors)<1 && is_array($this->toDoList)){ //no error, to do list is an array
 			
 			foreach($this->toDoList as $item){
-			$itemUUID = $item["itemUUID"];
-			$where = array();
-			$where[] = "itemUUID = '$itemUUID' ";
-			$data = array('solr_indexed' => 1);
-			$db->update('noid_bindings', $data, $where);
+				$itemUUID = $item["itemUUID"];
+				$where = array();
+				$where[] = "itemUUID = '$itemUUID' ";
+				$data = array('solr_indexed' => 1);
+				$db->update('noid_bindings', $data, $where);
 			}
 			
 			$this->totalIndexed = count($this->toDoList);
@@ -108,35 +108,36 @@ class SolrDocsIndex {
 
 
     public function getToDoList(){
-		$db = $this->db;
-		
-		$itemTypes = "itemType = 'spatial'
-		OR itemType = 'media'
-		OR itemType = 'document'
-		OR itemType = 'project'
-		OR itemType = 'person'
-		OR itemType = 'table'
-		";
-		
-		$sql = "SELECT itemType, itemUUID
-			FROM noid_bindings
-			WHERE solr_indexed = 0 AND ($itemTypes)
-			ORDER BY ItemCreated ASC, ItemUpdated ASC
-			LIMIT 0,".self::indexDoSize."
-			";
-			
-		//note: I did check this. Order ItemUpdated by ASC makes the OLDEST updated item 1st in the feed.
-		//echo $sql;
-		$result = $db->fetchAll($sql, 2);
-			if($result){
-			$this->toDoList = $result;
-			$this->toDoCount = count($result);
-		}
-		else{
-			$this->toDoList = false;
-			$this->toDoCount = 0;
-		}
-		}//end function
+		  $db = $this->db;
+		  
+		  $itemTypes = "itemType = 'spatial'
+		  OR itemType = 'media'
+		  OR itemType = 'document'
+		  OR itemType = 'project'
+		  OR itemType = 'person'
+		  OR itemType = 'table'
+		  ";
+		  
+		  $sql = "SELECT itemType, itemUUID
+			  FROM noid_bindings
+			  WHERE solr_indexed = 0 AND ($itemTypes)
+			  ORDER BY ItemCreated ASC, ItemUpdated ASC
+			  LIMIT 0,".self::indexDoSize."
+			  ";
+			  
+		  //note: I did check this. Order ItemUpdated by ASC makes the OLDEST updated item 1st in the feed.
+		  //echo $sql;
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+			  $this->toDoList = $result;
+			  $this->toDoCount = count($result);
+			  //echo "todo count ".$this->toDoCount;
+		  }
+		  else{
+			  $this->toDoList = false;
+			  $this->toDoCount = 0;
+		  }
+	 }//end function
 		
 		
 	//check for tables to index
@@ -178,90 +179,90 @@ class SolrDocsIndex {
 		
 		
 		
-		public function makeSolrDocArray(){
-		$solrDocArray = array();
-		
-		if(is_array($this->toDoList)){
-			foreach($this->toDoList as $item){
-			$itemUUID = $item['itemUUID'];
-			$solrDoc = false;
-			//echo "Item: ".$itemUUID." .<br/>";
-			if($item['itemType'] == 'spatial'){
-				$itemObj = New Subject;
-				$itemXMLstring = $itemObj->getItemXML($itemUUID);
-				if(strlen($itemXMLstring)>10){
-				$solrDoc = $this->spatialItemSolrDoc($itemXMLstring);
-				}
-			}
-			elseif($item['itemType'] == 'media'){
-				$itemObj = New Media;
-				$itemXMLstring = $itemObj->getItemXML($itemUUID);
-				$solrDoc = $this->mediaItemSolrDoc($itemXMLstring);
-			}
-			elseif($item['itemType'] == 'person'){
-				$itemObj = New Person;
-				$itemXMLstring = $itemObj->getItemXML($itemUUID);
-				$solrDoc = $this->personItemSolrDoc($itemXMLstring);
-			}
-			elseif($item['itemType'] == 'document'){
-				$itemObj = New Document;
-				$itemXMLstring = $itemObj->getItemXML($itemUUID);
-				$solrDoc = $this->docItemSolrDoc($itemXMLstring);
-			}
-			elseif($item['itemType'] == 'project'){
-				$itemObj = New Project;
-				$itemXMLstring = $itemObj->getItemXML($itemUUID);
-				$solrDoc = $this->projectItemSolrDoc($itemXMLstring);
-			}
-			elseif($item['itemType'] == 'table'){
-				
-				if(!stristr($itemUUID, "/")){
-					$OpenContextItem = new OpenContextItem;
-					$OpenContextItem->initialize();
-					$tableObj = new Table;
-					$tableObj->getByID($itemUUID);
-					$tableObj->getTableJSON($itemUUID);
-					$OpenContextItem = $tableObj->solrIndex($OpenContextItem);
-					if($tableObj->solrIndexingError == false){
-						$OpenContextItem->interestCalc();
-						$solrDoc = new Apache_Solr_Document();
-						$solrDoc = $OpenContextItem->makeSolrDocument($solrDoc);
-					}
-					else{
-						$errors = $this->errors;
-						$errors[] = "Problem with $itemUUID.";
-						$this->errors = $errors;
-					}
-				}
-				else{
-					//we only need to index the first table of a set. 
-					$db = $this->db;
-					$where = array();
-					$where[] = "itemUUID = '$itemUUID' ";
-					$data = array('solr_indexed' => 1);
-					$db->update('noid_bindings', $data, $where);
-				}
-				
-			}
-			else{
-				$itemXMLstring = false;
-			}
-			
-			if($solrDoc != false){
-				$solrDocArray[] = $solrDoc;
-			}
-			
-			unset($itemObj);
-			unset($itemXMLstring);
-			unset($solrDoc);
-			}//end loop through items	
-		}//end case of array to loop through
-		
-		$this->solrDocArray = false;
-		
-		if(count($solrDocArray)>0){
-			$this->solrDocArray = $solrDocArray;
-		}
+	 public function makeSolrDocArray(){
+		  $solrDocArray = array();
+		  
+		  if(is_array($this->toDoList)){
+				foreach($this->toDoList as $item){
+					 $itemUUID = $item['itemUUID'];
+					 $solrDoc = false;
+					 echo "Item: ".$itemUUID." .<br/>";
+					 if($item['itemType'] == 'spatial'){
+						  $itemObj = New Subject;
+						  $itemXMLstring = $itemObj->getItemXML($itemUUID);
+						  if(strlen($itemXMLstring)>10){
+								$solrDoc = $this->spatialItemSolrDoc($itemXMLstring);
+						  }
+					 }
+					 elseif($item['itemType'] == 'media'){
+						 $itemObj = New Media;
+						 $itemXMLstring = $itemObj->getItemXML($itemUUID);
+						 $solrDoc = $this->mediaItemSolrDoc($itemXMLstring);
+					 }
+					 elseif($item['itemType'] == 'person'){
+						 $itemObj = New Person;
+						 $itemXMLstring = $itemObj->getItemXML($itemUUID);
+						 $solrDoc = $this->personItemSolrDoc($itemXMLstring);
+					 }
+					 elseif($item['itemType'] == 'document'){
+						 $itemObj = New Document;
+						 $itemXMLstring = $itemObj->getItemXML($itemUUID);
+						 $solrDoc = $this->docItemSolrDoc($itemXMLstring);
+					 }
+					 elseif($item['itemType'] == 'project'){
+						 $itemObj = New Project;
+						 $itemXMLstring = $itemObj->getItemXML($itemUUID);
+						 $solrDoc = $this->projectItemSolrDoc($itemXMLstring);
+					 }
+					 elseif($item['itemType'] == 'table'){
+						 
+						 if(!stristr($itemUUID, "/")){
+							 $OpenContextItem = new OpenContextItem;
+							 $OpenContextItem->initialize();
+							 $tableObj = new Table;
+							 $tableObj->getByID($itemUUID);
+							 $tableObj->getTableJSON($itemUUID);
+							 $OpenContextItem = $tableObj->solrIndex($OpenContextItem);
+							 if($tableObj->solrIndexingError == false){
+								 $OpenContextItem->interestCalc();
+								 $solrDoc = new Apache_Solr_Document();
+								 $solrDoc = $OpenContextItem->makeSolrDocument($solrDoc);
+							 }
+							 else{
+								 $errors = $this->errors;
+								 $errors[] = "Problem with $itemUUID.";
+								 $this->errors = $errors;
+							 }
+						 }
+						 else{
+							 //we only need to index the first table of a set. 
+							 $db = $this->db;
+							 $where = array();
+							 $where[] = "itemUUID = '$itemUUID' ";
+							 $data = array('solr_indexed' => 1);
+							 $db->update('noid_bindings', $data, $where);
+						 }
+						 
+					 }
+					 else{
+						 $itemXMLstring = false;
+					 }
+					 
+					 if($solrDoc != false){
+						 $solrDocArray[] = $solrDoc;
+					 }
+					 
+					 unset($itemObj);
+					 unset($itemXMLstring);
+					 unset($solrDoc);
+				}//end loop through items	
+		  }//end case of array to loop through
+		  
+		  $this->solrDocArray = false;
+		  
+		  if(count($solrDocArray)>0){
+			  $this->solrDocArray = $solrDocArray;
+		  }
 	
     }
     

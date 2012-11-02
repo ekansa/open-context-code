@@ -289,7 +289,20 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																				<xsl:value-of select="oc:var_label"/>
 																																		</td>
 																																		<td>
-																																				<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																																		  <xsl:choose>
+																																				<xsl:when test="oc:var_label[@type = 'nominal']">
+																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																																				</xsl:when>
+																																				<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'true')">
+																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>True</a>
+																																				</xsl:when>
+																																				<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'false')">
+																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>False</a>
+																																				</xsl:when>
+																																				<xsl:otherwise>
+																																					 <xsl:value-of select="oc:show_val"/>
+																																				</xsl:otherwise>
+																																		  </xsl:choose>
 																																		</td>
 																																</tr>
 																														 </xsl:for-each>

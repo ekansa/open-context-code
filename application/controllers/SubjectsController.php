@@ -43,17 +43,17 @@ class subjectsController extends Zend_Controller_Action {
 		$spaceItem = New Subject;
 		$itemFound = $spaceItem->getByID($itemUUID);
 		
-		if($itemFound){
-			$XML = simplexml_load_string($spaceItem->archaeoML);
-			$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
-			$spaceItem->archaeoML = $XML->asXML();
-			header("Content-type: application/xml");
-			echo $spaceItem->archaeoML;
-		}
-		else{
-			$this->view->requestURI = $this->_request->getRequestUri(); 
-			return $this->render('404error');
-		}
+		  if($itemFound){
+			  $XML = simplexml_load_string($spaceItem->archaeoML);
+			  $XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
+			  $spaceItem->archaeoML = $XML->asXML();
+			  header("Content-type: application/xml");
+			  echo $spaceItem->archaeoML;
+		  }
+		  else{
+			  $this->view->requestURI = $this->_request->getRequestUri(); 
+			  return $this->render('404error');
+		  }
 		
 	}//end atom function
 

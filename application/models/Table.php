@@ -193,6 +193,10 @@ class Table {
 				$this->jsonData = (string)$cache_result;
 		  }
 		  else{
+				if(!$this->jsonFile){
+					 $this->jsonFile = $tableId.".json";
+				}
+				
 				$this->get_jsonFile();
 		  }
 	
@@ -297,7 +301,7 @@ class Table {
 				$OpenContextItem->addSimpleArrayItem($tableData["meta"]["table_description"], "alphaNotes");
 		  }
 		  
-	  
+		  $numFound = false;
 		  //add number of records
 		  if(isset($tableData["meta"]["numFound"])){
 				$value = $tableData["meta"]["numFound"];

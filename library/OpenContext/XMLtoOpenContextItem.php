@@ -3,7 +3,7 @@
 class OpenContext_XMLtoOpenContextItem {
 		
 	const maxRelatedLinks = 4; //maximum number of related spatial links to follow for media descriptions.
-	
+	const taxonomyPathDelim = "::"; //delimiator for taxonomy paths
 	
 	public static function solrEscape($stringToEscape) {
 		/**  In addition to the space character, solr requires that we escape the following characters because
@@ -887,12 +887,25 @@ class OpenContext_XMLtoOpenContextItem {
 				$propValue = false;
 				foreach ($var_label->xpath("../oc:show_val") as $show_val) {
 					$propValue = (string)$show_val;
-					$OpenContextItem->addProperty($propValue, $parentArray, 'nominal'); //add the variable name as top level prop
+					if(strstr($propValue, self::taxonomyPathDelim)){
+						//property has a taxonomy path
+						$propValues = explode(self::taxonomyPathDelim, $propValue);
+						foreach($propValues as $propValue){
+							$OpenContextItem->addProperty($propValue, $parentArray, 'nominal'); //add the value as the next level in the prop
+							$parentArray[] = $propValue;
+						}
+						$taxonomyArray = $parentArray;
+						$OpenContextItem->addfullPropertyPath($taxonomyArray); //add taxonomy path
+					}
+					else{
+						//property has no taxonomy paths 
+						$OpenContextItem->addProperty($propValue, $parentArray, 'nominal'); //add value as the next level in the prop
+						$taxonomyArray = $parentArray;
+						$taxonomyArray[] = $propValue;
+						$OpenContextItem->addfullPropertyPath($taxonomyArray); //add taxonomy path
+					}
 				}
 				
-				$taxonomyArray = $parentArray;
-				$taxonomyArray[] = $show_val;
-				$OpenContextItem->addfullPropertyPath($taxonomyArray); //add taxonomy path
 				
 				/*
 				if($propValue != false){

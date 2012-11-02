@@ -12,6 +12,69 @@ class accessionController extends Zend_Controller_Action
     }
     
     
+    public function propsNumericAction(){
+        $this->_helper->viewRenderer->setNoRender();
+        if(isset($_GET["start"])){
+            $limit = $_GET["start"];
+        }
+        else{
+            $limit = 0;
+        }
+        
+        $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+        
+        $sql = "SELECT properties.property_uuid,
+        properties.val_num, properties.val_date, val_tab.val_text
+        FROM properties
+        LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
+        LIMIT $limit, 300000
+        ";
+        
+        $result = $db->fetchAll($sql, 2);
+        foreach($result as $row){
+            $data = false;
+            $propUUID = $row["property_uuid"];
+            $where = "property_uuid = '$propUUID' ";
+            $propDate = $row["val_date"];
+            $propNum = $row["val_num"];
+            $valText = $row["val_text"];
+            if(is_numeric("0".$valText)){
+                if($valText != 0 && $propNum ==0){
+                    $valText = $valText + 0;
+                    $data = array("val_num" => $valText);
+                }
+            }
+            
+            $tooLate = strtotime("2012-10-1");
+            $propDateTime = strtotime($propDate);
+            if(!$propDateTime || $propDateTime > $tooLate){
+                $calendardTest = false;
+                $cal_test_string = str_replace("/", "-", $valText);
+                if (($timestamp = strtotime($cal_test_string)) === false) {
+                    $calendardTest = false;
+                }
+                else{
+                    $calendardTest = true;
+                }
+               
+                if($calendardTest){
+                    $valueDate = date("Y-m-d", strtotime($cal_test_string));
+                    $data = array("val_date" => $valueDate, "val_num" => 0);
+                }
+            }
+            
+            if(is_array($data)){
+                echo "<br/>Updating $valText in $propUUID ";
+                $db->update("properties", $data, $where);
+            }
+            
+        }
+        
+    }
+    
+    
     
     public function propsUpdateAction(){
         mb_internal_encoding( 'UTF-8' );
