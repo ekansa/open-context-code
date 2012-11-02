@@ -68,6 +68,7 @@ class dbXML_dbPropitem  {
 										 "documents" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=document")
 										);
 	 
+	 public $gapCount = 20; //default number of categories for histograms, can lump together
 	 
     public $dbName;
     public $dbPenelope;
@@ -367,7 +368,7 @@ class dbXML_dbPropitem  {
 	 //use solr to get the propety summaries we need
 	 
 	 
-	 /*
+	 
 	 public function solrDBpropertySummary(){
 	
 		  $subjectTypeArray = $this->pen_obsItemTypes;  
@@ -390,12 +391,13 @@ class dbXML_dbPropitem  {
 		  $sql = "SELECT 	min(properties.val_num) as numMin,
 								max(properties.val_num) as numMax,
 								min(properties.val_date) as calMin,
-								max(properties.val_date) as calMax,
+								max(properties.val_date) as calMax
 				FROM properties
 				WHERE properties.variable_uuid = '".$this->varUUID."'
 				";
-	
+
 		  $result = $db->fetchAll($sql, 2);
+		  //$result = false;
 		  if($result){
 				$numMin = $result[0]["numMin"];
 				$numMax = $result[0]["numMax"];
@@ -406,16 +408,17 @@ class dbXML_dbPropitem  {
 				$projectName = $metadataObj->projectName;
 				
 				if(stristr($varType, "calend")){
-					 $requestParams = array("range" => ($this->varLabel."::"."(".$calMin.",".$calMax.","."+1YEAR,c)"),
+					 $requestParams = array("range" => ($this->varLabel."::".$calMin.",".$calMax.","."+1YEAR,c"),
 													"proj" => $projectName
 													);
 				}
 				else{
-					 $requestParams = array("range" => ($this->varLabel."::"."(".$numMin.",".$numMax.","."15)"),
+					 
+					 $gap = round((($numMax - $numMin) / $this->gapCount), 2);
+					 $requestParams = array("range" => ($this->varLabel."::".$numMin.",".$numMax.",".$gap),
 													"proj" => $projectName
 													);
 				}
-				echo "here";
 				
 				$solrResults = array();
 				$SolrSearch = new SolrSearch;
@@ -437,7 +440,7 @@ class dbXML_dbPropitem  {
 								 $SolrSearch->document = true;
 						  }
 						  
-						  $DocumentTypes = $this->makeDocumentTypeArray();
+						  $DocumentTypes = $SolrSearch->makeDocumentTypeArray();
 						  $param_array = array();
 						  $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
 						  $param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, 1);
@@ -448,14 +451,41 @@ class dbXML_dbPropitem  {
 						  $SolrSearch->number_recs = 0;
 						  $SolrSearch->param_array = $param_array;
 						  $SolrSearch->query = "*:*";
-						  //$solrResults[$sType] = $SolrSearch->generalSearch();
+						  $solrResult = $SolrSearch->generalSearch();
+						  $solrResults[$sType] = $solrResult;
+						  if(!$solrResult){
+								$solrResults[$sType] = array("error" => $SolrSearch->queryString);
+						  }
+						  else{
+								
+								
+								
+						  }
 					 }
 					 
 					 $this->solrResults = $solrResults;
 				}
 		  }
 	 }
-	 */
+	 
+	 //format solr range facet results
+	 public function processSolrRange($solrResults){
+		  
+		  $output = array();
+		  if(is_array($solrResults)){
+				if(isset($solrResults["facet_counts"]["facet_ranges"])){
+					 foreach($solrResults["facet_counts"]["facet_ranges"] as $fieldKey => $fieldData){
+						  
+						  
+						  
+					 }
+				}
+		  }
+	 
+		  return $output;
+	 }
+	 
+	 
 	 
     
     //get numeric summary, very costly!

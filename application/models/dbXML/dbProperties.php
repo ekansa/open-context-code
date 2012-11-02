@@ -45,89 +45,48 @@ class dbXML_dbProperties  {
      public function getPropsByObs($id, $obs = false){
     
         $db = $this->db;
-	
-	
-		  if($this->dbPenelope){
-				
-				if(!$obs){
-					 $obsTerm = "";
-				}
-				else{
-					 $obsTerm = "AND observe.obs_num = $obs ";
-				}
-				
-				$sql = "SELECT properties.property_uuid, 
-				  properties.val_num, 
-				  '' as xml_date, 
-				  var_tab.var_label, 
-				  val_tab.val_text, 
-				  IF (
-				  val_tab.val_text IS NULL , (
-					  IF (
-					  properties.val_num =0, properties.val_num, properties.val_num)
-					  ), 
-					  val_tab.val_text
-					  ) AS allprop, 
-				  var_tab.var_type, 
-				  var_tab.variable_uuid, 
-				  val_tab.value_uuid,
-				  var_tab.sort_order,
-				  var_tab.hideLink
-			  
-			  FROM observe
-			  LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
-			  LEFT JOIN var_tab ON properties.variable_uuid = var_tab.variable_uuid
-			  LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
-			  LEFT JOIN var_notes ON var_tab.variable_uuid = var_notes.variable_uuid
-			  WHERE observe.subject_uuid = '$id' AND properties.variable_uuid <> 'NOTES'
-			  $obsTerm
-			  ORDER BY var_tab.sort_order, var_notes.field_num
-			  
-			  ";
+		  
+		  if(!$obs){
+				$obsTerm = "";
 		  }
 		  else{
-				
-				if(!$obs){
-					  $obsTerm = "";
-				}
-				else{
-					  $obsTerm = "AND observe.obs_num = $obs ";
-				}
-				
-				$sql = "SELECT properties.property_uuid, 
-				  properties.val_num, 
-				  DATE_FORMAT(properties.val_date, '%Y-%m-%d') as xml_date, 
-				  var_tab.var_label, 
-				  val_tab.val_text, 
-				  IF (
-				  val_tab.val_text IS NULL , (
-					  IF (
-					  properties.val_date =0, properties.val_num, properties.val_date)
-					  ), 
-					  val_tab.val_text
-					  ) AS allprop, 
-				  var_tab.var_type, 
-				  var_tab.variable_uuid, 
-				  val_tab.value_uuid,
-				  variable_sort.sort_order
-			  
-			  FROM observe
-			  LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
-			  LEFT JOIN var_tab ON properties.variable_uuid = var_tab.variable_uuid
-			  LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
-			  LEFT JOIN variable_sort ON var_tab.variable_uuid = variable_sort.variable_uuid
-			  WHERE observe.subject_uuid = '$id' AND properties.variable_uuid <> 'NOTES'
-			  $obsTerm
-			  ORDER BY variable_sort.sort_order
-			  
-			  ";
-				
+				$obsTerm = "AND observe.obs_num = $obs ";
 		  }
+		  
+		  $sql = "SELECT properties.property_uuid, 
+			 properties.val_num, 
+			 '' as xml_date, 
+			 var_tab.var_label, 
+			 val_tab.val_text, 
+			 IF (
+			 val_tab.val_text IS NULL , (
+				 IF (
+				 properties.val_num =0, properties.val_num, properties.val_num)
+				 ), 
+				 val_tab.val_text
+				 ) AS allprop, 
+			 var_tab.var_type, 
+			 var_tab.variable_uuid, 
+			 val_tab.value_uuid,
+			 var_tab.sort_order,
+			 var_tab.hideLink
+		 
+		 FROM observe
+		 LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
+		 LEFT JOIN var_tab ON properties.variable_uuid = var_tab.variable_uuid
+		 LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
+		 LEFT JOIN var_notes ON var_tab.variable_uuid = var_notes.variable_uuid
+		 WHERE observe.subject_uuid = '$id' AND properties.variable_uuid <> 'NOTES'
+		 $obsTerm
+		 ORDER BY var_tab.sort_order, var_notes.field_num
+		 
+		 ";
+	 
 	
 		  //echo $sql;
 	
         $result = $db->fetchAll($sql, 2);
-		  
+		  $result = false;
         if($result){
 	    
 				if(!$obs){

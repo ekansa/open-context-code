@@ -2068,8 +2068,9 @@ class SolrSearch{
 
     //general search, just get back a resposnse without processing
     function generalSearch(){
+        
+        $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
         try {
-			
             $response = $solr->search($this->query,
                                  $this->offset,
                                  $this->number_recs,
@@ -2080,6 +2081,7 @@ class SolrSearch{
             return $rawResponse;
 				
 		  } catch (Exception $e) {
+            $this->queryString = $solr->queryString;
 				$this->solrDown = true;
             return false;
 		  }
