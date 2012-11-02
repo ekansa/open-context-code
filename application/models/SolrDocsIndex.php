@@ -8,7 +8,7 @@
 
 class SolrDocsIndex {
     
-    const indexDoSize = 50; //number of items to be cached before being indexed
+    const indexDoSize = 1; //number of items to be cached before being indexed
     
     public $solrDocArray; //array of solrDocs to index
     public $db; //database object

@@ -65,7 +65,7 @@ class dbXML_dbPropitem  {
 	 private $solrTypes = array("spatial" => array("queryPath" => "/sets/", "pubQueryParam" => false),
 										 "image" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
 										 "media" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
-										 "documents" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=document")
+										 "document" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=document")
 										);
 	 
 	 public $gapCount = 20; //default number of categories for histograms, can lump together
@@ -375,7 +375,7 @@ class dbXML_dbPropitem  {
 		  $varType = $this->varType;
 		  
 		  if($varType == "integer" || $varType == "decimal" || stristr($varType, "calend")){
-				$this->solrDBgetRange();
+				$this->solrGetRange();
 		  }
 		  elseif($varType == "boolean" || $varType == "ordinal" || stristr($varType, "nominal")){
 				
@@ -385,45 +385,63 @@ class dbXML_dbPropitem  {
     }//end function
 	 
 	 
-	 public function solrDBgetRange(){
-		  $db = $this->db;
-		  $varType = $this->varType;
-		  $sql = "SELECT 	min(properties.val_num) as numMin,
-								max(properties.val_num) as numMax,
-								min(properties.val_date) as calMin,
-								max(properties.val_date) as calMax
-				FROM properties
-				WHERE properties.variable_uuid = '".$this->varUUID."'
-				";
-
-		  $result = $db->fetchAll($sql, 2);
-		  //$result = false;
-		  if($result){
-				$numMin = $result[0]["numMin"];
-				$numMax = $result[0]["numMax"];
-				$calMin = $result[0]["calMin"];
-				$calMax = $result[0]["calMax"];
+	 
+	 
+	 
+	 
+	 
+	 public function solrGetRange(){
+		  
+		  $solrResults = array();
+		  $SolrSearch = new SolrSearch;
+		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+		  if ($SolrSearch->pingSolr($solr)) {
+				
+				$varType = $this->varType;
+				$SolrSearch->initialize();
+				$SolrSearch->doAllSearch();
 				
 				$metadataObj = $this->metadataObj;
 				$projectName = $metadataObj->projectName;
 				
-				if(stristr($varType, "calend")){
-					 $requestParams = array("range" => ($this->varLabel."::".$calMin.",".$calMax.","."+1YEAR,c"),
-													"proj" => $projectName
-													);
+				$requestParams = array("stats" => $this->varLabel,
+												"proj" => $projectName);
+				
+				$DocumentTypes = $SolrSearch->makeDocumentTypeArray();
+				$param_array = array();
+				$param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
+				$param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, 1);
+				unset($param_array["facet.field"]);
+				unset($param_array["bq"]);
+				
+				$SolrSearch->offset = 0;
+				$SolrSearch->number_recs = 0;
+				$SolrSearch->param_array = $param_array;
+				$SolrSearch->query = "*:*";
+				$solrResult = $SolrSearch->generalSearch();
+				if(!$solrResult){
+					 $this->solrResults = array("error" => $SolrSearch->queryString);
 				}
 				else{
+					 //solr is returning some stats!
+					 $statsResult = $this->formatSolrStatsRange($solrResult);
+					 //$solrResults["general"] = $statsResult;
+					 //$solrResults["general"]["query"] =  $SolrSearch->queryString;
+					 $minVal = $statsResult["min"];
+					 $maxVal = $statsResult["max"];
 					 
-					 $gap = round((($numMax - $numMin) / $this->gapCount), 2);
-					 $requestParams = array("range" => ($this->varLabel."::".$numMin.",".$numMax.",".$gap),
-													"proj" => $projectName
-													);
-				}
-				
-				$solrResults = array();
-				$SolrSearch = new SolrSearch;
-				$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
-				if ($SolrSearch->pingSolr($solr)) {
+					 if(stristr($varType, "calend")){
+						  $requestParams = array("range" => ($this->varLabel."::". $minVal.",".$maxVal.","."+1YEAR,c"),
+														 "proj" => $projectName
+														 );
+					 }
+					 else{
+						  $gap = round((( $maxVal - $minVal) / $this->gapCount), 2);
+						  $requestParams = array("range" => ($this->varLabel."::". $minVal.",". $maxVal.",".$gap),
+														 "proj" => $projectName
+														 );
+					 }
+					 
 					 foreach($this->solrTypes as $sType => $typeParams){
 						  $SolrSearch->initialize();
 						  
@@ -436,7 +454,7 @@ class dbXML_dbPropitem  {
 						  elseif($sType == "media"){
 								 $SolrSearch->media = true;
 						  }
-							elseif($sType == "document"){
+						  elseif($sType == "document"){
 								 $SolrSearch->document = true;
 						  }
 						  
@@ -452,37 +470,87 @@ class dbXML_dbPropitem  {
 						  $SolrSearch->param_array = $param_array;
 						  $SolrSearch->query = "*:*";
 						  $solrResult = $SolrSearch->generalSearch();
-						  $solrResults[$sType] = $solrResult;
 						  if(!$solrResult){
 								$solrResults[$sType] = array("error" => $SolrSearch->queryString);
 						  }
 						  else{
-								
-								
-								
+								$histoResult = $this->formatSolrStatsRange($solrResult);
+								if(is_array($histoResult)){
+									 if(isset($histoResult["totalCount"]) && isset($histoResult["histogram"])){
+										  if(count($histoResult["histogram"])>0){
+												 $solrResults[$sType] = $histoResult;
+										  }
+									 }
+								}
 						  }
 					 }
 					 
-					 $this->solrResults = $solrResults;
-				}
+					 $this->varSummary = $solrResults;
+				}//end case where stats query was good
+				
+		  }//end case where solr respons to ping
+		  else{
+				$this->solrResults = "solr not responding";
 		  }
-	 }
+	 }//end funciton
+	 
+	 
+	 
+	 
 	 
 	 //format solr range facet results
-	 public function processSolrRange($solrResults){
+	 public function formatSolrStatsRange($solrResult){
 		  
-		  $output = array();
-		  if(is_array($solrResults)){
-				if(isset($solrResults["facet_counts"]["facet_ranges"])){
-					 foreach($solrResults["facet_counts"]["facet_ranges"] as $fieldKey => $fieldData){
+		  $output = false;
+		  if(is_array($solrResult)){
+				if(isset($solrResult["facet_counts"]["facet_ranges"])){
+					 foreach($solrResult["facet_counts"]["facet_ranges"] as $fieldKey => $fieldData){
+						  $histogram = array();
+						  $maxValue = $fieldData["end"];
+						  $minValue = $fieldData["start"];
+						  $gap = $fieldData["gap"];
 						  
+						  $totalCount = 0;
+						  foreach($fieldData["counts"] as $lowVal => $count ){
+								$totalCount = $totalCount + $count;
+								$actInterval = array("lowVal" => $lowVal,
+								"highVal"=> $lowVal + $gap,
+								"count" => $count);
+								$histogram[] = $actInterval;
+						  }
 						  
+						  $output = array("totalCount" => $totalCount,
+								  "min" => $minValue,
+								  "max" => $maxValue,
+								  "histogram" => $histogram);
 						  
 					 }
 				}
+				
+				//get stats field data
+				if(isset($solrResult["stats"]["stats_fields"])){
+					 if(!is_array($output)){
+						  $output = array();
+					 }
+					 foreach($solrResult["stats"]["stats_fields"] as $fieldKey => $fieldData){
+						  if(is_array($fieldData)){
+								$output["min"] = $fieldData["min"];
+								$output["max"] = $fieldData["max"];
+								$output["count"] = $fieldData["count"];
+								$output["average"] = $fieldData["mean"];
+								if(isset($fieldData["stddev"])){
+									 $output["stddev"] = $fieldData["stddev"];
+								}
+								else{
+									 $output["stddev"] = false;
+								}
+						  }
+					 }
+				}
+				
 		  }
 	 
-		  return $output;
+		  return $output ;
 	 }
 	 
 	 

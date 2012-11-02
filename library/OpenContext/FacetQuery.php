@@ -741,6 +741,23 @@ class OpenContext_FacetQuery {
 		}
 		
 		
+		
+		//calculates facet statistical summaries for numeric and calendar fields
+		$statsData = OpenContext_FacetQuery::test_param_key("stats", $requestParams);
+		if($statsData){
+			if(!is_array($statsData)){
+				$statsData = array($statsData);
+			}
+			$param_array["stats"][] = "true";
+			foreach($statsData as $statsField){
+				$param_array["stats.field"][] = sha1($statsField)."_tax_dec";
+				$param_array["stats.field"][] = sha1($statsField)."_tax_cal";
+			}
+		}
+		
+		
+		
+		//calculates facet ranges (histograms) for numeric and calendar fields
 		$rangeData = OpenContext_FacetQuery::test_param_key("range", $requestParams);
 		if($rangeData){
 			if(!is_array($rangeData)){
@@ -755,6 +772,7 @@ class OpenContext_FacetQuery {
 						$settings = explode(",", $rawSettings);
 						if(count($settings) == 3){
 							$rangeField = sha1($rangeField)."_tax_dec";
+							
 						}
 						elseif(count($settings) == 4){
 							$rangeField = sha1($rangeField)."_tax_cal";
@@ -763,6 +781,8 @@ class OpenContext_FacetQuery {
 							$settings[1] = date("Y-m-d", strtotime($settings[1]));
 							$settings[1] = $settings[1]."T00:00:00.001Z";
 						}
+						$param_array["stats"][] = "true";
+						$param_array["stats.field"][] = $rangeField;
 						$param_array["facet.range"][] = $rangeField;
 						$param_array["f.".$rangeField.".facet.range.start"] = $settings[0]; //1st number in the settings array as start
 						$param_array["f.".$rangeField.".facet.range.end"] = $settings[1]; //2nd number in the settins array as end
