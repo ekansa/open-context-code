@@ -3,9 +3,11 @@ $host = OpenContext_OCConfig::get_host_config();
 $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ocsem="http://opencontext.org/about/concepts#"
+	 xmlns:skos="http://www.w3.org/2008/05/skos#"
+>  
     <head> 
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
       <title>About Open Context: Publishing</title>
@@ -69,7 +71,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 					 <div id="pageTop">
 						  <div id="pageIntro">
 								<h1 style="text-align:center;">Data Publication Guidelines for Contributors</h1>
-								<p>Open Context is a Web-based data publication system that offers free access to editorially verified datasets, many of which are linked to print publications. Open Context also offers an optional peer review process to further validate datasets. The system uses a simple and generalized data model that can accommodate most archaeological datasets and museum collections. We welcome submissions and publication proposals. If you are interested in publishing your research in Open Context, please <a href='mailto:skansa@alexandriaarchive.org' title='Email the editor, Sarah Kansa'>contact the Editor</a> and follow these guidelines.
+								<p>Open Context offers free access to editorially-verified datasets, many of which are linked to print publications. Open Context also offers an optional peer review process to further validate datasets. The system uses a simple and generalized data model that can accommodate most archaeological datasets and museum collections. We welcome submissions and publication proposals. If you are interested in publishing your research in Open Context, please <a href='mailto:skansa@alexandriaarchive.org' title='Email the editor, Sarah Kansa'>contact the Editor</a> and follow these guidelines.
 								</p>		
 						  </div>
 					 </div>
@@ -77,9 +79,8 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 					 <div>
 						  <h3>What Does Data Publishing Involve?</h3>
 					  
-						  <p>Publishing data with Open Context has many similarities with publishing with a conventional journal. We have a step-by-step process
-						  where contributors work with our editorial staff to review, clean-up, and document data so that these data can be valued and
-						  professionally recognized contributions.</p>
+						  <p>Publishing data with Open Context is similar to publishing with a conventional journal. Following a step-by-step process,
+						  contributors work with our editorial staff to review, clean, and document datasets so they become professionally recognized contributions.</p>
 						  
 						  <div id="about-slides">
 								<div id="myCarousel" class="carousel slide">
@@ -90,7 +91,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 												<div class="hero_image">
 													 <div class="data-pub-step">
 														  <h3>1. Publication Planning</h3>
-														  <p>Cleaner and more consistent datasets are easier for you to analyze and they are easier to publish.
+														  <p>Cleaner and more consistent datasets are easier for you to analyze and for Open Context to publish.
 														  Develop strategies to reduce errors in recording (see <a href="#data-prep">below</a>).</p>
 														  <p>Even so, no dataset is perfect. Open Context's editorial staff have experience and tools to help make cleanup and editing as
 														  efficient as possible. We help you: </p>
@@ -138,7 +139,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 												<div class="hero_image">
 													 <div class="data-pub-step">
 														  <h3>3. Submitting Data &amp; Media Files</h3>
-														  <p>When you are ready to publish your data, you have various options in sending your digital files to
+														  <p>When you are ready to publish your data, you have various options for sending your digital files to
 														  Open Context's editors. 
 														  </p>
 														  <ul>
@@ -168,11 +169,11 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 														  data contributors to fix more major problems. Reviews and edits focus on:
 														  </p>
 														  <ul>
-																<li>Consistency: terms used in classification need to be consistent (capitalization, plurals, etc.)</li>
-																<li>Decoding: we work with contributors to decode numeric codes and abreviations to improve intelligibility</li>
-																<li>Validation: numeric columns and fields should have numbers, numbers need to have believable values</li>
-																<li>Identifiers: identifiers need to be unique and unabigious in a dataset, so different data tables, media files, etc.
-																can be associated</li>
+																<li>Consistency: Terms used in classification need to be consistent (capitalization, plurals spacing).</li>
+																<li>Decoding: We work with contributors to decode numeric codes and abbreviations to improve intelligibility.</li>
+																<li>Validation: Numeric columns and fields should includ only numbers (with believable values).</li>
+																<li>Identifiers: Identifiers need to be unique and unabigious in a dataset so different data tables, media files, etc.
+																can be associated to them.</li>
 														  </ul>
 													 </div>
 												</div>
@@ -197,7 +198,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 																<li>Additional debugging and error fixes</li>
 																<li>Documentation and description of terminology and recording systems</li>
 																<li>Assignment of authorship and citation credit to specific data elements</li>
-																<li>Editorial Board review for intelligibility, potential for reuse</li>
+																<li>Editorial board review for intelligibility, potential for reuse</li>
 														  </ul>
 													 </div>
 												</div>
@@ -243,7 +244,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 														  </p>
 														  
 														  <ul>
-																<li>Archiving with the California Digital Library (and optionally, other repositories)</li>
+																<li>Archiving with the California Digital Library (and, optionally, other repositories)</li>
 																<li>Assignment of persistent identifiers needed for long-term citation</li>
 																<li>Posting to GitHub as a secondary delivery channel and continued version tracking</li>
 																<li>Indexing to enable powerful queries and searches</li>
@@ -272,27 +273,24 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 					 
 					 </div>
 					 <div id="review">
-						  <h3>Peer-Review</h3>
-						  <p>All content published on Open Context must first see approval by the editorial staff and relevant
+						  <h3>Peer Review</h3>
+						  <p>All content published with Open Context must first see approval by the editorial staff and relevant
 						  members of the editorial board (depending on disciplinary specialization). We do not reject data for lack of
 						  'significance' like a conventional journal, since quality data may have unanticipated future applications and
-						  may improve the statistical power of future meta-analyses. Rather our review criteria include:</p>
+						  may improve the statistical power of future meta-analyses. Rather, our review criteria include:</p>
 								<ul>
 									 <li>Methological soundness and data quality</li>
 									 <li>Quality of documentation</li>
 									 <li>Suitability for wider reuse</li>
 								</ul>
-						  <p>Contributors may request option peer-review by qualified researchers not affliated with Open Context.
-						  The reviewers will be asked to comment upon the merits of a dataset according to the criteria listed above. Reviewer
-						  comments will be posted publicly associated with a dataset. The dataset will also be specially
-						  marked as 'peer-reviewed'.</p>
+						  <p>Contributors may request anonymous, external peer-review of their data publications. 
+						  We ask reviewers to comment on the merits of a dataset according to the criteria listed above. Reviewer
+						  comments will be posted publicly associated with a dataset. The dataset will also be highlighted as 'peer-reviewed.'</p>
 						  
 						  <div id="editorial-status">
 								<h4>Editorial Status</h4>
-								<p>Open Context indicates the editorial status of projects with 1 to 5 stars. These stars are displayed
-								on every record belonging to a project. Please note, the editorial status applies to a project as a whole.
-								They do not mean that each record necessarily received editorial scrutiny.
-								</p>
+								<p>Open Context indicates the editorial status of projects using a scale of one to five stars. These stars are displayed
+								on every record belonging to a project. The editorial status applies to a project as a whole (not to individual records within a project).</p>
 								<table class="table table-striped table-condensed table-bordered" id="edit-status-table">
 									 <thead>
 										  <tr>
@@ -308,7 +306,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 												<td>
 													 <h5>Peer-reviewed</h5>
 													 In addition to seeing reviews and edits from the managing editor and the Editorial Board,
-													 at least two outside, independent experts (not affiliated with Open Context) reviewed the
+													 at least two external experts in the subject area reviewed the
 													 project. 
 												</td>
 										  </tr>
@@ -338,7 +336,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 													 <h5>Minimal editorial acceptance</h5>
 													 Open Context's managing editors accepted a project's dataset even though it may lack
 													 important documentation and supplemental information. In some cases, the primary
-													 value of the project maybe to serve instructional or public outreach goals, rather than
+													 value of the project may be to serve instructional or public outreach goals, rather than
 													 research uses.
 												</td>
 										  </tr>
@@ -350,7 +348,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 													 <h5>Demonstration, Minimal editorial acceptance</h5>
 													 Open Context's managing editors accepted a project's dataset even though it lacked
 													 important documentation and supplemental information. Primarily, these project datasets
-													 served as demonstrations or proof-of-concept applications of Open Context, rather than research
+													 serve as demonstrations or proof-of-concept applications of Open Context, rather than for research
 													 purposes.
 												</td>
 										  </tr>
