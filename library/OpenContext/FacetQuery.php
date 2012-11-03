@@ -593,33 +593,14 @@ class OpenContext_FacetQuery {
 								
 								$valCounter = 0;
 								foreach($cleanUseTaxon_array as $act_clean_taxon){
-									$numericTerm = OpenContext_FacetQuery::numericTaxon($fieldHash, $act_clean_taxon);
-									
-									//_tax_cal
-									$dateTerm = "";
-									$taxonDate = strtotime($act_clean_taxon);
-									if($taxonDate != false){
-										//$queryDate = date("Y-m-d\TH:i:s.u\Z", $taxonDate);
-										
-										//$queryDate = OpenContext_FacetQuery::formatToUTC($taxonDate);
-										
-										$queryDate = date("Y-m-d", $taxonDate);
-										$queryDateA = $queryDate."T00:00:00.001Z";
-										$queryDateB = $queryDate."T23:59:59.999Z";
-										
-										//$queryDate = date("c", $taxonDate);
-										$dateTerm = " || (".$fieldHash."_tax_cal:[".$queryDateA."/DAY TO ".$queryDateB."/DAY]) ";
-										
-										//echo "DATE: ".$dateTerm;
-									}
-									
+									$numericDateTerm = OpenContext_FacetQuery::numericTaxon($fieldHash, $act_clean_taxon);
 									
 									$act_clean_taxon = OpenContext_FacetQuery::solrEscape($act_clean_taxon);
 									if($valCounter>0){
-										$taxa_fq_string .= " || ( ".$fieldHash."_taxon:".$act_clean_taxon.$numericTerm.$dateTerm." )";
+										$taxa_fq_string .= " || ( ".$fieldHash."_taxon:".$act_clean_taxon.$numericDateTerm." )";
 									}
 									else{
-										$taxa_fq_string .= "( ".$fieldHash."_taxon:".$act_clean_taxon.$numericTerm.$dateTerm." )";	
+										$taxa_fq_string .= "( ".$fieldHash."_taxon:".$act_clean_taxon.$numericDateTerm." )";	
 									}
 								$valCounter++;
 								}//end loop through values
@@ -847,13 +828,17 @@ class OpenContext_FacetQuery {
 
 	public static function formatToUTC($passeddt) {
 		// Get the default timezone
+		if(!is_numeric ($passeddt)){
+		  $passeddt = strtotime($passeddt);
+		}
+
 		$default_tz = date_default_timezone_get();
 	
 		// Set timezone to UTC
 		date_default_timezone_set("UTC");
 	
 		// convert datetime into UTC
-		$utc_format = date("Y-m-d\TH:i:s\Z", $passeddt);
+		$utc_format = date("Y-m-d\TG:i:s\Z", $passeddt);
 	
 		// Might not need to set back to the default but did just in case
 		date_default_timezone_set($default_tz);
@@ -1088,7 +1073,7 @@ class OpenContext_FacetQuery {
 
 
 
-	//this function checks for numerical and range queries, creates Solr query terms as needed
+	//this function checks for numerical and calendar and range queries, creates Solr query terms as needed
 	public static function numericTaxon($fieldHash, $val, $intSuffix = "_tax_int", $decSuffix = "_tax_dec"){
 		
 		if(strstr($val, ",")){
@@ -1105,13 +1090,15 @@ class OpenContext_FacetQuery {
 			$decField = $fieldHash.$decSuffix;
 			$calField = $fieldHash."_tax_cal";
 			
-			$expressions = array();
+			$exps = array();
 			foreach($valArray as $actVal){
 				$cleanVal = str_replace(">", "", $actVal);
 				$cleanVal = str_replace("<", "", $cleanVal);
 				$cleanVal = str_replace("=", "", $cleanVal);
 				
 				$valOK = false;
+				$cleanInteger = false;
+					 $cleanDecimal = false;
 				if(is_numeric("0".$cleanVal)){
 					$cleanInteger = round($cleanVal, 0);
 					$cleanDecimal = ("0".$cleanVal) + 0;
@@ -1124,7 +1111,7 @@ class OpenContext_FacetQuery {
 				}
 				else{
 					$valOK = true;
-					$cleanCalendar = OpenContext_FacetQuery::formatToUTC($cal_test_string);
+					$cleanCalendar = date("Y-m-d\TH:i:s\Z", strtotime($cal_test_string));
 				}
 				
 				if($valOK){
@@ -1134,23 +1121,30 @@ class OpenContext_FacetQuery {
 					
 					$actExpression["comp"] = false;
 					if(substr($actVal, 0, 1) == "<"){
-						$actExpression["comp"] = true;
+						$actExpression["comp"] = "<";
 					}
 					elseif(substr($actVal, 0, 1) == ">"){
-						$actExpression["comp"] = true;
+						$actExpression["comp"] = ">";
 					}
-					if($actExpression["comp"]){
+					if($actExpression["comp"] != false){
 						//we're doing a comparative expression
 						if(substr($actVal, 1, 1) != "="){
 							//we need to EXCLUDE the value!
+							$numExpression = "";
+							if($cleanDecimal != false){
+								$numExpression = $intField.":".$cleanInteger." || ".$decField.":".$cleanDecimal;
+							}
 							if($cleanCalendar != false){
-								$calExpression = " || $calField:$cleanCalendar ";
+								$calExpression = $calField.":[".$cleanCalendar." TO ".$cleanCalendar."] ";
+								if(strlen($numExpression)>1){
+										  $calExpression = " || ".$calExpression;
+								}
 							}
 							else{
 								$calExpression = "";
 							}
 							
-							$actExpression["not"] = " && NOT($intField:$cleanInteger || $decField: $cleanDecimal $calExpression )";
+							$actExpression["not"] = " && NOT(".$numExpression.$calExpression.")";
 						}
 						else{
 							//no exclusion (or =) is OK
@@ -1158,144 +1152,82 @@ class OpenContext_FacetQuery {
 						}
 					}//end case with comparative opporation
 					
-					$expressions[] = $actExpression;
+					$exps[] = $actExpression;
 				}//end case with a clean value
 			}
-		}
-		
-
-		return $numeric_term;
-		
-	}//end function
-	
-	
-	
-	public static function OLDnumericTaxon($fieldHash, $val, $integerSuffix = "_tax_int", $decimalSuffix = "_tax_dec"){
-		
-		$numeric_term = "";
-		$num_vals = array();
-		
-		if(substr_count($val, ",")==1){
-			//possible case where there are two values to compare
-			$num_vals = explode(",", $val);
-			$num_valA = str_replace("=", "", $num_vals[0]);
-			$num_valA = str_replace(">", "", $num_valA);
-			$num_valA = str_replace("<", "", $num_valA);       
-			$num_valB = str_replace("=", "", $num_vals[1]);
-			$num_valB = str_replace(">", "", $num_valB);
-			$num_valB = str_replace("<", "", $num_valB);
-			$numericA = is_numeric($num_valA);
-				 
-			if($num_vals[0] == $num_vals[1]){
-				$numericB = true;
-				$num_valB = false;
-			}
-			else{
-				$numericB = is_numeric($num_valB);
-			}
-		}
-		else{
-			//only one value may be present
 			
-			$num_vals[0] = $val;
-			$num_valA = str_replace("=", "", $val);
-			$num_valA = str_replace(">", "", $num_valA);
-			$num_valA = str_replace("<", "", $num_valA);
-			$num_valB = false;
-			$numericA = is_numeric($num_valA);
-			$numericB = true;
-		}                 
-		
-		//in this case, there are two numeric values to compare
-		if($numericA && $numericB){
-			 
-			 $max_limit_int = "*";
-			 $max_limit_dec = "*";
-			 $min_limit_int = "*";
-			 $min_limit_dec = "*";
-			 
-			 $equal_termA = "";
-			 $equal_termB = "";
-			 
-			 $numeric_term = ' || '.$fieldHash.$integerSuffix.':'.round($num_valA,0).' || '.$fieldHash.$decimalSuffix.':'.$num_valA.' ';
-			 
-			 $change_term = false;
-			 
-			 if(substr_count($num_vals[0], "=")>0){
-				 $equal_termA = $numeric_term;
-			 }
-			 
-			 if(substr_count($num_vals[0], ">")>0){
-				 $min_limit_int = round(($num_valA + 1),0); //add an integer
-				 $min_limit_dec = $num_valA + .00000001;
-				 $change_term = true;
-				 //echo "yes!";
-			 }
-			 
-			 if(substr_count($num_vals[0], "<")>0){
-				 $max_limit_int = round(($num_valA - 1),0); //add an integer
-				 $max_limit_dec = $num_valA - .00000001;
-				 $change_term = true;
-			 }
-			 
-			 //$num_valB = false;
-			 
-			if($num_valB != false){
-				 
-				 $change_term = true;
-				 
-				 if($num_valB > $num_valA){
-					$max_limit =  $num_valB;
-					$min_limit =  $num_valA;
-				 }
-				 else{
-					 $max_limit =  $num_valA;
-					 $min_limit =  $num_valB;
-				 }
-				 
-				 $min_limit_int = round(($min_limit + 1),0); //add an integer
-				 $min_limit_dec = $min_limit + .00000001;
-				 $max_limit_int = round(($max_limit - 1),0); //add an integer
-				 $max_limit_dec = $max_limit - .00000001;
-				 
-				 
-				 if(substr_count($num_vals[1], "=")>0){
-					 $equal_termB = ' || '.$fieldHash.$integerSuffix.':'.round($num_valB,0).' || '.$fieldHash.$decimalSuffix.':'.$num_valB.' ';
-				 }
+			
+			if(count($exps) == 2){
+					 if($exps[0]["comp"] != false && $exps[1]["comp"] != false ){
+								
+								if($exps[0]["dec"] != false && $exps[1]["dec"] != false){
+										  $rangeInt = " || (".$intField.":[".$exps[0]["int"]." TO ".$exps[1]["int"]."]) ";
+										  $rangeDec = " || (".$decField.":[".$exps[0]["dec"]." TO ".$exps[1]["dec"]."]) ";
+								}
+								else{
+										  $rangeInt = "";
+										  $rangeDec = "";
+								}
+								
+								if($exps[0]["cal"] != false && $exps[1]["cal"] != false ){
+										  $rangeCal = " || (".$calField.":[".$exps[0]["cal"]." TO ".$exps[1]["cal"]."]) ";
+								}
+								else{
+										  $rangeCal = "";
+								}
+								
+								$numeric_term = $rangeInt.$rangeDec.$rangeCal.$exps[0]["not"].$exps[1]["not"]; //final expression of query
+					 }
 			}
-			 
-			if($change_term){
-				 
-				 if($num_valB != false){
-				if($min_limit_int>$max_limit_int){
-					$old_min = $min_limit_int;
-					$min_limit_int = $max_limit_int;
-					$max_limit_int = $old_min;
-				}
-				if($min_limit_dec>$max_limit_dec){
-					$old_min = $min_limit_int;
-					$min_limit_dec = $max_limit_dec;
-					$max_limit_dec = $old_min;
-				}
-				
-				$min_limit_dec = sprintf('%f', $min_limit_dec);
-				$max_limit_dec = sprintf('%f', $max_limit_dec);
-				 }
-				 
-				 if((round($min_limit_dec,8) == 0)&&($min_limit_dec != "*")){
-					 $min_limit_dec = 0;
-				 }
-				 
-				 $numeric_term = ' || '.$fieldHash.$integerSuffix.':['.$min_limit_int.' TO '.$max_limit_int.'] || '.$fieldHash.$decimalSuffix.':['.$min_limit_dec.' TO '.$max_limit_dec.']';
-				 $numeric_term .= $equal_termA.$equal_termB;
+			elseif(count($exps) == 1){
+					 $rangeInt = "";
+					 $rangeDec = "";
+					 if($exps[0]["comp"] == ">"){
+								if($exps[0]["dec"] != false){
+										  $rangeInt = " || (".$intField.":[".$exps[0]["int"]." TO *) ";
+										  $rangeDec = " || (".$decField.":[".$exps[0]["dec"]." TO *) ";
+								}
+								if($exps[0]["cal"] != false && $exps[1]["cal"] != false ){
+										  $rangeCal = " || (".$calField.":[".$exps[0]["cal"]." TO *) ";
+								}
+								else{
+										  $rangeCal = "";
+								}
+								$numeric_term = $rangeInt.$rangeDec.$rangeCal.$exps[0]["not"]; //final expression of query
+					 }
+					 elseif($exps[0]["comp"] == "<"){
+								if($exps[0]["dec"] != false){
+										  $rangeInt = " || (".$intField.":[* TO ".$exps[0]["int"]."]) ";
+										  $rangeDec = " || (".$decField.":[* TO ".$exps[0]["dec"]."]) ";
+								}
+								if($exps[0]["cal"] != false && $exps[1]["cal"] != false ){
+										  $rangeCal = " || (".$calField.":[* TO ".$exps[0]["cal"]."]) ";
+								}
+								else{
+										  $rangeCal = "";
+								}
+								$numeric_term = $rangeInt.$rangeDec.$rangeCal.$exps[0]["not"]; //final expression of query
+					 }
+					 else{
+								if($exps[0]["dec"] != false){
+										  $rangeInt = " || (".$intField.":".$exps[0]["int"].") ";
+										  $rangeDec = " || (".$decField.":".$exps[0]["dec"].") ";
+								}
+								if($exps[0]["cal"] != false){
+										  $rangeCal = " || (".$calField.":".$exps[0]["cal"].") ";
+								}
+								else{
+										  $rangeCal = "";
+								}
+								$numeric_term = $rangeInt.$rangeDec.$rangeCal; //final expression of query
+					 }
 			}
-			 
-			 
-		}//end case for numeric term
-
-	return $numeric_term;
-		
+		}
+		return $numeric_term;
 	}//end function
+	
+	
+	
 
 
 

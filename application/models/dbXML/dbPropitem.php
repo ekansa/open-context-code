@@ -557,11 +557,11 @@ class dbXML_dbPropitem  {
 						  //$solrResults[$sType] = $solrResult;
 						  //$solrResults[$sType]["q"] =  $SolrSearch->queryString;
 						  
-						  $histoResult = $this->solrResultCategories($solrResult, $sType);
-						  if(is_array($histoResult)){
-								if(isset($histoResult["totalCount"]) && isset($histoResult["histogram"])){
-									 if(count($histoResult["histogram"])>0){
-											$solrResults[$sType] = $histoResult;
+						  $nominalResult = $this->solrResultCategories($solrResult, $sType);
+						  if(is_array($nominalResult)){
+								if(isset($nominalResult["totalCount"]) && isset($nominalResult["nominalGraph"])){
+									 if(count($nominalResult["nominalGraph"])>0){
+											$solrResults[$sType] = $nominalResult;
 									 }
 								}
 						  }
@@ -582,6 +582,7 @@ class dbXML_dbPropitem  {
 	 
 	 //format solr range facet results
 	 public function formatSolrStatsRange($solrResult, $sType = false){
+		  $host = OpenContext_OCConfig::get_host_config();
 		  $solrTypes = $this->solrTypes;
 		  $output = false;
 		  if(is_array($solrResult)){
@@ -594,15 +595,23 @@ class dbXML_dbPropitem  {
 						  $maxValue = $fieldData["end"];
 						  $minValue = $fieldData["start"];
 						  $gap = $fieldData["gap"];
+						  if(stristr($this->varType, "calend")){
+								$calGap = str_replace("YEAR", " year", $gap);
+								$calGap = str_replace("DATE", " day", $calGap);
+						  }
 						  
+						  $i = 0;
+						  $numFacets = count($fieldData["counts"]);
 						  $totalCount = 0;
+						  $highComp = "<";
 						  foreach($fieldData["counts"] as $lowVal => $count ){
+								$i++;
 								$totalCount = $totalCount + $count;
 								
 								if(stristr($this->varType, "calend")){
-									 $highVal = strtotime($lowVal) + $gap;
+									 $highVal = strtotime($lowVal.$calGap);
 									 $highVal = date("Y-m-d", $highVal );
-									 $lowVal = date("Y-m-d", $lowVal );
+									 $lowVal = date("Y-m-d", strtotime($lowVal) );
 								}
 								else{
 									 $lowVal = $lowVal + 0;
@@ -614,11 +623,16 @@ class dbXML_dbPropitem  {
 														  "count" => $count);
 								
 								if($sType != false){
-									 $queryURL = $solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
+									 $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
 									 if($solrTypes[$sType]["pubQueryParam"] != false){
 										  $queryURL .= "&".$solrTypes[$sType]["pubQueryParam"];
 									 }
-									 $queryURL .= "&taxa%5B%5D=".urlencode($this->varLabel."::>=".$lowVal.",<".$highVal);
+									 
+									 if($i == $numFacets){ //the highest value interval needs to have a <= comparator, otherwise highest values will be missed
+										  $highComp = "<=";
+									 }
+									 $queryURL .= "&taxa%5B%5D=".urlencode($this->varLabel."::>=".$lowVal.",".$highComp.$highVal);
+									 
 									 $actInterval["setURL"] = $queryURL;
 								}
 		  
@@ -663,10 +677,12 @@ class dbXML_dbPropitem  {
 	 
 	 //makes category histogram for a property
 	 public function solrResultCategories($solrResult, $sType = false){
+		  $host = OpenContext_OCConfig::get_host_config();
 		  $solrTypes = $this->solrTypes;
 		  $output = false;
 		  if(is_array($solrResult)){
 				if(isset($solrResult["facet_counts"]["facet_fields"])){
+					 $metadataObj = $this->metadataObj;
 					 foreach($solrResult["facet_counts"]["facet_fields"] as $fieldKey => $facets){
 						  if(stristr($fieldKey, "_taxon")){
 								
@@ -682,10 +698,18 @@ class dbXML_dbPropitem  {
 										  $maxValue = $count;
 									 }
 									 if($rank <= $this->gapCount){
+										  
+										  $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
+										  if($solrTypes[$sType]["pubQueryParam"] != false){
+												$queryURL .= "&".$solrTypes[$sType]["pubQueryParam"];
+										  }
+										  $queryURL .= "&taxa%5B%5D=".urlencode($this->varLabel."::".$facetKey);
+									 
 										  $hash = sha1(($this->varLabel)."::".$facetKey); 
 										  $nominalGraph[$hash] = array( "text" => $facetKey,
 										  "rank" => 	$rank,
-										  "count" => $count);
+										  "count" => $count,
+										  "setURL" => $queryURL);
 									 }
 									 $minValue = $count;
 									 $rank++;
