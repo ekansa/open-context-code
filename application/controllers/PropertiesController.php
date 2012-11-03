@@ -52,8 +52,8 @@ class propertiesController extends Zend_Controller_Action
 		  
 		  $linksObj = new dbXML_dbLinks;
 		  $linksObj->initialize($db);
-		  $linksObj->dbPenelope = true;
-		  $linksObj->getLinks($itemObj->itemUUID);
+		  //$linksObj->dbPenelope = true;
+		  //$linksObj->getLinks($itemObj->itemUUID);
 		  $itemObj->linksObj = $linksObj;
 		  
 		  $metadataObj = new dbXML_dbxmlMetadata;
@@ -71,7 +71,6 @@ class propertiesController extends Zend_Controller_Action
 		  $xmlItem->addPropDetails();
 		  $xmlItem->addPropsLinks();
 		  $xmlItem->addMetadata();
-		  
 		  
 		  $doc = $xmlItem->doc;
 		  header('Content-Type: application/xml; charset=utf8');
@@ -104,13 +103,12 @@ class propertiesController extends Zend_Controller_Action
 		  $propsObj->getProperties($itemObj->itemUUID);
 		  $itemObj->propertiesObj = $propsObj;
 	  
-	 /*
 		  $linksObj = new dbXML_dbLinks;
 		  $linksObj->initialize($db);
-		  $linksObj->dbPenelope = true;
-		  $linksObj->getLinks($itemObj->itemUUID);
+		  //$linksObj->dbPenelope = true;
+		  //$linksObj->getLinks($itemObj->itemUUID);
 		  $itemObj->linksObj = $linksObj;
-	 */	 	  
+ 	  
 		  $metadataObj = new dbXML_dbxmlMetadata;
 		  $metadataObj->initialize($db);
 		  $metadataObj->getMetadata($itemObj->projectUUID);

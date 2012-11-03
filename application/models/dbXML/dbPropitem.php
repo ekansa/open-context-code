@@ -39,7 +39,8 @@ class dbXML_dbPropitem  {
     public $value;
     public $valNumeric;
     public $valCalendric;
-    
+	 public $catValue; //category value
+	 
     public $varSummary; //array usage summary for the variable
     public $frequencyRanks; //array of frequency ranking for this property
     
@@ -64,7 +65,7 @@ class dbXML_dbPropitem  {
     
 	 private $solrTypes = array("spatial" => array("queryPath" => "/sets/", "pubQueryParam" => false),
 										 "image" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
-										 "media" => array("queryPath" => "/lightbox/", "pubQueryParam" => false),
+										 "media" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=video%7C%7Cexternal"),
 										 "document" => array("queryPath" => "/search/", "pubQueryParam" => "doctype=document")
 										);
 	 
@@ -109,6 +110,7 @@ class dbXML_dbPropitem  {
 		  
 		  $this->valUUID = false;
 		  $this->value = false;
+		  $this->catValue = false;
 		  $this->valNumeric = false;
 		  $this->valCalendric = false;
 		  
@@ -378,8 +380,7 @@ class dbXML_dbPropitem  {
 				$this->solrGetRange();
 		  }
 		  elseif($varType == "boolean" || $varType == "ordinal" || stristr($varType, "nominal")){
-				
-				
+				$this->solrGetCategories();
 		  }//end case for nomimal, boolean, ordinal
 	
     }//end function
@@ -412,6 +413,8 @@ class dbXML_dbPropitem  {
 				$param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
 				$param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, 1);
 				unset($param_array["facet.field"]);
+				$param_array["facet.field"][] = "contributor"; //metadatafor the property
+				$param_array["facet.field"][] = "creator"; //metadatafor the property
 				unset($param_array["bq"]);
 				
 				$SolrSearch->offset = 0;
@@ -425,6 +428,9 @@ class dbXML_dbPropitem  {
 				else{
 					 //solr is returning some stats!
 					 $statsResult = $this->formatSolrStatsRange($solrResult);
+					 $this->solrResultPersonCheck($solrResult);
+					 
+					 //$solrResults["all"] = $solrResult;
 					 //$solrResults["general"] = $statsResult;
 					 //$solrResults["general"]["query"] =  $SolrSearch->queryString;
 					 $minVal = $statsResult["min"];
@@ -474,11 +480,11 @@ class dbXML_dbPropitem  {
 								$solrResults[$sType] = array("error" => $SolrSearch->queryString);
 						  }
 						  else{
-								$histoResult = $this->formatSolrStatsRange($solrResult);
+								$histoResult = $this->formatSolrStatsRange($solrResult, $sType);
 								if(is_array($histoResult)){
 									 if(isset($histoResult["totalCount"]) && isset($histoResult["histogram"])){
 										  if(count($histoResult["histogram"])>0){
-												 $solrResults[$sType] = $histoResult;
+												$solrResults[$sType] = $histoResult;
 										  }
 									 }
 								}
@@ -492,18 +498,97 @@ class dbXML_dbPropitem  {
 		  else{
 				$this->solrResults = "solr not responding";
 		  }
-	 }//end funciton
+	 }//end function
 	 
+	 
+	 
+	 public function solrGetCategories(){
+		  
+		  $solrResults = array();
+		  $SolrSearch = new SolrSearch;
+		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+		  if ($SolrSearch->pingSolr($solr)) {
+				
+				$metadataObj = $this->metadataObj;
+				$projectName = $metadataObj->projectName;
+				
+				$requestParams = array("taxa" => (trim($this->varLabel)),
+													"proj" => $projectName
+													);
+				
+				//echo print_r($requestParams);
+				
+				foreach($this->solrTypes as $sType => $typeParams){
+					 $SolrSearch->initialize();
+					 
+					 if($sType == "spatial"){
+						  $SolrSearch->spatial = true; //do a search of spatial items in Open Context
+					 }
+					 elseif($sType == "image"){
+							$SolrSearch->image = true;
+					 }
+					 elseif($sType == "media"){
+							$SolrSearch->media = true;
+					 }
+					 elseif($sType == "document"){
+							$SolrSearch->document = true;
+					 }
+					 
+					 $DocumentTypes = $SolrSearch->makeDocumentTypeArray();
+					 $param_array = array();
+					 $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, $DocumentTypes);
+					 $param_array = OpenContext_FacetQuery::build_complex_parameters($requestParams, $param_array, 1);
+					 //unset($param_array["facet.field"]);
+					 $param_array["facet.field"][] = "contributor"; //metadatafor the property
+					 $param_array["facet.field"][] = "creator"; //metadatafor the property
+					 unset($param_array["bq"]);
+					 
+					 $SolrSearch->offset = 0;
+					 $SolrSearch->number_recs = 0;
+					 $SolrSearch->param_array = $param_array;
+					 $SolrSearch->query = "*:*";
+					 $solrResult = $SolrSearch->generalSearch();
+					 if(!$solrResult){
+						  $solrResults[$sType] = array("error" => $SolrSearch->queryString);
+					 }
+					 else{
+						  
+						  $this->solrResultPersonCheck($solrResult);
+						  //$solrResults[$sType] = $solrResult;
+						  //$solrResults[$sType]["q"] =  $SolrSearch->queryString;
+						  
+						  $histoResult = $this->solrResultCategories($solrResult, $sType);
+						  if(is_array($histoResult)){
+								if(isset($histoResult["totalCount"]) && isset($histoResult["histogram"])){
+									 if(count($histoResult["histogram"])>0){
+											$solrResults[$sType] = $histoResult;
+									 }
+								}
+						  }
+						  
+					 }
+				}
+				
+				$this->varSummary = $solrResults;
+		  
+		  }//end case where solr respons to ping
+		  else{
+				$this->solrResults = "solr not responding";
+		  }
+	 }//end function
 	 
 	 
 	 
 	 
 	 //format solr range facet results
-	 public function formatSolrStatsRange($solrResult){
-		  
+	 public function formatSolrStatsRange($solrResult, $sType = false){
+		  $solrTypes = $this->solrTypes;
 		  $output = false;
 		  if(is_array($solrResult)){
 				if(isset($solrResult["facet_counts"]["facet_ranges"])){
+					 
+					 $metadataObj = $this->metadataObj;
+					 
 					 foreach($solrResult["facet_counts"]["facet_ranges"] as $fieldKey => $fieldData){
 						  $histogram = array();
 						  $maxValue = $fieldData["end"];
@@ -513,15 +598,37 @@ class dbXML_dbPropitem  {
 						  $totalCount = 0;
 						  foreach($fieldData["counts"] as $lowVal => $count ){
 								$totalCount = $totalCount + $count;
-								$actInterval = array("lowVal" => $lowVal,
-								"highVal"=> $lowVal + $gap,
-								"count" => $count);
+								
+								if(stristr($this->varType, "calend")){
+									 $highVal = strtotime($lowVal) + $gap;
+									 $highVal = date("Y-m-d", $highVal );
+									 $lowVal = date("Y-m-d", $lowVal );
+								}
+								else{
+									 $lowVal = $lowVal + 0;
+									 $highVal = $lowVal + $gap;
+								}
+								$actInterval = array(
+														  "lowVal" => $lowVal,
+														  "highVal"=> $highVal,
+														  "count" => $count);
+								
+								if($sType != false){
+									 $queryURL = $solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
+									 if($solrTypes[$sType]["pubQueryParam"] != false){
+										  $queryURL .= "&".$solrTypes[$sType]["pubQueryParam"];
+									 }
+									 $queryURL .= "&taxa%5B%5D=".urlencode($this->varLabel."::>=".$lowVal.",<".$highVal);
+									 $actInterval["setURL"] = $queryURL;
+								}
+		  
 								$histogram[] = $actInterval;
 						  }
 						  
 						  $output = array("totalCount" => $totalCount,
 								  "min" => $minValue,
 								  "max" => $maxValue,
+								  "gap" => $gap,
 								  "histogram" => $histogram);
 						  
 					 }
@@ -551,7 +658,97 @@ class dbXML_dbPropitem  {
 		  }
 	 
 		  return $output ;
-	 }
+	 }//end function
+	 
+	 
+	 //makes category histogram for a property
+	 public function solrResultCategories($solrResult, $sType = false){
+		  $solrTypes = $this->solrTypes;
+		  $output = false;
+		  if(is_array($solrResult)){
+				if(isset($solrResult["facet_counts"]["facet_fields"])){
+					 foreach($solrResult["facet_counts"]["facet_fields"] as $fieldKey => $facets){
+						  if(stristr($fieldKey, "_taxon")){
+								
+								$nominalGraph = array();
+								$maxValue = 0;
+								$minValue = 0;
+								$totalCount = 0;
+								
+								$rank = 1;
+								foreach($facets as $facetKey => $count){
+									 $totalCount = $totalCount + $count;
+									 if($rank == 1){
+										  $maxValue = $count;
+									 }
+									 if($rank <= $this->gapCount){
+										  $hash = sha1(($this->varLabel)."::".$facetKey); 
+										  $nominalGraph[$hash] = array( "text" => $facetKey,
+										  "rank" => 	$rank,
+										  "count" => $count);
+									 }
+									 $minValue = $count;
+									 $rank++;
+								}
+								
+								$output = array("totalCount" => $totalCount,
+								  "min" => $minValue,
+								  "max" => $maxValue,
+								  "nominalGraph" => $nominalGraph);
+								
+						  }
+					 }
+				}
+		  }
+		  return $output;
+	 }//end function
+	 
+	 
+	 
+	 //makes dublin core person metadata for a property
+	 public function solrResultPersonCheck($solrResult){
+		  if(is_array($solrResult)){
+				$metadataObj = $this->metadataObj;
+				$linksObj =  $this->linksObj;
+				if(isset($solrResult["facet_counts"]["facet_fields"]["contributor"])){
+					 if(is_array($linksObj->contributors)){
+						  $dcContributors = $linksObj->contributors;
+					 }
+					 else{
+						   $dcContributors = array();
+					 }
+					 $i = 0;
+					 foreach($solrResult["facet_counts"]["facet_fields"]["contributor"] as $personKey => $personCount){
+						  $personID = $metadataObj->getPersonID($this->projectUUID, $personKey);
+						  //$hash = sha1($this->projectUUID."contributor".$personID);
+						  //$dcContributor[$hash] = array("value" => $personKey, "itemUUID" => $personID);
+						  $dcContributors[$personID] = $personKey;
+						  $linksObj->contributors = $dcContributors;
+						  $i++;
+						  if($i > 5){
+								break;
+						  }
+					 }
+				}
+				if(isset($solrResult["facet_counts"]["facet_fields"]["creator"])){
+					 if(is_array($linksObj->creators)){
+						  $dcCreators = $linksObj->creators;
+					 }
+					 else{
+						  $dcCreators = array();
+					 }
+					 foreach($solrResult["facet_counts"]["facet_fields"]["creator"] as $personKey => $personCount){
+						  $personID = $metadataObj->getPersonID($this->projectUUID, $personKey);
+						  //$hash = sha1($this->projectUUID."contributor".$personID);
+						  //$dcCreators[$hash] = array("value" => $personKey, "itemUUID" => $personID);
+						  $dcCreators[$personID] = $personKey;
+						  $linksObj->creators =  $dcCreators;
+					 }
+				}
+		  }
+	 }//end function
+	 
+	 
 	 
 	 
 	 
