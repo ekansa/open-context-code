@@ -632,23 +632,47 @@
 		<xsl:param name="setURL" select="1" />
 		<xsl:param name="propVal" select="1" />
 		<xsl:param name="propCount" select="1" />
+		
+		<xsl:variable name="barWidth">
+				<xsl:value-of>
+						<xsl:attribute name="select">
+								1
+						</xsl:attribute>
+				</xsl:value-of>
+		</xsl:variable>
+		
 		<tr>
 				<td class="barName"><a><xsl:attribute name="href"><xsl:value-of select="$setURL"/></xsl:attribute><xsl:value-of select="$propVal"/></a></td>
 				<td>
 						<div class="barGraphBar">
-								<xsl:attribute name="style">width:<xsl:value-of select="round(($propCount div $propMaxCount)*100)"/>%;</xsl:attribute>
+								<xsl:attribute name="style">width:<xsl:value-of select="$barWidth"/>%;</xsl:attribute>
 								(<xsl:value-of select="$propCount"/>)
 						</div>
 				</td>
 		</tr>
 </xsl:template>
 
+<xsl:template name="makeBarWidth">
+		<xsl:param name="propMaxCount" select="1" />
+		<xsl:param name="propCount" select="1" />
+		<xsl:choose>
+				<xsl:when test="$propCount &gt; $propMaxCount">
+						<xsl:variable name="actPropCount" select="$propMaxCount"/>
+				</xsl:when>
+				<xsl:otherwise>
+						<xsl:variable name="actPropCount" select="$propCount"/>
+				</xsl:otherwise>
+		</xsl:choose>
+		<xsl:choose>
+				<xsl:when test="round(($actPropCount div $propMaxCount)*100) &lt; 1">
+						1
+				</xsl:when>
+				<xsl:otherwise>
+						<xsl:value-of select="round(($actPropCount div $propMaxCount)*100)"/>
+				</xsl:otherwise>
+		</xsl:choose>
 
-
-
-
-
-
+</xsl:template>
 
 
 
