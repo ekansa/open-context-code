@@ -238,6 +238,8 @@ class dbXML_dbPropitem  {
 		  FROM linked_data
 		  WHERE linked_data.itemUUID = '$itemUUID' AND linked_data.linkedType = 'type' ";
 		  
+		  //echo  $sql;
+		  
 		  $result = $db->fetchAll($sql, 2);
 		  if($result){
 				$output = array();

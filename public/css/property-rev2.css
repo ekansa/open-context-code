@@ -2,6 +2,18 @@
 #prop-all-des {
 	width:95%;
 }
+#all-linked-data {
+	margin-top:4%;
+	margin-bottom: 4%;
+}
+div.linked-data {
+	padding:2%;
+	margin: 2%;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #DDD;
+}
+
 #prop-sum {
 	margin-bottom: 3%;
 }

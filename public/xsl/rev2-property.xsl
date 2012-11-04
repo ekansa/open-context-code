@@ -182,9 +182,8 @@
 				
 				
 										<div id="prop-all-des">
-												<h5>Description</h5>
-												
-											
+												<h4>Property Description</h4>
+
 												<div id="prop-sum">
 														<div>
 																<xsl:choose>
@@ -281,7 +280,64 @@
 																</xsl:choose>	
 														</div>
 														
-														
+												<xsl:if test="//oc:linkedData">
+														<div id="all-linked-data">
+																<h5>Linked Data</h5>
+																<p>The meaning of this property is closely approximated by or equivalent to:</p>
+																<xsl:for-each select="//oc:linkedData/oc:relationLink">
+																		<div class="linked-data">
+																				<h6>Relation: <xsl:value-of select="oc:label" />::<xsl:value-of select="oc:targetLink/oc:label" />
+																				</h6>
+																				<table class="table table-striped table-condensed">
+																						<thead>
+																								<tr>
+																										<th></th>
+																										<th>Relation</th>
+																										<th>Value</th>
+																								</tr>
+																						</thead>
+																						<tbody>
+																								<tr>
+																										<th>Concept</th>
+																										<td><xsl:value-of select="oc:label" /></td>
+																										<td><xsl:value-of select="oc:targetLink/oc:label" /></td>
+																								</tr>
+																								<tr>
+																										<th>Concept URI</th>
+																										<td>
+																												<a>
+																														<xsl:attribute name="href"><xsl:value-of select="@href" /></xsl:attribute>
+																														<xsl:value-of select="@href" />
+																												</a>
+																										</td>
+																										<td>
+																												<a>
+																														<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href" /></xsl:attribute>
+																														<xsl:value-of select="oc:targetLink/@href" />
+																												</a>
+																										</td>
+																								</tr>
+																								<tr>
+																										<th>Source Vocabulary or Collection</th>
+																										<td>
+																												<a>
+																														<xsl:attribute name="href"><xsl:value-of select="oc:vocabulary/@href" /></xsl:attribute>
+																														<xsl:value-of select="oc:vocabulary" />
+																												</a>
+																										</td>
+																										<td>
+																												<a>
+																														<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/oc:vocabulary/@href" /></xsl:attribute>
+																														<xsl:value-of select="oc:targetLink/oc:vocabulary" />
+																												</a>
+																										</td>
+																								</tr>
+																						</tbody>
+																				</table>
+																		</div>
+																</xsl:for-each>
+														</div>
+												</xsl:if>		
 														
 														
 														
