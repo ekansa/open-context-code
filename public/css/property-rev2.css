@@ -1,0 +1,81 @@
+/* Open Context Layout Property Item */
+#prop-all-des {
+	width:95%;
+}
+#prop-sum {
+	margin-bottom: 3%;
+}
+#single-prop-stats {
+	padding: 2%;
+	background-color: #F7F4E9;
+}
+
+div.item-multi-obs {
+	width:100%;
+}
+#obsTabs{
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	width:100%;
+	min-width:600px;
+}
+div.tab-content {
+	margin-left: 0px;
+	margin-right: 0px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #DDD;
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #DDD;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #DDD;
+}
+div.tab-pane {
+	width: 100%;
+}
+.tab-pane h5 {
+	margin-top: 2%;
+	margin-left: 2%;
+}
+div.item-single-obs {
+	padding:2%;
+	width: 95%;
+	margin-bottom: 5%;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #DDD;
+}
+
+table.barGraph {
+	margin-left:auto;
+	margin-right:auto;
+	width: 100%;
+	background-color: #fff;
+}
+table.barGraphMultiTab {
+	margin-left:auto;
+	margin-right:auto;
+	width: 96%;
+	background-color: #fff;
+}
+
+table.barGraph th{
+	padding:2%;
+}
+table.barGraph td{
+	padding-left:2%;
+	padding-right:2%;
+}
+td.barName{
+	vertical-align: middle;
+	text-align: right;
+}
+div.barGraphBar {
+	margin-left:5px;
+	height: 26px;
+	text-align:center;
+	padding-top:12px;
+	background-color: #DCDCDC; 
+}

@@ -70,7 +70,7 @@
 
 
 
-<xsl:variable name="badCOINS"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:coins"/>
+<xsl:variable name="badCOINS"><xsl:value-of select="//oc:metadata/oc:coins"/>
 </xsl:variable>
 <xsl:variable name="toReplace">Open%20Context</xsl:variable>
 <xsl:variable name="replaceWith">Open%20Context&amp;rft.rights=</xsl:variable>
@@ -181,18 +181,21 @@
 								<div id="left_des">
 				
 				
-										<div id="proj-all-des">
-											<h5>Description</h5>
+										<div id="prop-all-des">
+												<h5>Description</h5>
+												
 											
-												<div id="abstract">
-														
+												<div id="prop-sum">
 														<div>
 																<xsl:choose>
-																		<xsl:when test="$num_Summaries &gt; 0">
+																		<xsl:when test="$num_Summaries &gt; 1">
 																				<xsl:attribute name="class">item-multi-obs</xsl:attribute>
 																				<ul class="nav nav-tabs" id="obsTabs">
 																						<xsl:for-each select="//oc:propStats">
 																								<li>
+																										<xsl:if test="position() = 1">
+																												<xsl:attribute name="class">active</xsl:attribute>
+																										</xsl:if>
 																										<a><xsl:attribute name="href">#obs-<xsl:value-of select="position()"/></xsl:attribute>
 																										<xsl:call-template name="summaryTypes">
 																										<xsl:with-param name="observeType" select="@observeType"/>
@@ -200,6 +203,9 @@
 																										</a>
 																								</li>
 																						</xsl:for-each>
+																						<!--
+																						<li><a href="#obs-2">Fake</a></li>
+																						-->
 																				</ul>
 																				<div class="tab-content">
 																						<xsl:for-each select="//oc:propStats">
@@ -216,7 +222,7 @@
 																														<xsl:with-param name="observeType" select="@observeType"/>
 																												</xsl:call-template>
 																										</h5>
-																										<table class="table table-hover table-bordered table-condensed barGraph">
+																										<table class="table table-hover table-bordered table-condensed barGraphMultiTab">
 																												<thead>
 																														<tr>
 																																<th style="width:25%;">Values</th><th style="width:75%;">Count</th>
@@ -235,9 +241,15 @@
 																										</table>
 																								</div>
 																						</xsl:for-each>
+																						<!--
+																						<div class="tab-pane fade" id="obs-2">
+																								<h5>Fake Tab</h5>
+																						</div>
+																						-->
 																				</div>
 																		</xsl:when>
 																		<xsl:otherwise>
+																				<div id="single-prop-stats">
 																				<xsl:for-each select="//oc:propStats">
 																						<h5>Property Summary: 
 																								<xsl:call-template name="summaryTypes">
@@ -262,14 +274,9 @@
 																								</tbody>
 																						</table>
 																				</xsl:for-each>
+																				</div>
 																		</xsl:otherwise>
-																</xsl:choose>
-																
-																
-																
-																
-																
-																
+																</xsl:choose>	
 														</div>
 														
 														
@@ -283,17 +290,17 @@
 														
 														
 														
-														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:notes/arch:note) = 0" >
+														<xsl:if test="count(descendant::arch:property/arch:notes/arch:note) = 0" >
 															<p id="no-notes" class="bodyText">(This item has no additional notes)</p>
 														</xsl:if>
 														
-														<xsl:for-each select="atom:feed/atom:entry/arch:person/arch:notes/arch:note">
+														<xsl:for-each select="//arch:notes/arch:note">
 															<div class="bodyText"><xsl:value-of select="arch:string" disable-output-escaping="yes" /></div><br/>
 														</xsl:for-each>
 														
-														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/oc:metadata/oc:links/oc:link) != 0" >
+														<xsl:if test="count(descendant::arch:property/oc:metadata/oc:links/oc:link) != 0" >
 																<div id="person-links">
-																		<xsl:for-each select="atom:feed/atom:entry/arch:person/oc:metadata/oc:links/oc:link">
+																		<xsl:for-each select="//oc:metadata/oc:links/oc:link">
 																			<h5>Linked Data:
 																				<a>
 																						<xsl:attribute name="class">person-link</xsl:attribute>
@@ -315,70 +322,23 @@
 												
 										</div>
 									
-										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:observations/arch:observation/arch:links/oc:space_links/oc:link) != 0" >
-											<div id="all_links">
-												<p class="subHeader">Linked Items (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:person/arch:observations/arch:observation/arch:links/oc:space_links/oc:link)"/> items)</p>
-													<xsl:for-each select="atom:feed/atom:entry/arch:person/arch:observations/arch:observation/arch:links/oc:space_links/oc:link">
-															<xsl:choose>
-																<xsl:when test="position() mod 2 = 1">
-																	<div class="container_a">
-																	<div class="container">	
-																	<a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
-																		<xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
-																		<xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
-																	</img></a></div>
-																	<div class="container"><span class="bodyText"><a>
-																	<xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
-																	</a> ( <xsl:value-of select="oc:relation"/> )</span></div>
-															</div> 
-																</xsl:when>
-																<xsl:otherwise>
-																	<div class="clear_container">
-																	<div class="container">	
-																	<a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
-																		<xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
-																		<xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
-																	</img></a></div>
-																	<div class="container"><span class="bodyText"><a>
-																	<xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/>
-																	</a> ( <xsl:value-of select="oc:relation"/> )</span></div>
-															</div> 
-																</xsl:otherwise>
-															</xsl:choose>
-														</xsl:for-each>
-														<br/>
-														<br/>
-												</div>
-										</xsl:if>
-										
-										
 										<div id="preview">
-												<h5>Content Associated with this Person or Organization</h5>
+												<h5>Data Contributors Using this Property</h5>
 												
-												<xsl:if test="atom:feed/atom:entry/atom:category/@term ='category' ">
-														<p class="bodyText">Items in these categories have been viewed: <strong><xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count"/></strong> times. (Ranked: <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@rank"/> of  <xsl:value-of select="//oc:social_usage/oc:item_views[@type='spatialCount']/oc:count/@pop"/>)</p>
-														<div class="list_tab" style="width:100%;">
-																<xsl:for-each select="atom:feed/atom:entry">
-																		<xsl:if test="./atom:category/@term ='category' ">
-																				<div class="list_tab_row">
-																						<div class="list_tab_cell_icon"><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><img><xsl:attribute name="src"><xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute></img></a></div>
-																						<div class="list_tab_cell"><strong><a><xsl:attribute name="href"><xsl:for-each select="./atom:link[@rel='alternate']"><xsl:value-of select=".//@href"/></xsl:for-each></xsl:attribute><xsl:value-of select="./atom:title"/></a></strong></div>
-																						<div class="list_tab_cell"><xsl:value-of select="./atom:content"/></div>
-																				</div>
-																		</xsl:if>
-																</xsl:for-each>
-														</div>
+												<xsl:if test="count(//dc:contributor) != 0">
+														<p>
+															<xsl:for-each select="//dc:contributor">
+																<a><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></a><xsl:if test="position() != last()">, </xsl:if>
+															</xsl:for-each>
+														</p>
 												</xsl:if>
 												
-												<xsl:if test="//oc:metadata/oc:project_name/@editStatus = 0">
-														Project dataset is forthcoming, and not yet available.
-												</xsl:if>
 										</div>
 										
 										
-										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:properties/arch:property[oc:show_val/text()]) !=0 ">
+										<xsl:if test="count(//arch:properties/arch:property[oc:show_val/text()]) !=0 ">
 												<div class="properties">
-														<h5>Description (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:person/arch:properties/arch:property[oc:show_val/text()])"/> properties)</h5>
+														<h5>Description (<xsl:value-of select="count(descendant::arch:property/arch:properties/arch:property[oc:show_val/text()])"/> properties)</h5>
 														<table class="table table-striped table-condensed table-hover table-bordered prop-tab">
 																<thead>
 																		<tr>
@@ -387,7 +347,7 @@
 																		</tr>
 																</thead>
 																<tbody> 
-																		<xsl:for-each select="atom:feed/atom:entry/arch:person/arch:properties/arch:property[oc:show_val/text()]">
+																		<xsl:for-each select="//arch:properties/arch:property[oc:show_val/text()]">
 																				<tr>
 																						<td>
 																								<xsl:value-of select="oc:var_label"/>
@@ -403,12 +363,12 @@
 										</xsl:if>
 										
 										
-										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:links/oc:person_links/oc:link) != 0">
+										<xsl:if test="count(descendant::arch:property/arch:links/oc:person_links/oc:link) != 0">
 												<div id="all_people" >
-													<h5>Associated People (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:person/arch:links/oc:person_links/oc:link)"/> people)</h5>
-													<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:links/oc:person_links/oc:link[oc:name/text() !='']) != 0" >	
-														<p class="bodyText">
-															<xsl:for-each select="atom:feed/atom:entry/arch:person/arch:links/oc:person_links/oc:link[oc:name/text() !='']">
+													<h5>Associated People (<xsl:value-of select="count(descendant::arch:property/arch:links/oc:person_links/oc:link)"/> people)</h5>
+													<xsl:if test="count(descendant::arch:property/arch:links/oc:person_links/oc:link[oc:name/text() !='']) != 0" >	
+														<p>
+															<xsl:for-each select="//arch:links/oc:person_links/oc:link[oc:name/text() !='']">
 																<a><xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()">, </xsl:if>
 															</xsl:for-each>
 														</p>
@@ -461,10 +421,10 @@
 										</div>
 								
 										<div id="all_media" >
-												<h5>Linked Media  (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:person/arch:links/oc:media_links/oc:link)"/> files)</h5>
-												<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:links/oc:media_links/oc:link) != 0" >
+												<h5>Linked Media  (<xsl:value-of select="count(descendant::arch:property/arch:links/oc:media_links/oc:link)"/> files)</h5>
+												<xsl:if test="count(descendant::arch:property/arch:links/oc:media_links/oc:link) != 0" >
 														<div class="list_tab">
-																<xsl:for-each select="atom:feed/atom:entry/arch:person/arch:links/oc:media_links/oc:link">
+																<xsl:for-each select="//arch:links/oc:media_links/oc:link">
 																		<div class="list_tab_row">
 																				<xsl:choose>
 																				<xsl:when test="oc:type = 'csv'">	
