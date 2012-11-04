@@ -225,7 +225,8 @@
 																										<table class="table table-hover table-bordered table-condensed barGraphMultiTab">
 																												<thead>
 																														<tr>
-																																<th style="width:25%;">Values</th><th style="width:75%;">Count</th>
+																																<th class="prop-vals">Values</th>
+																																<th class="val-count">Count</th>
 																														</tr>		
 																												</thead>
 																												<tbody>
@@ -259,7 +260,8 @@
 																						<table class="table table-hover table-bordered table-condensed barGraph">
 																								<thead>
 																										<tr>
-																												<th style="width:25%;">Values</th><th style="width:75%;">Count</th>
+																												<th class="prop-vals">Values</th>
+																												<th class="val-count">Count</th>
 																										</tr>		
 																								</thead>
 																								<tbody>

@@ -1,4 +1,4 @@
-/* Open Context Layout Property Item */
+ /* Open Context Layout Property Item */
 #prop-all-des {
 	width:95%;
 }
@@ -60,9 +60,15 @@ table.barGraphMultiTab {
 	width: 96%;
 	background-color: #fff;
 }
-
-table.barGraph th{
+th.prop-vals{
 	padding:2%;
+	text-align:right;
+	width:25%;
+}
+th.val-count{
+	padding:2%;
+	text-align:center;
+	width:75%;
 }
 table.barGraph td{
 	padding-left:2%;
