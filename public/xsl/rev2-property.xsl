@@ -634,11 +634,10 @@
 		<xsl:param name="propCount" select="1" />
 		
 		<xsl:variable name="barWidth">
-				<xsl:value-of>
-						<xsl:attribute name="select">
-								1
-						</xsl:attribute>
-				</xsl:value-of>
+				<xsl:call-template name="makeBarWidth">
+						<xsl:with-param name="propMaxCount" select="$propMaxCount" />
+						<xsl:with-param name="propCount" select="$propCount" />
+				</xsl:call-template>
 		</xsl:variable>
 		
 		<tr>
@@ -655,23 +654,25 @@
 <xsl:template name="makeBarWidth">
 		<xsl:param name="propMaxCount" select="1" />
 		<xsl:param name="propCount" select="1" />
+		<xsl:variable name="actPropCount">
+				<xsl:choose>
+						<xsl:when test="$propCount &gt; $propMaxCount">
+								<xsl:value-of select="$propMaxCount"/>
+						</xsl:when>
+						<xsl:otherwise>
+								<xsl:value-of select="$propCount"/>
+						</xsl:otherwise>
+				</xsl:choose>
+		</xsl:variable>
 		<xsl:choose>
-				<xsl:when test="$propCount &gt; $propMaxCount">
-						<xsl:variable name="actPropCount" select="$propMaxCount"/>
-				</xsl:when>
+				<xsl:when test="$propMaxCount &lt; 1">1</xsl:when>
 				<xsl:otherwise>
-						<xsl:variable name="actPropCount" select="$propCount"/>
+						<xsl:choose>
+								<xsl:when test="round(($actPropCount div $propMaxCount)*100) &lt; 1">1</xsl:when>
+								<xsl:otherwise><xsl:value-of select="round(($actPropCount div $propMaxCount)*100)"/></xsl:otherwise>
+						</xsl:choose>
 				</xsl:otherwise>
 		</xsl:choose>
-		<xsl:choose>
-				<xsl:when test="round(($actPropCount div $propMaxCount)*100) &lt; 1">
-						1
-				</xsl:when>
-				<xsl:otherwise>
-						<xsl:value-of select="round(($actPropCount div $propMaxCount)*100)"/>
-				</xsl:otherwise>
-		</xsl:choose>
-
 </xsl:template>
 
 
