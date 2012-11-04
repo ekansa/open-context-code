@@ -151,23 +151,13 @@ class dbXML_xmlProperty  {
 						  $elementB->appendChild($elementC);
 					 }
 					 
-					 $docType = "";
-					 $searchType = "/search/?";
-					 if($sumKey == "spatialUnit"){
-						  $searchType = "/sets/?";
+					 if(array_key_exists("maxCount", $varSum)){
+						  $elementC = $doc->createElement("oc:propMaxCount");
+						  $elementCtext = $doc->createTextNode($varSum["maxCount"]);
+						  $elementC->appendChild($elementCtext);
+						  $elementB->appendChild($elementC);
 					 }
-					 elseif($sumKey == "resource"){
-						  $docType = "&doctype=".urlencode("image||external");
-					 }
-					 elseif($sumKey == "diary"){
-						  $docType = "&doctype=document";
-					 }
-					 elseif($sumKey == "project"){
-						  $docType = "&doctype=project";
-					 }
-					 elseif($sumKey == "person"){
-						  $docType = "&doctype=person";
-					 }
+					 
 			  
 					 if(array_key_exists("nominalGraph", $varSum)){
 						  
@@ -182,10 +172,9 @@ class dbXML_xmlProperty  {
 						  
 						  foreach($varSum["nominalGraph"] as $propIDkey => $barData){
 						 
-								$setQuery = $searchType.($itemObj->queryPrefix).urlencode("::".$barData["text"]).$docType;
 								$elementD = $doc->createElement("oc:bar");
 								$elementD->setAttribute("count", $barData["count"]);
-								$elementD->setAttribute("setURI", $setQuery );
+								$elementD->setAttribute("setURL", $barData["setURL"] );
 								$elementDtext = $doc->createTextNode($barData["text"]);
 								$elementD->appendChild($elementDtext);
 								$elementC->appendChild($elementD);
@@ -207,13 +196,11 @@ class dbXML_xmlProperty  {
 						  
 						  foreach($varSum["histogram"] as $barData){
 						 
-								$setQuery = $searchType.($itemObj->queryPrefix).urlencode("::>=".$barData["lowVal"]).",".urlencode("<".$barData["highVal"]).$docType;
-								
 								$elementD = $doc->createElement("oc:bar");
 								$elementD->setAttribute("low", $barData["lowVal"]);
 								$elementD->setAttribute("high", $barData["highVal"]);
 								$elementD->setAttribute("count", $barData["count"]);
-								$elementD->setAttribute("setURI", $setQuery );
+								$elementD->setAttribute("setURL", $barData["setURL"] );
 								$elementDtext = $doc->createTextNode($barData["lowVal"]." to ".$barData["highVal"]);
 								$elementD->appendChild($elementDtext);
 								$elementC->appendChild($elementD);
@@ -397,6 +384,14 @@ class dbXML_xmlProperty  {
     }//end function
     
     
-    
+    function nameSpaces(){
+		  $nameSpaceArray = array("oc" => self::NSocSpace,
+					  "dc" => OpenContext_OCConfig::get_namespace("dc"),
+					  "arch" => self::NSarchaeoML,
+					  "gml" => OpenContext_OCConfig::get_namespace("gml"),
+					  "kml" => OpenContext_OCConfig::get_namespace("kml"));
+		  
+		  return $nameSpaceArray;
+    }
     
 }  

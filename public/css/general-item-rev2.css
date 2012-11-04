@@ -59,3 +59,25 @@ p.tinyText {
 	width: 88px;
 	height: 31px;
 }
+table.barGraph {
+	width: 100%;
+	background-color: #fff;
+}
+table.barGraph th{
+	padding:2%;
+}
+table.barGraph td{
+	padding-left:2%;
+	padding-right:2%;
+}
+td.barName{
+	vertical-align: middle;
+	text-align: right;
+}
+div.barGraphBar {
+	margin-left:5px;
+	height: 26px;
+	text-align:center;
+	padding-top:12px;
+	background-color: #DCDCDC; 
+}

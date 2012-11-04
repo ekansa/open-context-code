@@ -443,6 +443,10 @@ class dbXML_dbPropitem  {
 					 }
 					 else{
 						  $gap = round((( $maxVal - $minVal) / $this->gapCount), 2);
+						  if(stristr($varType, "int")){
+								$gap = round($gap, 0);
+						  }
+						  
 						  $requestParams = array("range" => ($this->varLabel."::". $minVal.",". $maxVal.",".$gap),
 														 "proj" => $projectName
 														 );
@@ -482,6 +486,7 @@ class dbXML_dbPropitem  {
 						  else{
 								$histoResult = $this->formatSolrStatsRange($solrResult, $sType);
 								if(is_array($histoResult)){
+									 $histoResult["solrQ"] = $SolrSearch->queryString;
 									 if(isset($histoResult["totalCount"]) && isset($histoResult["histogram"])){
 										  if(count($histoResult["histogram"])>0){
 												$solrResults[$sType] = $histoResult;
@@ -598,15 +603,28 @@ class dbXML_dbPropitem  {
 						  if(stristr($this->varType, "calend")){
 								$calGap = str_replace("YEAR", " year", $gap);
 								$calGap = str_replace("DATE", " day", $calGap);
+								//$calGap.= " +1 day";
+								$taxSet = "cal"; //ask range query for a calendric type
 						  }
+						  elseif(stristr($this->varType, "integer")){
+								$taxSet = "int"; //ask range query for an integer type
+						  }
+						  else{
+								$taxSet = "dec"; //ask range query for a decimal type
+						  }
+						  
 						  
 						  $i = 0;
 						  $numFacets = count($fieldData["counts"]);
 						  $totalCount = 0;
+						  $maxCount = 0;
 						  $highComp = "<";
 						  foreach($fieldData["counts"] as $lowVal => $count ){
 								$i++;
 								$totalCount = $totalCount + $count;
+								if($maxCount < $count){
+									 $maxCount = $count;
+								}
 								
 								if(stristr($this->varType, "calend")){
 									 $highVal = strtotime($lowVal.$calGap);
@@ -616,6 +634,9 @@ class dbXML_dbPropitem  {
 								else{
 									 $lowVal = $lowVal + 0;
 									 $highVal = $lowVal + $gap;
+									 if($highVal > $maxValue){
+										  $highVal = $maxValue;
+									 }
 								}
 								$actInterval = array(
 														  "lowVal" => $lowVal,
@@ -631,7 +652,7 @@ class dbXML_dbPropitem  {
 									 if($i == $numFacets){ //the highest value interval needs to have a <= comparator, otherwise highest values will be missed
 										  $highComp = "<=";
 									 }
-									 $queryURL .= "&taxa%5B%5D=".urlencode($this->varLabel."::>=".$lowVal.",".$highComp.$highVal);
+									 $queryURL .= "&taxa%5B%5D=".urlencode($this->varLabel."::".$taxSet.",>=".$lowVal.",".$highComp.$highVal);
 									 
 									 $actInterval["setURL"] = $queryURL;
 								}
@@ -640,6 +661,7 @@ class dbXML_dbPropitem  {
 						  }
 						  
 						  $output = array("totalCount" => $totalCount,
+								  "maxCount" => $maxCount,
 								  "min" => $minValue,
 								  "max" => $maxValue,
 								  "gap" => $gap,
@@ -716,6 +738,7 @@ class dbXML_dbPropitem  {
 								}
 								
 								$output = array("totalCount" => $totalCount,
+								  "maxCount" => $maxValue,
 								  "min" => $minValue,
 								  "max" => $maxValue,
 								  "nominalGraph" => $nominalGraph);

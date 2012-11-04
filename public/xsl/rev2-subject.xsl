@@ -290,7 +290,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 																																		</td>
 																																		<td>
 																																		  <xsl:choose>
-																																				<xsl:when test="oc:var_label[@type = 'nominal' or @type = 'integer' or @type = 'decimal']">
+																																				<xsl:when test="oc:var_label[@type = 'nominal' or @type = 'integer' or @type = 'decimal' or @type = 'calendar']">
 																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
 																																				</xsl:when>
 																																				<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'true')">

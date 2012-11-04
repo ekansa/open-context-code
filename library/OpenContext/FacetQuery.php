@@ -1084,11 +1084,29 @@ class OpenContext_FacetQuery {
 		}
 		
 		$numeric_term = "";
-		if(count($valArray)<=2){
+		if(count($valArray)<=3){
 			
 			$intField = $fieldHash.$intSuffix;
-			$decField = $fieldHash.$decSuffix;
-			$calField = $fieldHash."_tax_cal";
+		   $decField = $fieldHash.$decSuffix;
+		   $calField = $fieldHash."_tax_cal";
+			
+			if($valArray[0] == "int" || $valArray[0] == "dec" || $valArray[0] == "cal"){
+					 if($valArray[0] == "int"){
+								$decField = false;
+								$calField = false;
+					 }
+					 elseif($valArray[0] == "dec"){
+								$intField = false;
+								$calField = false;
+					 }
+					 elseif($valArray[0] == "cal"){
+								$intField = false;
+								$decField = false;
+					 }
+					 unset($valArray[0]);
+			}
+			
+			
 			
 			$exps = array();
 			foreach($valArray as $actVal){
@@ -1130,21 +1148,30 @@ class OpenContext_FacetQuery {
 						//we're doing a comparative expression
 						if(substr($actVal, 1, 1) != "="){
 							//we need to EXCLUDE the value!
-							$numExpression = "";
-							if($cleanDecimal != false){
-								$numExpression = $intField.":".$cleanInteger." || ".$decField.":".$cleanDecimal;
+							
+							$excludes = array();
+							$excludes[] = OpenContext_FacetQuery::addNumCalTerm($intField, $cleanInteger, "");
+							$excludes[] = OpenContext_FacetQuery::addNumCalTerm($decField, $cleanDecimal, "");
+							if($cleanCalendar != false && $calField != false){
+								$excludes[] = $calField.":[".$cleanCalendar." TO ".$cleanCalendar."] ";
 							}
-							if($cleanCalendar != false){
-								$calExpression = $calField.":[".$cleanCalendar." TO ".$cleanCalendar."] ";
-								if(strlen($numExpression)>1){
-										  $calExpression = " || ".$calExpression;
+					      $excludeAll = "";
+							foreach($excludes as $exItem){
+								if(strlen($exItem)>1){
+										  if(strlen($excludeAll)>1){
+												$exItem = " || ".$exItem;	 
+										  }
+										  $excludeAll .= $exItem;
 								}
 							}
+							
+							if(strlen($excludeAll) > 1){
+								$actExpression["not"] = " && NOT(".$excludeAll.")";
+							}
 							else{
-								$calExpression = "";
+								$actExpression["not"] = "";
 							}
 							
-							$actExpression["not"] = " && NOT(".$numExpression.$calExpression.")";
 						}
 						else{
 							//no exclusion (or =) is OK
@@ -1159,23 +1186,9 @@ class OpenContext_FacetQuery {
 			
 			if(count($exps) == 2){
 					 if($exps[0]["comp"] != false && $exps[1]["comp"] != false ){
-								
-								if($exps[0]["dec"] != false && $exps[1]["dec"] != false){
-										  $rangeInt = " || (".$intField.":[".$exps[0]["int"]." TO ".$exps[1]["int"]."]) ";
-										  $rangeDec = " || (".$decField.":[".$exps[0]["dec"]." TO ".$exps[1]["dec"]."]) ";
-								}
-								else{
-										  $rangeInt = "";
-										  $rangeDec = "";
-								}
-								
-								if($exps[0]["cal"] != false && $exps[1]["cal"] != false ){
-										  $rangeCal = " || (".$calField.":[".$exps[0]["cal"]." TO ".$exps[1]["cal"]."]) ";
-								}
-								else{
-										  $rangeCal = "";
-								}
-								
+								$rangeInt = OpenContext_FacetQuery::addNumCalRangeTerm($intField, $exps[0]["int"], $exps[1]["int"], "||");
+								$rangeDec = OpenContext_FacetQuery::addNumCalRangeTerm($decField, $exps[0]["dec"], $exps[1]["dec"], "||");
+								$rangeCal = OpenContext_FacetQuery::addNumCalRangeTerm($calField, $exps[0]["cal"], $exps[1]["cal"], "||");
 								$numeric_term = $rangeInt.$rangeDec.$rangeCal.$exps[0]["not"].$exps[1]["not"]; //final expression of query
 					 }
 			}
@@ -1183,43 +1196,22 @@ class OpenContext_FacetQuery {
 					 $rangeInt = "";
 					 $rangeDec = "";
 					 if($exps[0]["comp"] == ">"){
-								if($exps[0]["dec"] != false){
-										  $rangeInt = " || (".$intField.":[".$exps[0]["int"]." TO *) ";
-										  $rangeDec = " || (".$decField.":[".$exps[0]["dec"]." TO *) ";
-								}
-								if($exps[0]["cal"] != false && $exps[1]["cal"] != false ){
-										  $rangeCal = " || (".$calField.":[".$exps[0]["cal"]." TO *) ";
-								}
-								else{
-										  $rangeCal = "";
-								}
+								$rangeInt = OpenContext_FacetQuery::addNumCalRangeTerm($intField, $exps[0]["int"], "*", "||");
+								$rangeDec = OpenContext_FacetQuery::addNumCalRangeTerm($decField, $exps[0]["dec"], "*", "||");
+								$rangeCal = OpenContext_FacetQuery::addNumCalRangeTerm($calField, $exps[0]["cal"], "*", "||");
 								$numeric_term = $rangeInt.$rangeDec.$rangeCal.$exps[0]["not"]; //final expression of query
 					 }
 					 elseif($exps[0]["comp"] == "<"){
-								if($exps[0]["dec"] != false){
-										  $rangeInt = " || (".$intField.":[* TO ".$exps[0]["int"]."]) ";
-										  $rangeDec = " || (".$decField.":[* TO ".$exps[0]["dec"]."]) ";
-								}
-								if($exps[0]["cal"] != false && $exps[1]["cal"] != false ){
-										  $rangeCal = " || (".$calField.":[* TO ".$exps[0]["cal"]."]) ";
-								}
-								else{
-										  $rangeCal = "";
-								}
+								$rangeInt = OpenContext_FacetQuery::addNumCalRangeTerm($intField, "*", $exps[0]["int"], "||");
+								$rangeDec = OpenContext_FacetQuery::addNumCalRangeTerm($decField, "*", $exps[0]["dec"], "||");
+								$rangeCal = OpenContext_FacetQuery::addNumCalRangeTerm($calField, "*", $exps[0]["cal"], "||");
 								$numeric_term = $rangeInt.$rangeDec.$rangeCal.$exps[0]["not"]; //final expression of query
 					 }
 					 else{
-								if($exps[0]["dec"] != false){
-										  $rangeInt = " || (".$intField.":".$exps[0]["int"].") ";
-										  $rangeDec = " || (".$decField.":".$exps[0]["dec"].") ";
-								}
-								if($exps[0]["cal"] != false){
-										  $rangeCal = " || (".$calField.":".$exps[0]["cal"].") ";
-								}
-								else{
-										  $rangeCal = "";
-								}
-								$numeric_term = $rangeInt.$rangeDec.$rangeCal; //final expression of query
+								$termInt = OpenContext_FacetQuery::addNumCalTerm($intField, $exps[0]["int"], "||");
+								$termDec = OpenContext_FacetQuery::addNumCalTerm($decField, $exps[0]["dec"], "||");
+								$termCal = OpenContext_FacetQuery::addNumCalTerm($calField, $exps[0]["cal"], "||");
+								$numeric_term = $rangeInt.$termDec.$termCal; //final expression of query
 					 }
 			}
 		}
@@ -1228,9 +1220,22 @@ class OpenContext_FacetQuery {
 	
 	
 	
+//makes a query term only if the query field is not false
+ public static function addNumCalTerm($field, $actValA, $noneOrAnd){
+		  $output = "";
+		  if($field != false && $actValA != false){
+					 $output = " ".$noneOrAnd." (".$field.":".$actValA.") ";
+		  }
+		  return $output;
+ }
 
-
-
+public static function addNumCalRangeTerm($field, $actValA, $actValB, $noneOrAnd){
+		  $output = "";
+		  if($field != false && $actValA != false && $actValB != false){
+					 $output = " ".$noneOrAnd." (".$field.":[".$actValA." TO ".$actValB."]) ";
+		  }
+		  return $output;
+ }
 
 
 

@@ -293,13 +293,13 @@ class Property {
     
     
     function nameSpaces(){
-	$nameSpaceArray = array("oc" => self::OC_namespaceURI,
-			   "dc" => OpenContext_OCConfig::get_namespace("dc"),
-			   "arch" => OpenContext_OCConfig::get_namespace("arch", "property"),
-			   "gml" => OpenContext_OCConfig::get_namespace("gml"),
-			   "kml" => OpenContext_OCConfig::get_namespace("kml"));
-	
-	return $nameSpaceArray;
+		  $nameSpaceArray = array("oc" => self::OC_namespaceURI,
+					  "dc" => OpenContext_OCConfig::get_namespace("dc"),
+					  "arch" => OpenContext_OCConfig::get_namespace("arch", "property"),
+					  "gml" => OpenContext_OCConfig::get_namespace("gml"),
+					  "kml" => OpenContext_OCConfig::get_namespace("kml"));
+		  
+		  return $nameSpaceArray;
     }
     
     

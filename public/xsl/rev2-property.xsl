@@ -190,84 +190,61 @@
 																<xsl:choose>
 																		<xsl:when test="$num_Summaries &gt; 1">
 																				<xsl:attribute name="class">item-multi-obs</xsl:attribute>
-																				<ul class="nav nav-tabs">
+																				<ul class="nav nav-tabs" id="obsTabs">
 																						<xsl:for-each select="//oc:propStats">
 																								<li>
-																										<xsl:choose>
-																												<xsl:when test="@observeType = 'spatialUnit'">
-																														Locations and Objects
-																												</xsl:when>
-																												<xsl:when test="@observeType = 'resource'">
-																														Media
-																												</xsl:when>
-																												<xsl:when test="@observeType = 'person'">
-																														People and Organizations
-																												</xsl:when>
-																												<xsl:when test="@observeType = 'project'">
-																														Projects and Collections
-																												</xsl:when>
-																												<xsl:when test="@observeType = 'diary'">
-																														Documents
-																												</xsl:when>
-																												<xsl:otherwise></xsl:otherwise>
-																										</xsl:choose>
+																										<a><xsl:attribute name="href">#obs-<xsl:value-of select="position()"/></xsl:attribute>
+																										<xsl:call-template name="summaryTypes">
+																										<xsl:with-param name="observeType" select="@observeType"/>
+																												</xsl:call-template>
+																										</a>
 																								</li>
 																						</xsl:for-each>
 																				</ul>
 																				<div class="tab-content">
 																						<xsl:for-each select="//oc:propStats">
 																								<div>
-																										<xsl:if test="position() != 1">
+																										<xsl:attribute name="id">obs-<xsl:value-of select="position()"/></xsl:attribute>
+																										<xsl:if test="position() = 1">
 																												<xsl:attribute name="class">tab-pane fade in active</xsl:attribute>
 																										</xsl:if>
 																										<xsl:if test="position() != 1">
 																												<xsl:attribute name="class">tab-pane fade</xsl:attribute>
 																										</xsl:if>
-																										<h5>Property Summary: 
-																												<xsl:choose>
-																														<xsl:when test="@observeType = 'spatialUnit'">
-																																Locations and Objects
-																														</xsl:when>
-																														<xsl:when test="@observeType = 'resource'">
-																																Media
-																														</xsl:when>
-																														<xsl:when test="@observeType = 'person'">
-																																People and Organizations
-																														</xsl:when>
-																														<xsl:when test="@observeType = 'project'">
-																																Projects and Collections
-																														</xsl:when>
-																														<xsl:when test="@observeType = 'diary'">
-																																Documents
-																														</xsl:when>
-																														<xsl:otherwise></xsl:otherwise>
-																												</xsl:choose>
+																										<h5>Property Summary:
+																												<xsl:call-template name="summaryTypes">
+																														<xsl:with-param name="observeType" select="@observeType"/>
+																												</xsl:call-template>
 																										</h5>
 																								</div>
 																						</xsl:for-each>
 																				</div>
 																		</xsl:when>
 																		<xsl:otherwise>
-																				<h5>Property Summary: 
-																						<xsl:choose>
-																								<xsl:when test="//oc:propStats/@observeType = 'spatialUnit'">
-																										Locations and Objects
-																								</xsl:when>
-																								<xsl:when test="//oc:propStats/@observeType = 'resource'">
-																										Media
-																								</xsl:when>
-																								<xsl:when test="//oc:propStats/@observeType = 'person'">
-																										People and Organizations
-																								</xsl:when>
-																								<xsl:when test="//oc:propStats/@observeType = 'project'">
-																										Projects and Collections
-																								</xsl:when>
-																								<xsl:when test="//oc:propStats/@observeType = 'diary'">
-																										Documents
-																								</xsl:when>
-																								<xsl:otherwise></xsl:otherwise>
-																						</xsl:choose>
-																				</h5>
+																				<xsl:for-each select="//oc:propStats">
+																						<h5>Property Summary: 
+																								<xsl:call-template name="summaryTypes">
+																										<xsl:with-param name="observeType" select="@observeType"/>
+																								</xsl:call-template>
+																						</h5>
+																						<table class="table table-hover table-bordered table-condensed barGraph">
+																								<thead>
+																										<tr>
+																												<th style="width:25%;">Values</th><th style="width:75%;">Count</th>
+																										</tr>		
+																								</thead>
+																								<tbody>
+																										<xsl:for-each select="oc:graphData/oc:bar">
+																												<xsl:call-template name="makeBar">
+																														<xsl:with-param name="propMaxCount" select="//parent::oc:propMaxCount" />
+																														<xsl:with-param name="setURL" select="@setURL" />
+																														<xsl:with-param name="propVal" select="." />
+																														<xsl:with-param name="propCount" select="@count" />
+																												</xsl:call-template>
+																										</xsl:for-each>
+																								</tbody>
+																						</table>
+																				</xsl:for-each>
 																		</xsl:otherwise>
 																</xsl:choose>
 																
@@ -608,96 +585,74 @@
 						</div> <!-- end main des bottom row -->
 				</div> <!-- end main des tab -->
 		</div> <!-- end main des -->
-		
-				<xsl:comment>
-				BEGIN COINS metadata (for Zotero)
-				</xsl:comment>
-				
-				<span class="Z3988">
-					<xsl:attribute name="title"><xsl:value-of select="$fixedCOINS"/></xsl:attribute>
-				</span>
-				
-				<xsl:comment>
-				END COINS metadata (for Zotero)
-				</xsl:comment>
-		
-		
-		<!--
-		<div id="footer">
-		
-		<div id="w3c_val_logo">
-		<a href="http://validator.w3.org/check?uri=referer"><img
-				  src="http://www.w3.org/Icons/valid-xhtml-rdfa"
-				  alt="Valid XHTML + RDFa" height="31" width="88" /></a>
-		</div>
-		
-		
-		<xsl:comment>
-		Code for licensing information
-		</xsl:comment>
-		
-		<div id="all_lic">
-		<div id="lic_pict">
-		<a>
-			<xsl:attribute name="href"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
-			<img width='88' height='31' style='border:none;'> 
-			  <xsl:attribute name="src"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_icon_URI"/></xsl:attribute>
-			  <xsl:attribute name="alt"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_name"/></xsl:attribute>
-			</img>
-		</a>
-		</div>
-		
-		<div class="tinyText" id="licarea"> 
-		To the extent to which copyright applies, this content is licensed with:<a>
-				<xsl:attribute name="rel">license</xsl:attribute>
-				<xsl:attribute name="href"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_name"/>
-						<xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_vers"/>&#32;License
-			</a> Attribution Required: <a href='javascript:showCite()'>Citation</a>, and hyperlinks for online uses.
-			<div style="width:0px; overflow:hidden;">
-				<a xmlns:cc="http://creativecommons.org/ns#">
-					<xsl:attribute name="href"><xsl:value-of select="atom:feed/atom:entry/arch:persont/oc:metadata/dc:identifier"/></xsl:attribute>
-					<xsl:attribute name="property">cc:attributionName</xsl:attribute>
-					<xsl:attribute name="rel">cc:attributionURL</xsl:attribute>
-					<xsl:value-of select="$citation"/>
-				</a>
-			</div>
-		</div>
-		
-		<div style="display:none;">
-				<div property="dc:title"><xsl:value-of select="//oc:metadata/dc:title"/></div>
-				<div property="dc:date"><xsl:value-of select="//oc:metadata/dc:date"/></div>
-				
-				<xsl:for-each select="//oc:metadata/dc:creator">
-				<div rel="dc:creator"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute></div>
-				<div property="rdfs:label"><xsl:attribute name="about"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></div>
-				</xsl:for-each>
-				
-				<xsl:for-each select="//oc:metadata/dc:contributor">
-				<div rel="dc:contributor"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute></div>
-				<div property="rdfs:label"><xsl:attribute name="about"><xsl:value-of select="@href"/></xsl:attribute>
-				<xsl:value-of select="."/></div>
-				</xsl:for-each>
-				
-				<div rel="dc:publisher"><xsl:attribute name="href">http://opencontext.org</xsl:attribute></div>
-				<div property="rdfs:label"><xsl:attribute name="about">http://opencontext.org</xsl:attribute>Open Context</div>
-				
-		</div>
-		
-		
-		
-		
-		
-		</div>
-		<xsl:comment>
-		END Code for licensing information
-		</xsl:comment>
-		
-		
-		
-		</div>
-		-->
-		
 </div>
 
 </xsl:template>
+
+
+
+
+
+
+
+<!-- Template for navigating observation tabs -->
+<xsl:template name="summaryTypes">
+  
+		<xsl:param name="observeType" select="spatial" />
+		<xsl:choose>
+				<xsl:when test="$observeType = 'spatial'">
+						Locations and Objects
+				</xsl:when>
+				<xsl:when test="$observeType = 'image'">
+						Image
+				</xsl:when>
+				<xsl:when test="$observeType = 'media'">
+						Media
+				</xsl:when>
+				<xsl:when test="$observeType = 'person'">
+						People and Organizations
+				</xsl:when>
+				<xsl:when test="$observeType = 'project'">
+						Projects and Collections
+				</xsl:when>
+				<xsl:when test="$observeType = 'document'">
+						Documents
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
+		
+</xsl:template>
+
+
+
+
+<!-- Template for a bar in a bar graph -->
+<xsl:template name="makeBar">
+		<xsl:param name="propMaxCount" select="1" />
+		<xsl:param name="setURL" select="1" />
+		<xsl:param name="propVal" select="1" />
+		<xsl:param name="propCount" select="1" />
+		<tr>
+				<td class="barName"><a><xsl:attribute name="href"><xsl:value-of select="$setURL"/></xsl:attribute><xsl:value-of select="$propVal"/></a></td>
+				<td>
+						<div class="barGraphBar">
+								<xsl:attribute name="style">width:<xsl:value-of select="round(($propCount div $propMaxCount)*100)"/>%;</xsl:attribute>
+								(<xsl:value-of select="$propCount"/>)
+						</div>
+				</td>
+		</tr>
+</xsl:template>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </xsl:stylesheet>
