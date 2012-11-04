@@ -154,7 +154,7 @@
 										<img width='40' height='40'><xsl:attribute name="src">/images/item_view/project_icon.jpg</xsl:attribute><xsl:attribute name="alt">Project or Organization</xsl:attribute></img>
 								</div>
 								<div id="item_top_name_cell">
-										<h1>Property: <xsl:value-of select="//arch:property/arch:name/arch:string"/></h1>
+										<h1>Property: <xsl:value-of select="//oc:propVariable"/></h1>
 										<h2>Project: <a><xsl:attribute name="href">../projects/<xsl:if test="//arch:property/@ownedBy !=0"><xsl:value-of select="//arch:property/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="//arch:property/oc:metadata/oc:project_name"/></a>
 										</h2>
 								</div>       
@@ -188,7 +188,7 @@
 														
 														<div>
 																<xsl:choose>
-																		<xsl:when test="$num_Summaries &gt; 1">
+																		<xsl:when test="$num_Summaries &gt; 0">
 																				<xsl:attribute name="class">item-multi-obs</xsl:attribute>
 																				<ul class="nav nav-tabs" id="obsTabs">
 																						<xsl:for-each select="//oc:propStats">
@@ -216,6 +216,23 @@
 																														<xsl:with-param name="observeType" select="@observeType"/>
 																												</xsl:call-template>
 																										</h5>
+																										<table class="table table-hover table-bordered table-condensed barGraph">
+																												<thead>
+																														<tr>
+																																<th style="width:25%;">Values</th><th style="width:75%;">Count</th>
+																														</tr>		
+																												</thead>
+																												<tbody>
+																														<xsl:for-each select="oc:graphData/oc:bar">
+																																<xsl:call-template name="makeBar">
+																																		<xsl:with-param name="propMaxCount" select="//parent::oc:propMaxCount" />
+																																		<xsl:with-param name="setURL" select="@setURL" />
+																																		<xsl:with-param name="propVal" select="." />
+																																		<xsl:with-param name="propCount" select="@count" />
+																																</xsl:call-template>
+																														</xsl:for-each>
+																												</tbody>
+																										</table>
 																								</div>
 																						</xsl:for-each>
 																				</div>

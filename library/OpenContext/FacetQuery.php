@@ -732,6 +732,7 @@ class OpenContext_FacetQuery {
 			$param_array["stats"][] = "true";
 			foreach($statsData as $statsField){
 				$param_array["stats.field"][] = sha1($statsField)."_tax_dec";
+				$param_array["stats.field"][] = sha1($statsField)."_tax_int";
 				$param_array["stats.field"][] = sha1($statsField)."_tax_cal";
 			}
 		}
@@ -749,25 +750,26 @@ class OpenContext_FacetQuery {
 					$rangeFieldParams = explode("::", $rangeFieldSettings);
 					$rawSettings = $rangeFieldParams[count($rangeFieldParams)-1]; //the last item in the array
 					$rangeField = str_replace("::".$rawSettings, "", $rangeFieldSettings); //the actual field name
-					if(substr_count($rawSettings, ",") >= 2){
+					if(substr_count($rawSettings, ",") == 3){
 						$settings = explode(",", $rawSettings);
-						if(count($settings) == 3){
-							$rangeField = sha1($rangeField)."_tax_dec";
-							
+						$fieldSuffix = "_tax_dec";
+						if($settings[0] == "int"){
+								$fieldSuffix = "_tax_int";
 						}
-						elseif(count($settings) == 4){
-							$rangeField = sha1($rangeField)."_tax_cal";
-							$settings[0] = date("Y-m-d", strtotime($settings[0]));
-							$settings[0] = $settings[0]."T00:00:00.001Z";
-							$settings[1] = date("Y-m-d", strtotime($settings[1]));
-							$settings[1] = $settings[1]."T00:00:00.001Z";
+						elseif($settings[0] == "cal"){
+								$fieldSuffix = "_tax_cal";
+						}
+						$rangeField = sha1($rangeField).$fieldSuffix;
+						if($fieldSuffix == "_tax_cal"){
+							$settings[1] = date("Y-m-d\TH:i:s\Z", strtotime($settings[1]));
+							$settings[2] = date("Y-m-d\TH:i:s\Z", strtotime($settings[2]));
 						}
 						$param_array["stats"][] = "true";
 						$param_array["stats.field"][] = $rangeField;
 						$param_array["facet.range"][] = $rangeField;
-						$param_array["f.".$rangeField.".facet.range.start"] = $settings[0]; //1st number in the settings array as start
-						$param_array["f.".$rangeField.".facet.range.end"] = $settings[1]; //2nd number in the settins array as end
-						$param_array["f.".$rangeField.".facet.range.gap"] = $settings[2]; //3rd number in the settins array as gap
+						$param_array["f.".$rangeField.".facet.range.start"] = $settings[1]; //1st number in the settings array as start
+						$param_array["f.".$rangeField.".facet.range.end"] = $settings[2]; //2nd number in the settins array as end
+						$param_array["f.".$rangeField.".facet.range.gap"] = $settings[3]; //3rd number in the settins array as gap
 					}
 				}
 			}

@@ -424,20 +424,28 @@ class dbXML_dbPropitem  {
 				$solrResult = $SolrSearch->generalSearch();
 				if(!$solrResult){
 					 $this->solrResults = array("error" => $SolrSearch->queryString);
+					 $statsResult = false;
 				}
 				else{
+					 //solr is returning some results!
+					 $statsResult = $this->formatSolrStatsRange($solrResult);
+					 $this->solrResultPersonCheck($solrResult);
+					 if(count($statsResult)<1){
+						  $statsResult = false;
+					 }
+				}
+				
+				if(is_array($statsResult)){
 					 //solr is returning some stats!
 					 $statsResult = $this->formatSolrStatsRange($solrResult);
 					 $this->solrResultPersonCheck($solrResult);
-					 
-					 //$solrResults["all"] = $solrResult;
-					 //$solrResults["general"] = $statsResult;
-					 //$solrResults["general"]["query"] =  $SolrSearch->queryString;
+	 
 					 $minVal = $statsResult["min"];
 					 $maxVal = $statsResult["max"];
-					 
+					
+		  
 					 if(stristr($varType, "calend")){
-						  $requestParams = array("range" => ($this->varLabel."::". $minVal.",".$maxVal.","."+1YEAR,c"),
+						  $requestParams = array("range" => ($this->varLabel."::cal,".$minVal.",".$maxVal.","."+1YEAR"),
 														 "proj" => $projectName
 														 );
 					 }
@@ -445,9 +453,16 @@ class dbXML_dbPropitem  {
 						  $gap = round((( $maxVal - $minVal) / $this->gapCount), 2);
 						  if(stristr($varType, "int")){
 								$gap = round($gap, 0);
+								if($gap < 1){
+									 $gap = 1;
+								}
+								$rangeType = "int";
+						  }
+						  else{
+								$rangeType = "dec";
 						  }
 						  
-						  $requestParams = array("range" => ($this->varLabel."::". $minVal.",". $maxVal.",".$gap),
+						  $requestParams = array("range" => ($this->varLabel."::".$rangeType.",".$minVal.",". $maxVal.",".$gap),
 														 "proj" => $projectName
 														 );
 					 }
@@ -484,6 +499,7 @@ class dbXML_dbPropitem  {
 								$solrResults[$sType] = array("error" => $SolrSearch->queryString);
 						  }
 						  else{
+								//$solrResults[$sType] = $solrResult;
 								$histoResult = $this->formatSolrStatsRange($solrResult, $sType);
 								if(is_array($histoResult)){
 									 $histoResult["solrQ"] = $SolrSearch->queryString;
