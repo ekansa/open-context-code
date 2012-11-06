@@ -280,45 +280,46 @@ class dbXML_dbMetadata {
   
   
     //get names for people in a project
-    public function getPersonID($projectUUID, $personName){
-	
-	$db = $this->db;
-	
-	if($this->dbPenelope){
-	    
-	    $sql = "SELECT persons.uuid
-		    FROM persons
-		    WHERE persons.project_id = '".$projectUUID."'
-		    AND persons.combined_name LIKE '%".$personName."%'	
-		    LIMIT 1
-		    
-		    UNION
-		    
-		    SELECT users.uuid AS uuid
-		    FROM users 
-		    WHERE users.combined_name LIKE '%".$personName."%'	
-		    LIMIT 1
-		    
-		    ";
-	}
-	else{
-	    
-	    $sql = "SELECT persons.uuid
-	    FROM persons
-	    WHERE persons.project_id = '".$projectUUID."'
-	    AND persons.combined_name LIKE '%".$personName."%'	
-	    LIMIT 1;
-	    ";
-	    
-	}	
-	
-	$result = $db->fetchAll($sql, 2);
-	$personID = false;
-        if($result){
-	    $personID = $result[0]["uuid"];
-	}
-	
-	return $personID;
+    public function getPersonID($projectUUID, $personName, $forceOC = false){
+		
+		  $db = $this->db;
+		  $personName = addslashes($personName);
+		  if($this->dbPenelope && !$forceOC){
+				
+				$sql = "SELECT persons.uuid
+					FROM persons
+					WHERE persons.project_id = '".$projectUUID."'
+					AND persons.combined_name LIKE '%".$personName."%'	
+					LIMIT 1
+					
+					UNION
+					
+					SELECT users.uuid AS uuid
+					FROM users 
+					WHERE users.combined_name LIKE '%".$personName."%'	
+					LIMIT 1
+					
+					";
+		  }
+		  else{
+				
+				$sql = "SELECT persons.uuid
+				FROM persons
+				WHERE persons.project_id = '".$projectUUID."'
+				AND persons.combined_name LIKE '%".$personName."%'	
+				LIMIT 1;
+				";
+				
+		  }	
+		  
+		  //echo $sql;
+		  $result = $db->fetchAll($sql, 2);
+		  $personID = false;
+		  if($result){
+				$personID = $result[0]["uuid"];
+		  }
+		  
+		  return $personID;
         
     } //end function
     

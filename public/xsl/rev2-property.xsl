@@ -136,6 +136,17 @@
 		<xsl:value-of select="$citation"/>
 </xsl:variable>
 
+<xsl:variable name="propVariable">
+		<xsl:value-of select="/arch:property/oc:manage_info/oc:propVariable"/>
+</xsl:variable>
+
+<xsl:variable name="propValue">
+		<xsl:value-of select="/arch:property/oc:manage_info/oc:propValue"/>
+</xsl:variable>
+
+<xsl:variable name="numLinks">
+		<xsl:value-of select="count(//oc:linkedData/oc:relationLink)"/>
+</xsl:variable>
 
 
 <div id="main">
@@ -144,25 +155,32 @@
 		BEGIN Container for gDIV of general item information
 		</xsl:comment>
 		
-		<div id="item_top"> 
-				<xsl:comment>
-				This is where the item name is displayed
-				</xsl:comment>
+		<div id="item_top">
 				<div id="item_top_tab">
 						<div id="item_top_row">
 								<div id="item_top_icon_cell">
-										<img width='40' height='40'><xsl:attribute name="src">/images/item_view/project_icon.jpg</xsl:attribute><xsl:attribute name="alt">Project or Organization</xsl:attribute></img>
+										<img>
+												<xsl:attribute name="src">../images/layout/linked-data-prop.png</xsl:attribute>
+												<xsl:attribute name="alt">Property icon</xsl:attribute>
+										</img>
 								</div>
-								<div id="item_top_name_cell">
-										<h1>Property: <xsl:value-of select="//oc:propVariable"/></h1>
-										<h2>Project: <a><xsl:attribute name="href">../projects/<xsl:if test="//arch:property/@ownedBy !=0"><xsl:value-of select="//arch:property/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="//arch:property/oc:metadata/oc:project_name"/></a>
+								<div id="prop-item_top_name_cell">
+										<h1>Property: <xsl:value-of select="$propVariable"/></h1>
+										<h2>Value:
+												<xsl:choose>
+														<xsl:when test="string-length($propValue) &gt; 47">
+																<xsl:value-of select="substring($propValue,1,50)"/>...
+														</xsl:when>
+														<xsl:otherwise><xsl:value-of select="$propValue"/></xsl:otherwise>
+												</xsl:choose>
 										</h2>
-								</div>       
-								
-								<div id="item_top_view_cell">Number of Views: 
+								</div>
+								<div id="prop-item_top_des_cell">
+										<h2 class="top_detail">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:property/@ownedBy !=0"><xsl:value-of select="arch:property/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="//oc:metadata/oc:project_name"/></a></h2>
+										
 								</div>
 						</div>
-				</div>
+				</div><!--end div for the top_tab -->
 		</div>
 		
 		<xsl:comment>
@@ -182,8 +200,52 @@
 				
 				
 										<div id="prop-all-des">
-												<h4>Property Description</h4>
-
+												
+												<div id="prop-intro">
+														<table class="table table-condensed" id="prop-intro-tab">
+																<tbody>
+																		<tr>
+																				<th>Property Variable</th>
+																				<td><xsl:value-of select="$propVariable"/></td>
+																		</tr>
+																		<tr>
+																				<th>Description of Variable</th>
+																				<td>
+																						<xsl:call-template name="makeNote">
+																								<xsl:with-param name="note" select="//arch:notes/arch:note[@type='var_des']"/>
+																								<xsl:with-param name="noteType">var</xsl:with-param>
+																								<xsl:with-param name="numLinks" select="$numLinks" />
+																						</xsl:call-template>
+																				</td>
+																		</tr>
+																		<xsl:if test="//oc:manage_info/oc:propVariable/@href">
+																				<tr>
+																						<th>Unit of Measurement</th>
+																						<td>
+																								<a>
+																										<xsl:attribute name="href"><xsl:value-of select="//oc:manage_info/oc:propVariable/@href"/></xsl:attribute>
+																										<xsl:attribute name="title">Definition of unit: (<xsl:value-of select="//oc:manage_info/oc:propVariable/@abrv"/>)</xsl:attribute><xsl:value-of select="//oc:manage_info/oc:propVariable/@name"/>
+																								</a>
+																						</td>
+																				</tr>
+																		</xsl:if>
+																		<tr>
+																				<th>Property Value</th>
+																				<td><xsl:value-of select="$propValue"/></td>
+																		</tr>
+																		<tr>
+																				<th>Description of Value</th>
+																				<td>
+																						<xsl:call-template name="makeNote">
+																								<xsl:with-param name="note" select="//arch:notes/arch:note[@type='prop_des']"/>
+																								<xsl:with-param name="noteType">prop</xsl:with-param>
+																								<xsl:with-param name="numLinks" select="$numLinks" />
+																						</xsl:call-template>
+																				</td>
+																		</tr>
+																</tbody>
+														</table>
+												</div>
 												<div id="prop-sum">
 														<div>
 																<xsl:choose>
@@ -251,10 +313,12 @@
 																		<xsl:otherwise>
 																				<div id="single-prop-stats">
 																				<xsl:for-each select="//oc:propStats">
-																						<h5>Property Summary: 
+																						<h5>Summary of Values for this Property:
+																								<!--
 																								<xsl:call-template name="summaryTypes">
 																										<xsl:with-param name="observeType" select="@observeType"/>
 																								</xsl:call-template>
+																								-->
 																						</h5>
 																						<table class="table table-hover table-bordered table-condensed barGraph">
 																								<thead>
@@ -298,12 +362,17 @@
 																						</thead>
 																						<tbody>
 																								<tr>
-																										<th>Concept</th>
+																										<th>Project specific term</th>
+																										<td><xsl:value-of select="$propVariable" /></td>
+																										<td><xsl:value-of select="$propValue" /></td>
+																								</tr>
+																								<tr>
+																										<th>Related Concept</th>
 																										<td><xsl:value-of select="oc:label" /></td>
 																										<td><xsl:value-of select="oc:targetLink/oc:label" /></td>
 																								</tr>
 																								<tr>
-																										<th>Concept URI</th>
+																										<th>Related Concept URI</th>
 																										<td>
 																												<a>
 																														<xsl:attribute name="href"><xsl:value-of select="@href" /></xsl:attribute>
@@ -318,7 +387,7 @@
 																										</td>
 																								</tr>
 																								<tr>
-																										<th>Source Vocabulary or Collection</th>
+																										<th>Related Vocabulary or Collection</th>
 																										<td>
 																												<a>
 																														<xsl:attribute name="href"><xsl:value-of select="oc:vocabulary/@href" /></xsl:attribute>
@@ -339,22 +408,6 @@
 														</div>
 												</xsl:if>		
 														
-														
-														
-														
-														
-														
-														
-														
-														
-														
-														<xsl:if test="count(descendant::arch:property/arch:notes/arch:note) = 0" >
-															<p id="no-notes" class="bodyText">(This item has no additional notes)</p>
-														</xsl:if>
-														
-														<xsl:for-each select="//arch:notes/arch:note">
-															<div class="bodyText"><xsl:value-of select="arch:string" disable-output-escaping="yes" /></div><br/>
-														</xsl:for-each>
 														
 														<xsl:if test="count(descendant::arch:property/oc:metadata/oc:links/oc:link) != 0" >
 																<div id="person-links">
@@ -378,20 +431,21 @@
 														
 												</div>
 												
-										</div>
-									
-										<div id="preview">
-												<h5>Data Contributors Using this Property</h5>
-												
+										
+										
 												<xsl:if test="count(//dc:contributor) != 0">
-														<p>
-															<xsl:for-each select="//dc:contributor">
-																<a><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></a><xsl:if test="position() != last()">, </xsl:if>
-															</xsl:for-each>
-														</p>
+														<div id="prop-contribs">
+																<h5>Data Contributors Using this Property</h5>
+																<p>
+																	<xsl:for-each select="//dc:contributor">
+																		<a><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></a><xsl:if test="position() != last()">, </xsl:if>
+																	</xsl:for-each>
+																</p>
+														</div>
 												</xsl:if>
-												
 										</div>
+										<!-- end all prop sum div -->
+										
 										
 										
 										<xsl:if test="count(//arch:properties/arch:property[oc:show_val/text()]) !=0 ">
@@ -438,7 +492,7 @@
 					
 								</div> <!-- end left_des cell -->
 								<div id="right_des">
-										<div id="ed-spacer"><br/></div>
+										<!-- <div id="ed-spacer"><br/></div> -->
 										<div id="editorial">
 												<h5>Project Rreview Status</h5>
 												<div id="project-edit-status">
@@ -710,6 +764,45 @@
 		</xsl:choose>
 </xsl:template>
 
+
+
+
+<xsl:template name="makeNote">
+		<xsl:param name="note" select="1" />
+		<xsl:param name="noteType" select="1" />
+		<xsl:param name="numLinks" select="0" />
+		<xsl:choose>
+				<xsl:when test="($note) and $numLinks = 0">
+						<div class="described"><xsl:value-of select="$note"/></div>
+				</xsl:when>
+				<xsl:when test="($note) and $numLinks != 0">
+						<div class="described"><xsl:value-of select="$note"/>
+						<br/>
+						<br/>
+						See the <a href="#all-linked-data">linked data below</a> for additional description.
+						</div>
+				</xsl:when>
+				<xsl:otherwise>
+						<xsl:choose>
+						<xsl:when test="$noteType = 'var' and $numLinks = 0">
+								<div class="not-described">This variable currently has no description noted.</div>
+						</xsl:when>
+						<xsl:when test="$noteType = 'prop' and $numLinks = 0">
+								<div class="not-described">This property value currently has no description noted.</div>
+						</xsl:when>
+						<xsl:when test="$noteType = 'var' and $numLinks != 0">
+								<div class="not-described">This variable is described with the <a href="#all-linked-data">linked data below</a>.</div>
+						</xsl:when>
+						<xsl:when test="$noteType = 'prop' and $numLinks != 0">
+								<div class="not-described">This property value is described with the <a href="#all-linked-data">linked data below</a>.</div>
+						</xsl:when>
+						<xsl:otherwise>
+								<div class="not-described">This has no description noted.</div>
+						</xsl:otherwise>
+						</xsl:choose>
+				</xsl:otherwise>
+		</xsl:choose>
+</xsl:template>
 
 
 

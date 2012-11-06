@@ -199,9 +199,14 @@ class dbXML_dbPropitem  {
 				$xmlNote .= $this->propDescription.chr(13);
 				$xmlNote .= "</div>".chr(13);
 				
+				$this->varDescription = $result[0]["var_des"];
+				$xmlNote = "<div>".chr(13);
+				$xmlNote .= $this->varDescription.chr(13);
+				$xmlNote .= "</div>".chr(13);
+				
 				@$xml = simplexml_load_string($xmlNote);
 				if($xml){
-					 $this->propDesXMLok = true;
+					 $this->varDesXMLok = true;
 				}
         }
         
@@ -423,6 +428,9 @@ class dbXML_dbPropitem  {
 				$SolrSearch->number_recs = 0;
 				$SolrSearch->param_array = $param_array;
 				$SolrSearch->query = "*:*";
+				
+				//echo print_r($SolrSearch);
+				$statsResult = false;
 				$solrResult = $SolrSearch->generalSearch();
 				if(!$solrResult){
 					 $this->solrResults = array("error" => $SolrSearch->queryString);
@@ -435,6 +443,7 @@ class dbXML_dbPropitem  {
 					 if(count($statsResult)<1){
 						  $statsResult = false;
 					 }
+					 //$this->varSummary = $solrResult;
 				}
 				
 				if(is_array($statsResult)){
@@ -608,12 +617,16 @@ class dbXML_dbPropitem  {
 		  $host = OpenContext_OCConfig::get_host_config();
 		  $solrTypes = $this->solrTypes;
 		  $output = false;
+		  
 		  if(is_array($solrResult)){
+		  
 				if(isset($solrResult["facet_counts"]["facet_ranges"])){
 					 
 					 $metadataObj = $this->metadataObj;
 					 
+					 
 					 foreach($solrResult["facet_counts"]["facet_ranges"] as $fieldKey => $fieldData){
+						  
 						  $histogram = array();
 						  $maxValue = $fieldData["end"];
 						  $minValue = $fieldData["start"];
@@ -676,6 +689,7 @@ class dbXML_dbPropitem  {
 								}
 		  
 								$histogram[] = $actInterval;
+								
 						  }
 						  
 						  $output = array("totalCount" => $totalCount,
@@ -684,8 +698,11 @@ class dbXML_dbPropitem  {
 								  "max" => $maxValue,
 								  "gap" => $gap,
 								  "histogram" => $histogram);
+								  
 						  
+					
 					 }
+					 
 				}
 				
 				//get stats field data
@@ -707,10 +724,10 @@ class dbXML_dbPropitem  {
 								}
 						  }
 					 }
+					 
 				}
-				
 		  }
-	 
+		 
 		  return $output ;
 	 }//end function
 	 
@@ -756,6 +773,7 @@ class dbXML_dbPropitem  {
 								}
 								
 								$output = array("totalCount" => $totalCount,
+								  "uniqueValues" => $rank,
 								  "maxCount" => $maxValue,
 								  "min" => $minValue,
 								  "max" => $maxValue,
@@ -784,14 +802,19 @@ class dbXML_dbPropitem  {
 					 }
 					 $i = 0;
 					 foreach($solrResult["facet_counts"]["facet_fields"]["contributor"] as $personKey => $personCount){
-						  $personID = $metadataObj->getPersonID($this->projectUUID, $personKey);
-						  //$hash = sha1($this->projectUUID."contributor".$personID);
-						  //$dcContributor[$hash] = array("value" => $personKey, "itemUUID" => $personID);
-						  $dcContributors[$personID] = $personKey;
-						  $linksObj->contributors = $dcContributors;
-						  $i++;
-						  if($i > 5){
-								break;
+						  
+						  if(strlen($personKey)>0){
+								$personID = $metadataObj->getPersonID($this->projectUUID, $personKey, true);
+								//$personID = $i."-p";
+								if($personID != false){
+									 $dcContributors[$personID] = $personKey;
+									 $linksObj->contributors = $dcContributors;
+									 if($i >= 5){
+										  //echo $personKey;
+										  break;
+									 }
+									 $i++;
+								}
 						  }
 					 }
 				}
@@ -803,11 +826,13 @@ class dbXML_dbPropitem  {
 						  $dcCreators = array();
 					 }
 					 foreach($solrResult["facet_counts"]["facet_fields"]["creator"] as $personKey => $personCount){
-						  $personID = $metadataObj->getPersonID($this->projectUUID, $personKey);
-						  //$hash = sha1($this->projectUUID."contributor".$personID);
-						  //$dcCreators[$hash] = array("value" => $personKey, "itemUUID" => $personID);
-						  $dcCreators[$personID] = $personKey;
-						  $linksObj->creators =  $dcCreators;
+						  if(strlen($personKey)>0){
+								$personID = $metadataObj->getPersonID($this->projectUUID, $personKey, true);
+								if($personID != false){
+									 $dcCreators[$personID] = $personKey;
+									 $linksObj->creators =  $dcCreators;
+								}
+						  }
 					 }
 				}
 		  }

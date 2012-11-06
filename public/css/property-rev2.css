@@ -1,17 +1,61 @@
  /* Open Context Layout Property Item */
+#prop-item_top_name_cell {
+	display:table-cell;
+	text-align: left;
+	vertical-align:top;
+	padding-left:1%;
+	padding-right:5%;
+	line-height:90%;
+}
+#prop-item_top_des_cell {
+	display:table-cell;
+	vertical-align:top;
+	padding-left:2%;
+	padding-right:2%;
+	width: 30%;
+	/* line-height:95%; */
+}
+#prop-item_top_name_cell h1{
+	font-size: medium;
+	line-height:95%;
+}
+#prop-item_top_name_cell h2{
+	font-size: medium;
+}
+h2.top_detail{
+	font-size: medium;
+	line-height:95%;
+}
+#prop-intro {
+	padding: 2%;
+}
+#prop-intro-tab th{
+	vertical-align: middle;
+}
+div.described {
+	padding-top:4%;
+	padding-bottom:4%;
+	font-family: "Courier New", Courier, monospace;
+}
+div.not-described {
+	font-size: 90%;
+	/*font-family: "Courier New", Courier, monospace; */
+}
 #prop-all-des {
 	width:95%;
 }
 #all-linked-data {
+	padding:2%;
 	margin-top:4%;
 	margin-bottom: 4%;
 }
 div.linked-data {
-	padding:2%;
-	margin: 2%;
 	border-width: 1px;
 	border-style: solid;
 	border-color: #DDD;
+}
+div.linked-data h6 {
+	margin:2%;
 }
 
 #prop-sum {
@@ -96,4 +140,14 @@ div.barGraphBar {
 	text-align:center;
 	padding-top:12px;
 	background-color: #DCDCDC; 
+}
+#prop-contribs {
+	
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding:2%;
+	margin-left:2%;
+	margin-right:2%;
+	margin-bottom:5%;
 }

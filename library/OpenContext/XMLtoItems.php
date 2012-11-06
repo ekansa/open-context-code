@@ -871,6 +871,107 @@ class OpenContext_XMLtoItems {
 	
 	
 	
+	public static function linkedDataRetrieve($projectUUID, $sourceID, $itemXML){
+		$linkedData = array();
+		
+		foreach($itemXML->xpath("//arch:property") as $act_prop){
+			
+			foreach($act_prop->xpath("arch:variableID") as $act_prop_result){
+				$varUUID = $act_prop_result."";
+			}
+			
+			//get units of measurement links
+			if(($act_prop->xpath("arch:integer/@href"))||($act_prop->xpath("arch:decimal/@href"))){
+				$actVarLink = array();
+				$actVarLink["fk_project_uuid"] = $projectUUID;
+				$actVarLink["source_id"] = $sourceID;
+				$actVarLink["linkedType"] = "unit";
+				$actVarLink["itemUUID"] = $varUUID;
+				$actVarLink["itemType"] = "variable";
+				foreach($act_prop->xpath("arch:integer/@href") as $act_prop_result){
+					$actVarLink["linkedURI"] = $act_prop_result."";
+				}
+				foreach($act_prop->xpath("arch:decimal/@href") as $act_prop_result){
+					$actVarLink["linkedURI"] = $act_prop_result."";
+				}
+				foreach($act_prop->xpath("arch:integer/@name") as $act_link_result){
+					$actVarLink["linkedLabel"] = $act_link_result."";
+				}
+				foreach($act_prop->xpath("arch:decimal/@name") as $act_link_result){
+					$actVarLink["linkedLabel"] = $act_link_result."";
+				}
+				foreach($act_prop->xpath("arch:integer/@abrv") as $act_link_result){
+					$actVarLink["linkedAbrv"] = $act_link_result."";
+				}
+				foreach($act_prop->xpath("arch:decimal/@abrv") as $act_link_result){
+					$actVarLink["linkedAbrv"] = $act_link_result."";
+				}
+				
+				$actVarLink["hashID"] = md5($actVarLink["itemUUID"]."_".$actVarLink["linkedURI"]);
+				$linkedData[] = $actVarLink;
+			}
+			
+			//get type linked data
+			foreach ($act_prop->xpath("oc:linkedData/oc:relationLink") as $act_link){
+				$actVarLink = array();
+				
+				$actVarLink["fk_project_uuid"] = $projectUUID;
+				$actVarLink["source_id"] = $sourceID;
+				$actVarLink["linkedType"] = "type";
+				$actPropLink = $actVarLink;
+				
+				
+				foreach($act_link->xpath("@localID") as $act_link_result){
+					$actVarLink["itemUUID"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("@localType") as $act_link_result){
+					$actVarLink["itemType"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("@href") as $act_link_result){
+					$actVarLink["linkedURI"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:label") as $act_link_result){
+					$actVarLink["linkedLabel"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:vocabulary") as $act_link_result){
+					$actVarLink["vocabulary"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:vocabulary/@href") as $act_link_result){
+					$actVarLink["vocabURI"] = $act_link_result."";
+				}
+				
+				$actVarLink["hashID"] = md5($actVarLink["itemUUID"]."_".$actVarLink["linkedURI"]);
+				
+				
+				foreach($act_link->xpath("oc:targetLink/@localID") as $act_link_result){
+					$actPropLink["itemUUID"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:targetLink/@localType") as $act_link_result){
+					$actPropLink["itemType"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:targetLink/@href") as $act_link_result){
+					$actPropLink["linkedURI"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:targetLink/oc:label") as $act_link_result){
+					$actPropLink["linkedLabel"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:targetLink/oc:vocabulary") as $act_link_result){
+					$actPropLink["vocabulary"] = $act_link_result."";
+				}
+				foreach($act_link->xpath("oc:targetLink/oc:vocabulary/@href") as $act_link_result){
+					$actPropLink["vocabURI"] = $act_link_result."";
+				}
+				
+				$actPropLink["hashID"] = md5($actPropLink["itemUUID"]."_".$actPropLink["linkedURI"]);
+				
+				$linkedData[] = $actVarLink;
+				$linkedData[] = $actPropLink;
+			}
+		}
+		
+		return $linkedData;
+	}
+	
 	
 	
 	public static function license_lookup($licURI){

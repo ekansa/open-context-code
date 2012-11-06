@@ -2,7 +2,8 @@
 /** Zend_Controller_Action */
 require_once 'Zend/Controller/Action.php';
 ini_set("max_execution_time", "0");
-    
+//ini_set("memory_limit", "2212M");
+
 class accessionController extends Zend_Controller_Action
 {   
     
@@ -12,7 +13,7 @@ class accessionController extends Zend_Controller_Action
     }
     
     
-    public function propsNumericAction(){
+    public function propsNotesAction(){
         $this->_helper->viewRenderer->setNoRender();
         if(isset($_GET["start"])){
             $limit = $_GET["start"];
@@ -25,48 +26,100 @@ class accessionController extends Zend_Controller_Action
 		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
 		  $db->getConnection();
         
-        $sql = "SELECT properties.property_uuid,
-        properties.val_num, properties.val_date, val_tab.val_text
+        $sql = "SET collation_connection = utf8_unicode_ci;";
+        $db->query($sql, 2);
+        $sql = "SET NAMES utf8;";
+        $db->query($sql, 2);
+        
+        $sql = "SELECT properties.project_id, properties.source_id,
+        properties.property_uuid, properties.value_uuid, properties.variable_uuid
         FROM properties
-        LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
+        GROUP BY properties.variable_uuid
         LIMIT $limit, 300000
         ";
         
         $result = $db->fetchAll($sql, 2);
+        $propertyObj = new Property;
+        //$propertyObj->db = $db;
+
+        $nameSpaceArray  = $propertyObj->nameSpaces();
         foreach($result as $row){
-            $data = false;
+           
+            $projectID = $row["project_id"];
+            $sourceID = $row["source_id"];
             $propUUID = $row["property_uuid"];
-            $where = "property_uuid = '$propUUID' ";
-            $propDate = $row["val_date"];
-            $propNum = $row["val_num"];
-            $valText = $row["val_text"];
-            if(is_numeric("0".$valText)){
-                if($valText != 0 && $propNum ==0){
-                    $valText = $valText + 0;
-                    $data = array("val_num" => $valText);
+            $varUUID = $row["variable_uuid"];
+           
+            $sql = "SELECT prop_archaeoml AS xml FROM properties WHERE property_uuid = '$propUUID' LIMIT 1;";
+            $resultB = $db->fetchAll($sql, 2);
+            $xmlString = $resultB[0]["xml"];
+            
+            $varDescription = false;
+            $propDescription = false;
+            
+            @$itemXML = simplexml_load_string($xmlString );
+            if($itemXML){
+                unset($xmlString);
+               
+                
+                foreach($nameSpaceArray as $prefix => $uri){
+                    @$itemXML->registerXPathNamespace($prefix, $uri);
                 }
+                
+                //get variable description
+                if($itemXML->xpath("/arch:property/arch:notes/arch:note[@type='var_des']/arch:string")){
+                   foreach ($itemXML->xpath("/arch:property/arch:notes/arch:note[@type='var_des']/arch:string") as $xpathResult){
+                      $varDescription = (string)$xpathResult;
+                      if($varDescription == "This variable currently has no explanatory description."){
+                        $varDescription = false;
+                      }
+                   }
+                }
+                
+                //get property (variable:value) description
+                if($itemXML->xpath("/arch:property/arch:notes/arch:note[@type='prop_des']/arch:string")){
+                   foreach ($itemXML->xpath("/arch:property/arch:notes/arch:note[@type='prop_des']/arch:string") as $xpathResult){
+                      $propDescription = (string)$xpathResult;
+                      if($propDescription == "This property currently has no explanatory description."){
+                         $propDescription = false;
+                      }
+                   }
+                }
+                unset($itemXML);
+                
             }
             
-            $tooLate = strtotime("2012-10-1");
-            $propDateTime = strtotime($propDate);
-            if(!$propDateTime || $propDateTime > $tooLate){
-                $calendardTest = false;
-                $cal_test_string = str_replace("/", "-", $valText);
-                if (($timestamp = strtotime($cal_test_string)) === false) {
-                    $calendardTest = false;
-                }
-                else{
-                    $calendardTest = true;
+            
+            if( $varDescription != false){
+                
+                $where = "variable_uuid = '$varUUID' ";
+                $data = array("var_des" => $varDescription);
+                echo "<br/><br/><br/>PropID: <a href='../properties/".$propUUID."'>$propUUID</a> ($varUUID) ";
+                echo "Added var note <em>$propDescription</em><br/>";
+                $db->update("var_tab", $data, $where);
+                
+                $noteID = OpenContext_NewDocs::generateUUID();
+                $data = array("hashID" => sha1($varUUID."_".$varDescription),
+                              "project_id" => $projectID,
+                              "source_id" => $sourceID,
+                              "variable_uuid" => $varUUID,
+                              "note_uuid" => $noteID,
+                              "note_text" => $varDescription
+                              );  
+                
+                try {
+                    $db->insert("var_notes", $data);
+                } catch (Exception $e) {
+    
                 }
                
-                if($calendardTest){
-                    $valueDate = date("Y-m-d", strtotime($cal_test_string));
-                    $data = array("val_date" => $valueDate, "val_num" => 0);
-                }
             }
             
-            if(is_array($data)){
-                echo "<br/>Updating $valText in $propUUID ";
+            if( $propDescription != false){
+                $where = "property_uuid = '$propUUID' ";
+                $data = array("note" => $propDescription);
+                echo "<br/><br/><br/>PropID: <a href='../properties/".$propUUID."'>$propUUID</a> ";
+                echo "Added prop note <em>$propDescription</em><br/>";
                 $db->update("properties", $data, $where);
             }
             
@@ -161,7 +214,7 @@ class accessionController extends Zend_Controller_Action
         
         $sql = "SELECT noid_bindings.itemUUID, noid_bindings.itemType
         FROM noid_bindings
-        WHERE noid_bindings.itemType != 'table'
+        WHERE noid_bindings.itemType = 'spatial'
         AND noid_bindings.props = 0
         ";
 		

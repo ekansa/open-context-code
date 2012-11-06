@@ -624,6 +624,7 @@ class Property {
 				@$itemXML->registerXPathNamespace($prefix, $uri);
 		  }
 		  
+		  /*
 		  //deal with observations first
 		  OpenContext_XMLtoItems::obs_props_Retrieve($projectUUID, $sourceID, $itemUUID, $itemType, $itemXML, $db);
 		  
@@ -642,6 +643,16 @@ class Property {
 					 }
 				}
 		  }
+		  */
+		  $dataRecs = OpenContext_XMLtoItems::linkedDataRetrieve($projectUUID, $sourceID, $itemXML);
+		  foreach($dataRecs as $data){
+				try {
+					 $db->insert("linked_data", $data);
+				} catch (Exception $e) {
+
+				}
+		  }
+		  
 	 }
 	 
 	 

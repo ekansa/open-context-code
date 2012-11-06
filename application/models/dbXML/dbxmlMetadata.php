@@ -211,7 +211,7 @@ class dbXML_dbxmlMetadata {
     //get names for people in a project
     public function getPersonID($projectUUID, $personName){
 	
-	
+		  $personName = addslashes($personName);
 		  $db = $this->db;
 
 		  $sql = "SELECT persons.person_uuid as uuid
@@ -221,9 +221,10 @@ class dbXML_dbxmlMetadata {
 		  LIMIT 1;
 		  ";
 
+		  //echo $sql." ".
 		  $result = $db->fetchAll($sql, 2);
 		  $personID = false;
-				 if($result){
+		  if($result){
 				$personID = $result[0]["uuid"];
 		  }
 		  

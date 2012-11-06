@@ -146,15 +146,16 @@ class propertiesController extends Zend_Controller_Action
 		  //$linksObj->dbPenelope = true;
 		  //$linksObj->getLinks($itemObj->itemUUID);
 		  $itemObj->linksObj = $linksObj;
- 	  
+ 	 
 		  $metadataObj = new dbXML_dbxmlMetadata;
 		  $metadataObj->initialize($db);
 		  $metadataObj->getMetadata($itemObj->projectUUID);
 		  $itemObj->metadataObj = $metadataObj;
 		  
 		  $itemObj->makeQueryVal();
+	 
 		  $itemObj->solrDBpropertySummary();
-		
+	 
 		  header('Content-Type: application/json; charset=utf8');
 		  echo Zend_Json::encode($itemObj);
 	 }
