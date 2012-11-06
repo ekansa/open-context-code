@@ -148,7 +148,7 @@ BEGIN Container for main page content
 								<td>
 									<span class="project-edit-stars">
 										<xsl:attribute name="title"><xsl:value-of select="arch:project/oc:metadata/oc:project_name/@statusDes"/> (Click for more)</xsl:attribute>
-										<a href="../about/publishing#editorial-status">
+										<!-- <a href="../about/publishing#editorial-status"> -->
 												<xsl:choose>
 														<xsl:when test="arch:project/oc:metadata/oc:project_name/@editStatus = 1">
 																&#9733;&#9734;&#9734;&#9734;&#9734;
@@ -169,7 +169,7 @@ BEGIN Container for main page content
 																(Forthcomming)
 														</xsl:otherwise>
 												</xsl:choose>
-										</a>
+										<!--  </a> -->
 								</span>
 									
 									

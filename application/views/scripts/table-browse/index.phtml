@@ -96,7 +96,9 @@ if(!isset($requestParams["q"])){
     $fulltext .= '<div id="b_search_tab">
                     <div id="b_search_row" class="b_search">
                         <div id="b_search_cell_in" >
-                                <input name="q" class="bb" type="text" id="q_string" placeholder="Search here..." />
+                             <input name="q" class="bb" type="text" id="q_string" value="Search here..."
+                                onfocus="if(this.value==\'Search here...\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'Search here...\';"
+                                />
                         </div>
                         <div id="b_search_cell_button">
                                 <button class="bb" type="submit" onclick="textSearch();">Search</button>
@@ -119,7 +121,7 @@ else{
     <head> 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <title><?php echo 'Open Context Search: ('.$numFound.' Items Showing)'; ?></title>
-        <link rel="shortcut icon" href="/images/general/oc_favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="../images/layout/oc-favicon.ico" type="image/x-icon" />
         
         <!--
         <link href="<?php echo $host; ?>/components/css/browse" rel="stylesheet" type="text/css" /> 
