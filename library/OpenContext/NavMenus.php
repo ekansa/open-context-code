@@ -19,7 +19,7 @@ public static function AboutNavMenu($activePage, $host = false){
                        "estimate"=> array("uri"=>"/about/estimate", "name"=>"Grant Seekers", "title"=> "Help with preparing grants, including the NSF Data Access Plan"),
                       "concepts"=> array("uri"=>"/about/concepts", "name"=>"Concepts", "title"=> "Ontologies and data models"),
                       "technology"=> array("uri"=>"/about/technology", "name"=>"Technology", "title"=> "Software applications and standards"),
-                      "services"=> array("uri"=>"/about/services", "name"=>"Services", "title"=> "Machine-readable data and interoperability"),
+                      "services"=> array("uri"=>"/about/services", "name"=>"APIs &amp; Web-Services", "title"=> "Machine-readable data and interoperability"),
                       "biblio"=> array("uri"=>"/about/bibliography", "name"=>"Bibliography", "title"=> "Publications related to Open Context"),
                       "privacy"=> array("uri"=>"/about/privacy", "name"=>"Privacy", "title"=> "Open Context's Privacy Policy"),
                       "ip"=> array("uri"=>"/about/intellectual-property", "name"=>"Intellectual Property", "title"=> "Open Context's IP Recommendations"),
