@@ -219,6 +219,18 @@ div.list_tab_cell {
 	margin-right:auto;
 	margin-bottom:2%;
 }
+#about-pub-slides {
+	margin-left: auto;
+	margin-right: auto;
+	width: 580px;
+	min-height: 360px;
+	background-color: #F9F9F9;
+}
+#about-pub-slides .slide div.item{
+	height: 360px;
+	
+}
+
 
 /* About -Services specific styles */
 #parameters {
