@@ -75,7 +75,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 					 <div id="pageTop">
 						  <div id="pageIntro">
 								<h1 style="text-align:center;">Concepts behind Open Context</h1>
-								<p>For those wishing to have a look "under the hood" this page will provide you with a good start. You can find even more of the nitty-gritty on the Technology page. If you still have questions, Eric Kansa, Open Context's Lead Developer, would be happy to chat.</p>
+								<p>For those wishing to have a look "under the hood" this page will provide you with a good start. You can find even more of the nitty-gritty on the <a href=""../about/technology">Technology</a> and <a href=""../about/technology">APIs &amp; Web-Services</a> pages. If you still have questions, <a href="mailto:ekansa@alexandriaarchive.org">Eric Kansa</a>, Open Context's Lead Developer, would be happy to chat.</p>
 								<p>Open Context facilitates research by publishing data in a manner optimized for the Web.
 								Open Context implements a subset of the Archaeological Markup Language (ArchaeoML), developed
 		    by David Schloen for the University of Chicago OCHRE project. ArchaeoML uses an
@@ -94,20 +94,20 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 						  
 						  <h3 id="archaeoml">Open Context and ArchaeoML</h3>
 					  
-						  <p>Open Context can accommodate a variety of different field research datasets through mapping these
-	    datasets to the ArchaeoML global schema. Open Context editors map project datasets to ArchaeoML with a Web-based tool
+						  <p>Open Context can accommodate a variety of different field research datasets by mapping 
+	    to the ArchaeoML global schema. Open Context editors map project datasets to ArchaeoML with a Web-based tool
 		 called <em>Penelope</em>. This tool helps editors and contributors to collaborate describe research data
 	    according to the ArchaeoML global schema, so that it can be ready for public dissemination in Open Context. The
 						  editing workflow also includes steps to check and improve the consistency of data.</p>
-						  <p>Mapping data in ArchaeoML helps make datasets more useful to others. The process helps to explicitly
+						  <p>Mapping data to ArchaeoML helps make datasets more useful to others. The process helps to explicitly
 	    express a number of tacit or implicit relationships and meanings in a dataset. By expressing these tacit meanings,
 	    Open Context helps make it easier for others to understand a given dataset. The import process also asks researchers
-	    to provide additional explanatory and descriptive metadata to further describe research methods and approaches,
-	    recording systems, and provide critical attribution information needed for citation. Because ArchaeoML is very
+	    for explanatory and descriptive metadata to further describe research methods and 
+	    recording systems and provide critical attribution information needed for citation. Because ArchaeoML is very
 	    simple, mapping data into ArchaeoML is relatively rapid. Nevertheless, while we implement ArchaeoML, we continually
 		 adapt our publishing activities to meet new needs (see below).</p>
 	 
-						  <h4>Key ArchaeoML concepts used in Open Context are defined below:</h4>
+						  <h4>Key ArchaeoML concepts used in Open Context:</h4>
 						  <ul class="big-list">
 								<li id="subjects" typeof="skos:Concept" about="[ocsem:subjects]">
 									 <strong property="skos:prefLabel" xml:lang="en">Subjects</strong>
@@ -130,30 +130,29 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 								a museum collection, or even a public health study of disease incidences. All projects and collections must
 								identify an institution or person responsible for collecting and publishing data.</span></li>
 								<li id="persons" typeof="skos:Concept" about="[ocsem:persons]"><strong property="skos:prefLabel" xml:lang="en">Persons and Organizations</strong> <span property="skos:definition" xml:lang="en">Persons and organizations represent the people and institutions that
-								participated in a project. People and organizations are responsible for creating, editing, curating, analyzing, and
+								participated in a project. They are responsible for creating, editing, curating, analyzing, and
 								reporting data published in Open Context.</span></li>
 								<li id="properties" typeof="skos:Concept" about="[ocsem:properties]"><strong property="skos:prefLabel" xml:lang="en">Descriptive Properties</strong> <span property="skos:definition" xml:lang="en">Properties describe <em>subjects</em>, <em>people</em>, <em>media</em>, etc.
 								A property represents a unique combination of a variable (like a field in a database) and a value (the values of records
-								in a given database field). Each descriptive property is unique within the context of a given <em>project</em>. So even if two
-								different projects have a common property like "Taxon: canis familiaris", this property will have different addresses for
-								each project. This guards against false assuming that just because two different research <em>projects</em> may share common
-								terminologies, that these terminologies are used in the same, semantically equivalent way. However, since
+								in a given database field). Each descriptive property is unique within the context of a given <em>project</em>. So, even if two
+								different projects have a common property like "Taxon: <em>Canis familiaris</em>", this property will have different addresses for
+								each project. This guards against falsely assuming that just because two different research <em>projects</em> may share common
+								terminologies, those terminologies are used in the same, semantically equivalent way. However, since
 								the use of common terminologies often does reflect semantic equivalence, the faceted browse tool also
 								allows users to search properties across different <em>projects</em> as if they were equivalent.  
-								Properties can have either free-form alphanumeric text values, nominal values, numeric values, or calendar dates.</span></li>
+								Properties can have free-form alphanumeric text values, nominal values, numeric values, or calendar dates.</span></li>
 						  </ul>
 						  
 						  <h3>Open Context, ArchaeoML and CIDOC</h3>
 						  <p>Because ArchaeoML is so simple and generalized, it is less specific in expressing
 						  semantic relationships than some other formal ontologies, including the <a href="http://cidoc.ics.forth.gr/">CIDOC-CRM</a>.
 						  This makes Open Context's semantic relations much more ambiguous, requiring some background knowledge to interpret and
-						  properly use its datasets. Nevertheless, we chose to implement ArchaeoML because of its simplicity and long
-						  history of development and use in working field databases. Many other ontologies, while sophisticated and
-						  useful, require much more specialized expertise to apply and cost more to implement and use. Instead,
-						  we chose to go with a simple and cost-effective solution, despite its initial limitations.</p>
+						  properly use its datasets. Nevertheless, we chose to implement ArchaeoML because of its simplicity, long
+						  history of development, and implementation in current excavation databases. Many other ontologies, though sophisticated and
+						  useful, require much more specialized expertise to apply and cost more to implement and use. </p>
 						  <p>At the same time, we recognize the increasing need to publish data according to formal ontology standards. 
-						  Our onging work is extending Penelope so that published data link to key shared vocabularies and other
-						  Web-based collections. We are also extending Penelope to capture additional information needed to relate
+						  Our onging work is extending <em>Penelope</em> so that published data link to key shared vocabularies and other
+						  Web-based collections. We are also extending <em>Penelope</em>  to capture additional information needed to relate
 						  data in Open Context to the CIDOC-CRM ontology, a major standard for cultural heritage data. Open Context currently
 						  publishes partial mappings to the CIDOC-CRM ontology in using RDF (see <a href="services#rdf">here</a>).</p>
 						  
