@@ -993,8 +993,14 @@ class OpenContextItem {
 						  //$value = str_replace("Z", ".000Z",  $value);
 						  $suffix = "_tax_cal";
 					 }
-					 elseif(($prop['setType'] == "integer" || $prop['setType'] == "decimal") && $prop['type'] == "nominal"){
-						  $suffix = "_num_taxon";
+					 elseif(($prop['setType'] == "integer") && $prop['type'] == "nominal"){
+						  $suffix = "_int_taxon";
+					 }
+					 elseif(($prop['setType'] == "decimal") && $prop['type'] == "nominal"){
+						  $suffix = "_dec_taxon";
+					 }
+					 elseif(($prop['setType'] == "calendar") && $prop['type'] == "nominal"){
+						  $suffix = "_cal_taxon";
 					 }
 					 elseif($prop['setType'] == "alphanumeric"){
 						  $suffix = "_tax_alpha";

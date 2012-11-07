@@ -566,47 +566,51 @@ class SolrSearch{
     //depending on the type of query, add some new facet fields
     function addFacetFields($param_array){
 	
-	if($this->spatial && !$this->allDocs){
-	    $param_array["facet.field"][] = "time_span";
-	    $param_array["facet.field"][] = "geo_point";
-	}
-	if($this->image && !$this->allDocs){
-	    $param_array["facet.field"][] = "time_span";
-	    $param_array["facet.field"][] = "geo_point";
-	}
-	if($this->media && !$this->allDocs){
-	    $param_array["facet.field"][] = "time_span";
-	    $param_array["facet.field"][] = "geo_point";
-	}
-	if($this->document && !$this->allDocs){
-	    $param_array["facet.field"][] = "time_span";
-	    $param_array["facet.field"][] = "geo_point";
-	}
-	if($this->project && !$this->allDocs){
-	    $param_array["facet.field"][] = "time_span";
-	    $param_array["facet.field"][] = "geo_point";
-	    $param_array["facet.field"][] = "subject";
-	    $param_array["facet.field"][] = "coverage";
-	}
-	if($this->table && !$this->allDocs){
-	    $param_array["facet.field"][] = "top_taxon";
-	    $requestParams['proj'] = "Open Context Tables";
-	}
-	if($this->allDocs){
-	    $param_array["facet.field"][] = "item_type";
-	}
-	
-	$requestParams = $this->requestParams;
-	if(isset($requestParams['rel']) || isset($requestParams['targURI'])){
-	    $param_array["facet.field"][] = "top_taxon";
-	}
-	if(isset($requestParams['t-start']) || isset($requestParams['t-end'])){
-	    $param_array["facet.field"][] = "top_taxon";
-	}
-	if(isset($requestParams['default_context_path']) && isset($requestParams['cat'])){
-	    $param_array["facet.field"][] = "top_taxon";
-		//$param_array["facet.field"][] = "standard_taxon";
-	}
+		  if($this->spatial && !$this->allDocs){
+				$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "geo_point";
+		  }
+		  if($this->image && !$this->allDocs){
+				$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "geo_point";
+		  }
+		  if($this->media && !$this->allDocs){
+				$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "geo_point";
+		  }
+		  if($this->document && !$this->allDocs){
+				$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "geo_point";
+		  }
+		  if($this->project && !$this->allDocs){
+				$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "geo_point";
+				$param_array["facet.field"][] = "subject";
+				$param_array["facet.field"][] = "coverage";
+		  }
+		  if($this->table && !$this->allDocs){
+				$param_array["facet.field"][] = "top_taxon";
+				$requestParams['proj'] = "Open Context Tables";
+		  }
+		  if($this->allDocs){
+				$param_array["facet.field"][] = "item_type";
+		  }
+		  
+		  $requestParams = $this->requestParams;
+		  if(isset($requestParams['rel']) || isset($requestParams['targURI'])){
+				$param_array["facet.field"][] = "top_taxon";
+		  }
+		  if(isset($requestParams['t-start']) || isset($requestParams['t-end'])){
+				$param_array["facet.field"][] = "top_taxon";
+		  }
+		  if(isset($requestParams['default_context_path']) && isset($requestParams['cat'])){
+				$param_array["facet.field"][] = "top_taxon";
+			  //$param_array["facet.field"][] = "standard_taxon";
+		  }
+		  if(isset($requestParams['taxa'])){
+				$param_array["facet.field"][] = "top_taxon";
+			  //$param_array["facet.field"][] = "standard_taxon";
+		  }
 		return $param_array;
     }
     
