@@ -439,20 +439,20 @@ class OpenContext_ProjectAtomJson {
 		$UCclass_name = ucwords($class_name);
 		
 		$db_params = OpenContext_OCConfig::get_db_config();
-                $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+      $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
 		$db->getConnection();
                 $sql = 'SELECT sp_classes.sm_class_icon
                     FROM sp_classes
                     WHERE sp_classes.class_label LIKE "'.$class_name.'"
-		    OR sp_classes.class_label LIKE "'.$UCclass_name.'"
+							OR sp_classes.class_label LIKE "'.$UCclass_name.'"
                     LIMIT 1';
 		
-                $result = $db->fetchAll($sql, 2);
+      $result = $db->fetchAll($sql, 2);
 		$db->closeConnection();
 		
 		if($result){
-                    $class_icon_uri = $result[0]["sm_class_icon"];
-		    $class_icon_uri = (self::path_to_class_icon).$class_icon_uri;
+         $class_icon_uri = $result[0]["sm_class_icon"];
+		   $class_icon_uri = (self::path_to_class_icon).$class_icon_uri;
 		}
 		
 		return $class_icon_uri;
