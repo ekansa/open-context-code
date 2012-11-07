@@ -24,10 +24,16 @@ Heaader grey: #666666;
    padding-top:5%;
    padding-right:5%;
 }
+
 #carosel_cell{
 	display:table-cell;
    width:60%;
    vertical-align:middle;
+}
+#myCarousel {
+    margin-left:auto;
+    margin-right:auto;
+    width: 482px;
 }
 div.item{
     height: 380px;
