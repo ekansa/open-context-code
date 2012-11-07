@@ -143,10 +143,10 @@ class FacetURLs{
 							$LinkingArray["geoTime"] = $date_range;
 						}
 						
-						if($link){
+						if($link && strlen($value_string)>0){
 							$FacetURLs[$facetCategory->facet_category_feed][] = $LinkingArray;
 						}
-						}
+					 }
 				
 				}//end case with values in this facet
 			
