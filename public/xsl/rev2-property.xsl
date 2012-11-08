@@ -11,25 +11,31 @@
 	<!ENTITY yen    "&#165;">
 	<!ENTITY euro   "&#8364;">
 ]>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-					 xmlns:ocsem="http://opencontext.org/about/concepts#"
-					 xmlns:gml="http://www.opengis.net/gml"
-					 xmlns:atom="http://www.w3.org/2005/Atom"
-					 xmlns:georss="http://www.georss.org/georss"
-					 xmlns:oc="http://opencontext.org/schema/property_schema_v1.xsd"
-					 xmlns:arch="http://ochre.lib.uchicago.edu/schema/Project/Variable.xsd"
-					 xmlns:xhtml="http://www.w3.org/1999/xhtml"
-					 xmlns:dc="http://purl.org/dc/elements/1.1/"
-					 xmlns:bibo="http://purl.org/ontology/bibo/"
-						xmlns:cc="http://creativecommons.org/ns#"
-						xmlns:dcmitype="http://purl.org/dc/dcmitype/"
-						xmlns:dcterms="http://purl.org/dc/terms/"
-						xmlns:foaf="http://xmlns.com/foaf/0.1/"
-						xmlns:owl="http://www.w3.org/2002/07/owl#"
-						xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-						xmlns:rdfa="http://www.w3.org/ns/rdfa#"
-						xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-						xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+<xsl:stylesheet version="1.0"
+					 
+				xmlns:oc="http://opencontext.org/schema/property_schema_v1.xsd"
+				xmlns:arch="http://ochre.lib.uchicago.edu/schema/Project/Variable.xsd"
+					 
+				xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+				xmlns:dc="http://purl.org/dc/elements/1.1/"
+				xmlns:gml="http://www.opengis.net/gml"
+				xmlns:atom="http://www.w3.org/2005/Atom"
+				xmlns:georss="http://www.georss.org/georss"
+				xmlns:xhtml="http://www.w3.org/1999/xhtml"
+				xmlns:cc="http://creativecommons.org/ns#"
+				
+				xmlns:ocsem="http://opencontext.org/about/concepts#"
+				xmlns:conc="http://gawd.atlantides.org/terms/"
+				xmlns:bio="http://purl.org/NET/biol/ns#"
+				xmlns:bibo="http://purl.org/ontology/bibo/"
+				xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+				xmlns:dcterms="http://purl.org/dc/terms/"
+				xmlns:foaf="http://xmlns.com/foaf/0.1/"
+				xmlns:owl="http://www.w3.org/2002/07/owl#"
+				xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+				xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+				xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:skos="http://www.w3.org/2004/02/skos/core#">
 <xsl:output method="xml" indent="yes" encoding="utf-8" doctype-public="-//W3C//DTD XHTML+RDFa 1.0//EN" doctype-system="http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"/>
 
 
@@ -675,6 +681,50 @@
 						</div> <!-- end main des bottom row -->
 				</div> <!-- end main des tab -->
 		</div> <!-- end main des -->
+		
+		
+		
+		<!--invisible RDFa metadata -->
+		<div style="display:none;">
+				
+				<div>
+						<xsl:attribute name="base"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute>
+						<div property="dcterms:title"><xsl:value-of select="//oc:metadata/dc:title"/></div>
+						<div property="dcterms:date"><xsl:value-of select="//oc:metadata/dc:date"/></div>
+						<div about="" rel="dcterms:isPartOf"><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:project_name/@href"/></xsl:attribute></div>
+						<div about="" rel="dcterms:publisher"><xsl:attribute name="href">http://opencontext.org</xsl:attribute></div>
+						
+						<div about="" rel="bibo:status"><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:project_name/@statusURI"/></xsl:attribute></div>
+						<div about="" rel="bibo:status"><xsl:attribute name="href">http://opencontext.org/about/publishing/#edit-stars-<xsl:value-of select="//oc:metadata/oc:project_name/@editStatus"/></xsl:attribute></div>
+				
+				
+						<xsl:for-each select="//oc:metadata/dc:creator">
+						<div about="" rel="dc:creator"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute></div>
+						<div property="rdfs:label"><xsl:attribute name="about"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></div>
+						</xsl:for-each>
+						
+						<xsl:for-each select="//oc:metadata/dc:contributor">
+						<div about="" rel="dc:contributor"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute></div>
+						<div property="rdfs:label"><xsl:attribute name="about"><xsl:value-of select="@href"/></xsl:attribute>
+						<xsl:value-of select="."/></div>
+						</xsl:for-each>
+				
+				
+				</div>
+				
+				<div about="http://opencontext.org">
+						<div property="rdfs:label">Open Context</div>
+				</div>
+				
+		</div>
+		
+		
+		
+		
+		
+		
+		
+		
 </div>
 
 </xsl:template>
