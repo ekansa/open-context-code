@@ -61,15 +61,16 @@ function orcidRecordDone(response){
  function orcidOK(respData, linkDataDiv){
     var orcidBio = respData["orcid-profile"]["orcid-bio"];
     var orcidAct = respData["orcid-profile"]["orcid-activities"];
-
+    
     var orcidNameDom = document.createElement("p");
     var orcidName = "<b>Given name:</b> " + orcidBio["personal-details"]["given-names"]["value"] + " <b>Family name:</b> " + orcidBio["personal-details"]["family-name"]["value"];
     orcidNameDom.innerHTML = orcidName;
     linkDataDiv.appendChild(orcidNameDom);
-    
-    if(orcidBio["researcher-urls"] !== null){
+
+    if(orcidBio["researcher-urls"] !== null && orcidBio["researcher-urls"] !== undefined){
+        
         if(orcidBio["researcher-urls"]["researcher-url"].length > 0){
-            
+             
             var linkListHeadDom = document.createElement("h6");
             var linkListHead = "Related Links";
             linkListHeadDom.innerHTML = linkListHead;
@@ -89,8 +90,8 @@ function orcidRecordDone(response){
             }
         }
     }
-    
-    if(orcidBio["keywords"] !== null){
+   
+    if(orcidBio["keywords"] !== null && orcidBio["keywords"] !== undefined){
         if(orcidBio["keywords"]["keyword"].length > 0){
             
             var kwHeadDom = document.createElement("h6");
@@ -114,9 +115,10 @@ function orcidRecordDone(response){
             linkDataDiv.appendChild(kwListDom);
         }
     }
-    
+
     
     if(orcidAct["orcid-works"] !== null){
+        
         if(orcidAct["orcid-works"]["orcid-work"].length > 0){
             var pubHeadDom = document.createElement("h6");
             var pubHead = "Selected Publications";
@@ -168,6 +170,8 @@ function orcidRecordDone(response){
                 if(pubObj["work-citation"] !== null){
                     pubCitation = pubObj["work-citation"]["citation"];
                 }
+                
+                //alert(pubCitation);
                 
                 var pubHTML = "<div>" + pubTitle + "<br/>" +  pubCitation + "</div>";
                 var pubItem = document.createElement("li");
