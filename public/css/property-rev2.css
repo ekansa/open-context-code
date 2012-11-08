@@ -136,6 +136,7 @@ td.barName{
 }
 div.barGraphBar {
 	margin-left:5px;
+	margin-right:2px;
 	height: 26px;
 	text-align:center;
 	padding-top:12px;

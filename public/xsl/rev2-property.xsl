@@ -282,6 +282,7 @@
 																												<xsl:call-template name="summaryTypes">
 																														<xsl:with-param name="observeType" select="@observeType"/>
 																												</xsl:call-template>
+																												<!--(<xsl:value-of select="//parent::oc:propMaxCount"/>)-->
 																										</h5>
 																										<table class="table table-hover table-bordered table-condensed barGraphMultiTab">
 																												<thead>
@@ -293,7 +294,7 @@
 																												<tbody>
 																														<xsl:for-each select="oc:graphData/oc:bar">
 																																<xsl:call-template name="makeBar">
-																																		<xsl:with-param name="propMaxCount" select="//parent::oc:propMaxCount" />
+																																		<xsl:with-param name="propMaxCount" select="ancestor::oc:propStats/oc:propMaxCount" />
 																																		<xsl:with-param name="setURL" select="@setURL" />
 																																		<xsl:with-param name="propVal" select="." />
 																																		<xsl:with-param name="propCount" select="@count" />
@@ -730,7 +731,11 @@
 		</xsl:variable>
 		
 		<tr>
-				<td class="barName"><a><xsl:attribute name="href"><xsl:value-of select="$setURL"/></xsl:attribute><xsl:value-of select="$propVal"/></a></td>
+				<td class="barName"><a>
+						<xsl:attribute name="href"><xsl:value-of select="$setURL"/></xsl:attribute>
+						<xsl:attribute name="title">Browse these <xsl:value-of select="$propCount"/> of items</xsl:attribute>
+						<xsl:value-of select="$propVal"/></a>
+				</td>
 				<td>
 						<div class="barGraphBar">
 								<xsl:attribute name="style">width:<xsl:value-of select="$barWidth"/>%;</xsl:attribute>
