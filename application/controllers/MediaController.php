@@ -48,6 +48,8 @@ class mediaController extends Zend_Controller_Action
 				$xml_string = $media_dom->saveXML();
 				
 				$this->view->xml_string = $xml_string;
+				$this->view->label = $mediaItem->label;
+				$this->view->itemUUID = $itemUUID;
 				
 		  }
 		  else{
@@ -69,7 +71,7 @@ class mediaController extends Zend_Controller_Action
 				
 				$crawler = OpenContext_SocialTracking::crawlerDetect(@$_SERVER['HTTP_USER_AGENT']);
 				if(!$crawler){
-			  $mediaItem->addViewCount();
+					 $mediaItem->addViewCount();
 				}
 				
 				$media_dom = new DOMDocument("1.0", "utf-8");
@@ -80,34 +82,34 @@ class mediaController extends Zend_Controller_Action
 				
 				$this->view->xml_string = $xml_string;
 				$this->view->dom = $media_dom;
+				$this->view->label = $mediaItem->label;
+				$this->view->itemUUID = $itemUUID;
 				
 				if(!stristr($mediaItem->mimeType, 'image')){
+					 $isImage = false;
+					 //now check if it's in the XML
+					 $xpath = new DOMXpath($media_dom);
+					 // Register OpenContext's namespace
+					 foreach($nameSpaceArray as $prefix => $uri){
+						 $xpath->registerNamespace($prefix, $uri);
+					 }
+					 $query = "//arch:externalFileInfo/arch:fileFormat";
+					  
+					 $result = $xpath->query($query, $media_dom);
+					 if($result != null){
+						  $mainMime = $result->item(0)->nodeValue;
+						  if(!strstr($mainMime, "/")){
+								$mainMime = $mediaItem->mime_type_clean($mainMime);
+						  }
+						  if(stristr($mainMime, 'image')){
+								$isImage = true;
+						  }
+					 }
 			  
-			  $isImage = false;
-			  //now check if it's in the XML
-			  $xpath = new DOMXpath($media_dom);
-			  // Register OpenContext's namespace
-			  foreach($nameSpaceArray as $prefix => $uri){
-				  $xpath->registerNamespace($prefix, $uri);
-			  }
-			  $query = "//arch:externalFileInfo/arch:fileFormat";
-				
-			  $result = $xpath->query($query, $media_dom);
-			  if($result != null){
-					$mainMime = $result->item(0)->nodeValue;
-					if(!strstr($mainMime, "/")){
-				  $mainMime = $mediaItem->mime_type_clean($mainMime);
-					}
-					if(stristr($mainMime, 'image')){
-				  $isImage = true;
-					}
-			  }
-			  
-			  if(!$isImage){
-					$this->_helper->viewRenderer->setNoRender();
-					echo "not image";
-			  }
-			  
+					 if(!$isImage){
+						  $this->_helper->viewRenderer->setNoRender();
+						  echo "not image";
+					 }
 				}
 				
 		  }
