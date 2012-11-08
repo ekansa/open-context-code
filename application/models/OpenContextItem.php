@@ -481,6 +481,11 @@ class OpenContextItem {
 		$value = trim($value);
 		$type = false;
 		
+		  if(stristr($setType, "calend")){
+				$setType = "calendric";
+		  }
+		
+		
 		//figure out if the value is integer, decimal, or calendar. if not, default to nominal
 		if(is_numeric($value)){
 			if(intval($value) === $value){
@@ -511,10 +516,10 @@ class OpenContextItem {
 			}
 			
 			if($calendardTest){
-			$type = "calendar";
+				$type = "calendric";
 			}
 			else{
-			$type = "nominal"; 
+				$type = "nominal"; 
 			}
 		}
 		
@@ -538,10 +543,10 @@ class OpenContextItem {
 			}
 			else{
 			    if($setType == "standard"){
-				$hashPath = "standard"; //for standard units of measurement
+						  $hashPath = "standard"; //for standard units of measurement
 			    }
 			    elseif($setType =="reconciled"){
-				$hashPath = "reconciled"; //for reconciled propeties to a 
+						  $hashPath = "reconciled"; //for reconciled propeties to a 
 			    }
 			    $setType = "nominal";
 			}
@@ -988,7 +993,7 @@ class OpenContextItem {
 						  $solrDocument->setMultiValue($prefix."_tax_int", round($value,0));
 						  $suffix = "_tax_dec";
 					 }
-					 elseif($prop['type'] == "calendar" && $prop['setType'] == "calendar" ){
+					 elseif($prop['type'] == "calendric" && $prop['setType'] == "calendric" ){
 						  $value = date("Y-m-d\TH:i:s\Z", strtotime($value));
 						  //$value = str_replace("Z", ".000Z",  $value);
 						  $suffix = "_tax_cal";
@@ -999,7 +1004,7 @@ class OpenContextItem {
 					 elseif(($prop['setType'] == "decimal") && $prop['type'] == "nominal"){
 						  $suffix = "_dec_taxon";
 					 }
-					 elseif(($prop['setType'] == "calendar") && $prop['type'] == "nominal"){
+					 elseif(($prop['setType'] == "calendric") && $prop['type'] == "nominal"){
 						  $suffix = "_cal_taxon";
 					 }
 					 elseif($prop['setType'] == "alphanumeric"){

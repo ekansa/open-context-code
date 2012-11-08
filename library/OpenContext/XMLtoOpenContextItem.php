@@ -928,24 +928,24 @@ class OpenContext_XMLtoOpenContextItem {
 				*/
 			}
 	
-			foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:var_label[@type='calendar']") as $var_label) {
+			foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:var_label[@type='calendar' or @type='calendric']") as $var_label) {
 				
 				foreach ($var_label->xpath(".") as $var_act) {
 					$var_act = (string)$var_act;
 					$show_val = $var_act;
-					$OpenContextItem->addProperty($var_act, $baseParents, 'calendar'); //add the variable name as top level prop
+					$OpenContextItem->addProperty($var_act, $baseParents, 'calendric'); //add the variable name as top level prop
 					$parentArray = $baseParents;
 					$parentArray[] = $var_act;
 				}
 				$show_val = false;
 				foreach ($var_label->xpath("../arch:date") as $cal_val) {
 					$show_val = (string)$cal_val;
-					$OpenContextItem->addProperty($show_val, $parentArray, 'calendar');
+					$OpenContextItem->addProperty($show_val, $parentArray, 'calendric');
 				}
 				if(!$show_val){
 					foreach ($var_label->xpath("../oc:show_val") as $cal_val) {
 						$show_val = (string)$cal_val;
-						$OpenContextItem->addProperty($show_val, $parentArray, 'calendar');
+						$OpenContextItem->addProperty($show_val, $parentArray, 'calendric');
 					}	
 				}
 				
