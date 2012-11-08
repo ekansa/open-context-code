@@ -146,7 +146,7 @@
 
 <body>
 
-    <h1>Open Context: <xsl:value-of select="arch:resource/arch:name/arch:string"/> (<a><xsl:attribute name="href">../projects/<xsl:if test="arch:resource/@ownedBy !=0"><xsl:value-of select="arch:resource/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:resource/oc:metadata/oc:project_name"/></a> - <xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:item_class/oc:name"/>) [<a><xsl:attribute name="href">http://opencontext.org/media/<xsl:value-of select="//arch:resource/@UUID"/></xsl:attribute>Go Back</a>]</h1>
+    <h1>Open Context: <xsl:value-of select="arch:resource/arch:name/arch:string"/> (<a><xsl:attribute name="href">http://opencontext.org/projects/<xsl:if test="arch:resource/@ownedBy !=0"><xsl:value-of select="arch:resource/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:resource/oc:metadata/oc:project_name"/></a> - <xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:item_class/oc:name"/>) [<a><xsl:attribute name="href">http://opencontext.org/media/<xsl:value-of select="//arch:resource/@UUID"/></xsl:attribute>Go Back</a>]</h1>
     <div id="fullImage" style="padding-left:2px; text-align:left;">
 				<a><xsl:attribute name="href"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:resourceURI"/></xsl:attribute>
 					<xsl:attribute name="title">Download File</xsl:attribute>
