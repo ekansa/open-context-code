@@ -738,6 +738,7 @@ try {
 
 }catch (Exception $e){
     // handle exceptions yourself
+    
     if(stristr($e, "action") && stristr($e, "does not exist and was not trapped") ){
         
         unset($frontController);
@@ -764,6 +765,7 @@ try {
                 ->setActionName("not-found");
         $response   = $frontController->dispatch($request);
     }
-
+    
+    //echo $e;
 }//end caught exceptions
 ?>    
