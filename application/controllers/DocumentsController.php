@@ -45,6 +45,8 @@ class documentsController extends Zend_Controller_Action
 				OpenContext_MediaAtom::update_view_count($media_dom, $mediaItem->viewCount, $mediaItem->nameSpaces() );   
 				$xml_string = $media_dom->saveXML();
 				$this->view->xml_string = $xml_string;
+				$this->view->label = $mediaItem->label;
+				$this->view->itemUUID = $itemUUID;
 		  }
 		  else{
 				$this->view->requestURI = $this->_request->getRequestUri(); 
