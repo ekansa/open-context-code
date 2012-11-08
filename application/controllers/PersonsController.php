@@ -48,12 +48,14 @@ class personsController extends Zend_Controller_Action
 				$XML = simplexml_load_string($xml_string);
 				$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($person->projectUUID, $XML, $person->nameSpaces());
 				$xml_string = $XML->asXML();
+				$this->view->xml_string = $xml_string;
+				$this->view->label = $person->label;
+				$this->view->itemUUID = $itemUUID;
 		  }
 		  else{
 				$this->view->requestURI = $this->_request->getRequestUri(); 
 				return $this->render('404error');
         }    
-        $this->view->xml_string = $xml_string;   
 	}
     
     

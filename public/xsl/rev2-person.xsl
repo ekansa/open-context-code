@@ -11,25 +11,31 @@
 	<!ENTITY yen    "&#165;">
 	<!ENTITY euro   "&#8364;">
 ]>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-					 xmlns:ocsem="http://opencontext.org/about/concepts#"
-					 xmlns:gml="http://www.opengis.net/gml"
-					 xmlns:atom="http://www.w3.org/2005/Atom"
-					 xmlns:georss="http://www.georss.org/georss"
-					 xmlns:oc="http://opencontext.org/schema/person_schema_v1.xsd"
-					 xmlns:arch="http://ochre.lib.uchicago.edu/schema/Person/Person.xsd"
-					 xmlns:xhtml="http://www.w3.org/1999/xhtml"
-					 xmlns:dc="http://purl.org/dc/elements/1.1/"
-					 xmlns:bibo="http://purl.org/ontology/bibo/"
-						xmlns:cc="http://creativecommons.org/ns#"
-						xmlns:dcmitype="http://purl.org/dc/dcmitype/"
-						xmlns:dcterms="http://purl.org/dc/terms/"
-						xmlns:foaf="http://xmlns.com/foaf/0.1/"
-						xmlns:owl="http://www.w3.org/2002/07/owl#"
-						xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-						xmlns:rdfa="http://www.w3.org/ns/rdfa#"
-						xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-						xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+<xsl:stylesheet version="1.0"
+					 
+				xmlns:oc="http://opencontext.org/schema/person_schema_v1.xsd"
+				xmlns:arch="http://ochre.lib.uchicago.edu/schema/Person/Person.xsd"
+					 
+				xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+				xmlns:dc="http://purl.org/dc/elements/1.1/"
+				xmlns:gml="http://www.opengis.net/gml"
+				xmlns:atom="http://www.w3.org/2005/Atom"
+				xmlns:georss="http://www.georss.org/georss"
+				xmlns:xhtml="http://www.w3.org/1999/xhtml"
+				xmlns:cc="http://creativecommons.org/ns#"
+				
+				xmlns:ocsem="http://opencontext.org/about/concepts#"
+				xmlns:conc="http://gawd.atlantides.org/terms/"
+				xmlns:bio="http://purl.org/NET/biol/ns#"
+				xmlns:bibo="http://purl.org/ontology/bibo/"
+				xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+				xmlns:dcterms="http://purl.org/dc/terms/"
+				xmlns:foaf="http://xmlns.com/foaf/0.1/"
+				xmlns:owl="http://www.w3.org/2002/07/owl#"
+				xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+				xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+				xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:skos="http://www.w3.org/2004/02/skos/core#">
 <xsl:output method="xml" indent="yes" encoding="utf-8" doctype-public="-//W3C//DTD XHTML+RDFa 1.0//EN" doctype-system="http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"/>
 
 
@@ -182,7 +188,7 @@
 											<h5>Description</h5>
 											
 												<div id="abstract">
-														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:notes/arch:note) = 0" >
+														<xsl:if test="count(descendant::atom:feed/atom:entry/arch:person/arch:notes/arch:note) = 0 and count(descendant::atom:feed/atom:entry/arch:person/oc:metadata/oc:links/oc:link) = 0" >
 															<p id="no-notes" class="bodyText">(This item has no additional notes)</p>
 														</xsl:if>
 														
@@ -521,81 +527,29 @@
 				END COINS metadata (for Zotero)
 				</xsl:comment>
 		
-		
-		<!--
-		<div id="footer">
-		
-		<div id="w3c_val_logo">
-		<a href="http://validator.w3.org/check?uri=referer"><img
-				  src="http://www.w3.org/Icons/valid-xhtml-rdfa"
-				  alt="Valid XHTML + RDFa" height="31" width="88" /></a>
-		</div>
-		
-		
-		<xsl:comment>
-		Code for licensing information
-		</xsl:comment>
-		
-		<div id="all_lic">
-		<div id="lic_pict">
-		<a>
-			<xsl:attribute name="href"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
-			<img width='88' height='31' style='border:none;'> 
-			  <xsl:attribute name="src"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_icon_URI"/></xsl:attribute>
-			  <xsl:attribute name="alt"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_name"/></xsl:attribute>
-			</img>
-		</a>
-		</div>
-		
-		<div class="tinyText" id="licarea"> 
-		To the extent to which copyright applies, this content is licensed with:<a>
-				<xsl:attribute name="rel">license</xsl:attribute>
-				<xsl:attribute name="href"><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute><xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_name"/>
-						<xsl:value-of select="atom:feed/atom:entry/arch:person/oc:metadata/oc:copyright_lic/oc:lic_vers"/>&#32;License
-			</a> Attribution Required: <a href='javascript:showCite()'>Citation</a>, and hyperlinks for online uses.
-			<div style="width:0px; overflow:hidden;">
-				<a xmlns:cc="http://creativecommons.org/ns#">
-					<xsl:attribute name="href"><xsl:value-of select="atom:feed/atom:entry/arch:persont/oc:metadata/dc:identifier"/></xsl:attribute>
-					<xsl:attribute name="property">cc:attributionName</xsl:attribute>
-					<xsl:attribute name="rel">cc:attributionURL</xsl:attribute>
-					<xsl:value-of select="$citation"/>
-				</a>
-			</div>
-		</div>
-		
+		<!--invisible RDFa metadata -->
 		<div style="display:none;">
-				<div property="dc:title"><xsl:value-of select="//oc:metadata/dc:title"/></div>
-				<div property="dc:date"><xsl:value-of select="//oc:metadata/dc:date"/></div>
 				
-				<xsl:for-each select="//oc:metadata/dc:creator">
-				<div rel="dc:creator"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute></div>
-				<div property="rdfs:label"><xsl:attribute name="about"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></div>
-				</xsl:for-each>
+				<div>
+						<xsl:attribute name="base"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute>
+						<div property="dcterms:title"><xsl:value-of select="//oc:metadata/dc:title"/></div>
+						<div property="dcterms:date"><xsl:value-of select="//oc:metadata/dc:date"/></div>
+						<div about="" rel="foaf:member"><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:project_name/@href"/></xsl:attribute></div>
+						<div about="" rel="dcterms:publisher"><xsl:attribute name="href">http://opencontext.org</xsl:attribute></div>
+						
+						<xsl:for-each select="//arch:person/oc:metadata/oc:links/oc:link">
+								<div about="">
+										<xsl:attribute name="rel"><xsl:value-of select="@rel"/></xsl:attribute>
+										<xsl:attribute name="href"><xsl:value-of select="."/></xsl:attribute>
+								</div>
+						</xsl:for-each>
+				</div>
 				
-				<xsl:for-each select="//oc:metadata/dc:contributor">
-				<div rel="dc:contributor"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute></div>
-				<div property="rdfs:label"><xsl:attribute name="about"><xsl:value-of select="@href"/></xsl:attribute>
-				<xsl:value-of select="."/></div>
-				</xsl:for-each>
-				
-				<div rel="dc:publisher"><xsl:attribute name="href">http://opencontext.org</xsl:attribute></div>
-				<div property="rdfs:label"><xsl:attribute name="about">http://opencontext.org</xsl:attribute>Open Context</div>
+				<div about="http://opencontext.org">
+						<div property="rdfs:label">Open Context</div>
+				</div>
 				
 		</div>
-		
-		
-		
-		
-		
-		</div>
-		<xsl:comment>
-		END Code for licensing information
-		</xsl:comment>
-		
-		
-		
-		</div>
-		-->
 		
 </div>
 

@@ -26,10 +26,12 @@ if ($XML) {
     <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     
-    <title>Open Context view of Person / Organization:</title>
+    <title>Open Context view of: <?php echo $this->label; ?></title>
     
     <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
-    <link rel="alternate" type="application/atom+xml" tilte="Atom feed of all subject items" href="<?php echo $host; ?>/subjects.atom" />
+    <link rel="alternate" type="application/atom+xml" tilte="Atom representation" href="<?php echo $host; ?>/persons/<?php echo $this->itemUUID; ?>.atom" />
+    <link rel="alternate" type="application/xml" tilte="ArchaeoML XML representation" href="<?php echo $host; ?>/persons/<?php echo $this->itemUUID; ?>.xml" />
+    <link rel="alternate" type="application/json" tilte="JSON representation" href="<?php echo $host; ?>/persons/<?php echo $this->itemUUID; ?>.json" />
     <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
