@@ -18,6 +18,7 @@ class Projects {
 	 const TMmaxTitleNames = 4; //number of context names to list in a title
 	 const TMmaxSize = 9;
 	 const TMminSize = 1;
+	 public $forceTheme = false;
 	 
 	 function getMakeTimeMap(){
 		  
@@ -54,7 +55,7 @@ class Projects {
 		  
 		  if(is_array($projectsJSON)){
 				
-				$chrome = false;
+				$chrome = true;
 				$useragent = @$_SERVER['HTTP_USER_AGENT'];
 				if(stristr($useragent, "chrome")){
 					 $chrome = true;
@@ -231,6 +232,7 @@ class Projects {
 					 unset($actContext["prep-geo"]);
 					 unset($actContext["count"]);
 					 unset($actContext["used"]);
+					 $actContext["used"] = true;
 					 
 					 if($chrome){
 						  if(($actContext["start"] + 0) < 0){
@@ -252,6 +254,11 @@ class Projects {
 						  $actContext["options"]["theme"] = "theme-size-".$actSize;
 					 }
 					 //unset($actContext["options"]["theme"]);
+					 if($this->forceTheme){
+						  $actContext["options"]["theme"] = "red";
+					 }
+
+					 
 					 
 					 $timeMapObj[] = $actContext;
 				}
