@@ -1078,7 +1078,7 @@ class setsController extends Zend_Controller_Action {
     
     //open search service
     public function searchAction(){
-	$this->view->requestURI = $this->_request->getRequestUri(); // for URI to search links
+		  $this->view->requestURI = $this->_request->getRequestUri(); // for URI to search links
     }//end function
     
     
