@@ -351,11 +351,11 @@ BEGIN Container for main page content
                         }
                         elseif($numFound > 0 && $numFound > $tableMax && $displayName != false){
                             echo "<br/>";
-                            echo '<p class="tinyText">'.$displayName.', please filter your selection to '.$tableMax.' items or less in order to export data to a table.</p>';
+                            //echo '<p class="tinyText">'.$displayName.', please filter your selection to '.$tableMax.' items or less in order to export data to a table.</p>';
                         }
                         elseif($numFound > 0 && $numFound <= $tableMax && !$displayName){
                             echo "<br/>";
-                            echo '<p class="tinyText">Please <a href="'.$host.'/auth/" title="User Account Options">login</a> to export this custom selection of data to a table.</p>';
+                            //echo '<p class="tinyText">Please <a href="'.$host.'/auth/" title="User Account Options">login</a> to export this custom selection of data to a table.</p>';
                         }
                         
                         ?>

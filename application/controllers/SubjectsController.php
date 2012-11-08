@@ -170,6 +170,8 @@ class subjectsController extends Zend_Controller_Action {
 				$XML = OpenContext_RDFannotate::spaceEntitiesCheck($XML, $spaceItem->nameSpaces());
 				$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
 				$this->view->XML = $XML;
+				$this->view->label = $spaceItem->label;
+				$this->view->itemUUID = $itemUUID;
 			}
 			else{
 				$this->view->requestURI = $this->_request->getRequestUri(); 
