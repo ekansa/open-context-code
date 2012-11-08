@@ -49,10 +49,11 @@ class mapsController extends Zend_Controller_Action {
 				$output = $callback."(".$output.");";
 		  }
 	
+		  @$useragent = $_SERVER['HTTP_USER_AGENT'];
         $offset = 60 * 60 * 60 * 60;
         $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset). " GMT";
         $encoding = $this->check_compress_ok($_SERVER['HTTP_ACCEPT_ENCODING']);
-		  $encoding = false;
+		  //$encoding = false;
         if(!$encoding){
             header('Content-Type: application/json; charset=utf8');
             header ("Cache-Control:max-age=290304000, public");
@@ -74,8 +75,16 @@ class mapsController extends Zend_Controller_Action {
             header ("Cache-Control:max-age=290304000, public");
             header ($expire);
             header('Content-Encoding: '.$encoding);
+				//ob_start('ob_gzhandler');
+				//print $output;
             print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
             print gzcompress($output, 9);
+				
+				//$length = gzencode($output, 9, FORCE_GZIP);
+				//$time = microtime(true);
+				//header('X-Served-In: '.$time);
+				//exit(''.strlen($length));
+				
         }
     }
     
