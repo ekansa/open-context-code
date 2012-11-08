@@ -42,6 +42,9 @@ class mapsController extends Zend_Controller_Action {
         $callback = $this->_request->getParam('callback');
 	
 		  $projectsObj = new Projects;
+		  if(isset($_GET["simple"])){
+				$projectsObj->forceTheme = true;
+		  }
 		  $timeMap = $projectsObj->getMakeTimeMap();
         $output = Zend_Json::encode($timeMap);
 	

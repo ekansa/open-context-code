@@ -4,7 +4,12 @@ require_once 'Zend/Controller/Action.php';
 
 class indexController extends Zend_Controller_Action
 {   
-      
+    
+	 
+	 public function altHomeAction(){
+		  
+	 }
+	 
     public function indexAction()
     {
 	
@@ -14,6 +19,19 @@ class indexController extends Zend_Controller_Action
 				header('Location: '.$reDirectURI);
 				exit;
 		  }
+		  
+		  @$agent = $_SERVER['HTTP_USER_AGENT'];
+		  //$this->view->simpleView = false;
+		  if($agent){
+				if(stristr($agent, "safari") || stristr($agent, "iphone") || stristr($agent, "ipad")|| stristr($agent, "firefox")){
+					 //$this->view->simpleView = true;
+					 if(isset($_GET["test"])){
+						  return $this->render("alt-home");
+					 }
+				}
+		  }
+		  
+		  
     }
     
     public function robotsAction() {

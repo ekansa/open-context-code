@@ -75,11 +75,56 @@ class projectsController extends Zend_Controller_Action
     
    public function indexAction(){
 		//check for referring links
+		
 		OpenContext_SocialTracking::update_referring_link('projects', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
-		$AllAtomURI = OpenContext_OCConfig::get_host_config();
-		$AllAtomURI .= "/projects/.atom";
-		$xml_string = file_get_contents($AllAtomURI);
-		$this->view->xml_string = $xml_string;
+		$all_project_feed_string = false;
+	  
+		$db_params = OpenContext_OCConfig::get_db_config();
+		$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+									 
+		$db->getConnection();
+		$this->setUTFconnection($db);
+	
+		$sql = "SELECT projects.proj_atom,
+				 projects.total_views,
+				 projects.view_count,
+				 projects.hero_pict,
+				 projects.edit_status,
+				 DATE_FORMAT(projects.accession, '%Y-%m-%d') as proj_pub
+				 FROM projects
+				 WHERE projects.project_id != '0'
+					ORDER BY projects.accession DESC
+				 ";
+	
+		//echo $sql;
+	
+		$result = $db->fetchAll($sql, 2);
+		if($result){
+	  
+			$proj_atom = array();
+			$proj_dates = array();
+			$proj = new Project ;
+			foreach($result as $act_result){
+				$projectEditStatus = $act_result["edit_status"];
+				if(strlen($act_result["proj_atom"])>0){
+						$heroLink = "<link rel=\"enclosure\" href=\"".$act_result['hero_pict']."\" title=\"Illustrative image\" />";
+						$atom = $act_result["proj_atom"];
+						$atom = str_replace("</id>", "</id>".chr(13).$heroLink.chr(13), $atom);
+						$XML = simplexml_load_string($atom);
+						$XML = OpenContext_ProjectReviewAnnotate::XMLmodify($projectEditStatus, $XML, $proj->nameSpaces());
+						$atom = $XML->asXML();
+						$proj_atom[] = $atom;
+				}
+				$proj_dates[] = strtotime($act_result["proj_pub"]);
+			}//end loop
+			$last_date = max($proj_dates);
+			$all_project_feed_string = OpenContext_ProjectAtomJson::all_project_atom_feed($proj_atom, $last_date);
+			$this->view->xml_string = $all_project_feed_string;
+			
+	  }//end case with result
+	  
+	  $db->closeConnection();
+	  
    }//end index action
     
     
