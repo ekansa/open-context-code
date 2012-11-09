@@ -46,6 +46,7 @@ class indexController extends Zend_Controller_Action
 		  Disallow:/sets/\r\n
 		  Disallow:/lightbox/\r\n
 		  Disallow:/search/\r\n
+		  Disallow:/properties/\r\n
 		  Disallow: /*&\r\n
 		  Sitemap: http://opencontext.org/data/siteMap-1.xml \r\n
 		  Sitemap: http://opencontext.org/data/siteMap-2.xml \r\n
