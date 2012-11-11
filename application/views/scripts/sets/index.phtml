@@ -312,7 +312,7 @@ BEGIN Container for main page content
                         <br/>
                             <?php
                             
-                            $pelagios = New Pelagios;
+                            $pelagios = New PelagiosV2;
                             $pelagios->initialize($requestParams);
                             $pelagios->getRelated();
                             $pelagios->displayPelagiosData();
