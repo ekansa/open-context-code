@@ -2,15 +2,16 @@
  * Copyright (c) 2012, Institute for the Study of the Ancient World, New York University
  * Licensed under the BSD License (see LICENSE.txt)
  * @author Nick Rabinowitz
+ * @author Sebastian Heath
  */
 
 // removed in production by uglify
 if (typeof DEBUG === 'undefined') {
-    DEBUG = true;
+    DEBUG = !(window.console === 'undefined');
     AWLD_VERSION = 'debug';
     // POPUP_CLOSE = 'manual';
     POPUP_CLOSE = 'auto';
-    BASE_URL = '../../src/';
+    // BASE_URL = '../../src/';
     // cache busting for development
     require.config({
         urlArgs: "bust=" +  (new Date()).getTime()
@@ -19,6 +20,18 @@ if (typeof DEBUG === 'undefined') {
 
 (function(window) {
     if (DEBUG) console.log('AWLD.js loaded');
+        
+    // utility: simple object extend
+    function extend(obj, settings) {
+        for (var prop in settings) {
+            obj[prop] = settings[prop];
+        }
+    }
+    
+    // utility: is this a string?
+    function isString(obj) {
+        return typeof obj == 'string';
+    }
     
     var additionalModules = {},
         // check for baseUrl, autoinit
@@ -26,7 +39,7 @@ if (typeof DEBUG === 'undefined') {
         scriptEl = docScripts[docScripts.length - 1],
         scriptSrc = scriptEl.src,
         defaultBaseUrl = scriptSrc.replace(/awld\.js.*/, ''),
-        autoInit = !!scriptSrc.match(/autoinit/);
+        autoInit = !!scriptSrc.match(/autoinit/),
     
     /**
      * @name awld
@@ -34,6 +47,13 @@ if (typeof DEBUG === 'undefined') {
      * Root namespace for the library
      */
     awld = {
+
+       /**
+        * @type Boolean
+        * debug flag
+       */
+        debug: false,
+
         /**
          * @type String
          * Base URL for dependencies; library and module 
@@ -118,9 +138,7 @@ if (typeof DEBUG === 'undefined') {
          * @param {Object} settings     Hash of settings to apply
          */
         extend: function(settings) {
-            for (var prop in settings) {
-                awld[prop] = settings[prop];
-            }
+            extend(awld, settings);
         }
         
     },
@@ -133,7 +151,7 @@ if (typeof DEBUG === 'undefined') {
         if (DEBUG) console.log('Initializing library');
         
         // process arguments
-        var isScope = typeof opts == 'string' || (opts && (opts.nodeType || opts.jquery)),
+        var isScope = isString(opts) || (opts && (opts.nodeType || opts.jquery)),
             isPlainObject = opts === Object(opts) && !isScope;
             
         // an object argument is configuration
@@ -342,7 +360,6 @@ if (typeof DEBUG === 'undefined') {
                     // set type based on data
                     getType: noop,
                     dataType: 'json',
-                    resourceName: identity,
                     // detail view for popup window
                     detailView: ui.detailView,
                     initialize: noop

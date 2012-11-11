@@ -1,0 +1,182 @@
+.awld .aw-panel {
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 11px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 1px 2px 2px 0 #666666;
+  -webkit-box-shadow: 1px 2px 2px 0 #666666;
+  box-shadow: 1px 2px 2px 0 #666666;
+  display: none;
+  position: absolute;
+  margin: 13px 0 0 -1px;
+  border-top: 0;
+  width: 320px;
+}
+.awld .aw-index {
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 11px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 1px 2px 2px 0 #666666;
+  -webkit-box-shadow: 1px 2px 2px 0 #666666;
+  box-shadow: 1px 2px 2px 0 #666666;
+  position: relative;
+  display: inline-block;
+}
+.awld .aw-group {
+  padding: 2px 6px;
+  display: none;
+}
+.awld .aw-group:last-child {
+  padding-bottom: .8em;
+}
+.awld .aw-tab {
+  padding: 2px 6px;
+  background: #ffffff;
+}
+.awld .aw-ctrl {
+  margin-top: .5em;
+  padding: 2px 6px;
+  border-bottom: 1px solid #cccccc;
+}
+.awld .aw-ctrl span {
+  color: #999;
+}
+.awld .aw-ctrl div {
+  display: inline-block;
+  border: 1px solid #cccccc;
+  border-bottom: 0;
+  margin-bottom: -4px;
+  padding: 0 .3em 3px .3em;
+  background: #ffffff;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.awld .aw-ctrl div.off {
+  background: #DDD;
+  cursor: pointer;
+}
+.awld .aw-modules {
+  display: none;
+}
+.awld hr {
+  display: none;
+  margin: 14px 0 0 0;
+  width: 320px;
+  position: absolute;
+  border: 0;
+  border-top: 1px solid #cccccc;
+  -moz-box-shadow: 1px 2px 2px 0 #666666;
+  -webkit-box-shadow: 1px 2px 2px 0 #666666;
+  box-shadow: 1px 2px 2px 0 #666666;
+}
+.awld a,
+.awld .refs {
+  color: #900;
+  cursor: pointer;
+}
+.awld a:hover,
+.awld .refs:hover {
+  color: #D00;
+}
+.awld-heading {
+  font-size: 1em;
+  font-weight: bold;
+  margin: .5em 0 0 0;
+}
+.awld p {
+  margin: 0.3em 0;
+}
+.awld-pop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  padding: 5px;
+  z-index:100;
+}
+.awld-pop.top {
+  margin-top: -7px;
+}
+.awld-pop.right {
+  margin-left: 12px;
+}
+.awld-pop.bottom {
+  margin-top: 10px;
+}
+.awld-pop.left {
+  margin-left: -12px;
+}
+.awld-pop.top .arrow {
+  bottom: 0;
+  left: 50%;
+  margin-bottom: -9px;
+}
+.awld-pop.right .arrow {
+  top: 50%;
+  left: 0;
+  width: 15px;
+  height: 28px;
+  margin: -14px 0 0 -9px;
+  background-position: -28px 0;
+}
+.awld-pop.bottom .arrow {
+  top: 0;
+  left: 50%;
+  margin-top: -9px;
+  background-position: 0 -15px;
+}
+.awld-pop.left .arrow {
+  top: 50%;
+  right: 0;
+  width: 15px;
+  height: 28px;
+  margin: -14px -9px 0 0;
+  background-position: -43px 0;
+}
+.awld-pop .arrow {
+  position: absolute;
+  margin-left: -14px;
+  height: 15px;
+  width: 28px;
+  background: url(http://isawnyu.github.com/awld-js/ui/images/arrow.png) no-repeat 0 0;
+}
+.awld-pop-inner {
+  width: 280px;
+  height: 180px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 11px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 1px 2px 2px 0 #666666;
+  -webkit-box-shadow: 1px 2px 2px 0 #666666;
+  box-shadow: 1px 2px 2px 0 #666666;
+  padding: 2px 6px;
+}
+.awld-pop-inner.loading {
+  background-image: url(http://isawnyu.github.com/awld-js/ui/images/ajax-loader.gif);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+.awld-pop-inner .res-type {
+  font-weight: normal;
+  color: #33C;
+}
+.awld-pop-inner .media {
+  margin: 1em 1em 0 0;
+  float: left;
+}
+.awld-pop-inner p {
+  margin: 1em 1em 0 0;
+}

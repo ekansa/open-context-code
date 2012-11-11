@@ -574,14 +574,14 @@
 																		<h5>Linked Data:</h5>
 																		<xsl:for-each select="//oc:linkedData/oc:relationLink">
 																		<p class="tinyText">
-																		<xsl:value-of select="oc:vocabulary"/>-<xsl:value-of select="oc:label"/> :: <xsl:value-of select="oc:targetLink/oc:vocabulary"/>-
-																		<a>
-																		<xsl:if test="@href = 'http://purl.org/NET/biol/ns#term_hasTaxonomy'">
-																				<xsl:attribute name="rel">bio:term_hasTaxonomy</xsl:attribute>
-																		</xsl:if>
-																		<xsl:attribute name="property"><xsl:value-of select="oc:targetLink/oc:label"/></xsl:attribute>
-																		<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute>
-																		<xsl:attribute name="title">Target concept</xsl:attribute><xsl:value-of select="oc:targetLink/oc:label"/></a>
+																		  <xsl:value-of select="oc:vocabulary"/>-<xsl:value-of select="oc:label"/> :: <xsl:value-of select="oc:targetLink/oc:vocabulary"/>-
+																		  <a>
+																		  <xsl:if test="@href = 'http://purl.org/NET/biol/ns#term_hasTaxonomy'">
+																				  <xsl:attribute name="rel">bio:term_hasTaxonomy</xsl:attribute>
+																		  </xsl:if>
+																		  <!-- <xsl:attribute name="property"><xsl:value-of select="oc:targetLink/oc:label"/></xsl:attribute> -->
+																		  <xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute>
+																		  <xsl:attribute name="title">Target concept</xsl:attribute><xsl:value-of select="oc:targetLink/oc:label"/></a>
 																		</p>
 																</xsl:for-each>
 																</div>
