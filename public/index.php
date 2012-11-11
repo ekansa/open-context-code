@@ -753,6 +753,20 @@ try {
                 ->setActionName("not-found");
         $response   = $frontController->dispatch($request);
     }
+    elseif(stristr($e, "Invalid controller specified")){
+        
+        unset($frontController);
+        $frontController = Zend_Controller_Front::getInstance();
+        $router = $frontController->getRouter();
+        $router->removeDefaultRoutes();
+        $allroute = new Zend_Controller_Router_Route('*', array('controller' => 'error', 'action' => 'not-found'));
+        $router->addRoute('allroute', $allroute); // 'subjects refers to a unique route name
+        $request = new Zend_Controller_Request_Http();
+        $request->setModuleName("defaut")
+                ->setControllerName("error")
+                ->setActionName("not-found");
+        $response   = $frontController->dispatch($request);
+    }
     else{
         $frontController = Zend_Controller_Front::getInstance();
         $router = $frontController->getRouter();
