@@ -1076,6 +1076,31 @@ class OpenContext_FacetQuery {
 
 
 	//this function checks for numerical and calendar and range queries, creates Solr query terms as needed
+	
+	//another check to make sure a date is really a date
+		  public static function doubleCheckDate( $str ){ 
+					 
+					 $reg = "\d";
+					 mb_ereg_search_init($str, $reg);
+					 $r = mb_ereg_search();
+					 if(!$r){
+								return false; //no number, can't be a date
+					 }
+					 
+					 $stamp = strtotime( $str ); 
+					 if (!is_numeric($stamp)) {
+						  return FALSE; 
+					 }
+					 $month = date( 'm', $stamp ); 
+					 $day   = date( 'd', $stamp ); 
+					 $year  = date( 'Y', $stamp ); 
+					 if (checkdate($month, $day, $year)){ 
+						  return TRUE;
+					 }
+					 return FALSE; 
+		  }
+	
+	
 	public static function numericTaxon($fieldHash, $val, $intSuffix = "_tax_int", $decSuffix = "_tax_dec"){
 		
 		if(strstr($val, ",")){
@@ -1126,18 +1151,24 @@ class OpenContext_FacetQuery {
 				}
 				
 				$cal_test_string = str_replace("/", "-", $cleanVal);
-				if (($timestamp = strtotime($cal_test_string)) === false) {
+				//echo $cal_test_string." ";
+				if ((($timestamp = strtotime($cal_test_string)) === false) || (!OpenContext_FacetQuery::doubleCheckDate($cal_test_string))) {
 					$cleanCalendar = false;
 				}
 				else{
 					$valOK = true;
 					$cleanCalendar = date("Y-m-d\TH:i:s\Z", strtotime($cal_test_string));
+					//echo "bad date is: ".$cal_test_string." also: ".OpenContext_FacetQuery::doubleCheckDate($cal_test_string)." ";
 				}
 				
+				
 				if($valOK){
+		  
 					$actExpression = array("int" => $cleanInteger,
 												  "dec" => $cleanDecimal,
 												  "cal" => $cleanCalendar);
+					
+					//echo print_r($actExpression);
 					
 					$actExpression["comp"] = false;
 					if(substr($actVal, 0, 1) == "<"){
