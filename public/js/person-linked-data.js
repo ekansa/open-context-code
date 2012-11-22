@@ -33,6 +33,21 @@ function addWaitingMessage(domNode){
 
 function orcidRecord(orcidURI){
     
+    Ajax.Request.prototype.respondToReadyState_orig =
+    Ajax.Request.prototype.respondToReadyState;
+    Ajax.Request.prototype.respondToReadyState = function(readyState) {
+    // Catch the exception, if there is one.
+    try {
+      this.respondToReadyState_orig(readyState);
+    }
+    catch(e) {
+      this.dispatchException(e);
+      var linkDataDiv = document.getElementById(linkDataDivID);
+      linkDataDiv.innerHTML = "Your browser cannot display ORCID data now. Please check link above, or try this with Chrome, Firefox, Opera, or Safari.";
+    }
+    };
+    
+    
     var requestURI = orcidWidget;
     var myAjax = new Ajax.Request(requestURI,
         {method: 'get',
@@ -46,16 +61,27 @@ function orcidRecord(orcidURI){
 }
     
 function orcidRecordDone(response){
-    var respData = JSON.parse(response.responseText);
     var linkDataDiv = document.getElementById(linkDataDivID);
-    linkDataDiv.innerHTML = "";
+    var success = false;
+    try
+    {
+        var respData = JSON.parse(response.responseText);
+        success = true;
+    }
+    catch(e){
+        linkDataDiv.innerHTML = "Your browser cannot display ORCID data now. Please check link above, or try this with Chrome, Firefox, Opera, or Safari.";
+    }
     
-    if(respData.hasOwnProperty("error-desc")){
-        linkDataDiv.innerHTML = "Cannot display ORCID data now. Please check link above.";
+    if(success){
+        linkDataDiv.innerHTML = "";
+        if(respData.hasOwnProperty("error-desc")){
+            linkDataDiv.innerHTML = "Cannot display ORCID data now. Please check link above.";
+        }
+        else{
+            orcidOK(respData, linkDataDiv);
+        }
     }
-    else{
-        orcidOK(respData, linkDataDiv);
-    }
+    
 }
 
  function orcidOK(respData, linkDataDiv){
