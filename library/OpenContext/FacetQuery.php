@@ -1080,6 +1080,22 @@ class OpenContext_FacetQuery {
 	//another check to make sure a date is really a date
 		  public static function doubleCheckDate( $str ){ 
 					 
+					 if(is_numeric($str)){
+								if($str < 1800){
+										  return false; //no calendar date fields eariler than 1800.
+								}
+					 }
+		  
+					 if(substr_count($str, "-") < 2){
+								//possible has one or less hyphens
+								$checkDate = strtotime($str);
+								$time = strtotime("-1 year", time());
+								if($checkDate > $time){
+										  //likely erroneous date of within the past year
+										  return false;
+								}
+					 }
+		  
 					 $reg = "\d";
 					 mb_ereg_search_init($str, $reg);
 					 $r = mb_ereg_search();
@@ -1158,7 +1174,7 @@ class OpenContext_FacetQuery {
 				else{
 					$valOK = true;
 					$cleanCalendar = date("Y-m-d\TH:i:s\Z", strtotime($cal_test_string));
-					//echo "bad date is: ".$cal_test_string." also: ".OpenContext_FacetQuery::doubleCheckDate($cal_test_string)." ";
+					//echo "bad date is: ".$cal_test_string." ($cleanCalendar) also: ".OpenContext_FacetQuery::doubleCheckDate($cal_test_string)." ";
 				}
 				
 				
