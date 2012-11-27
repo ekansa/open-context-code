@@ -253,95 +253,95 @@ class dbXML_dbProperties  {
         $db = $this->db;
 	
 	
-	if($this->dbPenelope){
-	    
-	    if(!$obs){
-		$obsTerm = "";
-	    }
-	    else{
-		$obsTerm = "AND observe.obs_num = $obs ";
-	    }
-	    
-	    $sql = "SELECT DISTINCT val_tab.val_text, properties.property_uuid, properties.value_uuid
-		FROM observe
-		LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
-		LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
-		WHERE observe.subject_uuid = '$id' AND properties.variable_uuid = 'NOTES'
-		$obsTerm
-		";
-	}
-	else{
-	    
-	    if(!$obs){
-		$obsTerm = "";
-	    }
-	    else{
-		$obsTerm = "AND observe.obs_num = $obs ";
-	    }
-	    
-	    $sql = "SELECT DISTINCT val_tab.val_text, properties.property_uuid, properties.value_uuid
-		FROM observe
-		LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
-		LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
-		WHERE observe.subject_uuid = '$id' AND properties.variable_uuid = 'NOTES'
-		$obsTerm
-		";
-	    
-	}
-	
-	//echo $sql;
-	
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-	    
-	    if(!$obs){
-		$obsNum = 1;
-	    }
-	    else{
-		$obsNum = $obs;
-	    }
-	    
-            $notes = $this->notes;
-	    if(!is_array($notes)){
-		$notes= array();
-		$notes[$obsNum] = array();
-	    }
-	    else{
-		if(!array_key_exists($obsNum, $notes)){
-		    $notes[$obsNum] = array();
-		}
-	    }
-	    
-	    foreach($result as $row){
-		
-		$propertyUUID = $row["property_uuid"];
-		$valUUID = $row["value_uuid"];
-		$noteText = $row["val_text"];
-		$xmlNote = "<div>".chr(13);
-		$xmlNote .= $noteText.chr(13);
-		$xmlNote .= "</div>".chr(13);
-		@$xml = simplexml_load_string($xmlNote);
-		if($xml){
-		    $validForXML = true;
-		}
-		else{
-		    $validForXML = false;
-		}
-		unset($xml);
-		
-		$actNoteArray = array("propertyUUID" => $propertyUUID,
-				      "valueUUID"=> $valUUID,
-				      "noteText" => $noteText,
-				      "validForXML" => $validForXML);
-		
-		if(!array_key_exists($propertyUUID, $notes[$obsNum])){
-		    $notes[$obsNum][$propertyUUID] = $actNoteArray;
-		}
-		
-	    }//end loop
-	    
-	    $this->notes = $notes;
-        }
+		  if($this->dbPenelope){
+				
+				if(!$obs){
+					 $obsTerm = "";
+				}
+				else{
+					 $obsTerm = "AND observe.obs_num = $obs ";
+				}
+				
+				$sql = "SELECT DISTINCT val_tab.val_text, properties.property_uuid, properties.value_uuid
+			  FROM observe
+			  LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
+			  LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
+			  WHERE observe.subject_uuid = '$id' AND properties.variable_uuid = 'NOTES'
+			  $obsTerm
+			  ";
+		  }
+		  else{
+				
+				if(!$obs){
+					 $obsTerm = "";
+				}
+				else{
+					 $obsTerm = "AND observe.obs_num = $obs ";
+				}
+				
+				$sql = "SELECT DISTINCT val_tab.val_text, properties.property_uuid, properties.value_uuid
+			  FROM observe
+			  LEFT JOIN properties ON observe.property_uuid = properties.property_uuid
+			  LEFT JOIN val_tab ON properties.value_uuid = val_tab.value_uuid
+			  WHERE observe.subject_uuid = '$id' AND properties.variable_uuid = 'NOTES'
+			  $obsTerm
+			  ";
+				
+		  }
+		  
+		  //echo $sql;
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				
+				if(!$obs){
+					 $obsNum = 1;
+				}
+				else{
+					 $obsNum = $obs;
+				}
+				
+				$notes = $this->notes;
+				if(!is_array($notes)){
+					 $notes= array();
+					 $notes[$obsNum] = array();
+				}
+				else{
+					 if(!array_key_exists($obsNum, $notes)){
+						  $notes[$obsNum] = array();
+					 }
+				}
+				
+				foreach($result as $row){
+			  
+					 $propertyUUID = $row["property_uuid"];
+					 $valUUID = $row["value_uuid"];
+					 $noteText = $row["val_text"];
+					 $xmlNote = "<div>".chr(13);
+					 $xmlNote .= $noteText.chr(13);
+					 $xmlNote .= "</div>".chr(13);
+					 @$xml = simplexml_load_string($xmlNote);
+					 if($xml){
+						  $validForXML = true;
+					 }
+					 else{
+						  $validForXML = false;
+					 }
+					 unset($xml);
+					 
+					 $actNoteArray = array("propertyUUID" => $propertyUUID,
+									 "valueUUID"=> $valUUID,
+									 "noteText" => $noteText,
+									 "validForXML" => $validForXML);
+					 
+					 if(!array_key_exists($propertyUUID, $notes[$obsNum])){
+						  $notes[$obsNum][$propertyUUID] = $actNoteArray;
+					 }
+			  
+				}//end loop
+				
+				$this->notes = $notes;
+		  }
         
         
     } //end function
