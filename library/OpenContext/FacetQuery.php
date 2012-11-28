@@ -506,6 +506,7 @@ class OpenContext_FacetQuery {
 			
 				foreach ($taxa_array as $taxonomy) {
 				
+					$taxonomy = OpenContext_FacetQuery::trimLastDelim($taxonomy); //trim trailing path delimiter if present
 					if(substr_count($taxonomy, "::")>0){
 						$actTaxonomy_array = explode("::", $taxonomy);
 						$numTaxaLevels = count($actTaxonomy_array); //total number of levels in given taxonomy
@@ -514,7 +515,6 @@ class OpenContext_FacetQuery {
 						$actTaxonomy_array = array($taxonomy);
 						$numTaxaLevels = 1; //total number of levels in given taxonomy
 					}
-					
 					
 					$ActTaxonLevel = 0;
 					$parent_query_fields = array();
@@ -1287,7 +1287,15 @@ public static function addNumCalRangeTerm($field, $actValA, $actValB, $noneOrAnd
  }
 
 
-
+public static function trimLastDelim($string, $actDelim = "::"){
+		  //this function removes a trailing end delimator, so that we don't end up making a request for an empty child in a path
+		  $stringLen = strlen($string);
+		  $delimLen = strlen($actDelim);
+		  if(substr($string, ($stringLen - $delimLen)) == $actDelim){
+					 $string = substr($string, 0, ($stringLen - $delimLen));
+		  }
+		  return $string;
+}
 
 
 
