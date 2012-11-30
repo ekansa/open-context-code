@@ -1559,21 +1559,12 @@ class SolrSearch{
 				$spaceItem = New Subject;
 				$spaceItem->getByID($itemUUID);
 				if(strlen($spaceItem->atomEntry)<10){
-				   $spaceItem->solr_getArchaeoML();
-				   $fixed_ArchaeoML = $spaceItem->archaeoML_update($spaceItem->archaeoML);
-				   $spaceItem->archaeoML_update($fixed_ArchaeoML);
-				   $spaceItem->kml_in_Atom = true; // it doesn't validate, but it is really useful
-				   $fullAtom = $spaceItem->DOM_spatialAtomCreate($spaceItem->archaeoML);
-				   $spaceItem->update_atom_entry();
-		       
-					//echo var_dump($spaceItem);
-				}
-				 //echo var_dump($spaceItem);
-				$doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $spaceItem->atomEntry);
-				 
-				if(strlen($doc)>10){
-					$contentFragment->appendXML($doc);  // $atom_content from short atom entry
-					$okEntries = true;
+				    //echo var_dump($spaceItem);
+                $doc = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $spaceItem->atomEntry);
+                if(strlen($doc)>10){
+                   $contentFragment->appendXML($doc);  // $atom_content from short atom entry
+                   $okEntries = true;
+                }
 				}
 				unset($spaceItem);
 			}
