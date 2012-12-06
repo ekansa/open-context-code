@@ -175,7 +175,7 @@ class dbXML_dbProperties  {
 					 //get linked data relations for the variable and the property
 					 $varUnitsData = $this->pen_getUnitData($varUUID);
 					 $linkedDataVar = $this->pen_getLinkedData($varUUID);
-					 $linkedDataProp = $this->pen_getLinkedData($propertyUUID);
+					 $linkedDataProp = $this->pen_getLinkedData($propertyUUID, true);
 					 
 					 $actPropArray = array("propertyUUID" => $propertyUUID,
 									"varUUID" => $varUUID,
@@ -208,21 +208,26 @@ class dbXML_dbProperties  {
     
     
     
-    public function pen_getLinkedData($itemUUID){
-		$db = $this->db;
-		
-		$output = false;
-		$sql = "SELECT linked_data.linkedLabel, linked_data.linkedURI, linked_data.vocabulary, 	linked_data.vocabURI
-		FROM linked_data
-		WHERE linked_data.itemUUID = '$itemUUID' AND linked_data.linkedType = 'type' ";
-		
-		$result = $db->fetchAll($sql, 2);
-			if($result){
-			$output = array();
-			$output = $result[0];
-		}
-		
-		return $output;
+    public function pen_getLinkedData($itemUUID, $allLinks = false){
+		  $db = $this->db;
+		  
+		  $output = false;
+		  $sql = "SELECT linked_data.linkedLabel, linked_data.linkedURI, linked_data.vocabulary, 	linked_data.vocabURI
+		  FROM linked_data
+		  WHERE linked_data.itemUUID = '$itemUUID' AND linked_data.linkedType = 'type' ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$output = array();
+				if(!$allLinks){
+					 $output = $result[0];
+				}
+				else{
+					 $output = $result;
+				}
+		  }
+		  
+		  return $output;
     }
     
 	

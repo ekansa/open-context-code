@@ -230,7 +230,8 @@ class dbXML_xmlProperty  {
 					 $elementDtext = $doc->createTextNode($itemObj->varLinkLabel);
 					 $elementD->appendChild($elementDtext);
 					 $elementC->appendChild($elementD);
-			  
+			 
+					 /*
 					 if($itemObj->propLinkURI){
 						  $elementD = $doc->createElement("oc:targetLink");
 						  $elementD->setAttribute("localType", "property");
@@ -247,13 +248,35 @@ class dbXML_xmlProperty  {
 						  $elementD->appendChild($elementE);
 						  $elementC->appendChild($elementD);
 					 }
-					 $elementB->appendChild($elementC);
-				}
-				$element->appendChild($elementB);
+					 */
+					 if(is_array($itemObj->linkedData)){
+						  foreach($itemObj->linkedData as $linkedData){
+								$elementD = $doc->createElement("oc:targetLink");
+								$elementD->setAttribute("localType", "property");
+								$elementD->setAttribute("id", $itemObj->itemUUID);
+								$elementD->setAttribute("href", $linkedData["linkedURI"]);
+								$elementE = $doc->createElement("oc:vocabulary");
+								$elementE->setAttribute("href", $linkedData["vocabURI"]);
+								$elementEtext = $doc->createTextNode($linkedData["vocabulary"]);
+								$elementE->appendChild($elementEtext);
+								$elementD->appendChild($elementE);
+								$elementE = $doc->createElement("oc:label");
+								$elementEtext = $doc->createTextNode($linkedData["linkedLabel"]);
+								$elementE->appendChild($elementEtext);
+								$elementD->appendChild($elementE);
+								$elementC->appendChild($elementD);
+						  }
+					 }
+			 
+				$elementB->appendChild($elementC);
+			  }
+			  
+			  $element->appendChild($elementB);
 		  }
-		  $root->appendChild($element);
+	
+	 $root->appendChild($element);
     }
-    
+
     
     
     

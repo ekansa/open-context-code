@@ -106,21 +106,23 @@ class dbXML_xmlProperties  {
 			$elementD->appendChild($elementE);
 			
 			if(is_array($property["propLinkedData"])){
-			    $elementE = $doc->createElement("oc:targetLink");
-			    $elementE->setAttribute("localType", "property");
-			    $elementE->setAttribute("localID", $property["propertyUUID"]);
-			    $elementE->setAttribute("localURI", self::propRootURI.$property["propertyUUID"]);
-			    $elementE->setAttribute("href", $property["propLinkedData"]["linkedURI"]);
-			    $elementF = $doc->createElement("oc:vocabulary");
-			    $elementF->setAttribute("href", $property["propLinkedData"]["vocabURI"]);
-			    $elementFtext = $doc->createTextNode($property["propLinkedData"]["vocabulary"]);
-			    $elementF->appendChild($elementFtext);
-			    $elementE->appendChild($elementF);
-			    $elementF = $doc->createElement("oc:label");
-			    $elementFtext = $doc->createTextNode($property["propLinkedData"]["linkedLabel"]);
-			    $elementF->appendChild($elementFtext);
-			    $elementE->appendChild($elementF);
-			    $elementD->appendChild($elementE);
+				foreach($property["propLinkedData"] as $propLinkedData){
+					 $elementE = $doc->createElement("oc:targetLink");
+					 $elementE->setAttribute("localType", "property");
+					 $elementE->setAttribute("localID", $property["propertyUUID"]);
+					 $elementE->setAttribute("localURI", self::propRootURI.$property["propertyUUID"]);
+					 $elementE->setAttribute("href", $propLinkedData["linkedURI"]);
+					 $elementF = $doc->createElement("oc:vocabulary");
+					 $elementF->setAttribute("href", $propLinkedData["vocabURI"]);
+					 $elementFtext = $doc->createTextNode($propLinkedData["vocabulary"]);
+					 $elementF->appendChild($elementFtext);
+					 $elementE->appendChild($elementF);
+					 $elementF = $doc->createElement("oc:label");
+					 $elementFtext = $doc->createTextNode($propLinkedData["linkedLabel"]);
+					 $elementF->appendChild($elementFtext);
+					 $elementE->appendChild($elementF);
+					 $elementD->appendChild($elementE);
+				}
 			}
 			
 			$elementC->appendChild($elementD);

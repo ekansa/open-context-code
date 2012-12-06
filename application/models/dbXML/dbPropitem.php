@@ -35,6 +35,8 @@ class dbXML_dbPropitem  {
 	 public $varUnitName; //name of the measurement unit
 	 public $varUnitAbrv; //abreviation for the measurement unit
 	
+	 public $linkedData; //array of linked data, objects that relate to the current property
+	
     public $valUUID;
     public $value;
     public $valNumeric;
@@ -107,6 +109,7 @@ class dbXML_dbPropitem  {
 		  $this->varLinkURI = false;
 		  $this->varLinkVocab = false;
 		  $this->varLinkVocabURI = false;
+		  $this->linkedData = false;
 		  
 		  $this->valUUID = false;
 		  $this->value = false;
@@ -194,6 +197,8 @@ class dbXML_dbPropitem  {
 					 $this->propLinkVocabURI = $linkedData["vocabURI"];
 				}
 				
+				$this->linkedData = $this->pen_getLinkedData($this->itemUUID, true);
+				
 				$this->propDescription = $result[0]["note"];
 				$xmlNote = "<div>".chr(13);
 				$xmlNote .= $this->propDescription.chr(13);
@@ -235,7 +240,7 @@ class dbXML_dbPropitem  {
 		  }
     }//end function
     
-    public function pen_getLinkedData($itemUUID){
+    public function pen_getLinkedData($itemUUID, $allLinks = false){
 		  $db = $this->db;
 		  
 		  $output = false;
@@ -243,12 +248,15 @@ class dbXML_dbPropitem  {
 		  FROM linked_data
 		  WHERE linked_data.itemUUID = '$itemUUID' AND linked_data.linkedType = 'type' ";
 		  
-		  //echo  $sql;
-		  
 		  $result = $db->fetchAll($sql, 2);
 		  if($result){
 				$output = array();
-				$output = $result[0];
+				if(!$allLinks){
+					 $output = $result[0];
+				}
+				else{
+					 $output = $result;
+				}
 		  }
 		  
 		  return $output;
