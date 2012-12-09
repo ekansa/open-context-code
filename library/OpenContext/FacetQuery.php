@@ -1176,9 +1176,6 @@ class OpenContext_FacetQuery {
 				}
 				
 				$cal_test_string = str_replace("/", "-", $cleanVal);
-				if(!stristr($cal_test_string, "-") && is_numeric($cal_test_string)){
-					 $cal_test_string .= "-01-01"; // for simple years, make january 1
-				}
 				
 				$cleanCalendar = false;
 				if ((($timestamp = strtotime($cal_test_string)) === false) || (!OpenContext_FacetQuery::doubleCheckDate($cal_test_string))) {
@@ -1188,7 +1185,7 @@ class OpenContext_FacetQuery {
 					$valOK = true;
 					$cleanCalendar = date("Y-m-d\TH:i:s\Z", strtotime($cal_test_string));
 					$cleanCalendar = (string)$cleanCalendar;
-					//echo "bad date is: ".$cal_test_string." ($cleanCalendar) also: ".OpenContext_FacetQuery::doubleCheckDate($cal_test_string)." ";
+					echo "bad date is: ".$cal_test_string." ($cleanCalendar) also: ".OpenContext_FacetQuery::doubleCheckDate($cal_test_string)." ";
 				}
 				
 				
