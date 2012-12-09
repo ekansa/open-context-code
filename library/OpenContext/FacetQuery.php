@@ -1119,6 +1119,15 @@ class OpenContext_FacetQuery {
 	
 	public static function numericTaxon($fieldHash, $val, $intSuffix = "_tax_int", $decSuffix = "_tax_dec"){
 		
+		if(is_numeric($val)){
+		  if(strlen($val) == 4 && $val >= 1800){
+					 //is likely a date value, expressed only as a year. so get the whole year
+					 $topVal = $val + 1;
+					 $Newval = ">=".$val.",<".$topVal ;
+					 $val = $Newval;
+		  }
+		}
+		
 		if(strstr($val, ",")){
 			$valArray = explode(",", $val);
 		}
@@ -1167,13 +1176,18 @@ class OpenContext_FacetQuery {
 				}
 				
 				$cal_test_string = str_replace("/", "-", $cleanVal);
-				//echo $cal_test_string." ";
+				if(!stristr($cal_test_string, "-") && is_numeric($cal_test_string)){
+					 $cal_test_string .= "-01-01"; // for simple years, make january 1
+				}
+				
+				$cleanCalendar = false;
 				if ((($timestamp = strtotime($cal_test_string)) === false) || (!OpenContext_FacetQuery::doubleCheckDate($cal_test_string))) {
 					$cleanCalendar = false;
 				}
 				else{
 					$valOK = true;
 					$cleanCalendar = date("Y-m-d\TH:i:s\Z", strtotime($cal_test_string));
+					$cleanCalendar = (string)$cleanCalendar;
 					//echo "bad date is: ".$cal_test_string." ($cleanCalendar) also: ".OpenContext_FacetQuery::doubleCheckDate($cal_test_string)." ";
 				}
 				
@@ -1261,6 +1275,7 @@ class OpenContext_FacetQuery {
 								$termDec = OpenContext_FacetQuery::addNumCalTerm($decField, $exps[0]["dec"], "||");
 								$termCal = OpenContext_FacetQuery::addNumCalTerm($calField, $exps[0]["cal"], "||");
 								$numeric_term = $rangeInt.$termDec.$termCal; //final expression of query
+								//echo $numeric_term;
 					 }
 			}
 		}
