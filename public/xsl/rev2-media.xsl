@@ -451,6 +451,20 @@
 																						<xsl:attribute name="alt"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_name"/></xsl:attribute>
 																					 </img>
 																				</a>
+																				<div style="display:none;">
+																						<a>
+																						<xsl:attribute name="about"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:previewURI"/></xsl:attribute>
+																						<xsl:attribute name="rel">license</xsl:attribute>
+																						<xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+																						</a>
+																				</div>
+																				<div style="display:none;">
+																						<a>
+																						<xsl:attribute name="about"><xsl:value-of select="arch:resource/arch:content/arch:externalFileInfo/arch:resourceURI"/></xsl:attribute>
+																						<xsl:attribute name="rel">license</xsl:attribute>
+																						<xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:copyright_lic/oc:lic_URI"/></xsl:attribute>
+																						</a>
+																				</div>
 																		  </xsl:when>
 																		  <xsl:otherwise>
 																				<a href="http://creativecommons.org/licenses/by/3.0/">
