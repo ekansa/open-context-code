@@ -1165,30 +1165,32 @@ class OpenContext_XMLtoOpenContextItem {
 			foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:linkedData") as $linkedData) {
 				$relationURI = false;
 				$targetURI = false;
-				foreach ($linkedData->xpath("//oc:relationLink/@href") as $relationURI) {
+				foreach ($linkedData->xpath(".//oc:relationLink/@href") as $relationURI) {
 					$relationURI = $relationURI."";
 				}
-				if($linkedData->xpath("//oc:targetLink/@href")){
-					foreach ($linkedData->xpath("//oc:targetLink/@href") as $targetURI) {
+				if($linkedData->xpath(".//oc:targetLink/@href")){
+					foreach ($linkedData->xpath(".//oc:targetLink/@href") as $targetURI) {
 						$targetURI = $targetURI."";
+						if($relationURI != false && $targetURI != false){
+							$OpenContextItem->addURIreference($relationURI, $targetURI);
+						}
 					}
 				}
 				$LinkNote = "";
-				foreach ($linkedData->xpath("//oc:relationLink/oc:vocabulary") as $vocab) {
+				foreach ($linkedData->xpath(".//oc:relationLink/oc:vocabulary") as $vocab) {
 					$LinkNote .= (string)$vocab." ";
 				}
-				foreach ($linkedData->xpath("//oc:relationLink/oc:label") as $label) {
+				foreach ($linkedData->xpath(".//oc:relationLink/oc:label") as $label) {
 					$LinkNote .= (string)$label." ";
 				}
-				foreach ($linkedData->xpath("//oc:targetLink/oc:vocabulary") as $vocab) {
+				foreach ($linkedData->xpath(".//oc:targetLink/oc:vocabulary") as $vocab) {
 					$LinkNote .= (string)$vocab." ";
 				}
-				foreach ($linkedData->xpath("//oc:targetLink/oc:label") as $label) {
+				foreach ($linkedData->xpath(".//oc:targetLink/oc:label") as $label) {
 					$LinkNote .= (string)$label."";
 				}
 				
 				if($relationURI != false && $targetURI != false){
-					$OpenContextItem->addURIreference($relationURI, $targetURI);
 					$OpenContextItem->addSimpleArrayItem($LinkNote, "alphaNotes"); //add notes
 				}
 			}
