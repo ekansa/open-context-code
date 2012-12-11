@@ -1187,7 +1187,7 @@ class OpenContext_XMLtoOpenContextItem {
 					$LinkNote .= (string)$vocab." ";
 				}
 				foreach ($linkedData->xpath(".//oc:targetLink/oc:label") as $label) {
-					$LinkNote .= (string)$label."";
+					$LinkNote .= (string)$label." ";
 				}
 				
 				if($relationURI != false && $targetURI != false){
