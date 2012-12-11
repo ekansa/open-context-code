@@ -49,8 +49,28 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements
 		</xsl:choose>
 </xsl:template>
 
+<!-- identity templates -->
+    <xsl:template match="*">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
 
-
+	 <xsl:template match="@*|text()|comment()|processing-instruction()">
+        <xsl:copy/>
+    </xsl:template>
+	 
+<!-- the call the template -->
+<xsl:template name="node-output">
+		<xsl:param name="root"/>
+		<xsl:copy>
+			 
+				<xsl:apply-templates select="$root/@*"/>
+				<xsl:apply-templates select="$root/node()"/>
+			
+		</xsl:copy>
+</xsl:template>
 
 
 
