@@ -110,7 +110,12 @@ function orcidRecordDone(response){
                 var listItem = document.createElement("li");
                 var listLink = document.createElement("a");
                 listLink.setAttribute("href", bioURL["url"]["value"]);
-                listLink.innerHTML = bioURL["url-name"]["value"];
+                if(bioURL["url-name"]["value"].length > 1){
+                    listLink.innerHTML = bioURL["url-name"]["value"];
+                }
+                else{
+                    listLink.innerHTML = bioURL["url"]["value"];
+                }
                 listItem.appendChild(listLink);
                 linkList.appendChild(listItem);
             }
