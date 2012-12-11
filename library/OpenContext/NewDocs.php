@@ -70,7 +70,10 @@ class OpenContext_NewDocs {
 		if($updateInsertSuccess){
 			//insert links, properties, children items. modify parent if link to child is not found
 			$OKlinks = OpenContext_XMLtoItems::linksRetrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "spatial", $itemXML, $db);
+			/*
+			Turn this on if adding properties via XML docs, works faster if you're not
 			$OKprops = OpenContext_XMLtoItems::obs_props_Retrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "spatial", $itemXML, $db);
+			*/
 			$OKchilds = OpenContext_XMLtoItems::childrenRetrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, $itemXML, $db);
 			$OKparents = OpenContext_XMLtoItems::parentCheck($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, $itemObj->label, $itemObj->className, $itemXML, $db);
 		
@@ -111,7 +114,11 @@ class OpenContext_NewDocs {
 		if($updateInsertSuccess){
 			//insert links, properties, children items. modify parent if link to child is not found
 			$OKlinks = OpenContext_XMLtoItems::linksRetrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "media", $itemXML, $db);
+			
+			/*
+			Turn this on if adding properties via XML docs, works faster if you're not
 			$OKprops = OpenContext_XMLtoItems::obs_props_Retrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "media", $itemXML, $db);
+			*/
 			
 			/*
 			 Now do the solr indexing (if batch size is more than the minimum)
