@@ -17,8 +17,13 @@ class VocabulariesController extends Zend_Controller_Action
 		
         $this->view->ok = true;
         OpenContext_SocialTracking::update_referring_link('vocabs', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);        
-        //$this->view->result = $result;
-                
+        
+		  $vocab =  $this->_request->getParam('vocab');
+		  $concept =  $this->_request->getParam('concept');
+		  
+		  $this->_helper->viewRenderer->setNoRender();
+		  echo "<h1>Vocabulary: $vocab </h1>";
+		  echo "<h2>Concept: $concept </h2>";
     }
     
     

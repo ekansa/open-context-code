@@ -729,6 +729,16 @@ $router->addRoute('unapiView', $unapiViewRoute); // 'subjects refers to a unique
 */
 
 
+//Vocabularies and concepts
+$vocabConRoute = new Zend_Controller_Router_Route('vocabularies/:vocab/:concept', array('controller' => 'vocabularies', 'action' => 'view'));
+// Add it to the router
+$router->addRoute('vocabConView', $vocabConRoute ); // routes for vocabularies and concepts
+
+//Vocabularies only
+$vocabRoute = new Zend_Controller_Router_Route('vocabularies/:vocab', array('controller' => 'vocabularies', 'action' => 'view'));
+// Add it to the router
+$router->addRoute('vocabView', $vocabRoute ); // routes for vocabularies only
+
 
 
 $frontController->throwExceptions(true);
