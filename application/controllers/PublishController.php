@@ -6,6 +6,7 @@ ini_set("memory_limit", "512M");
 // set maximum execution time to no limit
 ini_set("max_execution_time", "0");
 
+
 class publishController extends Zend_Controller_Action
 {   
       
@@ -14,18 +15,17 @@ class publishController extends Zend_Controller_Action
     
     }
     
-    const xmlRoot = "http://penelope2.oc/xml/";
+    const xmlRoot = "http://penelope.oc/xml/";
     //const xmlRoot = "http://about.oc/oc_xmlgen/";
     //const xmlRoot = "http://ux.opencontext.org/xml/oc_xmlgen/"; 
     
     public function docAddAction() {
-		$this->_helper->viewRenderer->setNoRender();	
-        
+		  $this->_helper->viewRenderer->setNoRender();	
         $type = $_REQUEST["type"];
         $id = $_REQUEST["id"];
 	
-		//update or add. default is adding new documents
-		if(!isset($_REQUEST["doUpdate"])){
+		  //update or add. default is adding new documents
+		  if(!isset($_REQUEST["doUpdate"])){
             $doUpdate = false;
         }
         else{
@@ -33,41 +33,45 @@ class publishController extends Zend_Controller_Action
 			 $doUpdate = true;
         }
         
+		  $data = false;
         if($type == "space"){
             //$xmlString = file_get_contents(self::xmlRoot."space_v3.php?imp=importer_etana&item=".$id);
 			 //$xmlString = file_get_contents("http://opencontext.org/subjects/".$id.".xml");
-			$xmlString = file_get_contents(self::xmlRoot."space?xml=1&id=".$id);
+				$xmlString = file_get_contents(self::xmlRoot."space?xml=1&id=".$id);
             $data = OpenContext_NewDocs::spaceAdd($xmlString, true, $doUpdate);
         }
-        if($type == "person"){
+        elseif($type == "person"){
             //$xmlString = file_get_contents(self::xmlRoot."person.php?imp=true&item=".$id);
-			$xmlString = file_get_contents(self::xmlRoot."person?xml=1&id=".$id);
+				$xmlString = file_get_contents(self::xmlRoot."person?xml=1&id=".$id);
             $data = OpenContext_NewDocs::personAdd($xmlString);
         }
-        if($type == "prop"){
+        elseif($type == "prop"){
             //$xmlString = file_get_contents(self::xmlRoot."property.php?imp=true&item=".$id);
-            $xmlString = file_get_contents(self::xmlRoot."property?xml=1&id=".$id);
-			$data = OpenContext_NewDocs::propertyAdd($xmlString, $doUpdate);
+				$xmlString = file_get_contents(self::xmlRoot."property?xml=1&id=".$id);
+				$data = OpenContext_NewDocs::propertyAdd($xmlString, $doUpdate);
         }
-		if($type == "media"){
-				//$xmlString = file_get_contents(self::xmlRoot."media.php?imp=true&item=".$id);
-			//$xmlString = file_get_contents("http://opencontext.org/media/".$id.".xml");
-			$xmlString = file_get_contents(self::xmlRoot."media?xml=1&id=".$id);
-			$data = OpenContext_NewDocs::mediaAdd($xmlString, true, $doUpdate);
-        }
-		if($type == "doc"){
-				//$xmlString = file_get_contents(self::xmlRoot."media.php?imp=true&item=".$id);
-			//$xmlString = file_get_contents("http://opencontext.org/media/".$id.".xml");
-			$xmlString = file_get_contents(self::xmlRoot."document?xml=1&id=".$id);
-			$data = OpenContext_NewDocs::documentAdd($xmlString, true, $doUpdate);
-        }
-        if($type == "proj"){
-            //$xmlString = file_get_contents(self::xmlRoot."project.php?imp=true&item=".$id);
-			$xmlString = file_get_contents(self::xmlRoot."prokect?xml=1&id=".$id);
-            $data = OpenContext_NewDocs::projectAdd($xmlString);
-        }
-        
+		  elseif($type == "media"){
+				  //$xmlString = file_get_contents(self::xmlRoot."media.php?imp=true&item=".$id);
+			  //$xmlString = file_get_contents("http://opencontext.org/media/".$id.".xml");
+			  $xmlString = file_get_contents(self::xmlRoot."media?xml=1&id=".$id);
+			  $data = OpenContext_NewDocs::mediaAdd($xmlString, true, $doUpdate);
+		  }
+		  elseif($type == "doc"){
+				  //$xmlString = file_get_contents(self::xmlRoot."media.php?imp=true&item=".$id);
+			  //$xmlString = file_get_contents("http://opencontext.org/media/".$id.".xml");
+			  $xmlString = file_get_contents(self::xmlRoot."document?xml=1&id=".$id);
+			  $data = OpenContext_NewDocs::documentAdd($xmlString, true, $doUpdate);
+			 }
+		  elseif($type == "proj"){
+				  //$xmlString = file_get_contents(self::xmlRoot."project.php?imp=true&item=".$id);
+			  $xmlString = file_get_contents(self::xmlRoot."prokect?xml=1&id=".$id);
+				  $data = OpenContext_NewDocs::projectAdd($xmlString);
+			 }
+        else{
+				$data = false;
+		  }
         echo Zend_Json::encode($data);
+        
     }
     
     
