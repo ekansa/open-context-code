@@ -46,7 +46,7 @@ class Media {
         $output = false; //no user
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
         
         $sql = 'SELECT *
                 FROM resource
@@ -59,50 +59,50 @@ class Media {
             $this->noid = $result[0]["noid"];
             $this->projectUUID = $result[0]["project_id"];
             $this->sourceID = $result[0]["source_id"];
-	    $this->itemUUID = $result[0]["uuid"];
-	    $this->label = $result[0]["res_label"];
-	    $this->mimeType = $result[0]["mime_type"];
-	    $this->viewCount = $result[0]["view_count"];
+				$this->itemUUID = $result[0]["uuid"];
+				$this->label = $result[0]["res_label"];
+				$this->mimeType = $result[0]["mime_type"];
+				$this->viewCount = $result[0]["view_count"];
             $this->createdTime = $result[0]["created"];
             $this->updatedTime = $result[0]["updated"];
-	    $this->atomEntry = $result[0]["atom_entry"];
-	    $this->archaeoML = $result[0]["archaeoML"];
+				$this->atomEntry = $result[0]["atom_entry"];
+				$this->archaeoML = $result[0]["archaeoML"];
 	    
-	    /*
-	    $this->accentFix($this->atomEntry, "atom");
-	    $this->accentFix($this->archaeoML, "archaeoML");
-	    */
-	    
-	    if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
-		$bigString = new BigString;
-		$this->archaeoML = $bigString->get_CurrentBigString($this->itemUUID, "archaeoML", $db);
-	    }
-	    
-	    $this->xhtml_rel = "alternate";
-	    $this->atom_rel = "self";
-	    
-	    $this->mimeType = $this->mime_type_clean($this->mimeType);
+				/*
+				$this->accentFix($this->atomEntry, "atom");
+				$this->accentFix($this->archaeoML, "archaeoML");
+				*/
+				
+				if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
+					 $bigString = new BigString;
+					 $this->archaeoML = $bigString->get_CurrentBigString($this->itemUUID, "archaeoML", $db);
+				}
+				
+				$this->xhtml_rel = "alternate";
+				$this->atom_rel = "self";
+				
+				$this->mimeType = $this->mime_type_clean($this->mimeType);
 	    
             $output = true;
         }
         
-	$db->closeConnection();
+		  $db->closeConnection();
     
         return $output;
     }
     
     
     function addViewCount(){
-	$db_params = OpenContext_OCConfig::get_db_config();
+		  $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
 	
-	$data = array("view_count" => $this->viewCount + 1);
-	$where = "uuid = '".$this->itemUUID."' ";
+		  $data = array("view_count" => $this->viewCount + 1);
+		  $where = "uuid = '".$this->itemUUID."' ";
 	
-	$db->update("resource", $data, $where);
-	
-	$db->closeConnection();
+		  $db->update("resource", $data, $where);
+		  
+		  $db->closeConnection();
     }
     
     
@@ -110,22 +110,22 @@ class Media {
     //used to fix legacy non utf8 problem
     function accentFix($xmlString, $XMLtype){
 	
-	$badString = "Christian Aug&amp;#233;";
-	$goodString = "Christian Augé";
+		  $badString = "Christian Aug&amp;#233;";
+		  $goodString = "Christian Augé";
 	
-	if(stristr($xmlString, $badString)){
-	    $newXML = str_replace($badString, $goodString, $xmlString);
-	    @$xml = simplexml_load_string($newXML);
-	    if($XMLtype == "atom" && $xml){
-		$this->atomEntry = $newXML;
-		$this->update_atom_entry();
-	    }
-	    elseif($XMLtype == "archaeoML" && $xml){
-		$this->archaeoML = $newXML;
-		$this->committ_update_archaeoML();
-	    }
-	    
-	}
+		  if(stristr($xmlString, $badString)){
+				$newXML = str_replace($badString, $goodString, $xmlString);
+				@$xml = simplexml_load_string($newXML);
+				if($XMLtype == "atom" && $xml){
+			  $this->atomEntry = $newXML;
+			  $this->update_atom_entry();
+				}
+				elseif($XMLtype == "archaeoML" && $xml){
+			  $this->archaeoML = $newXML;
+			  $this->committ_update_archaeoML();
+				}
+				
+		  }
 	
     }//end function
     
@@ -134,22 +134,22 @@ class Media {
     
     function versionUpdate($id, $db = false){
 	
-	if(!$db){
-	    $db_params = OpenContext_OCConfig::get_db_config();
-	    $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	    $db->getConnection();
-	}
-	
-	$sql = 'SELECT archaeoML AS archaeoML
-                FROM resource
-                WHERE uuid = "'.$id.'"
-                LIMIT 1';
-		
-        $result = $db->fetchAll($sql, 2);
-        if($result){
-	    $xmlString = $result[0]["archaeoML"];
-	    OpenContext_DeleteDocs::saveBeforeUpdate($id, "media", $xmlString);
-	}
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+		  }
+		  
+		  $sql = 'SELECT archaeoML AS archaeoML
+							FROM resource
+							WHERE uuid = "'.$id.'"
+							LIMIT 1';
+			  
+				 $result = $db->fetchAll($sql, 2);
+				 if($result){
+				$xmlString = $result[0]["archaeoML"];
+				OpenContext_DeleteDocs::saveBeforeUpdate($id, "media", $xmlString);
+		  }
 	
     }//end function
     
@@ -160,20 +160,20 @@ class Media {
         
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
+			
+		  if(!$this->noid){
+				$this->noid = false;
+		  }
     
-	if(!$this->noid){
-	    $this->noid = false;
-	}
-    
-	$data = array("noid" => $this->noid,
+		  $data = array("noid" => $this->noid,
 		      "project_id" => $this->projectUUID,
 		      "source_id" => $this->sourceID,
 		      "uuid" => $this->itemUUID,
 		      "res_label" => $this->label,
 		      "res_filename" => $this->filename,
 		    
-		      "res_type" => $this->archType,
+		      "res_archml_type" => $this->archType,
 		      "mime_type" => $this->mimeType,
 		      "ia_thumb" => $this->thumbnailURI,
 		      "ia_preview" => $this->previewURI,
@@ -183,41 +183,41 @@ class Media {
 		      "atom_entry" => $this->atomEntry,
 		      );
 	
-	if($versionUpdate){
-	    $this->versionUpdate($this->itemUUID, $db); //save previous version history
-	    unset($data["created"]);
-	}
+		  if($versionUpdate){
+				$this->versionUpdate($this->itemUUID, $db); //save previous version history
+				unset($data["created"]);
+		  }
 	
-	if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
-	    /*
-	    This gets around size limits for inserting into MySQL.
-	    It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
-	    */
-	    $bigString = new BigString;
-	    $bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "media", $this->archaeoML, $db);
-	    $data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
-	    $updateOK = true;
-	}
-	else{
-	    
-	    $data["archaeoML"] = $this->archaeoML;
-	    $updateOK = true;
-	}
+		  if(OpenContext_OCConfig::need_bigString($this->archaeoML)){
+				/*
+				This gets around size limits for inserting into MySQL.
+				It breaks up big inserts into smaller ones, especially useful for HUGE strings of XML
+				*/
+				$bigString = new BigString;
+				$bigString->saveCurrentBigString($this->itemUUID, "archaeoML", "media", $this->archaeoML, $db);
+				$data["archaeoML"] = OpenContext_OCConfig::get_bigStringValue();
+				$updateOK = true;
+		  }
+		  else{
+				
+				$data["archaeoML"] = $this->archaeoML;
+				$updateOK = true;
+		  }
 
-	$success = false;
-	try{
-	    $db->insert("resource", $data);
-	    $success = true;
-	}catch(Exception $e){
-	    $success = false;
-	    $where = array();
-	    $where[] = 'uuid = "'.$this->itemUUID.'" ';
-	    $db->update("resource", $data, $where);
-	    $success = true;
-	}
+		  $success = false;
+		  try{
+				$db->insert("resource", $data);
+				$success = true;
+		  }catch(Exception $e){
+				$success = false;
+				$where = array();
+				$where[] = 'uuid = "'.$this->itemUUID.'" ';
+				$db->update("resource", $data, $where);
+				$success = true;
+		  }
 
-	$db->closeConnection();
-	return $success;
+		  $db->closeConnection();
+		  return $success;
     }//end function
     
     
@@ -233,116 +233,116 @@ class Media {
     //feed read by the CDL's archival services.
     function getItemEntry($id){
 	
-	$this->getByID($id);
-	if(strlen($this->archaeoML)<10){
-	    $this->archaeoML_update($this->archaeoML);
-	    $fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
-	    $this->update_atom_entry();
-	}
-	
-	return $this->atomEntry;
+		  $this->getByID($id);
+		  if(strlen($this->archaeoML)<10){
+				$this->archaeoML_update($this->archaeoML);
+				$fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
+				$this->update_atom_entry();
+		  }
+		  
+		  return $this->atomEntry;
     }
     
     
     //this function gets an item's ArchaeoML. It's used for indexing in Solr
     function getItemXML($id){
 	
-	$this->getByID($id);
-	if(strlen($this->archaeoML)<10){
-	    $this->archaeoML_update($this->archaeoML);
-	    $fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
-	    $this->update_atom_entry();
-	}
-	
-	return $this->archaeoML;
+		  $this->getByID($id);
+		  if(strlen($this->archaeoML)<10){
+				$this->archaeoML_update($this->archaeoML);
+				$fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
+				$this->update_atom_entry();
+		  }
+		  
+		  return $this->archaeoML;
     }
     
     
     
     function mime_type_clean($testString){
 	
-	$type = false;
-	
-	$mimeTypes = array("jpg" => "image/jpeg",
-			   "jpeg" => "image/jpeg",
-			   "tiff" => "image/tiff",
-			   "tif" => "image/tiff",
-			   "gif" => "image/gif",
-			   "png" => "image/png",
-			   "pdf" => "application/pdf",
-			   "doc" => "application/msword",
-			   "xls" => "application/vnd.ms-excel");
-	
-	if(strlen($testString)>4){
-	    $addDot = ".";
-	}
-	else{
-	    $addDot = "";
-	}
-	
-	foreach($mimeTypes as $key => $actType){
-	    
-	    if(stristr($testString, ($addDot.$key))){   
-		$type = $actType;
-		break;
-	    }
-	    
-	}
-	
-	return $type;
+		  $type = false;
+		  
+		  $mimeTypes = array("jpg" => "image/jpeg",
+					  "jpeg" => "image/jpeg",
+					  "tiff" => "image/tiff",
+					  "tif" => "image/tiff",
+					  "gif" => "image/gif",
+					  "png" => "image/png",
+					  "pdf" => "application/pdf",
+					  "doc" => "application/msword",
+					  "xls" => "application/vnd.ms-excel");
+		  
+		  if(strlen($testString)>4){
+				$addDot = ".";
+		  }
+		  else{
+				$addDot = "";
+		  }
+		  
+		  foreach($mimeTypes as $key => $actType){
+				
+				if(stristr($testString, ($addDot.$key))){   
+					 $type = $actType;
+					 break;
+				}
+				
+		  }
+		  
+		  return $type;
     }
     
     
     
     function update_atom_entry(){
 	
-	$updateOK = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
+		  $updateOK = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	
-	@$xml = simplexml_load_string($this->atomEntry); 
-	if($xml){
-	    $data = array("atom_entry" => $this->atomEntry);
-	    $where = array();
-	    $where[] = 'uuid = "'.$this->itemUUID.'" ';
-	    $db->update("resource", $data, $where);
-	    $updateOK = true;
-	}
-	
-	unset($mediaItem);
-	$db->closeConnection();
-	return $updateOK;
+		  $db->getConnection();
+		  
+		  @$xml = simplexml_load_string($this->atomEntry); 
+		  if($xml){
+				$data = array("atom_entry" => $this->atomEntry);
+				$where = array();
+				$where[] = 'uuid = "'.$this->itemUUID.'" ';
+				$db->update("resource", $data, $where);
+				$updateOK = true;
+		  }
+		  
+		  unset($mediaItem);
+		  $db->closeConnection();
+		  return $updateOK;
     }
     
     
     function nameSpaces(){
-	$nameSpaceArray = array("oc" => self::OC_namespaceURI,
-			   "dc" => OpenContext_OCConfig::get_namespace("dc"),
-			   "arch" => OpenContext_OCConfig::get_namespace("arch", "media"),
-			   "gml" => OpenContext_OCConfig::get_namespace("gml"),
-			   "kml" => OpenContext_OCConfig::get_namespace("kml"));
-	
-	return $nameSpaceArray;
+		  $nameSpaceArray = array("oc" => self::OC_namespaceURI,
+					  "dc" => OpenContext_OCConfig::get_namespace("dc"),
+					  "arch" => OpenContext_OCConfig::get_namespace("arch", "media"),
+					  "gml" => OpenContext_OCConfig::get_namespace("gml"),
+					  "kml" => OpenContext_OCConfig::get_namespace("kml"));
+		  
+		  return $nameSpaceArray;
     }
     
     
     function XML_fileURIs(){
 	
-	@$mediaItem = simplexml_load_string($this->archaeoML);
-	if($mediaItem){
-	    $mediaItem->registerXPathNamespace("oc", self::OC_namespaceURI); // Register OpenContext's namespace
-	    $mediaItem->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "media"));
-	    foreach($mediaItem->xpath("//arch:externalFileInfo/arch:resourceURI") as $file) {
-		$this->fullURI = (string)$file;
-	    }
-	    foreach($mediaItem->xpath("//arch:externalFileInfo/arch:previewURI") as $file) {
-		$this->previewURI = (string)$file;
-	    }
-	    foreach($mediaItem->xpath("//arch:externalFileInfo/arch:thumbnailURI") as $file) {
-		$this->thumbnailURI = (string)$file;
-	    }
-	}
+		  @$mediaItem = simplexml_load_string($this->archaeoML);
+		  if($mediaItem){
+				$mediaItem->registerXPathNamespace("oc", self::OC_namespaceURI); // Register OpenContext's namespace
+				$mediaItem->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "media"));
+				foreach($mediaItem->xpath("//arch:externalFileInfo/arch:resourceURI") as $file) {
+			  $this->fullURI = (string)$file;
+				}
+				foreach($mediaItem->xpath("//arch:externalFileInfo/arch:previewURI") as $file) {
+			  $this->previewURI = (string)$file;
+				}
+				foreach($mediaItem->xpath("//arch:externalFileInfo/arch:thumbnailURI") as $file) {
+			  $this->thumbnailURI = (string)$file;
+				}
+		  }
 	
     }//end function
     
@@ -841,7 +841,7 @@ class Media {
 		
 		// remove the spatial item's prologue and store the spatial item as a string
 		$spatialUnitXML = str_replace('<?xml version="1.0"?>', "", $mediaItem->asXML());
-		
+		$spatialUnitXML = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $spatialUnitXML);
 		
 		// add the spatial unit XML to the document fragment
 		$spatialUnitFragment->appendXML($spatialUnitXML);
@@ -1363,55 +1363,55 @@ class Media {
     
     function db_find_personID($personName){
 	
-	$personID = false;
-	$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
-	
-	$sql = "SELECT persons.person_uuid
-	FROM persons
-	WHERE persons.project_id = '".$this->projectUUID."'
-	AND persons.combined_name LIKE '%".$personName."%'	
-	LIMIT 1;
-	";
-	
-	$result = $db->fetchAll($sql, 2);
-        if($result){
-	    $personID = $result[0]["person_uuid"];
-	}
-	
-	$db->closeConnection();
-	return $personID;
-    }
-    
-    function atom_pubDate(){
-		
-	$db_params = OpenContext_OCConfig::get_db_config();
-	$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		       
-	$db->getConnection();
-	$sql = "SELECT space.created, space.updated
-	FROM space
-	WHERE space.uuid = '".$this->itemUUID."'
-	LIMIT 1; ";
-	
-	//echo $sql;
-	
-	$result = $db->fetchAll($sql, 2);
-	$pubDate = false;
-	     
-	if($result){
-		$createdDate = $result[0]["created"];
-		$updatedDate = $result[0]["updated"];
-		$pubDate = $createdDate;
-		if(!$createdDate){
-			$pubDate = $updatedDate;
-		}
-	}
-	
-	
-	$db->closeConnection();
-	return $pubDate;
+		  $personID = false;
+		  $db_params = OpenContext_OCConfig::get_db_config();
+				 $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  
+		  $sql = "SELECT persons.person_uuid
+		  FROM persons
+		  WHERE persons.project_id = '".$this->projectUUID."'
+		  AND persons.combined_name LIKE '%".$personName."%'	
+		  LIMIT 1;
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+				 if($result){
+				$personID = $result[0]["person_uuid"];
+		  }
+		  
+		  $db->closeConnection();
+		  return $personID;
+			}
+			
+			function atom_pubDate(){
+			  
+		  $db_params = OpenContext_OCConfig::get_db_config();
+		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+						
+		  $db->getConnection();
+		  $sql = "SELECT space.created, space.updated
+		  FROM space
+		  WHERE space.uuid = '".$this->itemUUID."'
+		  LIMIT 1; ";
+		  
+		  //echo $sql;
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  $pubDate = false;
+				 
+		  if($result){
+			  $createdDate = $result[0]["created"];
+			  $updatedDate = $result[0]["updated"];
+			  $pubDate = $createdDate;
+			  if(!$createdDate){
+				  $pubDate = $updatedDate;
+			  }
+		  }
+		  
+		  
+		  $db->closeConnection();
+		  return $pubDate;
 	}
     
     

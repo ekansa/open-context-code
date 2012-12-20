@@ -152,38 +152,38 @@ class dbXML_dbMedia  {
     
     public function archaeoMLClassify(){
 	
-	if(strlen($this->archaeoMLtype)<2 || strlen($this->MIMEtype)<2){
-	    $db = $this->db;
-	    
-	    if(strlen($this->fileName)>1){
-		$fileTest = $this->fileName;
-	    }
-	    else{
-		$fileTest = $this->fullURI;
-	    }
-	    
-	    foreach($this->mediaTypeArray as $extKey => $typeArray){
-		if(stristr($fileTest, $extKey)){
-		    $this->archaeoMLtype = $typeArray["archaeoML"];
-		    $this->MIMEtype = $typeArray["mime"];
-		    if($this->dbPenelope){
-			$where = array();
-			$where[] = "uuid = '".$this->itemUUID."' ";
-			$data = array("res_archml_type" => $this->archaeoMLtype,
-				      "mime_type" => $this->MIMEtype);
-			$db->update("resource", $data, $where);
-		    }
-		    else{
-			$where = array();
-			$where[] = "uuid = '".$this->itemUUID."' ";
-			$data = array("res_type" => $this->archaeoMLtype,
-				      "mime_type" => $this->MIMEtype);
-			$db->update("resource", $data, $where);
-		    }
-		    break;
-		}
-	    }
-	}
+		  if(strlen($this->archaeoMLtype)<2 || strlen($this->MIMEtype)<2){
+				$db = $this->db;
+				
+				if(strlen($this->fileName)>1){
+					 $fileTest = $this->fileName;
+				}
+				else{
+					 $fileTest = $this->fullURI;
+				}
+				
+				foreach($this->mediaTypeArray as $extKey => $typeArray){
+					 if(stristr($fileTest, $extKey)){
+						  $this->archaeoMLtype = $typeArray["archaeoML"];
+						  $this->MIMEtype = $typeArray["mime"];
+						  if($this->dbPenelope){
+								$where = array();
+								$where[] = "uuid = '".$this->itemUUID."' ";
+								$data = array("res_archml_type" => $this->archaeoMLtype,
+											"mime_type" => $this->MIMEtype);
+								$db->update("resource", $data, $where);
+						  }
+						  else{
+								$where = array();
+								$where[] = "uuid = '".$this->itemUUID."' ";
+								$data = array("res_archml_type" => $this->archaeoMLtype,
+											"mime_type" => $this->MIMEtype);
+								$db->update("resource", $data, $where);
+						  }
+						  break;
+					 }
+				}
+		  }
 	
     }//end function
     
