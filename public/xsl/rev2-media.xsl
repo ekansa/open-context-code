@@ -234,7 +234,27 @@
 																																<xsl:value-of select="oc:var_label"/>
 																														</td>
 																														<td>
-																																<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																																<xsl:choose>
+																																		<xsl:when test="oc:var_label[@type = 'nominal' or @type = 'integer' or @type = 'decimal' or @type = 'calendar' or @type = 'calendric']">
+																																			 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																																		</xsl:when>
+																																		<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'true')">
+																																			 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>True</a>
+																																		</xsl:when>
+																																		<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'false')">
+																																			 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>False</a>
+																																		</xsl:when>
+																																		<xsl:when test="oc:var_label[@type = 'alphanumeric'] and oc:show_val[@type = 'xhtml']">
+																																			 <xsl:for-each select="oc:show_val/*">
+																																				  <xsl:call-template  name="node-output" >
+																																						<xsl:with-param name="root" select="."/>
+																																				  </xsl:call-template>
+																																			 </xsl:for-each>
+																																		</xsl:when>
+																																		<xsl:otherwise>
+																																			 <xsl:value-of select="oc:show_val"/>
+																																		</xsl:otherwise>
+																																</xsl:choose>
 																														</td>
 																												</tr>
 																										 </xsl:for-each>
@@ -244,9 +264,21 @@
 																				<xsl:if test="count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
 																						<div class="item-notes">
 																								<h5>Item Notes</h5>
-																								<xsl:for-each select="arch:resource/arch:notes/arch:note">
+																								<xsl:for-each select="arch:notes/arch:note">
 																										<div class="item-note">
-																												<xsl:value-of select="arch:string" disable-output-escaping="yes" />
+																										<xsl:choose>
+																											 <xsl:when test="arch:string/@type = 'xhtml'">
+																												  <!-- <xsl:value-of select="arch:string"/> -->
+																												  <xsl:for-each select="arch:string/*">
+																														<xsl:call-template  name="node-output" >
+																															 <xsl:with-param name="root" select="."/>
+																														</xsl:call-template>
+																												  </xsl:for-each>
+																											 </xsl:when>
+																											 <xsl:otherwise>
+																												  <xsl:value-of select="arch:string" disable-output-escaping="yes" />
+																											 </xsl:otherwise>
+																										</xsl:choose>
 																										</div>
 																								</xsl:for-each>
 																						</div>
