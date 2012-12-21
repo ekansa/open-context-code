@@ -502,7 +502,17 @@ class OpenContext_FacetQuery {
 				if(!is_array($taxa_array)){
 					$taxa_array = array($taxa_array);
 				}
-			
+				
+				//cleanup null or empty values for taxa, otherwise we get an error
+				$cleanTaxa_array = array();
+				foreach($taxa_array as $actTax){
+					 if(strlen($actTax)>1 && $actTax != "::"){
+								$cleanTaxa_array[] = $actTax;
+					 }
+				}
+				unset($taxa_array);
+				$taxa_array = $cleanTaxa_array;
+				unset($cleanTaxa_array);
 			
 				foreach ($taxa_array as $taxonomy) {
 				
