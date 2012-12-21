@@ -81,16 +81,113 @@ const ontologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
 				
 				$classes = array();
 				foreach($xml->xpath("//owl:Declaration/owl:Class/@IRI") as $xpathResult){
-					$classes[] = (string)$xpathResult;
+					$class = (string)$xpathResult;
+               $classes[$class] = array();
 				}
-				$owlArray["classes"] = $classes;
 				
+				           
+            $externalParents = array();
+            $rootParents = array();
+            //search parents not in declared classes
+            foreach($xml->xpath("//owl:SubClassOf/owl:Class[2]/@IRI") as $xpathResult){
+					$parent = (string)$xpathResult;
+               if(!array_key_exists($parent, $classes)){
+                $externalParents[] = $parent;
+               }
+               $parentIsChild = false;
+               foreach($xml->xpath("//owl:SubClassOf/owl:Class[1][@IRI = '$parent']") as $xpathResultB){
+                    $parentIsChild = true; 
+               }
+               if(!$parentIsChild){
+                    $rootParents[] = $parent;
+               }
+				}
+            $owlArray["externalParents"] = $externalParents;
+            $owlArray["rootParents"] = $rootParents;
+            
+            //develop a class hierchy
+            $hierarchy = array();
+            foreach($rootParents as $parent){
+                $hierarchy[$parent] = $this->childClasses($parent, $xml);
+            }
+            $owlArray["hierachy"] = $hierarchy;
+            
+            //get annotations on classes
+            /*
+            foreach($classes as $classKey => $classAnnotations){
+                foreach($xml->xpath("//owl:AnnotationAssertion/owl:IRI[text() = '$classKey']") as $assertionIRI){
+                    $annotations = array();
+                    $nameSpaceArray = $this->nameSpaces();
+                    foreach($nameSpaceArray as $prefix => $uri){
+                        @$assertionIRI->registerXPathNamespace($prefix, $uri);
+                    }
+                    foreach($assertionIRI->xpath("./owl:AnnotationProperty/@abbreviatedIRI") as $xpathResult){
+                        $prop = (string)$xpathResult;
+                    }
+                    foreach($assertionIRI->xpath("./owl:Literal") as $xpathResult){
+                        $propVal = (string)$xpathResult;
+                    }
+                    $classAnnotations[] = array($prop => $propVal);
+                }
+            }
+            */
+            
+            $classAnnotations = array();
+            foreach($classes as $classKey => $classArray){
+                foreach($xml->xpath("//owl:AnnotationAssertion[owl:IRI[text() = '$classKey']]") as $assertionIRI){
+                    $nameSpaceArray = $this->nameSpaces();
+                    foreach($nameSpaceArray as $prefix => $uri){
+                        @$assertionIRI->registerXPathNamespace($prefix, $uri);
+                    }
+                    foreach($assertionIRI->xpath("owl:AnnotationProperty/@abbreviatedIRI") as $xpathResult){
+                        $prop = (string)$xpathResult;
+                    }
+                    foreach($assertionIRI->xpath("owl:Literal") as $xpathResult){
+                        $propVal = (string)$xpathResult;
+                    }
+                    $classAnnotations[$classKey][] = array($prop => $propVal);
+                }
+            }
+            
+            $owlArray["classes"] = $classAnnotations;
+            
+            
 				$this->owlArray = $owlArray;
 		  }
 	 }
 	 
 	 
-	 
+	 //recusive function to traverse a class hierarchy in owl
+    function childClasses($parent, $xml){
+        $output = false;
+        $children = array();
+        foreach($xml->xpath("//owl:SubClassOf/owl:Class[2][@IRI = '$parent']") as $pResult){
+            
+            $nameSpaceArray = $this->nameSpaces();
+				foreach($nameSpaceArray as $prefix => $uri){
+					 @$pResult->registerXPathNamespace($prefix, $uri);
+				}
+            
+            foreach($pResult->xpath("preceding-sibling::owl:Class/@IRI") as $childResult){
+                $child = (string)$childResult;
+                $childChildren = $this->childClasses($child, $xml);
+                if(is_array($childChildren)){
+                    $children[$child] = $childChildren;
+                }
+                else{
+                    $children[$child] = null;
+                }
+            }
+        }
+        
+        if(count($children)>0){
+            $output = $children;
+        }
+        
+        return $output;
+    }
+    
+    
     
 	 function nameSpaces(){
 		  $nameSpaceArray = array(

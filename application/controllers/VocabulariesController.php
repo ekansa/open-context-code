@@ -22,15 +22,12 @@ class VocabulariesController extends Zend_Controller_Action
 		  $concept =  $this->_request->getParam('concept');
 		  
 		  $this->_helper->viewRenderer->setNoRender();
-		  echo "<h1>Vocabulary: $vocab </h1>";
-		  echo "<h2>Concept: $concept </h2>";
-		  
+	 
 		  $OWL = new OWL;
 		  $OWL->getOntology($vocab, $concept);
-		  echo "<h2>".$OWL->OWLfile."</h2>";
-		  echo "<br/>";
-		  echo "<p>".$OWL->hashConcept."</p>";
-		  echo print_r($OWL->owlArray);
+		  header('Content-Type: application/json; charset=utf8');
+		  $output = Zend_Json::encode($OWL->owlArray);
+		  echo $output;
     }
     
     
