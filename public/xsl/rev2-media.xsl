@@ -39,26 +39,8 @@
 
 
 
-<xsl:template name="string-replace">
-		<xsl:param name="arg"/>
-		<xsl:param name="toReplace"/>
-		<xsl:param name="replaceWith"/>
-		<xsl:choose>
-			<xsl:when test="contains($arg, $toReplace)">
-				<xsl:variable name="prefix" select="substring-before($arg, $toReplace)"/>
-				<xsl:variable name="postfix" select="substring($arg, string-length($prefix)+string-length($toReplace)+1)"/>
-				<xsl:value-of select="concat($prefix, $replaceWith)"/>
-				<xsl:call-template name="string-replace">
-					<xsl:with-param name="arg" select="$postfix"/>
-					<xsl:with-param name="toReplace" select="$toReplace"/>
-					<xsl:with-param name="replaceWith" select="$replaceWith"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$arg"/>
-			</xsl:otherwise>
-		</xsl:choose>
-</xsl:template>
+<!-- include other XSL files for generally used functions -->
+<xsl:include href="rev2-string-replace.xsl"/>
 
 
 
