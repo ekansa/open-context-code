@@ -8,8 +8,12 @@ class OWL {
  
 public $vocab; //name of the OWL ontology from the URL (slug)
 public $concept; //name-identifier (slug) for a concept referenced in the request URL
+public $hashConcept; //fragment identified concept
+
 public $OWLfile; //filename for the OWL ontology
 public $xml; //simple xml of the ontology
+public $owlArray; //array of the full OWL ontology
+
 
 public $created; //when was the ontology first created
 public $updated; //when was the ontology last updated
@@ -26,6 +30,21 @@ const ontologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
 		  $this->setUTFconnection($db);    
         
         $this->vocab = false;
+		  $this->concept = false;
+		  $this->owlArray = false;
+		  
+		  if($concept != false){
+				$this->concept = $concept;
+		  }
+		  
+		  /*
+		  if(strstr($vocab, "#")){
+				$vocabEx = explode("#", $vocab);
+				$vocab = $vocabEx[0];
+				$this->hashConcept = $vocabEx[1];
+		  }
+		  */
+
         $vocab = $this->security_check($vocab);
         $sql = "SELECT * FROM vocabularies WHERE vocab = '$vocab' LIMIT 1; ";
         $result = $db->fetchAll($sql, 2);
@@ -41,6 +60,7 @@ const ontologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
                 @$xml = simplexml_load_string($xmlString);
                 if($xml != false){
                     $this->xml = $xml;
+						  $this->OWLtoArray();
                 }
             }
             
@@ -48,7 +68,45 @@ const ontologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
         
     }
     
+	 
+	 //construct a PHP array from the OWL ontology, easier to use for displaying
+	 function OWLtoArray(){
+		  if($this->xml){
+				$xml = $this->xml;
+				$nameSpaceArray = $this->nameSpaces();
+				foreach($nameSpaceArray as $prefix => $uri){
+					 @$xml->registerXPathNamespace($prefix, $uri);
+				}
+				$owlArray = array();
+				
+				$classes = array();
+				foreach($xml->xpath("//owl:Declaration/owl:Class/@IRI") as $xpathResult){
+					$classes[] = (string)$xpathResult;
+				}
+				$owlArray["classes"] = $classes;
+				
+				$this->owlArray = $owlArray;
+		  }
+	 }
+	 
+	 
+	 
     
+	 function nameSpaces(){
+		  $nameSpaceArray = array(
+		  "owl"=> "http://www.w3.org/2002/07/owl#",
+		  "base"=> ("http://opencontext.org/vocabularies/".$this->vocab),
+		  "rdfs"=> "http://www.w3.org/2000/01/rdf-schema#",
+		  "xsd"=> "http://www.w3.org/2001/XMLSchema#",
+		  "rdf"=> "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+		  "xml"=> "http://www.w3.org/XML/1998/namespace");
+	
+		  return $nameSpaceArray;
+    }
+	 
+	 
+	 
+	 
     function loadFile($sFilename, $sCharset = 'UTF-8'){
         
         if (!file_exists($sFilename)){
@@ -90,6 +148,10 @@ const ontologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
     } 
     
 
+	 
+	 
+	 
+	 
 }//end class
 
 ?>

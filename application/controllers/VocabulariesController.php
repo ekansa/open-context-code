@@ -29,7 +29,8 @@ class VocabulariesController extends Zend_Controller_Action
 		  $OWL->getOntology($vocab, $concept);
 		  echo "<h2>".$OWL->OWLfile."</h2>";
 		  echo "<br/>";
-		  echo print_r($OWL->xml);
+		  echo "<p>".$OWL->hashConcept."</p>";
+		  echo print_r($OWL->owlArray);
     }
     
     
