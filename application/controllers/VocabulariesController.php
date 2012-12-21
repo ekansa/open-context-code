@@ -24,6 +24,12 @@ class VocabulariesController extends Zend_Controller_Action
 		  $this->_helper->viewRenderer->setNoRender();
 		  echo "<h1>Vocabulary: $vocab </h1>";
 		  echo "<h2>Concept: $concept </h2>";
+		  
+		  $OWL = new OWL;
+		  $OWL->getOntology($vocab, $concept);
+		  echo "<h2>".$OWL->OWLfile."</h2>";
+		  echo "<br/>";
+		  echo print_r($OWL->xml);
     }
     
     
