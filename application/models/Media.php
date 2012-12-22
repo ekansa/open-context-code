@@ -354,7 +354,7 @@ class Media {
 		$baseURI = $host."/media/";
 		
 		$mediaItem = simplexml_load_string($archaeML_string);
-	
+		
 		// Register OpenContext's namespace
 		//$mediaItem->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
 		

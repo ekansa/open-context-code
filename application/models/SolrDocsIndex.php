@@ -186,7 +186,7 @@ class SolrDocsIndex {
 				foreach($this->toDoList as $item){
 					 $itemUUID = $item['itemUUID'];
 					 $solrDoc = false;
-					 echo "Item: ".$itemUUID." .<br/>";
+					 //echo "Item: ".$itemUUID." .<br/>";
 					 if($item['itemType'] == 'spatial'){
 						  $itemObj = New Subject;
 						  $itemXMLstring = $itemObj->getItemXML($itemUUID);
@@ -197,7 +197,9 @@ class SolrDocsIndex {
 					 elseif($item['itemType'] == 'media'){
 						 $itemObj = New Media;
 						 $itemXMLstring = $itemObj->getItemXML($itemUUID);
-						 $solrDoc = $this->mediaItemSolrDoc($itemXMLstring);
+						  if(strlen($itemXMLstring)>10){
+								$solrDoc = $this->mediaItemSolrDoc($itemXMLstring);
+						  }
 					 }
 					 elseif($item['itemType'] == 'person'){
 						 $itemObj = New Person;

@@ -111,6 +111,7 @@ class OpenContext_NewDocs {
 		
 		$itemObj = OpenContext_XMLtoItems::XMLmediaBasic($itemObj, $itemXML);
 		$updateInsertSuccess = $itemObj->createUpdate($versionUpdate);
+		
 		if($updateInsertSuccess){
 			//insert links, properties, children items. modify parent if link to child is not found
 			$OKlinks = OpenContext_XMLtoItems::linksRetrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "media", $itemXML, $db);

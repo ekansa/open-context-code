@@ -54,7 +54,8 @@ class publishController extends Zend_Controller_Action
 				  //$xmlString = file_get_contents(self::xmlRoot."media.php?imp=true&item=".$id);
 			  //$xmlString = file_get_contents("http://opencontext.org/media/".$id.".xml");
 			  $xmlString = file_get_contents(self::xmlRoot."media?xml=1&id=".$id);
-			  $data = OpenContext_NewDocs::mediaAdd($xmlString, true, $doUpdate);
+				$data = OpenContext_NewDocs::mediaAdd($xmlString, $doUpdate);
+			  
 		  }
 		  elseif($type == "doc"){
 				  //$xmlString = file_get_contents(self::xmlRoot."media.php?imp=true&item=".$id);
