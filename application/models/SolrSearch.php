@@ -838,7 +838,7 @@ class SolrSearch{
 		  
 		  
 		  if($this->allDocs){
-			  //$query .= "&hl=true";
+			 //query .= "&hl=true";
 			  $param_array["hl"] = "true";
 			  $param_array["hl.fl"] = "full_text";
 			  $param_array["hl.fragsize"] = 140;
@@ -2012,49 +2012,50 @@ class SolrSearch{
 		  $host = OpenContext_OCConfig::get_host_config();
 		  $docTypeArray = $this->docTypeArray;
 		  $itemResults = array();
-		  foreach($this->documentsArray as $doc){
-				
-				$mediaItem = New Media;
-				$mediaItem->getByID($doc["uuid"]);
-				$mediaItem->XML_fileURIs(); //get the file URIs from the XML document
-				
-				$uriItem = $host.$docTypeArray["media"]["href"].$doc["uuid"];
-				$geoLat = false;
-				$geoLon = false;
-				$kmlBegin = false;
-				$kmlEnd = false;
-				if(isset($doc["geo_point"])){
-					  if(stristr($doc["geo_point"], ",")){
-							$geoData = explode(",", $doc["geo_point"]);
-					  }
-					  else{
-							$geoData = explode(" ", $doc["geo_point"]);
-					  }
-					  
-					  $geoLat = $geoData[0] +0;
-					  $geoLon = $geoData[1] +0;
-				}
-				if(isset($doc["time_span"])){
-					  $timeData = explode(" ", $doc["time_span"]);
-					  $kmlBegin = $timeData[0] +0;
-					  $kmlEnd = $timeData[1] +0;
-				}
-				
-				$resultItem = array("uri"=> $uriItem,
-					  "project"=>$doc["project_name"],
-					  "label"=> $mediaItem->label." (".$doc["project_name"].": ".$doc["item_class"][0].")",
-					  "thumbURI"=> $mediaItem->thumbnailURI,
-					  "previewURI" => $mediaItem->previewURI,
-					  "fullURI" => $mediaItem->previewURI,
-					  "geoTime" => array("geoLat" => $geoLat,
-								  "geoLong" => $geoLon,
-								  "timeBegin" => $kmlBegin,
-								  "timeEnd" => $kmlEnd));
-				
-				
-				$itemResults[] = $resultItem;
-		  }//end loop
-			
+		  if(is_array($this->documentsArray)){
+				foreach($this->documentsArray as $doc){
+					 
+					 $mediaItem = New Media;
+					 $mediaItem->getByID($doc["uuid"]);
+					 $mediaItem->XML_fileURIs(); //get the file URIs from the XML document
+					 
+					 $uriItem = $host.$docTypeArray["media"]["href"].$doc["uuid"];
+					 $geoLat = false;
+					 $geoLon = false;
+					 $kmlBegin = false;
+					 $kmlEnd = false;
+					 if(isset($doc["geo_point"])){
+							if(stristr($doc["geo_point"], ",")){
+								 $geoData = explode(",", $doc["geo_point"]);
+							}
+							else{
+								 $geoData = explode(" ", $doc["geo_point"]);
+							}
+							
+							$geoLat = $geoData[0] +0;
+							$geoLon = $geoData[1] +0;
+					 }
+					 if(isset($doc["time_span"])){
+							$timeData = explode(" ", $doc["time_span"]);
+							$kmlBegin = $timeData[0] +0;
+							$kmlEnd = $timeData[1] +0;
+					 }
+					 
+					 $resultItem = array("uri"=> $uriItem,
+							"project"=>$doc["project_name"],
+							"label"=> $mediaItem->label." (".$doc["project_name"].": ".$doc["item_class"][0].")",
+							"thumbURI"=> $mediaItem->thumbnailURI,
+							"previewURI" => $mediaItem->previewURI,
+							"fullURI" => $mediaItem->previewURI,
+							"geoTime" => array("geoLat" => $geoLat,
+										"geoLong" => $geoLon,
+										"timeBegin" => $kmlBegin,
+										"timeEnd" => $kmlEnd));
+					 
+					 
+					 $itemResults[] = $resultItem;
+				}//end loop
+		  }
 		  return $itemResults;    
     }//end function
 

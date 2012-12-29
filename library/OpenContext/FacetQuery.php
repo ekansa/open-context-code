@@ -1377,7 +1377,9 @@ public static function trimLastDelim($string, $actDelim = "::"){
                 $search_array = OpenContext_FacetQuery::parseSearchTerms($textSearch);
                 foreach($search_array AS $term){
                         $term = OpenContext_FacetQuery::solrEscape($term);
-                        $output .= $solrField.":".$term." + "; 
+								if(strlen($term)>0){
+									$output .= $solrField.":\\".$term."\\ + ";
+								}
                 }//end loop
                 
                 $output = substr($output,0,(strlen($output)-2));
