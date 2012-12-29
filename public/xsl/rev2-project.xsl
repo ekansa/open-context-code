@@ -40,27 +40,8 @@
 
 
 
-<xsl:template name="string-replace">
-		<xsl:param name="arg"/>
-		<xsl:param name="toReplace"/>
-		<xsl:param name="replaceWith"/>
-		<xsl:choose>
-			<xsl:when test="contains($arg, $toReplace)">
-				<xsl:variable name="prefix" select="substring-before($arg, $toReplace)"/>
-				<xsl:variable name="postfix" select="substring($arg, string-length($prefix)+string-length($toReplace)+1)"/>
-				<xsl:value-of select="concat($prefix, $replaceWith)"/>
-				<xsl:call-template name="string-replace">
-					<xsl:with-param name="arg" select="$postfix"/>
-					<xsl:with-param name="toReplace" select="$toReplace"/>
-					<xsl:with-param name="replaceWith" select="$replaceWith"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$arg"/>
-			</xsl:otherwise>
-		</xsl:choose>
-</xsl:template>
-
+<!-- include other XSL files for generally used functions -->
+<xsl:include href="rev2-string-replace.xsl"/>
 
 
 <xsl:template match="/">
@@ -193,8 +174,23 @@
 														</xsl:if>
 														
 														<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:notes/arch:note[@type!='short_des']">
-															<div class="bodyText"><xsl:value-of select="arch:string" disable-output-escaping="yes" /></div><br/>
+																<div class="item-note">
+																<xsl:choose>
+																	 <xsl:when test="arch:string/@type = 'xhtml'">
+																		  <!-- <xsl:value-of select="arch:string"/> -->
+																		  <xsl:for-each select="arch:string/*">
+																				<xsl:call-template  name="node-output" >
+																					 <xsl:with-param name="root" select="."/>
+																				</xsl:call-template>
+																		  </xsl:for-each>
+																	 </xsl:when>
+																	 <xsl:otherwise>
+																		  <xsl:value-of select="arch:string" disable-output-escaping="yes" />
+																	 </xsl:otherwise>
+																</xsl:choose>
+																</div>
 														</xsl:for-each>
+														
 												</div>
 												<h5>Suggested Citation for this Project Overview:</h5>
 												<p><xsl:value-of select="$citation"/></p>
