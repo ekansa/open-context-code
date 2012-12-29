@@ -42,6 +42,8 @@ class SolrDocsIndex {
 		  $this->getToDoList();
 		  if($only_full_list){
 				if(($this->toDoCount >= self::indexDoSize) || $this->forceIndexing){
+					
+					 //echo "<br/>".print_r($this->toDoList);
 					$this->makeSolrDocArray();
 					$this->indexSolrDocs();
 					$this->updateToDoList();
@@ -303,39 +305,39 @@ class SolrDocsIndex {
     */
     public function mediaItemSolrDoc($itemXMLstring){
 	
-	$OpenContextItem = new OpenContextItem;
-	$OpenContextItem->initialize();
-	$OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
-
-	$itemXML = simplexml_load_string($itemXMLstring);
-	$itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "media"));
-	$itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "media"));
-	$itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	$itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
-	
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLmediaItemBasics($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSpatialClass($OpenContextItem, $itemXML);
-	if(strtolower($OpenContextItem->documentType) == "image"){
-	    $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoImageSizeData($OpenContextItem, $itemXML);
-	}
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoLinkedSpatialProps($OpenContextItem, $itemXML);
-	$OpenContextItem->interestCalc();
-	
-	if(!is_array($OpenContextItem->classes)){
-	    $OpenContextItem->addSimpleArrayItem("No Object", "classes");
-	}
-	
-	$solrDocument = new Apache_Solr_Document();
-	$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
-	return $solrDocument;
+		  $OpenContextItem = new OpenContextItem;
+		  $OpenContextItem->initialize();
+		  $OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
+	  
+		  $itemXML = simplexml_load_string($itemXMLstring);
+		  $itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "media"));
+		  $itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "media"));
+		  $itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		  $itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
+		  
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLmediaItemBasics($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSpatialClass($OpenContextItem, $itemXML);
+		  if(strtolower($OpenContextItem->documentType) == "image"){
+				$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoImageSizeData($OpenContextItem, $itemXML);
+		  }
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoLinkedSpatialProps($OpenContextItem, $itemXML);
+		  $OpenContextItem->interestCalc();
+		  
+		  if(!is_array($OpenContextItem->classes)){
+				$OpenContextItem->addSimpleArrayItem("No Object", "classes");
+		  }
+		  
+		  $solrDocument = new Apache_Solr_Document();
+		  $solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
+		  return $solrDocument;
     }//end function
     
     

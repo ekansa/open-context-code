@@ -38,7 +38,7 @@ class publishController extends Zend_Controller_Action
             //$xmlString = file_get_contents(self::xmlRoot."space_v3.php?imp=importer_etana&item=".$id);
 			 //$xmlString = file_get_contents("http://opencontext.org/subjects/".$id.".xml");
 				$xmlString = file_get_contents(self::xmlRoot."space?xml=1&id=".$id);
-            $data = OpenContext_NewDocs::spaceAdd($xmlString, true, $doUpdate);
+            $data = OpenContext_NewDocs::spaceAdd($xmlString, $doUpdate);
         }
         elseif($type == "person"){
             //$xmlString = file_get_contents(self::xmlRoot."person.php?imp=true&item=".$id);
