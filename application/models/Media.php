@@ -209,6 +209,8 @@ class Media {
 				$db->insert("resource", $data);
 				$success = true;
 		  }catch(Exception $e){
+				//echo $e;
+				//echo print_r($data);
 				$success = false;
 				$where = array();
 				$where[] = 'uuid = "'.$this->itemUUID.'" ';
@@ -356,8 +358,6 @@ class Media {
 		$mediaItem = simplexml_load_string($archaeML_string);
 		
 		// Register OpenContext's namespace
-		//$mediaItem->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
-		
 		$mediaItem->registerXPathNamespace("oc", self::OC_namespaceURI);
 		
 		// Register OpenContext's namespace
@@ -373,6 +373,9 @@ class Media {
 		// get the item_id
 		foreach($mediaItem->xpath("//arch:resource/@UUID") as $item_result) {
 			$uuid = $item_result."";
+			if(!$this->itemUUID){
+				$this->itemUUID = $uuid;
+			}
 		}
 	
 	
