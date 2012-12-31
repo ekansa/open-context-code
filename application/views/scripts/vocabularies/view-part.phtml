@@ -1,0 +1,199 @@
+<?php
+$host = OpenContext_OCConfig::get_host_config();
+$GoogleAPIkey = OpenContext_OCConfig::get_google_api();
+$OWL = $this->OWL;
+$owlArray = $OWL->owlArray;
+$concept = $OWL->concept;
+
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head> 
+		  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+		  <title><?php echo $OWL->vocabLabel."::".$OWL->conceptLabel; ?></title>
+		  <link rel="schema.DC" href="http://purl.org/dc/terms" />
+		  <meta name="DC.title" content="<?php echo $OWL->vocabLabel."::".$OWL->conceptLabel; ?>" />
+		  <meta name="DC.created" content="January 1, 2010" />
+		  <meta name="DC.date" content="November 7, 2012" />
+		  <meta name="DC.creator" content="Open Context Editors" />
+		  
+		  <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+		  <link href="/css/project-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bibliographic.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/general-item-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/property-rev2.css" rel="stylesheet" type="text/css" /> 
+		  
+		  <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		  <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+		  <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+		  <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+		  <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+	 <script type="text/javascript">
+        <!--
+        
+        $('.carousel').carousel();
+        
+        -->
+    </script>
+
+
+	 </head>
+    
+<body>
+
+<!-- 
+    Logo,
+-->    
+<?php echo $this->render('header.phtml'); //reader document top ?>
+   
+<!-- 
+    Navigation tabs, search box
+-->
+<?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+
+
+<div id="main">
+    
+	 <!--
+		BEGIN Container for gDIV of general item information
+		-->
+	 <div id="item_top">
+		  <div id="item_top_tab">
+				<div id="item_top_row">
+					 <div id="item_top_icon_cell">
+						  <img src="../../images/layout/linked-data-prop.png" alt="Property icon"/>
+					 </div>
+					 <div id="prop-item_top_name_cell">
+						<h1>Vocabulary: <?php echo $OWL->vocabLabel; ?></h1>
+						<h2>Concept: <?php echo $OWL->conceptLabel; ?></h2>
+					 </div>
+				  <div id="prop-item_top_des_cell">
+					 
+				  </div>
+				</div>
+		  </div>  
+	 </div>
+	 
+	 <!--
+		Code for showing the main description content
+		-->
+	 <div id="main_description">
+		  <div id="main_description_tab">
+				<div id="main_description_row">
+					 <div id="left_des">
+						  <div id="prop-all-des">
+								<div id="prop-intro">
+									 <table class="table table-condensed" id="prop-intro-tab">
+										  <tbody>
+												<tr>
+												  <th>Label</th>
+												  <td><?php echo $OWL->conceptLabel; ?></td>
+												</tr>
+												<?php
+												$objectPropRange = false;
+												$comment = $OWL->IRIgetComment($concept, $owlArray["classes"]);
+												if(!$comment){
+													 $comment = $OWL->IRIgetComment($concept, $owlArray["properties"]);
+													 $objectPropRange = $OWL->IRIgetObjectPropRange($concept);
+												}
+												if($comment != false){
+												?>
+												
+												<tr>
+												  <th>Note</th>
+												  <td><?php echo $comment; ?></td>
+												</tr>
+	 
+												<?php
+												}//end case with a comment
+												
+												
+												if($objectPropRange != false){
+													 $OPRlabel = $OWL->IRIgetLabel($objectPropRange, $owlArray["classes"]);
+													 $OPRcomment = $OWL->IRIgetComment($objectPropRange, $owlArray["classes"]);
+													 $OPRurl = $OWL->IRItoURL($objectPropRange);
+												?>
+												
+												<tr>
+												  <th>Property Range</th>
+												  <td>Objects of this property can be:<br/>
+													 <?php echo "<a href=\"".$OPRurl."\" title=\"View concept\">".$OPRurl."</a>";
+													 
+													 if($OPRlabel != false){
+														  echo " ($OPRlabel)";
+													 }
+													 if($OPRcomment != false){
+																echo "<br/>";
+																echo "<p><em>";
+																echo $OPRcomment;
+																echo "</em></p>";
+														  }
+													 
+													 ?>
+												  </td>
+												</tr>
+	 
+												<?php	 
+													 
+													 
+												}//end case with object property range
+												
+												?>
+												
+												<tr>
+												  <th>URI</th>
+												  <td><?php echo $OWL->IRItoURL($concept); ?></td>
+												</tr>
+												<tr>
+												  <th>Type</th>
+												  <td><?php echo ucwords($OWL->conceptType); ?></td>
+												</tr>
+												<tr>
+												  <th>Vocabulary</th>
+												  <td><?php echo "<a href=\"".$OWL->vocabURI."\" title=\"View vocabulary\">".$OWL->vocabLabel."</a>"; ?></td>
+												</tr>
+										  </tbody>
+									 </table>
+								</div>
+						  </div>
+					 </div>
+					 <!-- end div for left -->
+					 
+					 <div id="right_des">
+						  <div id="editorial">
+								<h5>Vocabulary Rreview Status</h5>
+								<div id="project-edit-status">
+									<span id="project-edit-stars">
+										  <a href="../about/publishing#editorial-status"><?php echo $OWL->reviewStarHTML(); ?></a>
+									</span>
+									<?php echo $OWL->reviewLabelHTML(); ?>
+								</div>
+								<br/>
+								<br/>
+								<h5>Suggested Citation</h5>
+								<div id="citation">Sarah Whitcher Kansa. "<?php echo $OWL->vocabLabel."::".$OWL->conceptLabel; ?>" (Updated  <?php echo date("Y-m-d", strtotime($OWL->updated)); ?>). Open Context.  &lt;<?php echo $OWL->IRItoURL($concept); ?>&gt; 
+								</div>
+						  </div>
+					 </div>
+					 
+				</div>
+				<!-- end div for main row -->
+		  </div>
+		  <!-- end div for main tab -->
+	 </div>
+	 <!-- end div for main description -->
+	 
+	 
+	 
+	 
+	 
+</div> <!-- end main div -->	 
+	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
+	
+</body>
+</html>
