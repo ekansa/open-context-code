@@ -152,3 +152,18 @@ div.barGraphBar {
 	margin-right:2%;
 	margin-bottom:5%;
 }
+#updates{
+	border: thin solid #CCCCCC;
+	margin-top:4%;
+	padding:2%;
+}
+#prop-props {
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding:2%;
+	margin-left:2%;
+	margin-right:2%;
+	margin-bottom:5%;
+	margin-top:5%;
+}

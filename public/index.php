@@ -739,6 +739,15 @@ $vocabRoute = new Zend_Controller_Router_Route('vocabularies/:vocab', array('con
 // Add it to the router
 $router->addRoute('vocabView', $vocabRoute ); // routes for vocabularies only
 
+//Vocabularies only, OWL format
+$vocabOwlRoute = new Zend_Controller_Router_Route_Regex('vocabularies/(.*)\.owl', array('controller' => 'vocabularies', 'action' => 'owl'), array(1 => 'vocab'), 'vocabularies/%s/');
+// Add it to the router
+$router->addRoute('vocabOwlView', $vocabOwlRoute ); // routes for vocabularies only. OWL format
+
+//Vocabularies only, JSON format
+$vocabJSONRoute = new Zend_Controller_Router_Route_Regex('vocabularies/(.*)\.json', array('controller' => 'vocabularies', 'action' => 'json'), array(1 => 'vocab'), 'vocabularies/%s/');
+// Add it to the router
+$router->addRoute('vocabJSONView', $vocabJSONRoute ); // routes for vocabularies only. OWL format
 
 
 $frontController->throwExceptions(true);
@@ -790,6 +799,6 @@ try {
         $response   = $frontController->dispatch($request);
     }
     
-    //echo $e;
+    echo $e;
 }//end caught exceptions
 ?>    

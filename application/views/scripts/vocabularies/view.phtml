@@ -1,46 +1,43 @@
 <?php
 $host = OpenContext_OCConfig::get_host_config();
 $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
+$OWL = $this->OWL;
+$owlArray = $OWL->owlArray;
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-      <title>About Open Context: Technologies</title>
-      <link rel="schema.DC" href="http://purl.org/dc/terms" />
-      <meta name="DC.title" content="About Open Context: Technologies" />
-      <meta name="DC.created" content="January 1, 2010" />
-      <meta name="DC.date" content="November 7, 2012" />
-      <meta name="DC.creator" content="Open Context Editors" />
-      
-      <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+		  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+		  <title><?php echo $OWL->vocabLabel; ?></title>
+		  <link rel="schema.DC" href="http://purl.org/dc/terms" />
+		  <meta name="DC.title" content="<?php echo $OWL->vocabLabel."::".$OWL->conceptLabel; ?>" />
+		  <meta name="DC.created" content="<?php echo date("Y-m-d", strtotime($OWL->created)); ?>" />
+		  <meta name="DC.date" content="<?php echo date("Y-m-d", strtotime($OWL->updated)); ?>" />
+		  <meta name="DC.creator" content="<?php echo $OWL->vocabAttribution; ?>" />
+		  
+		  <link href="/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
 		  <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
 		  <link href="/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
-		  <link href="/css/about-rev2.css" rel="stylesheet" type="text/css" /> 
-		
-      <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
-		 <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
-    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
-    <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
-	 <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
-    
-	 <script type="text/javascript">
-        <!--
-        
-        $('.carousel').carousel();
+		  <link href="/css/project-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/bibliographic.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/general-item-rev2.css" rel="stylesheet" type="text/css" />
+		  <link href="/css/property-rev2.css" rel="stylesheet" type="text/css" /> 
 		  
-        -->
-    </script>
-
-	 
-	 <?php echo $this->render('news-widget-js.phtml'); //render javascript for displaying news feeds ?>
-	 
-	 
-	 
-	 
-	 
+		  <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
+		  <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+		  <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+		  <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+		  <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
+    
+		  <link rel="alternate" href="<?php echo $OWL->vocabCommits; ?>" type="application/atom+xml" />
+		  <link rel="alternate" href="<?php echo $OWL->vocabURI.".owl"; ?>" type="application/rdf+xml" />
+		  <link rel="alternate" href="<?php echo $OWL->vocabURI.".json"; ?>" type="application/json" />
+		  
+		  <?php echo $this->render('vocab-update-widget-js.phtml'); //render javascript for displaying news feeds ?>
+		  
 	 </head>
     
 <body>
@@ -48,7 +45,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 <!-- 
     Logo,
 -->    
-<?php echo $this->render('header.phtml'); //render document top ?>
+<?php echo $this->render('header.phtml'); //reader document top ?>
    
 <!-- 
     Navigation tabs, search box
@@ -57,141 +54,187 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 
 
 <div id="main">
-    <div id="main_content">
-		  <div id="main_row">
-				
-				<div id="left_sidebar">
-					 
-					 <div id="gksm-custom-menu-widget-3" class="widget gksm-custom-menu-widget">
-						  <h2 class="widgettitle">About:</h2>
-						  
-						  <div class="submenu-widget submenu-widget-projects">
-								<?php echo OpenContext_NavMenus::AboutNavMenu("technology", $host); ?>
-						  </div>
-						  
+    
+	 <!--
+		BEGIN Container for gDIV of general item information
+		-->
+	 <div id="item_top">
+		  <div id="item_top_tab">
+				<div id="item_top_row">
+					 <div id="item_top_icon_cell">
+						  <img src="../../images/layout/linked-data-prop.png" alt="Property icon"/>
 					 </div>
+					 <div id="prop-item_top_name_cell">
+						<h1>Vocabulary: <?php echo $OWL->vocabLabel; ?></h1>
+						
+					 </div>
+				  <div id="prop-item_top_des_cell">
 					 
-					 <?php echo $this->render('news-widget-dom.phtml'); //render news-widget-dom area ?>
-					 
+				  </div>
 				</div>
-				
-				<!-- end left side div -->
-				
-				<div id="right_sidebar">
-					 <div id="pageTop">
-						  <div id="pageIntro">
-								<h1 style="text-align:center;">Open Context's Technologies</h1>
-								<p>In addition to the <a href="../about/concepts">Concepts</a> and <a href=""../about/services">APIs &amp; Web-Services</a> pages, this page provides extensive information about the nuts and bolts of how Open Context works. It is not necessary for all Open Context authors and users to understand the system at this level of detail, but we provide it here for those who are interested.</p>
-								<p>Open Context now host many different projects, with various methodologies, recording
-									 systems, and temporal and geographic coverage. This wide applicability lowers costs, since a common set
-									 of ArchaeoML-based software and database tools can be used for many projects without any additional
-									 software development. While ArchaeoML (see the "<a href="../about/concepts">Concepts</a>" page) is very
-									 useful for cultural heritage data management and dissemination (and can even see
-									 application in areas as diverse as Public Health and environmental biology), there are many
-									 scenarios where users will need to work with Open Context data in other applications and systems.
-									 Therefore, Open Context must enable efficient data portability and interoperability.</p>
-								<p>The main focus of Open Context's technical development centers on interoperability. 
-								To be of most benefit to the research community, Open Context works to be a &ldquo;good citizen&rdquo;
-								and collaborative partner in the Web of Data. We work improve Open Context's interoperability
-								to meet preservation and research goals. 
-								</p>		
-						  </div>
-					 </div>
-
-					 <div>
-						  <h3>Behind the Scenes</h3>
-						  <p>Open Context is a PHP based application using the open source Zend Framework. It uses a MySQL database
-						  to manage data and <a href="http://lucene.apache.org/solr/">Apache Solr</a> to support faceted queries.
-						  All source code is released under a GNU-GPL version 3 open
-						  source license. <a href="https://github.com/ekansa/open-context-code/">Click here</a> to access the code repository
-						  in GitHub.
-						  </p>
-						  
-						  <h3>Web Services</h3>
-						  <p>Open Context promotes interoperability by offering a variety of Web-Services (APIs). These services make
-						  machine-readable data available so that content from Open Context can efficiently flow into digital repositories,
-						  other databases, and other applications. In other words, data published by Open Context is not trapped within Open Context.
-						  Instead, Open Context works to make data as portable as possible.
-						  </p>
-						  <p>Open Context uses two main approaches and technical styles to promote interoperability. Its most fully developed
-						  approach centers on <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a>
-						  Web Services. RESTful services are widely deployed and used on the Web, in everything from social media applications,
-						  mobile information services, and digital library and scholarly communication services. Secondly,
-						  Open Context developers increasingly emphasize "Linked Open Data" services to promote interoperability. Linked Open Data
-						  approaches are based on over a decade of Semantic Web research and development.
-						  Open Context's implementation of these approaches are summarized below:</p>
-						  
-						  <h4 id="restful">Open Context and RESTful Services</h4>
-						  <p>Open Context provides machine-readable data in a variety of formats using RESTful style services.
-						  The services support faceted search requests according to a wide variety of query parameters.
-						  These services are
-						  fully documented [<a href="../about/services">here</a>] and are very simple to access and use.
-						  The RESTful services offer data in the following formats:</p>
-						  <ul class="big-list">
-								<li><strong>Atom Syndication Format: </strong> Atom is a widely used and supported XML format
-								ideally suited for sharing lists of Web resources described by simple metadata. Open Context offers faceted
-								search results as a list of resources expressed in Atom. The Atom feeds provide information about when items in
-								a search result were published and last updated, enabling users to subscribe to custom-defined (based on
-								query parameters) feeds of Open Context content.
+		  </div>  
+	 </div>
+	 
+	 <!--
+		Code for showing the main description content
+		-->
+	 <div id="main_description">
+		  <div id="main_description_tab">
+				<div id="main_description_row">
+					 <div id="left_des">
+						  <div id="prop-all-des">
+								<div id="prop-intro">
+									 <table class="table table-condensed" id="prop-intro-tab">
+										  <tbody>
+												<tr>
+												  <th>Label</th>
+												  <td><?php echo $OWL->vocabLabel; ?></td>
+												</tr>
+												<?php
+												
+												$comments = $OWL->VocabGetComment();
+												$commentCount = count($comments);
+												if($commentCount>0){
+													 $i = 1;
+													 foreach($comments as $comment){
+														  
+														  if($commentCount > 1){
+																$showI = " ($i)";
+														  }
+														  else{
+																$showI = "";
+														  }
+														  
+														  ?>
+														  <tr>
+																<th>Note<?php echo $showI; ?></th>
+																<td><?php echo $comment; ?></td>
+														  </tr>
+														  
+														  <?php 
+														 $i++; 
+													 }
+												}
+												?>
+												<tr>
+												  <th>URI</th>
+												  <td><?php echo $OWL->vocabURI; ?></td>
+												</tr>
+										  </tbody>
+									 </table>
+								</div>
 								
-								The feeds itemize each resource as an Atom
-								<span class="code">&lt;entry&gt;</span>, and each entry has <span class="code">&lt;link&gt;</span> elements pointing to
-								various representations (formats) of each given resource. Like many other research collections,
-								Open Context provides Atom data supplemented with other extensions, including:
-									 <ol>
-										  <li><a href="http://www.opensearch.org/Home">Open Search</a>:
-										  to provide numeric data about search results
-										  </li>
-										  <li><a href="http://tools.ietf.org/html/rfc5005">Feed Paging</a>: to allow clients to fully retrieve
-										  large sets of search results
-										  </li>
-										  <li><a href="http://georss.org/">GeoRSS</a>: to provide geospatial metadata for resources listed in the Atom feed
-										  </li>
-									 </ol>
-								</li>
-								<li><strong>JSON (Javascript Object Notation): </strong> JSON is a popular, light-weight format for expressing
-								machine-readable data. Most Web scripting languages easily parse JSON, making it very easy for developers to use.
-								Open Context provides faceted search results in JSON and also in GeoJSON, a popular standard for expressing geospatial
-								data.</li>
-								<li><strong>KML: </strong> KML is a popular XML format for expressing geospatial data on the Web. Open Context
-								provides KML to express both summarized search results and lists of individual records retrieved from searches.</li>
-								<li><strong>ArchaeoML XML: </strong> Open Context expresses individual records of data using the ArchaeoML XML
-								vocabulary. This is the format used internally in Open Context, and AchaeoML representations are the richest
-								and most complete representations of data currently available.</li>
-						  </ul>
-						 
+								
 						  
+								<div>
+									 <?php
+									 
+									 $conceptPaths = array("do-all");
+									 if(is_array($conceptPaths)){
+										  
+										  ?>
+										  <div id="single-prop-stats">
+												<h5>Concept Hierachy</h5>
+												<p>This vocaubulary ontology describes a hierarchy of concepts as illustrated below:</p>
+												<?php
+												echo $OWL->outputClassParentsHTML($conceptPaths);
+												?>
+												
+										  </div>
+										  <?php
+									 }//end case with hierarchy
+									 
+									 ?>
+									 
+								</div>
+								
+								
+								<?php
+								if(isset($owlArray["properties"])){
+									 $propCount = count($owlArray["properties"]);
+									 if($propCount > 0){
+										  ?>
+									 
+									 <div id="prop-props">
+										  <h5>Properties in this Vocabulary (<?php echo $propCount; ?>)</h5>
+										  <p>Properties describe entities and their relationships in a vocabulary or ontology. The following properties are used in the <strong><?php echo $OWL->vocabLabel; ?></strong> vocabulary:</p>
+										  <br/>
+										  <table class="table table-condensed">
+												<thead>
+													 <tr>
+														  <th>Property Label</th>
+														  <th>Property URI</th>
+													 </tr>
+												</thead>
+												<tbody>
+												<?php
+												foreach($owlArray["properties"] as $propIRI => $propArray){
+													 $propURI = $OWL->IRItoURL($propIRI);
+													 $propLabel = $OWL->IRIgetLabel($propIRI, $owlArray["properties"]);
+													 ?>
+													 <tr>
+														  <td>
+																<?php echo $propLabel; ?>
+														  </td>
+														  <td>
+																<a href="<?php echo $propURI; ?>" title="Link to property definition"><?php echo $propURI; ?></a>
+														  </td>
+													 </tr>
+												<?php	 
+												}//end loop
+												?>
+												</tbody>
+										  </table>
+									 </div>
+										  <?php
+									 }
+								}//end case with properties
+									 ?>
+								
 						  
-						  <h4 id="linked-data">Open Context and Linked Open Data</h4>
-						  <p>Open Context participates in the "<a href='http://lod-lam.net/' title='Digital Humanities Community Hub for Linked Data'>
-						  Linked Open Data</a>" community by publishing data linked to URI-identified concepts published by others.
-						  We currently link to the <a href="http://www.eol.org/" title="EOL Homepage">Encyclopedia of Life</a>
-						  to reference biological taxa. We also link to places published by the
-						  <a href="http://pleiades.stoa.org" title="Pleiades homepage">Pleiades Gazetteer</a>. To learn how to query
-						  Open Context over linked data URIs, please review our API documentation <a href="services#query-rel">here</a>.
-						  </p>
-						  <p>In addition, Open Context publishes data easy to reference with stable URIs to specific records.
-						  Each location and object has its own ID and its own web-address. Similarly, each project, project, person,
-						  media item, and even each descriptive property has its own unique address. These items are linked to one another
-						  through network graph relationships (expressed in ArchaeoML, a machine-readbile XML format). We are also working
-						  on expressing these data as RDF-triples using the CIDOC-CRM.</p>
-						  <p>By publishing data where every record can be referenced with URIs, everything in Open Context can be addressed
-						  and annotated by simple folksonomy tagging or by outside systems using more sophisticated semantics
-						  and "Linked Data" methods. For instance, experts familiar with the CIDOC-CRM can describe
-						  relationships among Open Context content using the semantically richer framework of the CIDOC-CRM
-						  even before we provide our own expressions of CIDOC-mapped data.
-						  </p>
+								<div style="padding-bottom: 10%;"></div>
+						  
+						  </div>
+						  
 					 </div>
-			 
-			 
+					 <!-- end div for left -->
+					 
+					 <div id="right_des">
+						  <div id="editorial">
+								<h5>Vocabulary Rreview Status</h5>
+								<div id="project-edit-status">
+									<span id="project-edit-stars">
+										  <a href="../about/publishing#editorial-status"><?php echo $OWL->reviewStarHTML(); ?></a>
+									</span>
+									<?php echo $OWL->reviewLabelHTML(); ?>
+								</div>
+								<br/>
+								<br/>
+								<h5>Suggested Citation</h5>
+								<div id="citation"><?php echo $OWL->vocabAttribution; ?>. "<?php echo $OWL->vocabLabel; ?>" (Updated  <?php echo date("Y-m-d", strtotime($OWL->updated)); ?>). Open Context.  &lt;<?php echo $OWL->vocabURI; ?>&gt; 
+								</div>
+						  </div>
+						  
+						  <div id="all_media">
+								<h5>Linked Media</h5>
+								<p><a href="<?php echo $OWL->vocabReposity; ?>" title="Version control for this vocabulary">Version-control (Github, OWL File)</a></p>
+						  </div>
+						  
+						  <?php echo $this->render('vocab-update-widget-dom.phtml'); //render HTML dom for the vocabulary feed ?>
+						  
+					 </div>
+					 <!-- end div for right -->
 				</div>
-				<!-- end right side div -->
+				<!-- end div for main row -->
 		  </div>
-		  <!-- end main row div -->
-    
-	 </div> <!-- end main div -->
-	
-    
+		  <!-- end div for main tab -->
+	 </div>
+	 <!-- end div for main description -->
+	 
+	 
+	 
+	 
+	 
 </div> <!-- end main div -->	 
 	 <?php echo $this->render('footer.phtml'); //reader document footer ?>
 	

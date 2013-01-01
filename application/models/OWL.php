@@ -9,29 +9,41 @@ class OWL {
 public $vocab; //name of the OWL ontology from the URL (slug)
 public $vocabLabel; //label for the OWL ontology
 public $vocabURI; //URI for the current vocabulary
+public $vocabReposity; //URI for the repository (Github) version control
+public $vocabCommits; //URI for commits / updates to the vocabulary
 public $vocabStatus; //URI for the vocabularie's peer review status (if given)
+public $vocabLicense; //uri for the vocabularies license
+public $vocabAttribution; //string for who gets attribution for the vocabulary
 public $concept; //name-identifier (slug) for a concept referenced in the request URL
 public $conceptFound; //boolean, if the requested concept identifier was found in the ontology
 public $conceptLabel; //label for the active concept, if found.
 public $conceptType; //false if not found, or class or property
 
 public $OWLfile; //filename for the OWL ontology
+public $storedHash; //database stored hash of the vocabulary file, used to check on versioning / updates
 public $xml; //simple xml of the ontology
 public $owlArray; //array of the full OWL ontology
 
 public $created; //when was the ontology first created
 public $updated; //when was the ontology last updated
 
+public $vocabError = false;
 public $requestURI; //current request URI
 public $db;
 
-const ontologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
+const baseLocalRepositoryURI = "/vocabs/";
+const BaseRawRepositoryHome = "http://raw.github.com/ekansa/oc-ontologies/master/vocabularies/";
+const BaseRepositoryHome = "http://github.com/ekansa/oc-ontologies/blob/master/vocabularies/";
+const BaseVocabCommitsFeed = "http://github.com/ekansa/oc-ontologies/commits/master/vocabularies/";
+const localOntologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
 const labelAbbrevIRI = "rdfs:label";
 const commentAbbrevIRI = "rdfs:comment";
 const objectPropRange = "ObjectPropertyRange";
 const vocabReviewIRI = "bibo:status";
+const attributionIRI = "cc:attributionName";
+const licenseIRI = "xhv:license";
 
-    function getOntology($vocab, $concept = false){
+    function getOntology($vocab, $parseOwl = true, $concept = false){
         
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
@@ -42,6 +54,10 @@ const vocabReviewIRI = "bibo:status";
 		  $this->vocabLabel = false;
 		  $this->vocabURI = false;
 		  $this->vocabStatus = false;
+		  $this->vocabAttribution = false;
+		  $this->vocabLicense = false;
+		  $this->vocabReposity = false;
+		  $this->vocabCommits = false;
 		  $this->concept = false;
 		  $this->conceptLabel = false;
 		  $this->conceptType = false;
@@ -66,24 +82,58 @@ const vocabReviewIRI = "bibo:status";
             $this->OWLfile = $result[0]["filename"];
             $this->created = $result[0]["created"];
             $this->updated = $result[0]["updated"];
+				$this->storedHash = $result[0]["filehash"];
             $this->vocab = $vocab;
+				$this->vocabCommits = self::BaseVocabCommitsFeed.$this->OWLfile.".atom";
+				$this->vocabReposity = self::BaseRepositoryHome.$this->OWLfile;
 				
-            $sFilename = self::ontologyDirectory.$this->OWLfile;
-            @$xmlString = $this->loadFile($sFilename);
+            $xmlString = $this->getOwlFile(false);
             if($xmlString != false){
-                @$xml = simplexml_load_string($xmlString);
-                if($xml != false){
-                    $this->xml = $xml;
-						  $this->OWLtoArray();
-                }
+					 if($parseOwl){
+						  @$xml = simplexml_load_string($xmlString);
+						  if($xml != false){
+								$this->checkUpdateHash($vocab, $xmlString);
+								$this->xml = $xml;
+								$this->OWLtoArray();
+								return true;
+						  }
+						  else{
+								$this->vocabError = true;
+								return false;
+						  }
+					 }
+					 else{
+						  return $xmlString;
+					 }
             }
-            return true;
+            
         }
         else{
 				return false;
 		  }
     }
     
+	 
+	 function checkUpdateHash($vocab, $xmlString){
+		  $db = $this->db;
+		  $newHash = sha1($xmlString);
+		  if($this->storedHash != $newHash){
+				$where = "vocab = '$vocab' ";
+				$data = array("filehash" => $newHash);
+				@$feed = new Zend_Feed_Atom($this->vocabCommits); //get the feed for the latest commits to the vocabulary
+				if($feed){
+					 foreach ($feed as $entry) {
+						  $updated = $entry->updated();
+						  $data["updated"] = $mysqldate = date("m/d/y g:i A", strtotime($updated));
+						  break;
+					 }
+				}
+				$db->update("vocabularies", $data, $where);
+		  }
+		  
+	 }
+	 
+	 
 	 
 	 //construct a PHP array from the OWL ontology, easier to use for displaying
 	 function OWLtoArray(){
@@ -117,8 +167,14 @@ const vocabReviewIRI = "bibo:status";
 					 if($prop == self::labelAbbrevIRI && $propVal != false){
 					   $this->vocabLabel = $propVal;
 					 }
-					 if($prop == self::vocabReviewIRI && $propVal != false){
+					 elseif($prop == self::vocabReviewIRI && $propVal != false){
 					   $this->vocabStatus = $propVal;
+					 }
+					 elseif($prop == self::attributionIRI && $propVal != false){
+					   $this->vocabAttribution = $propVal;
+					 }
+					 elseif($prop == self::licenseIRI && $propVal != false){
+					   $this->vocabLicense = $propVal;
 					 }
 					 
 					 if($prop != false && $propVal != false){
@@ -341,6 +397,23 @@ const vocabReviewIRI = "bibo:status";
 		  return $output;
 	 }
 	 
+	 //get comments or notes about the vocabulary itself
+	 function VocabGetComment(){
+		  $owlArray = $this->owlArray;
+		  $comments = array();
+		  if(isset($owlArray["ontology"])){
+				foreach($owlArray["ontology"] as $annoationArray){
+					 if(array_key_exists(self::commentAbbrevIRI, $annoationArray)){
+						  $comments[] = $annoationArray[self::commentAbbrevIRI];
+					 }
+				}
+		  }
+		  
+		  return $comments;
+	 }
+	 
+	 
+	 //get an Object Property Range for a given IRI
 	 function IRIgetObjectPropRange($actIRI){
 		  $output = false;
 		  $owlArray = $this->owlArray;
@@ -354,6 +427,112 @@ const vocabReviewIRI = "bibo:status";
 		  }
 		  return $output;
 	 }
+	 
+	  //get an Object Property Range for a given IRI
+	 function getClassParents($actIRI){
+		  $parents = array();
+		  $owlArray = $this->owlArray;
+		  $output = false;
+		  if(isset($owlArray["hierachy"])){
+				$hierarchy =  $owlArray["hierachy"];
+				$actConceptParents = $this->findParentPaths($actIRI, $hierarchy);
+				if(count($actConceptParents)>0){
+					 $output = $actConceptParents;
+				}
+		  }
+		  return $output;
+	 }
+	 
+	 function findParentPaths($actIRI, $hierarchy, $actConceptParents = array(), $actPath = false){
+		 
+		  foreach($hierarchy as $parentKey => $children){
+				if(!$actPath){
+					 $newActPath = $parentKey;
+				}
+				else{
+					 $newActPath = $actPath.":::".$parentKey;
+				}
+
+				if($actIRI == $parentKey){
+					 $actConceptParents[] = $actPath;
+				}
+				else{
+					 if(is_array($children)){
+						  $actConceptParents = $this->findParentPaths($actIRI, $children, $actConceptParents, $newActPath);
+					 }
+				}
+		  }
+		  
+		  return $actConceptParents;
+	 }
+	 
+	 
+	 function outputClassParentsHTML($actConceptParents){
+		  $owlArray = $this->owlArray;
+		  if(isset($owlArray["hierachy"])){
+				$hierarchy =  $owlArray["hierachy"];
+				
+				$doc = new DOMDocument();
+				$doc->formatOutput = true;
+				$root = $doc->createElement('ul');
+				$doc->appendChild($root);
+				$root = $this->makeClassParentList($doc, $root, $actConceptParents, $hierarchy);
+				return $doc->saveXML($root);
+		  }
+	 }
+	 
+	 function makeClassParentList($doc, $actNode, $actConceptParents, $hierarchy, $actPath = false){
+		  $owlArray = $this->owlArray;
+		  if(isset($owlArray["classes"])){
+				$classes = $owlArray["classes"];
+		  }
+		  
+		  foreach($hierarchy as $parentKey => $children){
+				
+				if(!$actPath){
+					 $newActPath = $parentKey;
+				}
+				else{
+					 $newActPath = $actPath.":::".$parentKey;
+				}
+	 
+				$newPathFound = false;
+				foreach($actConceptParents as $conceptPath){
+					 if((strstr($conceptPath, $newActPath) && !$newPathFound) || $conceptPath == "do-all"){
+						  $newPathFound = true;
+						  $item = $doc->createElement('li');
+						  $itemA = $doc->createElement('a');
+						  $href = $this->IRItoURL($parentKey);
+						  $itemA->setAttribute("href", $href);
+						  $parentLabel = $this->IRIgetLabel($parentKey, $classes);
+						  $parentNote = $this->IRIgetComment($parentKey, $classes);
+						  if(!$parentLabel){
+								$parentLabel = $parentKey;
+						  }
+						  if(!$parentNote){
+								$parentNote = "No description for this concept.";
+						  }
+						  $itemA->setAttribute("title", $parentNote);
+						  $itemTextA = $doc->createTextNode($parentLabel);
+						  $itemA->appendChild($itemTextA);
+						  $item->appendChild($itemA);
+						  if(is_array($children) && $newActPath != $conceptPath){
+								$newRoot = $doc->createElement('ul');
+								$newRoot = $this->makeClassParentList($doc, $newRoot, $actConceptParents, $children, $newActPath);
+								$item->appendChild($newRoot);
+						  }
+						  $actNode->appendChild($item);
+					 }
+				}
+		  }
+		  
+		  return $actNode;
+		  
+	 }
+	 
+	 
+	 
+	 
 	 
 	 //convert an IRI to a link
 	 function IRItoURL($actIRI){
@@ -431,6 +610,31 @@ const vocabReviewIRI = "bibo:status";
 	
 		  return $nameSpaceArray;
     }
+	 
+	 //get the owl file, either from a local directory or direct from the repository
+	 function getOwlFile($useLocal = false){
+		  $xmlString = false;
+		  if($useLocal){
+				$sFilename = self::localOntologyDirectory.$this->OWLfile;
+				@$xmlString = $this->loadFile($sFilename);
+				if(!$xmlString){
+					 $host = OpenContext_OCConfig::get_host_config();
+					 $sFileURL = $host.self::baseLocalRepositoryURI.$this->OWLfile;
+					 @$xmlString = file_get_contents($sFileURL);
+				}
+		  }
+		  else{
+				$sFileURL = self::BaseRawRepositoryHome.$this->OWLfile;
+				@$xmlString = file_get_contents($sFileURL);
+				if(!$xmlString){
+					 $host = OpenContext_OCConfig::get_host_config();
+					 $sFileURL = $host.self::baseLocalRepositoryURI.$this->OWLfile;
+					 @$xmlString = file_get_contents($sFileURL);
+				}
+		  }
+		  return $xmlString;
+	 }
+	 
 	 
 	 
 	 

@@ -1,0 +1,45 @@
+<?php
+    $OWL = $this->OWL;
+?>
+<script type="text/javascript">
+    <!--
+    
+    var GitUpdateFeedURI = "<?php echo $OWL->vocabCommits; ?>";
+    
+    google.load("feeds", "1");
+
+    function doFeed(feedURI, feedDomID){
+        var container = document.getElementById(feedDomID);
+        var feedDom =  document.createElement("ul");
+        container.appendChild(feedDom);
+        var ActFeed = new google.feeds.Feed(feedURI);
+        ActFeed.load(function(result) {
+            if (!result.error) {
+                for (var i = 0; i < result.feed.entries.length; i++) {
+                    var entry = result.feed.entries[i];
+                    var entryDom = document.createElement("li");
+                    var alink = document.createElement("a");
+                    alink.appendChild(document.createTextNode(entry.title));
+                    alink.setAttribute('href', entry.link);
+                    entryDom.appendChild(alink);
+                    feedDom.appendChild(entryDom);
+                }
+            }
+            else{
+                var entryDom = document.createElement("li");
+                entryDom.appendChild(document.createTextNode("Feed currently unavailable"));
+                feedDom.appendChild(entryDom);
+            }
+        });
+        
+        
+        
+    }
+    
+    function initialize() {
+        doFeed(GitUpdateFeedURI,"Git-update-feed");
+    }
+
+    google.setOnLoadCallback(initialize);
+    -->
+</script>
