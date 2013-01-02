@@ -72,6 +72,7 @@ class dbXML_dbPropitem  {
 										);
 	 
 	 public $gapCount = 20; //default number of categories for histograms, can lump together
+	 public $categoryCount = 100; //default number of categories for nominal data.
 	 
     public $dbName;
     public $dbPenelope;
@@ -762,7 +763,7 @@ class dbXML_dbPropitem  {
 									 if($rank == 1){
 										  $maxValue = $count;
 									 }
-									 if($rank <= $this->gapCount){
+									 if($rank <= $this->categoryCount){
 										  
 										  $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
 										  if($solrTypes[$sType]["pubQueryParam"] != false){
