@@ -222,6 +222,27 @@ $owlArray = $OWL->owlArray;
 						  
 						  <?php echo $this->render('vocab-update-widget-dom.phtml'); //render HTML dom for the vocabulary feed ?>
 						  
+						   <div id="item-license">
+								<?php $licensing = $OWL->getLicenseData(); ?>
+								<h5>Copyright Licenseing</h5>
+								<div class="list_tab">
+									 <div class="list_tab_row">
+										  <div class="license-icon">
+												<a href="<?php echo $licensing["license_url"]; ?>">
+													 <img src="<?php echo $licensing["lic_pict_url"]; ?>" alt="<?php echo $licensing["license_name"]; ?>" />
+												</a>
+										  </div>
+										  <div class="license_text">
+												To the extent to which copyright applies, this content is licensed with:
+												<a rel="license" href="<?php echo $licensing["license_url"]; ?>">
+													 <?php echo $licensing["license_name"]; ?>
+												</a> Attribution Required: Citation, and hyperlinks for online uses.
+										  </div>
+									 </div>
+								</div>
+						  </div>
+						  
+						  <div style="padding-bottom: 15%;"></div>
 					 </div>
 					 <!-- end div for right -->
 				</div>

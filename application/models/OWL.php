@@ -115,7 +115,15 @@ const licenseIRI = "xhv:license";
     
 	 
 	 function checkUpdateHash($vocab, $xmlString){
-		  $db = $this->db;
+		  if(!$this->db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);    
+		  }
+		  else{
+				$db = $this->db;
+		  }
 		  $newHash = sha1($xmlString);
 		  if($this->storedHash != $newHash){
 				$where = "vocab = '$vocab' ";
@@ -660,6 +668,31 @@ const licenseIRI = "xhv:license";
         return $sData;
     }
     
+	 
+	 function getLicenseData($licenseURI = false){
+        
+		  if(!$this->db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);    
+		  }
+		  else{
+				$db = $this->db;
+		  }
+		  if(!$licenseURI){
+				$licenseURI = $this->vocabLicense;
+		  }
+		  $licenseURI = $this->security_check($licenseURI);
+		  $sql = "SELECT * FROM licenses WHERE license_url LIKE '$licenseURI%' LIMIT 1; ";
+		  $result = $db->fetchAll($sql, 2);
+        if($result){
+				return $result[0];
+		  }
+		  else{
+				return $this->getLicenseData("http://creativecommons.org/licenses/by/3.0/"); // default to attribution
+		  }
+	 }
 
     function security_check($input){
         $badArray = array("DROP", "SELECT", "#", "--", "DELETE", "INSERT", "UPDATE", "ALTER", "=");
