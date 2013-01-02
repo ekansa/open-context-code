@@ -57,9 +57,9 @@ class SolrError {
     
     
     
-    public function restartSolr($solrDir = "/var/www/oc-solr3-6-1-1/example"){
-	$commandString = "cd $solrDir/example;rm nohup.out;killall -9 java;nohup java -jar start.jar &;";
-	shell_exec($commandString);
+    public function restartSolr($solrDir = "/var/www/oc-solr-3-6-2/example"){
+		  $commandString = "cd $solrDir/example;rm nohup.out;killall -9 java;nohup java -jar start.jar &;";
+		  shell_exec($commandString);
     }
     
     
