@@ -257,7 +257,7 @@ class Project {
     //feed read by the CDL's archival services.
     function getItemEntry($id){
 		$this->getByID($id);
-		$this->DOM_spatialAtomCreate($this->archaeoML );
+		$this->DOM_AtomCreate($this->archaeoML );
 		return $this->atomEntry;
     }
     

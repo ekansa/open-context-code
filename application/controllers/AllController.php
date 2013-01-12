@@ -41,13 +41,24 @@ class allController extends Zend_Controller_Action
       $page = 1;
     }
     
+    $host = OpenContext_OCConfig::get_host_config();
     mb_internal_encoding( 'UTF-8' );
     $host = OpenContext_OCConfig::get_host_config();
     $archiveFeed = new ArchiveFeed;
     $archiveFeed->set_up_feed_page($page);
+    if(!$archiveFeed->feedItems){
+      $this->view->requestURI = $host.$this->_request->getRequestUri();
+		return $this->render('404error'); // page not found
+    }
     
-    header('Content-type: application/atom+xml; charset=utf-8', true);
-    echo $archiveFeed->generateFeed();
+    if($page > 1 && count($archiveFeed->feedItems) < 1){
+      $this->view->requestURI = $host.$this->_request->getRequestUri();
+		return $this->render('404error'); // page not found
+    }
+    else{
+      header('Content-type: application/atom+xml; charset=utf-8', true);
+      echo $archiveFeed->generateFeed();
+    }
     
   }//end function
   
