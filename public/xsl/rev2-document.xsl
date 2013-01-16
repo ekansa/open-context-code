@@ -407,7 +407,7 @@
 														
 														<p>
 																<a>
-																		<xsl:attribute name="href">https://github.com/ekansa/Open-Context-Data/tree/master/data/<xsl:value-of select="arch:resource/@ownedBy"/>/media/<xsl:value-of select="arch:resource/@UUID"/>.xml</xsl:attribute>
+																		<xsl:attribute name="href">https://github.com/ekansa/opencontext-<xsl:value-of select="arch:resource/@ownedBy"/>/tree/master/documents/<xsl:value-of select="arch:resource/@UUID"/>.xml</xsl:attribute>
 																		<xsl:attribute name="title">XML data in Github repository</xsl:attribute>
 																		Version-control (Github, XML Data)
 																</a>

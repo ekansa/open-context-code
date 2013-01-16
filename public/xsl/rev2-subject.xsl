@@ -668,13 +668,15 @@
 																		  <xsl:attribute name="type">application/xml</xsl:attribute>ArchaeoML (XML) Version
 																  </a>
 														  </p>
-														  <p>
-																  <a>
-																		  <xsl:attribute name="href">https://github.com/ekansa/Open-Context-Data/tree/master/data/<xsl:value-of select="arch:spatialUnit/@ownedBy"/>/subjects/<xsl:value-of select="$item_id"/>.xml</xsl:attribute>
-																		  <xsl:attribute name="title">XML data in Github repository</xsl:attribute>
-																		  Version-control (Github, XML Data)
-																  </a>
-														  </p>
+														  <xsl:if test="arch:spatialUnit/@ownedBy !=0">
+																<p>
+																		<a>
+																				<xsl:attribute name="href">https://github.com/ekansa/opencontext-<xsl:value-of select="arch:spatialUnit/@ownedBy"/>/tree/master/subjects/<xsl:value-of select="$item_id"/>.xml</xsl:attribute>
+																				<xsl:attribute name="title">XML data in Github repository</xsl:attribute>
+																				Version-control (Github, XML Data)
+																		</a>
+																</p>
+														  </xsl:if>
 												</div>
 												<!-- end div for media-links -->
 												

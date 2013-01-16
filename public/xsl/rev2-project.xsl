@@ -439,6 +439,15 @@
 																</xsl:for-each>
 														</div>
 												</xsl:if>
+												
+												<p>
+														<a>
+																<xsl:attribute name="href">https://github.com/ekansa/opencontext-<xsl:value-of select="//arch:project/@UUID"/>/tree/master/<xsl:value-of select="//arch:project/@UUID"/>.xml</xsl:attribute>
+																<xsl:attribute name="title">XML data in Github repository</xsl:attribute>
+																Version-control (Github, XML Data)
+														</a>
+												</p>
+												
 										</div>
 								
 										<div id="item-license" >
