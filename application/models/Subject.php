@@ -520,50 +520,49 @@ class Subject {
 		}
 	
 	
-		//get linked data 
-		if ($spatialItem->xpath("//oc:linkedData/oc:relationLink")){
-		    $linkedData = array();
-		    foreach($spatialItem->xpath("//oc:linkedData/oc:relationLink") as $links){
-			$actLink = array();
-			foreach($links->xpath("@href") as $relURI){
-			    $actLink["relURI"] = (string)$relURI;
-			}
-			foreach($links->xpath("oc:vocabulary") as $relVoc){
-			    $actLink["relVocab"] = (string)$relVoc;
-			}
-			foreach($links->xpath("oc:label") as $relLab){
-			    $actLink["relLabel"] = (string)$relLab;
-			}
-			
-			//check for a target link
-			if($links->xpath("oc:targetLink")){
-			    foreach($links->xpath("oc:targetLink") as $target){
-				foreach($target->xpath("@href") as $targURI){
-				    $actLink["targURI"] = (string)$targURI;
+	 //get linked data 
+	 if ($spatialItem->xpath("//oc:linkedData/oc:relationLink")){
+		  $linkedData = array();
+		  foreach($spatialItem->xpath("//oc:linkedData/oc:relationLink") as $links){
+				$actLink = array();
+				foreach($links->xpath("@href") as $relURI){
+					 $actLink["relURI"] = (string)$relURI;
 				}
-				foreach($target->xpath("oc:vocabulary") as $targVoc){
-				    $actLink["targVocab"] = (string)$targVoc;
+				foreach($links->xpath("oc:vocabulary") as $relVoc){
+					 $actLink["relVocab"] = (string)$relVoc;
 				}
-				foreach($target->xpath("oc:label") as $targLab){
-				    $actLink["targLabel"] = (string)$targLab;
+				foreach($links->xpath("oc:label") as $relLab){
+					 $actLink["relLabel"] = (string)$relLab;
 				}
 				
-			    }//end loop through targets
-			}
-			else{
-			    $actLink = false; //if no target, then not a full linked data ref
-			}
-			
-			if(is_array($actLink)){
-			    $linkedData[] = $actLink;
-			    unset($actLink);
-			}
-		    }//end loops through relationlinks
+				//check for a target link
+				if($links->xpath("oc:targetLink")){
+					 foreach($links->xpath("oc:targetLink") as $target){
+						  foreach($target->xpath("@href") as $targURI){
+								$actLink["targURI"] = (string)$targURI;
+						  }
+						  foreach($target->xpath("oc:vocabulary") as $targVoc){
+								$actLink["targVocab"] = (string)$targVoc;
+						  }
+						  foreach($target->xpath("oc:label") as $targLab){
+								$actLink["targLabel"] = (string)$targLab;
+						  }
+					 }//end loop through targets
+				}
+				else{
+					 $actLink = false; //if no target, then not a full linked data ref
+				}
+				
+				if(is_array($actLink)){
+					 $linkedData[] = $actLink;
+					 unset($actLink);
+				}
+		}//end loops through relationlinks
 		    
-		}
-		else{
-		    $linkedData = false; //no links
-		}
+	 }
+	 else{
+		  $linkedData = false; //no links
+	 }
 	
 	
 	
@@ -624,13 +623,16 @@ class Subject {
 		
 		//add linked data reference
 		if(is_array($linkedData)){
-		    foreach($linkedData as $link){
-			$entryLink = $atomEntryDoc->createElement("link");
-			$entryLink->setAttribute("rel", $link["relURI"]);
-			$entryLink->setAttribute("href", $link["targURI"]);
-			$entryLink->setAttribute("title", "Linked Data Relation: ".$link["relVocab"]."-".$link["relLabel"]." :: ".$link["targVocab"]."-".$link["targLabel"] );
-			$rootEntry->appendChild($entryLink);
-		    }
+		  foreach($linkedData as $link){
+				if(strlen($link["relURI"]) > 1 && strlen($link["targURI"]) > 1){
+					 //only add if we have URIs for the predicate / property and the object / target
+					 $entryLink = $atomEntryDoc->createElement("link");
+					 $entryLink->setAttribute("rel", $link["relURI"]);
+					 $entryLink->setAttribute("href", $link["targURI"]);
+					 $entryLink->setAttribute("title", "Linked Data Relation: ".$link["relVocab"]."-".$link["relLabel"]." :: ".$link["targVocab"]."-".$link["targLabel"] );
+					 $rootEntry->appendChild($entryLink);
+				}
+		  }
 		}
 		
 		
