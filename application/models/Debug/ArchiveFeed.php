@@ -119,6 +119,11 @@ class Debug_ArchiveFeed  {
 					 $href = $this->checkAttributes("href", $link);
 					 $type = $this->checkAttributes("type", $link);
 					 $rel = $this->checkAttributes("rel", $link);
+					 
+					 if(strstr($rel, "http://") && !$type){
+						  $type = "Linked data HTML";
+					 }
+					 
 					 if(!$href || !$type || !$rel){
 						  $linkErrors[] = "@href = '$href' @rel = '$rel' @type = '$type' ";
 					 }
