@@ -16,6 +16,8 @@ class Table {
     public $jsonData; //data, in a JSON string, for the table
     public $solrIndexingError; //error in solr indexing
     
+	 public $dbDateCreated; //date created, as from data table
+	 public $dbDateUpdated; //date updated, as from data table
     
     //get User data from database
     function getByID($tableId){
@@ -52,7 +54,10 @@ class Table {
 				$this->label = $result["0"]["table_name"];
 				$this->jsonFile = $result["0"]["json_file"];
 				$this->metadata = $result[0]["metadata"];
-				 
+				
+				$this->dbDateCreated = $result[0]["created_on"];
+				$this->dbDateUpdated = $result[0]["updated"];
+				
 				$output = true;
 				$this->noid = false;
 				$this->noidCheck($db);
@@ -655,6 +660,8 @@ class Table {
 		  $jsonLink->setAttribute("href", $tableURL.".json");
 		  $entry->appendChild($jsonLink);
 		  
+		  $table['created_on'] = $this->entryDateFix($table['created_on'], "created"); //check fix dates too early
+		  $table['updated'] = $this->entryDateFix($table['updated'], 'updated'); //check fix dates too early
 		  
 		  //Publication / creation time Format it in RFC 3339 format. Store it in a text node
 		  $entryPub = $atomFullDoc->createElement("published");
@@ -699,20 +706,20 @@ class Table {
 				$bigContributor = false;
 				$contribOK = false;
 				if($subvalue >= ($numRecords/4)){
-			  $contribOK = true;
-			  $bigContributor = true;
+					 $contribOK = true;
+					 $bigContributor = true;
 				}
 				elseif((count($contribArray)<= 10)&&($subvalue >= ($numRecords * .05 ))){
-			  //the top 10 ranked persons on a long list of conributors, even if they contributed only 5% of the records
-			  $contribOK = true;
+					 //the top 10 ranked persons on a long list of conributors, even if they contributed only 5% of the records
+					 $contribOK = true;
 				}
 				else{
-			  $contribOK = false;
+					 $contribOK = false;
 				}
 				
 				$contribArray[] = $subkey;
 				if($contribOK){
-			  $contribArrayShow[] = $subkey;
+					 $contribArrayShow[] = $subkey;
 				}
 				$jjj++;
 		  }
@@ -1033,6 +1040,54 @@ class Table {
 
 	 }//end function
 	 
+	 
+	 
+	 
+	 //fixes dates by looking at the noid_bindings tables, so we don't put publication dates in the 1960's. It's a hack
+	 function entryDateFix($date, $dateType){
+		  
+		  if(strtotime($date) < strtotime("1980-12-31")){
+				
+				if(strtotime($this->dbDateCreated) > strtotime("1980-12-31") && $dateType == "created"){
+					 $date = $this->dbDateCreated;
+					 return $date;
+				}
+				elseif(strtotime($this->dbDateUpdated) > strtotime("1980-12-31") && $dateType == "updated"){
+					 $date = $this->dbDateUpdated;
+					 return $date;
+				}
+				else{
+					 
+					 //check the noid bindings table
+					 $db_params = OpenContext_OCConfig::get_db_config();
+					 $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+					 $db->getConnection();
+					 $table = $this->tableData;
+					 $idA = OpenContext_TableOutput::tableID_toURL($table['cache_id']);
+					 $idB = $table['cache_id'];
+					 $sql = "SELECT ItemCreated, ItemUpdated
+					 FROM noid_bindings
+					 WHERE itemUUID = '$idA' OR itemUUID = '$idB'
+					 LIMIT 1;
+					 ";
+					 
+					 if($result){
+						  if($dateType == "created"){
+								return $result[0]["ItemCreated"];
+						  }
+						  else{
+								return $result[0]["ItemUpdated"];
+						  }
+					 }
+					 else{
+						  return $date;
+					 }
+				}
+		  }
+		  else{
+				return $date;
+		  }
+	 }
 	 
 	 
     

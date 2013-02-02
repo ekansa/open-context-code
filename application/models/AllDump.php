@@ -69,6 +69,7 @@ class AllDump {
 				$itemObj = New Project;
 				$itemObj->getByID($itemUUID);
 				$xml = $itemObj->archaeoML;
+				$readMeText = $this->makeProjectREADME($itemObj);
 				unset($itemObj);
 				
 				$structure = self::exportDir."/".$itemUUID;
@@ -80,10 +81,11 @@ class AllDump {
 				}
 				
 				if(!$error){
-					$saveOK = $this->validateSaveXML($structure, $itemUUID, $xml);
-					if(!$saveOK){
-						$error = true;
-					}
+					 $saveOK = $this->validateSaveXML($structure, $itemUUID, $xml);
+					 if(!$saveOK){
+						 $error = true;
+					 }
+					 $readmeOK = $this->saveREADME($structure, $readMeText);
 				}
 				
 				if(!$error){
@@ -110,6 +112,23 @@ class AllDump {
 		}
 		return $projects; //list of exported projects
 	}
+	
+	
+	//generate a README file for a project
+	function makeProjectREADME($itemObj){
+	 
+		  $readMeText = "OPEN CONTEXT GITHUB DATA REPOSITORY\r\n\r\n";
+		  $readMeText .= "Project: '".$itemObj->label."' \r\n";
+		  $readMeText .= "Project ID: '".$itemObj->itemUUID."' \r\n\r\n\r\n";
+		  $readMeText .= "Open Context <http://opencontext.org> is an open access data publishing service that primarily serves the archaeological community. Open Context uses GitHub for dataset version control and as another channel for data dissemination. While GitHub offers excellent services, Open Context does not regard GitHub as a long-term preservation repository. For data archiving purposes, Open Context works with digital libraries and other dedicated institutional repositories.\r\n\r\n";
+		  $readMeText .= "Open Context encourages reuse of these data and adaptation of these data, provided data creators are properly cited and credited.\r\n\r\n";
+		  $readMeText .= "Please refer to this project's overview in Open Context at <http://opencontext.org/projects/".$itemObj->itemUUID."> for more information on licensing and how to cite these data.\r\n";
+
+		  return $readMeText;
+	}
+	
+	
+	
 	
 	
 	
@@ -280,6 +299,25 @@ class AllDump {
 		
 		return $success;
 	}
+	
+	
+	
+	 //save readme
+	 function saveREADME($itemDir, $readMeText){
+		  $success = false; //save failure
+		  try{
+			  iconv_set_encoding("internal_encoding", "UTF-8");
+			  iconv_set_encoding("output_encoding", "UTF-8");
+			  $fp = fopen($itemDir."/README.txt", 'w');
+			  fwrite($fp, $readMeText);
+			  fclose($fp);
+			  $success = true;
+		  }
+		  catch (Zend_Exception $e){
+			  $success = false; //save failure
+		  }
+		  return $success;
+	 }
 	
 	
 	
