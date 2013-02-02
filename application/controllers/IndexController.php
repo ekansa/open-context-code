@@ -47,6 +47,7 @@ class indexController extends Zend_Controller_Action
 		  Disallow:/lightbox/\r\n
 		  Disallow:/search/\r\n
 		  Disallow:/properties/\r\n
+		  Disallow:/narratives/\r\n
 		  Disallow: /*&\r\n
 		  Sitemap: http://opencontext.org/data/siteMap-1.xml \r\n
 		  Sitemap: http://opencontext.org/data/siteMap-2.xml \r\n
@@ -62,6 +63,11 @@ class indexController extends Zend_Controller_Action
 		  Sitemap: http://opencontext.org/data/siteMap-12.xml \r\n
 		  Sitemap: http://opencontext.org/data/siteMap-13.xml \r\n
 		  Sitemap: http://opencontext.org/data/siteMap-14.xml \r\n
+		  Sitemap: http://opencontext.org/data/siteMap-15.xml \r\n
+		  Sitemap: http://opencontext.org/data/siteMap-16.xml \r\n
+		  Sitemap: http://opencontext.org/data/siteMap-17.xml \r\n
+		  Sitemap: http://opencontext.org/data/siteMap-18.xml \r\n
+		  Sitemap: http://opencontext.org/data/siteMap-19.xml \r\n
 		  ";
 		  
 		  header("Content-Type: text/plain");

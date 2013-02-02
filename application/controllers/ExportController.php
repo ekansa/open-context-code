@@ -10,6 +10,23 @@ class exportController extends Zend_Controller_Action {
 
 	}
 	
+	public siteMapAction(){
+		
+		$this->_helper->viewRenderer->setNoRender();
+		$id = $this->_request->getParam('id');
+		$siteMapObj = new SiteMap;
+		$xml = $siteMapObj->getSiteMap($idKey); 
+		if(!$xml){
+			$this->view->requestURI = $this->_request->getRequestUri(); 
+			return $this->render('404error');
+		}
+		else{
+			header("Content-type: application/xml");
+			echo $xml;
+		}
+	}
+	
+	
 	public function pelagiosAction() {
 		
 		OpenContext_SocialTracking::update_referring_link('export-pelagios', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);

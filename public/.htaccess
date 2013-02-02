@@ -1,5 +1,6 @@
 RewriteEngine on
 # RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
+# RewriteRule !\data.(xml)$ index.php
 
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteCond %{SCRIPT_FILENAME} !-d

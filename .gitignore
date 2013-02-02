@@ -13,3 +13,5 @@ public/cache/*
 public/comp_cache/*
 public/time_cache/*
 public/vocabs/*
+public/data/*
+public/data/**/*
