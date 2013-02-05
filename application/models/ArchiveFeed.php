@@ -276,7 +276,7 @@ class ArchiveFeed {
 					 $entryXML = $itemObj->getItemEntry($itemUUID);
 					 if(stristr($entryXML, 'rel=""')){
 						  $itemObj->getItemEntry($itemUUID);
-						  $itemObj->DOM_spatialAtomCreate($itemObj->newArchaeoML);
+						  $itemObj->DOM_spatialAtomCreate($itemObj->archaeoML);
 						  $itemObj->update_atom_entry();
 					 }
 					 $entryXML = $itemObj->getItemEntry($itemUUID);

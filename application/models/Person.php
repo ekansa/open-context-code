@@ -31,8 +31,8 @@ class Person {
     public $atomEntry;
     
     public $kml_in_Atom; // add KML timespan to atom entry, W3C breaks validation
-    public $xhtml_rel; // value for link rel attribute for XHTML version ("self" or "alternate")
-    public $atom_rel; //value for link rel attribute for Atom version ("self" or "alternate")
+    public $xhtml_rel = "alternate"; // value for link rel attribute for XHTML version ("self" or "alternate")
+    public $atom_rel = "self"; //value for link rel attribute for Atom version ("self" or "alternate")
     
     public $geoCurrent; //check if geo-reference is current.
     
@@ -286,8 +286,12 @@ class Person {
 	
 	
 		// get the item_label
+		$item_label = "";
 		foreach ($projItem->xpath("//arch:person/arch:name/arch:string") as $item_label) {
 			$item_label = $item_label."";
+		}
+		if(strlen($item_label)<1){
+		  $item_label = "Unnamed Person or Organization";
 		}
 		
 		//project name
@@ -526,10 +530,14 @@ class Person {
 		
 		$query = "/arch:person/arch:name/arch:string";
 		$result_title = $xpath->query($query, $person_dom);
-			
+		  $pers_item_name = "";
 		if($result_title != null){
 		    $pers_item_name = $result_title->item(0)->nodeValue;
 		}
+		if(strlen($pers_item_name)<1){
+		  $pers_item_name = "Unnamed person or organization";
+		}
+		
 		
 		$query = "//oc:metadata/oc:project_name";
 		$result_proj = $xpath->query($query, $person_dom);
@@ -556,10 +564,14 @@ class Person {
 	
 		$query = "//oc:metadata/dc:title";
 		$result_dctitle = $xpath->query($query, $person_dom);	
-		     
+	   $person_title = "";
 		if($result_dctitle!= null){
 		    $person_title = $result_dctitle->item(0)->nodeValue;
 		}
+		if(strlen($person_title)<1){
+		  $person_title = "Unnamed person or organization";
+		}
+		
 	
 		$query = "//arch:links/arch:docID[@type='resource']";
 		$result_media = $xpath->query($query, $person_dom);	
@@ -881,7 +893,7 @@ class Person {
                 $query = "//arch:person/arch:name/arch:string";
                 $result_title = $xpath->query($query, $person_dom);
                 if($result_title != null){
-			$pers_item_name = $result_title->item(0)->nodeValue;
+						  $pers_item_name = $result_title->item(0)->nodeValue;
                 }
                     
                 $person_query_name = urlencode(OpenContext_UTF8::charset_decode_utf_8($pers_item_name));

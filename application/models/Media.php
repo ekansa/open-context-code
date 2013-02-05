@@ -273,7 +273,8 @@ class Media {
 					  "png" => "image/png",
 					  "pdf" => "application/pdf",
 					  "doc" => "application/msword",
-					  "xls" => "application/vnd.ms-excel");
+					  "xls" => "application/vnd.ms-excel",
+					  "kmz" => "application/vnd.google-earth.kmz");
 		  
 		  if(strlen($testString)>4){
 				$addDot = ".";
@@ -460,33 +461,39 @@ class Media {
 		    }
 		    
 		}
+		$file = false;
 		foreach($mediaItem->xpath("//arch:externalFileInfo/arch:resourceURI") as $file) {
 		    $file = $file."";
 		}
-		$fileArray[] = array("rel" => "enclosure",
-				     "title" => $titleUse." (main file)",
-				     "type" => $mainMime,
-				     "href" => $file);
-		
+		if($file != false){
+		  $fileArray[] = array("rel" => "enclosure",
+						 "title" => $titleUse." (main file)",
+						 "type" => $mainMime,
+						 "href" => $file);
+		}
+		$previewURI = false;
 		foreach($mediaItem->xpath("//arch:externalFileInfo/arch:previewURI") as $file) {
 		    $file = $file."";
 		    $previewURI = $file;
 		    $mime = $this->mime_type_clean($file);
 		}
-		$fileArray[] = array("rel" => "http://purl.org/dc/terms/hasPart",
-				     "title" => $titleUse." (preview file)",
-				     "type" => $mime,
-				     "href" => $file);
-		
+		if($previewURI != false){
+		  $fileArray[] = array("rel" => "http://purl.org/dc/terms/hasPart",
+						 "title" => $titleUse." (preview file)",
+						 "type" => $mime,
+						 "href" => $file);
+		}
+		$thumb = false;
 		foreach($mediaItem->xpath("//arch:externalFileInfo/arch:thumbnailURI") as $file) {
-		    $file = $file."";
+		    $thumb = $file."";
 		    $mime = $this->mime_type_clean($file);
 		}
-		$fileArray[] = array("rel" => "http://purl.org/dc/terms/hasPart",
-				     "title" => $titleUse." (thumbnail file)",
-				     "type" => $mime,
-				     "href" => $file);
-	
+		if($thumb != false){
+		  $fileArray[] = array("rel" => "http://purl.org/dc/terms/hasPart",
+						 "title" => $titleUse." (thumbnail file)",
+						 "type" => $mime,
+						 "href" => $thumb);
+		}
 	
 	
 	

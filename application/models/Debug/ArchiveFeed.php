@@ -104,7 +104,7 @@ class Debug_ArchiveFeed  {
 				}
 				$updated = false;
 				foreach($entry->xpath("./atom:updated") as $updated){
-					 $updated = (string)$author;
+					 $updated = (string)$updated;
 				}
 				$published = false;
 				foreach($entry->xpath("./atom:published") as $published){

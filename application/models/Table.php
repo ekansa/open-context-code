@@ -631,6 +631,10 @@ class Table {
 		  $atomFullDoc->appendChild($entry);
 		  
 		  $table = $this->tableData;
+		  
+		  if(strlen($table['table_name'])< 1){
+				$table['table_name'] = "Unnamed table with ".$table['num_records'] ." records";
+		  }
 		  $entryTitle = $atomFullDoc->createElement("title");
 		  $entryTitleText = $atomFullDoc->createTextNode($table['table_name']);
 		  $entryTitle->appendChild($entryTitleText);
