@@ -10,7 +10,7 @@ class exportController extends Zend_Controller_Action {
 
 	}
 	
-	public siteMapAction(){
+	public function siteMapAction(){
 		
 		$this->_helper->viewRenderer->setNoRender();
 		$id = $this->_request->getParam('id');

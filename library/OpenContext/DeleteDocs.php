@@ -112,7 +112,7 @@ class OpenContext_DeleteDocs {
 		resource.project_id,
 		resource.source_id,
 		
-		resource.res_archaeoml
+		resource.archaeoML
 		FROM resource
 		WHERE resource.uuid = '$id'
 		LIMIT 0,1";
@@ -122,7 +122,7 @@ class OpenContext_DeleteDocs {
 			$itemLabel = $result[0]["res_label"]; 
 			$itemProjID = $result[0]["project_id"];
 			$itemSourceID = $result[0]["source_id"];
-			$itemXML = $result[0]["res_archaeoml"];
+			$itemXML = $result[0]["archaeoML"];
 			
 			$data = array("itemUUID" => $id,
 				      "itemType" => "media",

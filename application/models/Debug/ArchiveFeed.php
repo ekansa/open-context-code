@@ -27,6 +27,106 @@ class Debug_ArchiveFeed  {
 		  }
 	 }
 	 
+	 //get the list of errors
+	 public function getErrors($type = false){
+		  
+		  $typeLimit = "";
+		  if($type != false){
+				$typeLimit = " AND id LIKE '%/$type/%' ";
+		  }
+		  $output = array();
+		  $db = $this->startDB();
+		  $sql = "SELECT * FROM archiveFeed WHERE status = 'errors' $typeLimit ";
+		  $result =  $db->fetchAll($sql);
+		  if($result){
+				foreach($result as $row){
+					 $actOut = $row;
+					 if(strlen($row["linkErrors"])>1){
+						  $actOut["linkErrors"]=  Zend_Json::decode($row["linkErrors"]);
+					 }
+					 if(strlen($row["otherErrors"])>1){
+						  $actOut["otherErrors"]=  Zend_Json::decode($row["otherErrors"]);
+					 }
+					 $actOut["checkLink"] = "http://".$_SERVER["SERVER_NAME"]."/test/update-archive-page?page=".$row["page"];
+					 $actOut["feedLink"] = "http://opencontext.org/all/.atom?page=".$row["page"];
+					 $output[] = $actOut;
+				}
+		  }
+
+	 	  return $output; 
+	 }
+	 
+	 //get the list of errors
+	 public function getErrorPages($type = false){
+		  
+		  $typeLimit = "";
+		  if($type != false){
+				$typeLimit = " AND id LIKE '%/$type/%' ";
+		  }
+		  $output = array();
+		  $db = $this->startDB();
+		  $sql = "SELECT DISTINCT page FROM archiveFeed WHERE status = 'errors' $typeLimit ";
+		  $result =  $db->fetchAll($sql);
+		  if($result){
+				foreach($result as $row){
+					 $output[] = $row["page"];
+				}
+		  }
+
+	 	  return $output; 
+	 }
+	 
+	  //get the list pages that are short (not enough entries)
+	 public function getShortPages($type = false){
+		  
+		  $typeLimit = "";
+		  if($type != false){
+				$typeLimit = " AND id LIKE '%/$type/%' ";
+		  }
+		  $output = array();
+		  $db = $this->startDB();
+		  $sql = "SELECT COUNT( id ) AS pageCount, page
+					 FROM archivefeed
+					 GROUP BY PAGE 
+					 ORDER BY pageCount";
+					 
+		  $result =  $db->fetchAll($sql);
+		  if($result){
+				foreach($result as $row){
+					 if($row["pageCount"] < 25){
+						  $output[] = $row["page"];
+					 }
+					 else{
+						  break;
+					 }
+				}
+		  }
+
+	 	  return $output; 
+	 }
+	 
+	 
+	 function repoSet(){
+		  $db = $this->startDB();
+		  $sql = "SELECT uuid FROM space WHERE project_id = 'A5DDBEA2-B3C8-43F9-8151-33343CBDC857' ORDER BY uuid";
+		  $result =  $db->fetchAll($sql);
+		  $maxRepoSize = 50000;
+		  $i = 0;
+		  foreach($result as $row){
+				$uuid = $row["uuid"];
+				$repoID = floor(($i /  $maxRepoSize))+1;
+				$repo = "opencontext-A5DDBEA2-B3C8-43F9-8151-33343CBDC857";
+				if($repoID > 1){
+					 $repo .= "-".$repoID;
+					 $data = array("repo" => $repo);
+					 $where = "uuid = '$uuid' ";
+					 $db->update("space", $data, $where);
+				}
+				$i++;
+		  }
+	 }
+	 
+	 
 	 
 	 function cycleArchiveFeed(){
 		  $errors = array();
@@ -78,7 +178,44 @@ class Debug_ArchiveFeed  {
 	 }
 	 
 	 
-	 function checkFeed($xml, $feedPage){
+	  function updateStatusFeed($activeFeedPage){
+		  
+		  $this->lastActivePage = $activeFeedPage;
+		  $actURL = "http://opencontext.org/all/.atom?page=".$activeFeedPage;
+		  @$xmlString = file_get_contents($actURL);
+		  if(!$xmlString){
+				sleep(5);
+				@$xmlString = file_get_contents($actURL);
+		  }
+		  
+		  if(!$xmlString){
+				$this->recordError("HTTP error with ".$actURL);
+				return false;
+		  }
+		  else{
+				@$xml = simplexml_load_string($xmlString);
+				if(!$xml){
+					 sleep(5);
+					 @$xmlString = file_get_contents($actURL);
+					 if($xmlString){
+						  @$xml = simplexml_load_string($xmlString);
+					 }
+				}
+					 
+				if(!$xml){
+					 $this->recordError("XML parse error with ".$actURL);
+					 return false;
+				}
+				else{
+					 $entryErrors = $this->checkFeed($xml, $activeFeedPage, true);
+					 return  $entryErrors;
+				}
+		  }
+	 }
+	 
+	 
+	 function checkFeed($xml, $feedPage, $update = false){
+		  $entryErrors = array();
 		  $db = $this->startDB();
 		  $xml = $this->registerNameSpaces($xml);
 		  $entryIndex = 1;
@@ -95,7 +232,7 @@ class Debug_ArchiveFeed  {
 				}
 				$authorContrib = false;
 				foreach($entry->xpath("./atom:author") as $author){
-					 $authorContrib = (string)$author;
+					 $authorContrib = "found";
 				}
 				if(!$authorContrib){
 					 foreach($entry->xpath("./atom:contributor") as $author){
@@ -160,23 +297,46 @@ class Debug_ArchiveFeed  {
 					 $otherErrors = false;
 				}
 				
+				$entryErrors[$id] = array("links" => $linkErrors, "other" => $otherErrors);
 				
-				$data = array("id" => $id,
-								  "page" => $feedPage,
-								  "entryIndex" => $entryIndex,
-								  "status" => $status,
-								  "linkErrors" => $linkErrors,
-								  "otherErrors" => $otherErrors
-								  );
-				try{
-					 $db->insert("archiveFeed", $data);
+				$addNew = true; //default to creating a new record
+				if($update){
+					 $sql = "SELECT id FROM archivefeed WHERE id = '$id' AND page = $feedPage LIMIT 1; ";
+					 $result =  $db->fetchAll($sql);
+					 if($result){
+						  $addNew = false; //item already found, so update it's status only
+					 }
+					 else{
+						  $addNew = true; //item not found, so create it
+					 }
 				}
-				catch (Exception $e) {
-					 $this->recordError((string)$e);	
+				
+				if($addNew){
+					 $data = array("id" => $id,
+										"page" => $feedPage,
+										"entryIndex" => $entryIndex,
+										"status" => $status,
+										"linkErrors" => $linkErrors,
+										"otherErrors" => $otherErrors
+										);
+					 try{
+						  $db->insert("archiveFeed", $data);
+					 }
+					 catch (Exception $e) {
+						  $this->recordError((string)$e);	
+					 }
 				}
+				else{
+					 //only check the status
+					 $where = " id = '$id' ";
+					 $data = array("status" => $status);
+					 $db->update("archiveFeed", $data, $where);
+				}
+				
 				$entryIndex++;
 		  }
 		  unset($xml);
+		  return $entryErrors;
 	 }
 	 
 	 //use this function to check if an attribute exists or is blank

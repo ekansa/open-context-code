@@ -329,6 +329,10 @@ class OpenContext_NewDocs {
 			
 			//$host = "http://opencontext.org";
 			
+			if(strtotime($pubDate) < strtotime("2006-01-01")){
+				$pubDate = date("Y-m-d\TH:i:s\Z"); //always make sure we have a good publication date
+			}
+			
 			$itemURI = $host.$itemTypeURIs[$itemType].$itemUUID;
 			$data = array("itemType" => $itemType,
 				      "itemUUID" => $itemUUID,

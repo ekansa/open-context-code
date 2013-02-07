@@ -21,6 +21,9 @@ class Subject {
     public $contain_hash;
     public $contextPath; //path of context
     
+	 public $repo; //repository, used for keeping data in Github 
+	 
+	 
     public $schemaFix;
     public $viewCount;
     public $createdTime;
@@ -40,7 +43,8 @@ class Subject {
     public $errors = array(); //array to put in error messages, incase solr messes up for instance
     
     const OC_namespaceURI = "http://opencontext.org/schema/space_schema_v1.xsd";
-    
+    const maxRepoSize = 45000; //maximum safe size of a repo, before github gets mad
+	 
     //get User data from database
     function getByID($id){
         
@@ -66,6 +70,8 @@ class Subject {
 				$this->itemUUID = $result[0]["uuid"];
 				$this->label = $result[0]["space_label"];
 				$this->viewCount = $result[0]["view_count"];
+				$this->repo = $result[0]["repo"];
+				
             $this->createdTime = $result[0]["created"];
             $this->updatedTime = $result[0]["updated"];
 	    
@@ -98,6 +104,9 @@ class Subject {
     }
     
     
+	 
+	 
+	 
     //get created time from database
     function getCreatedTime($id){
         
@@ -147,7 +156,36 @@ class Subject {
     
     
     
-    //create a new spatial item
+    
+	 
+	 //git hub has pretty strict size restrictions this puts subjects into different repos, if the project is big
+	 function assignRepository($projectUUID, $db = false){
+		  if(!$db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+		  }
+		  
+		  $output = false;
+		  $sql = "SELECT COUNT(uuid) AS idCount
+					 FROM  space 
+					 WHERE project_id = '$projectUUID'
+					 GROUP BY  project_id; ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+        if($result){
+				$idCount = $result[0]["idCount"];
+				$repoID = floor(($idCount / self::maxRepoSize))+1;
+				$output = "opencontext-".$projectUUID;
+				if($repoID > 1){
+					 $output .= "-".$repoID;
+				}
+		  }
+		  return $output;
+	 }
+	 
+	 //create a new spatial item
     function createUpdate($versionUpdate){
         
         $db_params = OpenContext_OCConfig::get_db_config();
@@ -159,6 +197,8 @@ class Subject {
 				$this->noid = false;
 		  }
 			
+		  $repoID = $this->assignRepository($this->projectUUID, $db); //make an ide for the repository
+		  
 		  $data = array("noid" => $this->noid,
 					  "project_id" => $this->projectUUID,
 					  "source_id" => $this->sourceID,
@@ -166,6 +206,7 @@ class Subject {
 					  "uuid" => $this->itemUUID,
 					  "space_label" => $this->label,
 					  "contain_hash" => $this->contain_hash,
+					  "repo" => $repoID,
 					  "created" => $this->createdTime,
 					  "atom_entry" => $this->atomEntry
 					  );
@@ -307,7 +348,7 @@ class Subject {
     //feed read by the CDL's archival services.
     function getItemEntry($id){
 		  $this->getByID($id);
-		  if(strlen($this->archaeoML)<10){
+		  if(strlen($this->archaeoML)<10 || strlen($this->atomEntry)<10){
 				$this->archaeoML_update($this->archaeoML);
 				$fullAtom = $this->DOM_spatialAtomCreate($this->archaeoML);
 				$this->update_atom_entry();
@@ -638,60 +679,64 @@ class Subject {
 		
 		
 		
-		// Create feed updated element (as opposed to the entry updated element)
-		$entryUpdated = $atomEntryDoc->createElement("updated");
-	
-		// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-		$entryUpdatedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00"));
-		// Append the text node the updated element
-		$entryUpdated->appendChild($entryUpdatedText);
-	
-		// Append the updated node to the root element
-		$rootEntry->appendChild($entryUpdated);
+		  // Create feed updated element (as opposed to the entry updated element)
+		  $entryUpdated = $atomEntryDoc->createElement("updated");
+	  
+		  // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+		  $entryUpdatedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00"));
+		  // Append the text node the updated element
+		  $entryUpdated->appendChild($entryUpdatedText);
+	  
+		  // Append the updated node to the root element
+		  $rootEntry->appendChild($entryUpdated);
 		
 		
-		/*
-		PUBLICATION TIME - Important metadate used by the CDL archiving service
-		*/
-		if($pubDateXML != false){
-		    $pubDate = $pubDateXML ;
-		}
-		else{
-		    $pubDate = $this->createdTime;
-		    if(strtotime($this->createdTime) == 0){
-			$this->getCreatedTime($uuid);
-			$pubDate = $this->createdTime;
-		    }
-		}
+		  /*
+		  PUBLICATION TIME - Important metadata used by the CDL archiving service
+		  */
+		  if($pubDateXML != false){
+				$pubDate = $pubDateXML ;
+		  }
+		  else{
+				$pubDate = $this->createdTime;
+				if(strtotime($this->createdTime) == 0){
+						$this->getCreatedTime($uuid);
+						$pubDate = $this->createdTime;
+				}
+		  }
 		
-		if(!$pubDate){
-		    $pubDate = $this->updatedTime;
-		}
-		$entryPublished = $atomEntryDoc->createElement("published");
-		// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-		$entryPublishedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($pubDate)));
-		$entryPublished->appendChild($entryPublishedText);
-		$rootEntry->appendChild($entryPublished);
+		  if(!$pubDate){
+				$pubDate = $this->updatedTime;
+		  }
+		  $entryPublished = $atomEntryDoc->createElement("published");
+		  // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+		  $entryPublishedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($pubDate)));
+		  $entryPublished->appendChild($entryPublishedText);
+		  $rootEntry->appendChild($entryPublished);
 	
 	
+		  if($this->projectUUID == 0){
+				$creators[] = "Open Context Editors"; //default name for creators of project 0 data
+		  }
 	
-		// append one or more author elements to the entry
-		foreach ($creators as $creator) {
-		    $entryPerson = $atomEntryDoc->createElement("author");
-		    $entryPersonName = $atomEntryDoc->createElement("name");
-		    $entryPersonNameText = $atomEntryDoc->CreateTextNode($creator);
-		    $entryPersonName->appendChild($entryPersonNameText);
-		    $entryPerson->appendChild($entryPersonName);
-
-		    $creatorID = $this->find_personID($spatialItem, $creator);
-		    if($creatorID != false){
-			$entryPersonURI = $atomEntryDoc->createElement("uri");
-			$entryPersonURIText = $atomEntryDoc->CreateTextNode($host."/persons/".$creatorID);
-			$entryPersonURI->appendChild($entryPersonURIText);
-			$entryPerson->appendChild($entryPersonURI);
-		    }
-		    $rootEntry->appendChild($entryPerson);
-		}
+	
+		  // append one or more author elements to the entry
+		  foreach ($creators as $creator) {
+				$entryPerson = $atomEntryDoc->createElement("author");
+				$entryPersonName = $atomEntryDoc->createElement("name");
+				$entryPersonNameText = $atomEntryDoc->CreateTextNode($creator);
+				$entryPersonName->appendChild($entryPersonNameText);
+				$entryPerson->appendChild($entryPersonName);
+  
+				$creatorID = $this->find_personID($spatialItem, $creator);
+				if($creatorID != false){
+					 $entryPersonURI = $atomEntryDoc->createElement("uri");
+					 $entryPersonURIText = $atomEntryDoc->CreateTextNode($host."/persons/".$creatorID);
+					 $entryPersonURI->appendChild($entryPersonURIText);
+					 $entryPerson->appendChild($entryPersonURI);
+				}
+				$rootEntry->appendChild($entryPerson);
+		  }
 	
 		// append one or more contributor elements to the entry.
 		foreach ($contributors as $contributor) {

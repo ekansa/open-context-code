@@ -10,7 +10,8 @@ class AllDump {
     
     public $feedItems; //array of items that will be expressed as entries
     
-    const exportDir = "./data/"; //number of entries per page
+    const exportDir = "./data"; //export directory
+	 const exportPrefix = "opencontext-"; //prefix ahead of the project UUID
 	
     public $db; //database object, used over and over so connection is established only once
     
@@ -29,7 +30,7 @@ class AllDump {
 	
 	function startDB(){
 		$db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+      $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
 		$db->getConnection();
 		$this->setUTFconnection($db);
 		$this->db = $db;
@@ -45,7 +46,7 @@ class AllDump {
 		
 		$projects = $this->exportReadyProjects();
 		foreach($projects as $projectUUID){
-			$projectDir = self::exportDir."/".$projectUUID;
+			$projectDir = self::exportDir."/".self::exportPrefix.$projectUUID;
 			
 			$this->exportSubjects($projectDir, $projectUUID); // export subject items
 			$this->exportMedia($projectDir, $projectUUID); // export media items
@@ -62,64 +63,109 @@ class AllDump {
 		$sql = "SELECT itemUUID FROM noid_bindings WHERE public = 0 AND itemType = 'project' ";
 		
 		$result = $db->fetchAll($sql, 2);
-        if($result){ 
+		  if($result){ 
 			foreach($result as $row){
 				$error = false;
 				$itemUUID = $row["itemUUID"];	
 				$itemObj = New Project;
 				$itemObj->getByID($itemUUID);
 				$xml = $itemObj->archaeoML;
-				$readMeText = $this->makeProjectREADME($itemObj);
+				
+				$projectParts = $this->getRepositoryParts($itemUUID);
+				$readMeText = $this->makeProjectREADME($itemObj, $projectParts);
 				unset($itemObj);
 				
-				$structure = self::exportDir."/".$itemUUID;
-				if(!file_exists($structure)){
-					if (!mkdir($structure, 777, true)) {
-						$error = true;
-						die('Failed to create folders...');
-					}
+				if(!$projectParts){
+					 $projectParts = array(self::exportPrefix.$itemUUID);
 				}
 				
-				if(!$error){
-					 $saveOK = $this->validateSaveXML($structure, $itemUUID, $xml);
-					 if(!$saveOK){
-						 $error = true;
+				$partNum = 1;
+				foreach($projectParts as $repoPart){
+					 $structure = self::exportDir."/".$repoPart;
+					 if(!file_exists($structure)){
+						 if (!mkdir($structure, 777, true)) {
+							 $error = true;
+							 die('Failed to create folders...');
+						 }
 					 }
-					 $readmeOK = $this->saveREADME($structure, $readMeText);
+					 
+					 if(!$error){
+						  if($partNum == 1 ){
+								//only save the item's xml in the first part of the project
+								$saveOK = $this->validateSaveXML($structure, $itemUUID, $xml);
+								if(!$saveOK){
+									$error = true;
+								}
+						  }
+						  $readmeOK = $this->saveREADME($structure, $readMeText);
+					 }
+					 $partNum++;
 				}
 				
 				if(!$error){
 					$this->DBnoteSaveOK($itemUUID);
 				}
-				
 			}
 		}
 	}
 	
+	//some datasets need to be broken into multiple parts, because they're too large for git hub.
+	function getRepositoryParts($projectUUID){
+		  $output = false;
+		  $db = $this->db;
+		  $sql = "SELECT COUNT( uuid ) AS IDcount, repo
+					 FROM space
+					 WHERE project_id =  '$projectUUID'
+					 GROUP BY repo
+					 ORDER BY repo";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				foreach($result as $row){
+					 $repoPart = $row["repo"];
+					 $output[] = $repoPart;
+				}
+		  }
+		  return $output;
+	}
+	
+	
 	
 	function exportReadyProjects(){
-		$db = $this->db;
-		
-		//get OK exported projects
-		$sql = "SELECT itemUUID FROM noid_bindings WHERE public = 1 AND itemType = 'project' ";
-		
-		$result = $db->fetchAll($sql, 2);
-		$projects = array();
-        if($result){
-			foreach($result as $row){
-				$projects[] = $row["itemUUID"];
-			}
-		}
-		return $projects; //list of exported projects
+		  $db = $this->db;
+		  
+		  //get OK exported projects
+		  $sql = "SELECT itemUUID FROM noid_bindings WHERE public = 1 AND itemType = 'project' ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  $projects = array();
+		  if($result){
+				foreach($result as $row){
+					 $projects[] = $row["itemUUID"];
+				}
+		  }
+		  return $projects; //list of exported projects
 	}
 	
 	
 	//generate a README file for a project
-	function makeProjectREADME($itemObj){
+	function makeProjectREADME($itemObj, $projectParts = false){
 	 
 		  $readMeText = "OPEN CONTEXT GITHUB DATA REPOSITORY\r\n\r\n";
 		  $readMeText .= "Project: '".$itemObj->label."' \r\n";
 		  $readMeText .= "Project ID: '".$itemObj->itemUUID."' \r\n\r\n\r\n";
+		  if(is_array($projectParts)){
+				if(count($projectParts)>1){
+					 $partNum = 1;
+					 $readMeText .= "GitHub repository size restrictions require that this project be divided into ".count($projectParts)." parts. The following repositories contain this project's data: \r\n\r\n";
+					 foreach($projectParts as $repoPart){
+						  $readMeText .= "(".$partNum.") https://github.com/ekansa/".$repoPart."\r\n";
+						  $partNum++;
+					 }
+					 $readMeText .= "\r\n\r\n";
+				}
+		  }
+		  
 		  $readMeText .= "Open Context <http://opencontext.org> is an open access data publishing service that primarily serves the archaeological community. Open Context uses GitHub for dataset version control and as another channel for data dissemination. While GitHub offers excellent services, Open Context does not regard GitHub as a long-term preservation repository. For data archiving purposes, Open Context works with digital libraries and other dedicated institutional repositories.\r\n\r\n";
 		  $readMeText .= "Open Context encourages reuse of these data and adaptation of these data, provided data creators are properly cited and credited.\r\n\r\n";
 		  $readMeText .= "Please refer to this project's overview in Open Context at <http://opencontext.org/projects/".$itemObj->itemUUID."> for more information on licensing and how to cite these data.\r\n";
@@ -132,10 +178,10 @@ class AllDump {
 	
 	
 	
-	function exportSubjects($projectDir, $projectUUID){
+	function exportSubjects($projectDir, $projectUUID, $projectParts = false){
 		$db = $this->db;
 		
-		$sql = "SELECT noid_bindings.itemUUID
+		$sql = "SELECT noid_bindings.itemUUID, space.repo
 		FROM noid_bindings
 		JOIN space ON space.uuid = noid_bindings.itemUUID
 		WHERE public = 0
@@ -146,17 +192,23 @@ class AllDump {
         if($result){
 			
 			$error = false;
-			$subjectDir = $projectDir."/subjects";
-			if(!file_exists($subjectDir)){
-				if (!mkdir($subjectDir, 777, true)) {
-					$error = true;
-					die('Failed to create subject folder...');
+			$projectParts = $this->getRepositoryParts($projectUUID);
+			$dirArray = array();
+			foreach($projectParts as $repoPart){
+				$subjectDir = self::exportDir."/".$repoPart."/subjects";
+				if(!file_exists($subjectDir)){
+					if (!mkdir($subjectDir, 777, true)) {
+						$error = true;
+						die('Failed to create subject folder...');
+					}
 				}
+				$dirArray[$repoPart] = $subjectDir ;
 			}
 			
 			if(!$error){
 				foreach($result as $row){
 					$itemUUID = $row["itemUUID"];
+					$repoPart = $row["repo"];
 					$itemObj = New Subject;
 					$itemObj->getByID($itemUUID);
 					$xml = $itemObj->archaeoML;
@@ -164,6 +216,7 @@ class AllDump {
 					//$xml = utf8_encode( $itemObj->archaeoML);
 					unset($itemObj);
 					
+					$subjectDir = $dirArray[$repoPart]; //get the full directory for the correct subject part
 					$saveOK = $this->validateSaveXML($subjectDir, $itemUUID, $xml);
 					if($saveOK){
 						$this->DBnoteSaveOK($itemUUID);

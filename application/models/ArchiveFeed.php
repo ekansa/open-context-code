@@ -127,14 +127,15 @@ class ArchiveFeed {
 				$contentType = " ".$this->itemTypeHumanRead($this->itemType)." ";
 		  }
 		  
+		  $recEnd = $this->recEnd +1;
+		  if($recEnd > $this->totalItems){
+				$recEnd = $this->totalItems;
+		  }
 		  $subtitleContent = "This update-time sorted (most recent first) feed provides a comprehensive list of all".$contentType."content in Open Context. Digital archives can use this paged feed to retrieve all resources relevant to data curation from Open Context.";
+		  $subtitleContent .= chr(13).' This page includes entries ' . ($this->recStart +1) . ' to ' . ($recEnd) . ' out of ' . $this->totalItems . ' entries';
 		  
-		  $subtitleContent .= chr(13).' This page includes entries ' . ($this->recStart +1) . ' to ' . ($this->recEnd +1) . ' out of ' . $this->totalItems . ' entries';
-		  
-		  $feedTitle = $atomFullDoc->createElement("subtitle");
-		  $feedTitleText = $atomFullDoc->createTextNode($subtitleContent);
-		  $feedTitle->appendChild($feedTitleText);
-		  $root->appendChild($feedTitle);
+		  $feedSubTitle = $atomFullDoc->createElement("subtitle");
+		  $root->appendChild($feedSubTitle);
 		  
 		  // Feed updated element (as opposed to the entry updated element)
 		  $feedUpdated = $atomFullDoc->createElement("updated");
@@ -268,7 +269,7 @@ class ArchiveFeed {
 		  $root->appendChild($feedId);
 		  
 		  $contentFragment = $atomFullDoc->createDocumentFragment();
-		  $errorMessage = "Error on: \n\n";
+		  $errorMessage = "";
 		  foreach($feedItems as $item){
 				$itemUUID = $item['itemUUID'];
 				if($item['itemType'] == 'spatial'){
@@ -315,7 +316,8 @@ class ArchiveFeed {
 					 $contentFragment->appendXML($doc);
 				}
 				else{
-					 $errorMessage .= $item['itemType'].": ".$item['itemUUID'];
+					 $this->noteProblemItem($item['itemUUID']); //record the problem as a -500 site priority
+					 $errorMessage .= $item['itemType'].": ".$item['itemUUID']." ";
 					 $errorMessage .= "\n\n";
 				}
 				
@@ -330,6 +332,12 @@ class ArchiveFeed {
 				$root->appendChild($error);
 		  }
 		  
+		  if(strlen($errorMessage)> 1){
+				$subtitleContent .=  "Errors on: ".$errorMessage;
+		  }
+		  
+		  $feedSubTitleText = $atomFullDoc->createTextNode($subtitleContent);
+		  $feedSubTitle->appendChild($feedSubTitleText);
 		  
 		  return $atomFullDoc->saveXML();
     }
@@ -388,7 +396,13 @@ class ArchiveFeed {
 		  }
     }
     
-    
+    function noteProblemItem($itemUUID){
+		  $db = $this->db;
+		  $priority = -500;
+		  $data = array("sitePriority" => $priority);
+		  $where = "itemUUID = '$itemUUID' ";
+		  $db->update("noid_bindings", $data, $where);
+	 }
     
     
     function itemTypeHumanRead($itemType){
@@ -511,52 +525,7 @@ class ArchiveFeed {
 		  }
     }//end function
     
-    /*
-    Functions listed below are not commonly used. These are for the initial populating of the table
-    for all item types.
-    
-    function get_table_size($itemType){
-	$db = $this->db;
-	if($itemType == "spatial"){
-	    $sql = "SELECT count(*) as recCount FROM space";
-	}
-	elseif($itemType == "media"){
-	    $sql = "SELECT count(*) as recCount FROM resource";
-	}
-	elseif($itemType == "project"){
-	    $sql = "SELECT count(*) as recCount FROM projects";
-	}
-	elseif($itemType == "document"){
-	    $sql = "SELECT count(*) as recCount FROM diary";
-	}
-	elseif($itemType == "person"){
-	    $sql = "SELECT count(*) as recCount FROM persons";
-	}
-	elseif($itemType == "variable"){
-	    $sql = "SELECT count(*) as recCount FROM var_tab";
-	}
-	elseif($itemType == "property"){
-	    $sql = "SELECT count(*) as recCount FROM properties";
-	}
-	elseif($itemType == "table"){
-	    $sql = "SELECT count(*) as recCount FROM dataset";
-	}
-	else{
-	    //bummer
-	    $sql = false;
-	}
-	
-	$output = false;
-	if($sql != false){
-	    $result = $db->fetchAll($sql, 2);
-	    if($result){
-		$output = $result[0]["recCount"];
-	    }
-	}
-	return $output;
-    }
-    
-    */
+  
     
     //initial populate of spatial items
     function insertSpatial($batch = 0){
