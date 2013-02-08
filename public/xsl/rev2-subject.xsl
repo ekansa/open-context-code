@@ -556,7 +556,7 @@
 																								&#9733;&#9733;&#9733;&#9733;&#9733;
 																						</xsl:when>
 																						<xsl:otherwise>
-																								Forthcomming
+																								Forthcoming
 																						</xsl:otherwise>
 																				</xsl:choose>
 																		  </a>
