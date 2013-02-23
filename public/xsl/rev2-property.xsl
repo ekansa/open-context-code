@@ -224,6 +224,20 @@
 																						</xsl:call-template>
 																				</td>
 																		</tr>
+																		<xsl:if test="//oc:annotations[@aboutType='variable']">
+																				<tr>
+																						<th>Annotations to this Variable</th>
+																						<td>
+																								<ul>
+																										<xsl:for-each select="//oc:annotations[@aboutType='variable']/oc:annotation">
+																												<li>
+																														<a><xsl:attribute name="href"><xsl:value-of select="oc:targetLink/oc:vocabulary/@href"/></xsl:attribute><xsl:attribute name="title">Source vocabulary / ontology</xsl:attribute><xsl:value-of select="oc:targetLink/oc:vocabulary"/></a> :: <a><xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute><xsl:attribute name="title">Link to concept in vocabulary / ontology</xsl:attribute><xsl:value-of select="oc:targetLink/@name"/></a> <br/>(<xsl:value-of select="oc:relationLink/@type"/>)
+																												</li>
+																										</xsl:for-each>
+																								</ul>
+																						</td>
+																				</tr>
+																		</xsl:if>
 																		<xsl:if test="//oc:manage_info/oc:propVariable/@href">
 																				<tr>
 																						<th>Unit of Measurement</th>
