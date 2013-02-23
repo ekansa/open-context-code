@@ -213,6 +213,29 @@ class dbXML_xmlProperty  {
 				}//end loop through different types of props
 		  }
 	
+		  if(is_array($itemObj->varAnnotationData)){
+				$elementC = $doc->createElement("oc:annotations");
+				$elementC->setAttribute("about", $itemObj->varUUID);
+				$elementC->setAttribute("aboutType", "variable");
+				foreach($itemObj->varAnnotationData as $varAnnote){
+					 $elementD = $doc->createElement("oc:annotation");
+					 $elementE = $doc->createElement("oc:relationLink");
+					 $elementE->setAttribute("type", $varAnnote["linkedType"]);
+					 $elementD->appendChild($elementE);
+					 $elementE = $doc->createElement("oc:targetLink");
+					 $elementE->setAttribute("href", $varAnnote["linkedURI"]);
+					 $elementE->setAttribute("name", $varAnnote["linkedLabel"]);
+					 $elementE->setAttribute("abrv", $varAnnote["linkedAbrv"]);
+					 $elementF = $doc->createElement("oc:vocabulary");
+					 $elementF->setAttribute("href", $varAnnote["vocabURI"]);
+					 $elementFtext = $doc->createTextNode($varAnnote["vocabulary"]);
+					 $elementF->appendChild($elementFtext);
+					 $elementE->appendChild($elementF);
+					 $elementD->appendChild($elementE);
+					 $elementC->appendChild($elementD);
+				}
+				$element->appendChild($elementC);
+		  }
 	
 		  if($itemObj->varLinkURI || $itemObj->propLinkURI){
 				$elementB = $doc->createElement("oc:linkedData");
@@ -230,25 +253,7 @@ class dbXML_xmlProperty  {
 					 $elementDtext = $doc->createTextNode($itemObj->varLinkLabel);
 					 $elementD->appendChild($elementDtext);
 					 $elementC->appendChild($elementD);
-			 
-					 /*
-					 if($itemObj->propLinkURI){
-						  $elementD = $doc->createElement("oc:targetLink");
-						  $elementD->setAttribute("localType", "property");
-						  $elementD->setAttribute("id", $itemObj->itemUUID);
-						  $elementD->setAttribute("href", $itemObj->propLinkURI);
-						  $elementE = $doc->createElement("oc:vocabulary");
-						  $elementE->setAttribute("href", $itemObj->propLinkVocabURI);
-						  $elementEtext = $doc->createTextNode($itemObj->propLinkVocab);
-						  $elementE->appendChild($elementEtext);
-						  $elementD->appendChild($elementE);
-						  $elementE = $doc->createElement("oc:label");
-						  $elementEtext = $doc->createTextNode($itemObj->propLinkLabel);
-						  $elementE->appendChild($elementEtext);
-						  $elementD->appendChild($elementE);
-						  $elementC->appendChild($elementD);
-					 }
-					 */
+					 
 					 if(is_array($itemObj->linkedData)){
 						  foreach($itemObj->linkedData as $linkedData){
 								$elementD = $doc->createElement("oc:targetLink");

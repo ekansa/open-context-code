@@ -35,7 +35,9 @@ class dbXML_dbPropitem  {
 	 public $varUnitName; //name of the measurement unit
 	 public $varUnitAbrv; //abreviation for the measurement unit
 	
-	 public $linkedData; //array of linked data, objects that relate to the current property
+	 public $linkedData; //array of linked data, objects that relate to the current property (used for describing links to specific types in a controlled vocab)
+	 
+	 public $varAnnotationData; //array of variable annotations (used for annotating a whole variable, for methods or for describing what the variable measures)
 	
     public $valUUID;
     public $value;
@@ -180,7 +182,11 @@ class dbXML_dbPropitem  {
 					$this->varUnitName = $unitData["linkedLabel"];
 					$this->varUnitAbrv = $unitData["linkedAbrv"];
 				}
-		
+				
+				$varAnnotationData = $this->getVarAnnotationData($this->varUUID);
+				if(is_array($varAnnotationData)){
+					$this->varAnnotationData = $varAnnotationData;
+				}
 		
 				$linkedData = $this->pen_getLinkedData($this->varUUID);
 				if(is_array($linkedData)){
@@ -280,6 +286,27 @@ class dbXML_dbPropitem  {
 		  
 		  return $output;
 		}
+	
+	
+	 public function getVarAnnotationData($itemUUID){
+		$db = $this->db;
+		
+		$output = false;
+		$sql = "SELECT linked_data.linkedType, linked_data.linkedLabel, linked_data.linkedURI,
+		linked_data.linkedAbrv, linked_data.vocabulary, 	linked_data.vocabURI
+		FROM linked_data
+		WHERE linked_data.itemUUID = '$itemUUID' AND
+		(linked_data.linkedType != 'unit' AND linked_data.linkedType != 'type') ";
+		
+		$result = $db->fetchAll($sql, 2);
+		if($result){
+			$output = array();
+			$output = $result;
+		}
+		
+		return $output;
+	 }
+	
 	
 	
 	
