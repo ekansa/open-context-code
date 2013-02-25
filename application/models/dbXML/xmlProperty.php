@@ -377,9 +377,13 @@ class dbXML_xmlProperty  {
 								 "type" => "var_des");
 				}
 				if($itemObj->propDescription != false){
-					 $generalNotes[] = array("noteText" => $itemObj->propDescription,
+					 $propDes = array("noteText" => $itemObj->propDescription,
 								 "validForXML" => $itemObj->propDesXMLok,
 								 "type" => "prop_des");
+					 if($itemObj->propDesXMLok){
+						  $propDes["validForXML"] = true;
+					 }
+					 $generalNotes[] = $propDes;
 				}
 				
 				$xmlNotes = new dbXML_xmlNotes;

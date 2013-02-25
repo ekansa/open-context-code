@@ -207,9 +207,30 @@ class dbXML_dbPropitem  {
 				$this->linkedData = $this->pen_getLinkedData($this->itemUUID, true);
 				
 				$this->propDescription = $result[0]["note"];
-				$xmlNote = "<div>".chr(13);
-				$xmlNote .= $this->propDescription.chr(13);
-				$xmlNote .= "</div>".chr(13);
+				if(strlen($this->propDescription )>1){
+					 $xmlNote = "<div>".chr(13);
+					 $xmlNote .= $this->propDescription.chr(13);
+					 $xmlNote .= "</div>".chr(13);
+					 @$xml = simplexml_load_string($xmlNote);
+					 if($xml){
+						  $this->propDesXMLok = true;
+					 }
+					 else{
+						  if(stristr($this->propDescription, "</")){
+								$this->propDescription = tidy_repair_string($this->propDescription,
+									 array( 
+										  'doctype' => "omit",
+										  'input-xml' => true,
+										  'output-xml' => true 
+									 ));
+								
+								@$xml = simplexml_load_string($this->propDescription);
+								if($xml){
+									$this->propDesXMLok = true;
+								}
+						  }
+					 }
+				}
 				
 				$this->varDescription = $result[0]["var_des"];
 				$xmlNote = "<div>".chr(13);

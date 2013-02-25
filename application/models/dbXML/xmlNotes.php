@@ -25,26 +25,22 @@ class dbXML_xmlNotes  {
 		}
 		$elementC = $doc->createElement("arch:string");
 		
-		$note["validForXML"] = false;
-		if($note["validForXML"]){
+		$validXHTML = false;
+		if(isset($note["validForXML"])){
+		  if($note["validForXML"]){
 		    $elementC->setAttribute("type", "xhtml");
+			 $validXHTML = true;
+		  }
 		}
-		
-		//$note["validForXML"] = false;
-		if($note["validForXML"]){
-		    
-		    //$noteXML = '<div>'.chr(13);
-		    
-		    $noteXML = str_replace("<", "<xhtml:", $note["noteText"]);
-		    $noteXML = str_replace("</", "</xhtml:", $noteXML);
-		    //$noteXML .= '</div>'.chr(13);
-		    
-		    $elementD = $doc->createElement("xhtml:div");
-		    $elementD->setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
-		    $contentFragment = $doc->createDocumentFragment();
-		    $contentFragment->appendXML($noteXML);  // add note xml string
-		    $elementD->appendChild($contentFragment);
-		    $elementC->appendChild($elementD);
+
+		if($validXHTML){  
+		  $elementC->setAttribute("type", "xhtml");
+		  $elementCC = $doc->createElement("div");
+		  $elementCC->setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+		  $contentFragment = $doc->createDocumentFragment();
+		  $contentFragment->appendXML("<div>".$note["noteText"]."</div>");  // add the XHTML fragment
+		  $elementCC->appendChild($contentFragment);
+		  $elementC->appendChild($elementCC);
 		}
 		else{
 		    $elementCtext = $doc->createTextNode($note["noteText"]);
