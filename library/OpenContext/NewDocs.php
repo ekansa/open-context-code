@@ -62,7 +62,7 @@ class OpenContext_NewDocs {
 		}
 		*/
 		
-		if(strlen($itemObj->contextPath)>1){
+		if(strlen($itemObj->contextPath)>1 || $itemObj->projectUUID == '0'){
 			$updateInsertSuccess = $itemObj->createUpdate($versionUpdate);
 		}
 		
