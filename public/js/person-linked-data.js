@@ -167,7 +167,9 @@ function orcidRecordDone(response){
                 var pubURL = false;
                 
                 if(pubObj["url"] !== null){
-                    pubURL = pubObj["url"];
+                    if(pubObj["url"]["value"] !== null){
+                        pubURL = pubObj["url"]["value"];
+                    }
                 }
                 else{
                     if(pubObj["work-external-identifiers"] != null){
@@ -199,7 +201,38 @@ function orcidRecordDone(response){
                 
                 var pubCitation = "(Citation not provided)";
                 if(pubObj["work-citation"] !== null){
-                    pubCitation = pubObj["work-citation"]["citation"];
+                    if(pubObj["work-citation"]["work-citation-type"] != "BIBTEX" ){
+                        pubCitation = pubObj["work-citation"]["citation"];
+                    }
+                    else{
+                        pubCitation = "";
+                        var b = new BibtexParser();
+                        b.setInput(pubObj["work-citation"]["citation"]);
+                        b.bibtex();
+                        var e = b.getEntries();
+                        for (var item in e) {
+                            for (var key in e[item]) {
+                                
+                                
+                            }
+                            var curItem = e[item];
+                            if("AUTHOR" in curItem){
+                                pubCitation = curItem["AUTHOR"];
+                            }
+                            if("YEAR" in curItem){
+                                pubCitation += " (" + curItem["YEAR"] + ")";
+                            }
+                            if("TITLE" in curItem){
+                                pubCitation += " " + curItem["TITLE"];
+                            }
+                            if("JOURNAL" in curItem){
+                                pubCitation += " <em>" + curItem["JOURNAL"] + "</em>";
+                            }
+                            if("PAGES" in curItem){
+                                pubCitation += ":" + curItem["PAGES"] + " ";
+                            }
+                        }
+                    }
                 }
                 
                 //alert(pubCitation);
