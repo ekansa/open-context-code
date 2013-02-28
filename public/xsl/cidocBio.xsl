@@ -191,7 +191,16 @@
                                 <xsl:value-of select="arch:decimal | arch:integeter"/>
                             </crm:P90F_has_value>
                             <rdfs:label><xsl:value-of select="oc:var_label"/>: <xsl:value-of select="oc:show_val"/> (<xsl:value-of select="arch:decimal/@abrv | arch:integeter/@abrv"/>)</rdfs:label>
-                        </crm:E54.Dimension>
+										  <xsl:for-each select="oc:annotations[@aboutType='variable']/oc:annotation">
+													 <xsl:if test="oc:relationLink/@type='Measurement type'">
+																<rdf:type>
+																		  <xsl:attribute name="rdf:resource">
+																					 <xsl:value-of select="oc:targetLink/@href"/>
+																		  </xsl:attribute>
+																</rdf:type>
+													 </xsl:if>
+										  </xsl:for-each>
+								</crm:E54.Dimension>
                     </crm:P43F.has_dimension>
                      
                 </xsl:for-each>
