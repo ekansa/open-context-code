@@ -74,161 +74,168 @@ class publishController extends Zend_Controller_Action
         echo Zend_Json::encode($data);
         
     }
+	 
+	 
+	 public function indexUpdateAction(){
+		  $this->_helper->viewRenderer->setNoRender();
+		  
+		  $output = array();
+		  $siteIndexObj = new SitePageIndex;
+		  $siteIndexObj->indexAll();
+		  $output["sitePageArray"] = $siteIndexObj->pageArray;
+		  $output["sitePages"] = $siteIndexObj->docsAdded;
+		  $output["sitePageError"] = $siteIndexObj->error;
+		  
+		  $SolrDocsIndexer = new SolrDocsIndex;
+		  $SolrDocsIndexer->forceIndexing = true;
+		  $output["indexItems"] = $SolrDocsIndexer->checkRunIndex();
+		  $output["indexError"] =false;
+		  $output["errors"] = false;
+		  if(is_array($SolrDocsIndexer->errors)){
+				if(count($SolrDocsIndexer->errors)>0){
+					 $output["indexError"] = true;
+					 $output["errors"] = $SolrDocsIndexer->errors;
+				}
+		  }
+		  
+		  if(isset($_REQUEST["optimize"])){
+				$solr = new Apache_Solr_Service('localhost', 8983, '/solr');
+				$solr->optimize();
+				$output["solrOptimize"] = true;
+		  }
+		  else{
+				$output["solrOptimize"] = false;
+		  }
+		  
+		  header('Content-Type: application/json; charset=utf8');
+        echo Zend_Json::encode($output) ;
+	 }
+	 
     
-    
-    public function itempublishAction() {
-	$this->_helper->viewRenderer->setNoRender();	
-	
-	
-	//id of the document to processed
-	if(!isset($_REQUEST["itemUUID"])){
-	    $itemUUID = false;
-	    $id = null;
-	}
-	else{
-	    $itemUUID = $_REQUEST["itemUUID"];
-	    $id = $itemUUID;
-	}
-	
-	//XML posted to be processed
-	if(!isset($_REQUEST["xml"])){
-	    $xmlString = false;
-	    if(isset($_REQUEST["useURI"])){
-		$xmlURI = $_REQUEST["useURI"];
-		$xmlString = file_get_contents($xmlURI);
-	    }
-	    //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/space_v3.php?imp=true&item=".$id);
-	    //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/media.php?imp=true&item=".$id);
-	}
-	else{
-	    $xmlString = $_REQUEST["xml"];
-	    $xmlString = stripslashes($xmlString); 
-	}
-	
-	
-	
-	//type of document to be processed
-	if(!isset($_REQUEST["type"])){
-	    $type = false;
-	}
-	else{
-	    $type = $_REQUEST["type"];
-	}
-	
-	//finish cached solr document indexing
-	if(!isset($_REQUEST["index"])){
-	    $finishIndex = false;
-	}
-	else{
-	    $finishIndex = true;
-	}
-	
-	
-	//finish cached solr document indexing
-	if(!isset($_REQUEST["optimize"])){
-	    $optimizeIndex = false;
-	}
-	else{
-	    $optimizeIndex = true;
-	}
-	
-	
-        //request not to use solr
-        if(!isset($_REQUEST["doSolr"])){
-            $doSolr = true;
-        }
-        else{
-            $doSolr = $_REQUEST["doSolr"];
-        }
-	
-	//update or add. default is adding new documents
-	if(!isset($_REQUEST["doUpdate"])){
-            $doUpdate = false;
-        }
-        else{
-            $doUpdate = $_REQUEST["doUpdate"];
-        }
-        
-        //$xmlString .= "garbage";
-        @$xml = simplexml_load_string($xmlString);
-        
-        if(!$xml){
-			if(!$finishIndex){
-				$data["type"] = $type;
-				$data["itemUUID"] = $itemUUID;
-				$data["pubOK"] = false;
-				$data["error"] = "XML invalid";
-			}
-			else{
+    public function itemPublishAction() {
+		  $this->_helper->viewRenderer->setNoRender();	
+		  
+		  
+		  //id of the document to processed
+		  if(!isset($_REQUEST["itemUUID"])){
+				$itemUUID = false;
+				$id = null;
+		  }
+		  else{
+				$itemUUID = $_REQUEST["itemUUID"];
+				$id = $itemUUID;
+		  }
+		  
+		  //XML posted to be processed
+		  if(!isset($_REQUEST["xml"])){
+				$xmlString = false;
+				if(isset($_REQUEST["useURI"])){
+					 $xmlURI = $_REQUEST["useURI"];
+					 @$xmlString = file_get_contents($xmlURI);
+				}
+		  }
+		  else{
+				$xmlString = $_REQUEST["xml"];
+				$xmlString = stripslashes($xmlString); 
+		  }
+		  
+		  
+		  //type of document to be processed
+		  if(!isset($_REQUEST["itemType"])){
+				$itemType = false;
+		  }
+		  else{
+				$itemType = $_REQUEST["itemType"];
+		  }
+		  
+		  //update or add. default is adding new documents
+		  if(!isset($_REQUEST["doUpdate"])){
+				$doUpdate = false;
+		  }
+		  else{
+				$doUpdate = $_REQUEST["doUpdate"];
+		  }
+				 
+		  //$xmlString .= "garbage";
+		  @$xml = simplexml_load_string($xmlString);
+	 
+		  $output = array();
+		  if(!$xml){
+				$output["itemType"] = $itemType;
+				$output["itemUUID"] = $itemUUID;
+				$output["pubOK"] = false;
+				$output["error"] = true;
+				$output["errors"][] = "XML invalid";
+		  }
+		  else{
+				if($itemType == "space"){
+					 $data = OpenContext_NewDocs::spaceAdd($xmlString, true, $doUpdate);
+					 if(isset($data->errors)){
+						  if(is_array($data->errors)){
+								foreach($data->errors as $errorKey => $error){
+									 if(stristr($error,'Observe Insert')){
+										  $data = OpenContext_NewDocs::spaceAdd($xmlString, true, true);
+									 }
+								}
+						  }
+					 }
+				}
+				elseif($itemType == "person"){
+					 $data = OpenContext_NewDocs::personAdd($xmlString, $doUpdate);
+				}
+				elseif($itemType == "prop"){
+					 $data = OpenContext_NewDocs::propertyAdd($xmlString, $doUpdate);
+				}
+				elseif($itemType == "media"){
+					 $data = OpenContext_NewDocs::mediaAdd($xmlString, true, $doUpdate);
+				}
+				elseif($itemType == "proj"){
+					 $data = OpenContext_NewDocs::projectAdd($xmlString, $doUpdate);
+				}
+				elseif($itemType == "doc"){
+					 $data = OpenContext_NewDocs::documentAdd($xmlString, $doUpdate);
+				}
 				
-				$siteIndexObj = new SitePageIndex;
-				$siteIndexObj->indexAll();
-				$data["sitePages"] = $siteIndexObj->docsAdded;
-				$data["sitePageError"] = $siteIndexObj->error;
-				
-				$SolrDocsIndexer = new SolrDocsIndex;
-				$SolrDocsIndexer->forceIndexing = true;
-				$SolrDocsIndexer->checkRunIndex();
-				$data["error"] = $SolrDocsIndexer->errors;
-				
-				$data["type"] = "Index";
-				$data["itemUUID"] = "[multiple]";
-			}
-        }
-        else{
-            if($type == "space"){
-                //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/space_v3.php?imp=true&item=".$id);
-                $data = OpenContext_NewDocs::spaceAdd($xmlString, true, $doUpdate);
-			if(stristr($data["error"],'Observe Insert')){
-				$data = OpenContext_NewDocs::spaceAdd($xmlString, true, true);
-			}
-		
-            }
-            if($type == "person"){
-                //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/person.php?imp=true&item=".$id);
-                //echo "XML: ".$xmlString;
-                $data = OpenContext_NewDocs::personAdd($xmlString, $doUpdate);
-            }
-            if($type == "prop"){
-                //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/property.php?imp=true&item=".$id);
-		$data = OpenContext_NewDocs::propertyAdd($xmlString, $doUpdate);
-            }
-            if($type == "media"){
-                //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/project.php?imp=true&item=".$id);
-                //echo "XML: ".$xmlString;
-                $data = OpenContext_NewDocs::mediaAdd($xmlString, true, $doUpdate);
-            }
-            if($type == "proj"){
-                //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/project.php?imp=true&item=".$id);
-                //echo "XML: ".$xmlString;
-                $data = OpenContext_NewDocs::projectAdd($xmlString, $doUpdate);
-            }
-	    if($type == "doc"){
-                //$xmlString = file_get_contents("http://about.oc/oc_xmlgen/project.php?imp=true&item=".$id);
-                //echo "XML: ".$xmlString;
-                $data = OpenContext_NewDocs::documentAdd($xmlString, $doUpdate);
-            }
-	    
-	    if($data->itemUUID){
-		$output = array(
-			    "label" => $data->label,
-			    "project_id" => $data->projectUUID,
-			    "item_uuid" => $itemUUID,
-			    "item_type" => $type,
-			    "pubOK" => true);
-		$data = $output;
-	    }
-        }
-    	
-	if($optimizeIndex){
-	    $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
-	    $solr->optimize();
-	}
-	
-        echo Zend_Json::encode($data);
+				if($data->itemUUID){
+					 
+					 $output = array(
+							  "label" => $data->label,
+							  "project_id" => $data->projectUUID,
+							  "item_uuid" => $itemUUID,
+							  "item_type" => $itemType,
+							  "pubOK" => true,
+						     "errors" => false);
+
+					 if(isset($data->errors)){
+						  if(is_array($data->errors)){
+								foreach($data->errors as $errorKey => $error){
+									 if($errorKey != "Small-to-do"){
+										  $output["pubOK"] = false;
+										  $output["errors"][] = $error;
+									 }
+								}
+						  }
+					 }
+				}
+				else{
+					 $output = array(
+							  "label" => $data->label,
+							  "project_id" => $data->projectUUID,
+							  "item_uuid" => $itemUUID,
+							  "item_type" => $itemType,
+							  "pubOK" => false,
+							  "errors" => false);
+					 
+					 if(isset($data->errors)){
+						  $output["errors"] = $data->errors;
+					 }
+				}
+		  }
+		  header('Content-Type: application/json; charset=utf8');
+        echo Zend_Json::encode($output) ;
     }
-    
-    
+	 
+
     
     
     public function indexOmekaAction() {

@@ -40,20 +40,21 @@ class SolrDocsIndex {
     public function checkRunIndex($only_full_list = true){
 		  $this->initialize();
 		  $this->getToDoList();
+		  $output = array();
 		  if($only_full_list){
 				if(($this->toDoCount >= self::indexDoSize) || $this->forceIndexing){
-					
-					 //echo "<br/>".print_r($this->toDoList);
+					$output = $this->toDoList;
 					$this->makeSolrDocArray();
 					$this->indexSolrDocs();
 					$this->updateToDoList();
 				}
 				else{
 					$errors = $this->errors;
-					$errors[] = $this->toDoCount." is less than min-batch size: ".self::indexDoSize;
+					$errors["Small-to-do"] = "INDEX: ".$this->toDoCount." is less than min-batch size: ".self::indexDoSize;
 					$this->errors = $errors;
 				}
 		  }
+		  return $output;
     }//end function
 
 
