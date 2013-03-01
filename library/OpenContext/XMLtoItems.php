@@ -391,6 +391,11 @@ class OpenContext_XMLtoItems {
 			$itemObj->licenseURI = (string)$xpathResult;
 		}
 		
+		// get a DOI
+		foreach ($itemXML->xpath("//oc:metadata/dc:identifier[@type='doi']") as $xpathResult){
+			$itemObj->doi = (string)$xpathResult;
+		}
+		
 		return $itemObj;
 	}//end function
 	

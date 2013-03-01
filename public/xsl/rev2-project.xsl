@@ -193,7 +193,7 @@
 														
 												</div>
 												<h5>Suggested Citation for this Project Overview:</h5>
-												<p><xsl:value-of select="$citation"/></p>
+												<p><xsl:value-of select="$citation"/> <xsl:if test="//oc:metadata/dc:identifier[@type ='doi']">DOI:<a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']"/></a></xsl:if> </p>
 										</div>
 									
 										<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:observations/arch:observation/arch:links/oc:space_links/oc:link) != 0" >
@@ -344,7 +344,7 @@
 												<br/>
 												<h5>Suggested Citation</h5>
 												<div id="citation">
-														<xsl:value-of select="$citationView"/>
+														<xsl:value-of select="$citationView"/> <xsl:if test="//oc:metadata/dc:identifier[@type ='doi']">DOI:<a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']"/></a></xsl:if> 
 												</div>
 										</div>
 								

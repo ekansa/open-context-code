@@ -5,6 +5,7 @@
 class Project {
     
     public $noid;
+	 public $doi;
     public $projectUUID;
     
     public $mimeType;
@@ -42,6 +43,7 @@ class Project {
     
     public $newArchaeoML;
     
+	 const doiHrefRoot = "http://dx.doi.org/";
     const default_mimeType = "application/xhtml+xml";
     const OC_namespaceURI = "http://opencontext.org/schema/project_schema_v1.xsd";
     
@@ -65,6 +67,7 @@ class Project {
         if($result){
             
             $this->noid = $result[0]["noid"];
+				$this->doi = $result[0]["doi"];
             $this->projectUUID = $result[0]["project_id"];
 				$this->itemUUID = $result[0]["project_id"];
 				$this->label = $result[0]["proj_name"];
@@ -308,6 +311,7 @@ class Project {
 		  }
 		
 		  $data = array("noid" => $this->noid,
+				"doi" => $this->noid,
 		      "project_id" => $this->itemUUID,
 		      "proj_name" => $this->label,
 		      "def_lic_id" => $this->licenseURI,
@@ -419,456 +423,503 @@ class Project {
     }
     
     
-    function DOM_AtomCreate($archaeML_string){
+		  function DOM_AtomCreate($archaeML_string){
+			 
+				$host = OpenContext_OCConfig::get_host_config();
+				$baseURI = $host."/projects/";
+				
+				$projItem = simplexml_load_string($archaeML_string);
+			
+				// Register OpenContext's namespace
+				//$projItem->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
+				
+				$projItem->registerXPathNamespace("oc", self::OC_namespaceURI);
+				
+				// Register OpenContext's namespace
+				$projItem->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
+			
+				// Register Dublin Core's namespace
+				$projItem->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+			
+				// Register the GML namespace
+				$projItem->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
+				
+				
+				// get the item_id
+				foreach($projItem->xpath("//arch:project/@UUID") as $item_result) {
+					$uuid = $item_result."";
+				}
+			
+			
+				// get the item_label
+				foreach ($projItem->xpath("//arch:project/arch:name/arch:string") as $item_label) {
+					$item_label = $item_label."";
+				}
+				
+				if(!stristr($item_label, "(Overview)")){
+					 $item_label .= " (Overview)";
+				}
+				
+				
+				//project name
+				foreach ($projItem->xpath("//arch:project/oc:metadata/oc:project_name") as $project_name) {
+					$project_name = $project_name."";
+				}
+			
+				$creators = $projItem->xpath("//arch:project/oc:metadata/dc:creator");
+				$contributors = $projItem->xpath("/arch:project/oc:metadata/dc:contributor");
+				
+				$pubDate = false;
+				foreach($projItem->xpath("//oc:metadata/dc:date") as $pubDate) {
+					 $pubDate = $pubDate."";
+				}
+			
+			
+				$doiHref = false;
+				foreach ($projItem->xpath("//arch:project/oc:metadata/dc:identifier[@type ='doi']/@href") as $doiHref) {
+					$doiHref = $doiHref."";
+				}
+				$DOI = false;
+				if($doiHref){
+					 foreach ($projItem->xpath("//arch:project/oc:metadata/dc:identifier[@type ='doi']") as $DOI) {
+						  $DOI = $DOI."";
+					 }
+				}
+			
+			
+				$atomEntryDoc = new DOMDocument("1.0", "utf-8");
+			
+				$rootEntry = $atomEntryDoc->createElementNS("http://www.w3.org/2005/Atom", "entry");
+				
+				// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+				$atomEntryDoc->formatOutput = true;
+				
+				$rootEntry->setAttribute("xmlns:georss", OpenContext_OCConfig::get_namespace("georss"));
+				$rootEntry->setAttribute("xmlns:gml", OpenContext_OCConfig::get_namespace("gml"));
+				$rootEntry->setAttribute("xmlns:kml", OpenContext_OCConfig::get_namespace("kml"));
+				//$rootEntry->setAttribute("xmlns:arch", OpenContext_OCConfig::get_namespace("arch", "media"));
+				//$rootEntry->setAttribute("xmlns:oc", self::OC_namespaceURI);
+				//$rootEntry->setAttribute("xmlns:oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
+				//$rootEntry->setAttribute("xmlns:dc", OpenContext_OCConfig::get_namespace("dc"));
+				//$rootEntry->setAttribute("xmlns:xhtml", OpenContext_OCConfig::get_namespace("xhtml"));
+			
+				$atomEntryDoc->appendChild($rootEntry);
+			
+				// Create feed title (as opposed to an entry title)
+				$feedTitle = $atomEntryDoc->createElement("title");
+				$feedTitleText = $atomEntryDoc->CreateTextNode( $item_label );	
+				$feedTitle->appendChild($feedTitleText);
+				$rootEntry->appendChild($feedTitle);
+			
+				// feed id
+				$feedId = $atomEntryDoc->createElement("id");
+				$feedIdText = $atomEntryDoc->createTextNode($baseURI . $uuid);
+				$feedId->appendChild($feedIdText);
+				$rootEntry->appendChild($feedId);
+			
+				// entry(self) link element
+				$entryLink = $atomEntryDoc->createElement("link");
+				$entryLink->setAttribute("rel", $this->xhtml_rel);
+				$entryLink->setAttribute("type", "application/xhtml+xml");
+				$entryLink->setAttribute("title", "XHTML representation of ". $item_label );
+				$entryLink->setAttribute("href", $baseURI . $uuid);
+				$rootEntry->appendChild($entryLink);
+				
+				// entry archaeoml xml link element
+				$entryLink = $atomEntryDoc->createElement("link");
+				$entryLink->setAttribute("rel", "alternate");
+				$entryLink->setAttribute("type", "application/xml");
+				$entryLink->setAttribute("title", "ArchaeoML (XML) representation of ". $item_label );
+				$entryLink->setAttribute("href", $baseURI . $uuid. ".xml");
+				$rootEntry->appendChild($entryLink);
+				
+				// entry atom link element
+				$entryLink = $atomEntryDoc->createElement("link");
+				$entryLink->setAttribute("rel", $this->atom_rel);
+				$entryLink->setAttribute("type", "application/atom+xml");
+				$entryLink->setAttribute("title", "Atom representation of ".$item_label);
+				$entryLink->setAttribute("href", $baseURI . $uuid. ".atom");
+				$rootEntry->appendChild($entryLink);
+				
+				if($doiHref != false && $DOI != false){
+					 $entryLink = $atomEntryDoc->createElement("link");
+					 $entryLink->setAttribute("rel", "http://purl.org/dc/elements/1.1/identifier");
+					 $entryLink->setAttribute("title", "DOI:".$DOI);
+					 $entryLink->setAttribute("href", $doiHref);
+					 $rootEntry->appendChild($entryLink);
+				}
+				
+				
+				// Create feed updated element (as opposed to the entry updated element)
+				$entryUpdated = $atomEntryDoc->createElement("updated");
+				$updateDateTM = strtotime($this->updatedTime);
+				$pubDateTM = strtotime($pubDate);
+				if($updateDateTM<$pubDateTM){
+					 $updateDateTM = $pubDateTM;
+				}
+			
+			
+				// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+				$entryUpdatedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00", $updateDateTM));
+				// Append the text node the updated element
+				$entryUpdated->appendChild($entryUpdatedText);
+			
+				// Append the updated node to the root element
+				$rootEntry->appendChild($entryUpdated);
+				
+				
+				/*
+				PUBLICATION TIME - Important metadate used by the CDL archiving service
+				*/
+				$entryPublished = $atomEntryDoc->createElement("published");
+				// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+				$entryPublishedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($pubDate)));
+				$entryPublished->appendChild($entryPublishedText);
+				$rootEntry->appendChild($entryPublished);
+			
+			
+			
+				// append one or more author elements to the entry
+				foreach ($creators as $creator) {
+					 $entryPerson = $atomEntryDoc->createElement("author");
+					 $entryPersonName = $atomEntryDoc->createElement("name");
+					 $entryPersonNameText = $atomEntryDoc->CreateTextNode($creator);
+					 $entryPersonName->appendChild($entryPersonNameText);
+					 $entryPerson->appendChild($entryPersonName);
 		
-		$host = OpenContext_OCConfig::get_host_config();
-		$baseURI = $host."/projects/";
+					 $creatorID = $this->db_find_personID($creator);
+					 if($creatorID != false){
+						  $entryPersonURI = $atomEntryDoc->createElement("uri");
+						  $entryPersonURIText = $atomEntryDoc->CreateTextNode($host."/persons/".$creatorID);
+						  $entryPersonURI->appendChild($entryPersonURIText);
+						  $entryPerson->appendChild($entryPersonURI);
+					 }
+					 $rootEntry->appendChild($entryPerson);
+				}
+			
+				// append one or more contributor elements to the entry.
+				foreach ($contributors as $contributor) {
+					 $entryPerson = $atomEntryDoc->createElement("contributor");
+					 $entryPersonName = $atomEntryDoc->createElement("name");
+					 $entryPersonNameText = $atomEntryDoc->CreateTextNode($contributor);
+					 $entryPersonName->appendChild($entryPersonNameText);
+					 $entryPerson->appendChild($entryPersonName);
 		
-		$projItem = simplexml_load_string($archaeML_string);
-	
-		// Register OpenContext's namespace
-		//$projItem->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
-		
-		$projItem->registerXPathNamespace("oc", self::OC_namespaceURI);
-		
-		// Register OpenContext's namespace
-		$projItem->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
-	
-		// Register Dublin Core's namespace
-		$projItem->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	
-		// Register the GML namespace
-		$projItem->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
-		
-		
-		// get the item_id
-		foreach($projItem->xpath("//arch:project/@UUID") as $item_result) {
-			$uuid = $item_result."";
-		}
-	
-	
-		// get the item_label
-		foreach ($projItem->xpath("//arch:project/arch:name/arch:string") as $item_label) {
-			$item_label = $item_label."";
-		}
-		
-		if(!stristr($item_label, "(Overview)")){
-		    $item_label .= " (Overview)";
-		}
-		
-		
-		//project name
-		foreach ($projItem->xpath("//arch:project/oc:metadata/oc:project_name") as $project_name) {
-			$project_name = $project_name."";
-		}
-	
-		$creators = $projItem->xpath("//arch:project/oc:metadata/dc:creator");
-		$contributors = $projItem->xpath("/arch:project/oc:metadata/dc:contributor");
-		
-		$pubDate = false;
-		foreach($projItem->xpath("//oc:metadata/dc:date") as $pubDate) {
-		    $pubDate = $pubDate."";
-		}
-	
-	
-	
-		$atomEntryDoc = new DOMDocument("1.0", "utf-8");
-	
-		$rootEntry = $atomEntryDoc->createElementNS("http://www.w3.org/2005/Atom", "entry");
-		
-		// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
-		$atomEntryDoc->formatOutput = true;
-		
-		$rootEntry->setAttribute("xmlns:georss", OpenContext_OCConfig::get_namespace("georss"));
-		$rootEntry->setAttribute("xmlns:gml", OpenContext_OCConfig::get_namespace("gml"));
-		$rootEntry->setAttribute("xmlns:kml", OpenContext_OCConfig::get_namespace("kml"));
-		//$rootEntry->setAttribute("xmlns:arch", OpenContext_OCConfig::get_namespace("arch", "media"));
-		//$rootEntry->setAttribute("xmlns:oc", self::OC_namespaceURI);
-		//$rootEntry->setAttribute("xmlns:oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
-		//$rootEntry->setAttribute("xmlns:dc", OpenContext_OCConfig::get_namespace("dc"));
-		//$rootEntry->setAttribute("xmlns:xhtml", OpenContext_OCConfig::get_namespace("xhtml"));
-	
-		$atomEntryDoc->appendChild($rootEntry);
-	
-		// Create feed title (as opposed to an entry title)
-		$feedTitle = $atomEntryDoc->createElement("title");
-		$feedTitleText = $atomEntryDoc->CreateTextNode( $item_label );	
-		$feedTitle->appendChild($feedTitleText);
-		$rootEntry->appendChild($feedTitle);
-	
-		// feed id
-		$feedId = $atomEntryDoc->createElement("id");
-		$feedIdText = $atomEntryDoc->createTextNode($baseURI . $uuid);
-		$feedId->appendChild($feedIdText);
-		$rootEntry->appendChild($feedId);
-	
-		// entry(self) link element
-		$entryLink = $atomEntryDoc->createElement("link");
-		$entryLink->setAttribute("rel", $this->xhtml_rel);
-		$entryLink->setAttribute("type", "application/xhtml+xml");
-		$entryLink->setAttribute("title", "XHTML representation of ". $item_label );
-		$entryLink->setAttribute("href", $baseURI . $uuid);
-		$rootEntry->appendChild($entryLink);
-		
-		// entry archaeoml xml link element
-		$entryLink = $atomEntryDoc->createElement("link");
-		$entryLink->setAttribute("rel", "alternate");
-		$entryLink->setAttribute("type", "application/xml");
-		$entryLink->setAttribute("title", "ArchaeoML (XML) representation of ". $item_label );
-		$entryLink->setAttribute("href", $baseURI . $uuid. ".xml");
-		$rootEntry->appendChild($entryLink);
-		
-		// entry atom link element
-		$entryLink = $atomEntryDoc->createElement("link");
-		$entryLink->setAttribute("rel", $this->atom_rel);
-		$entryLink->setAttribute("type", "application/atom+xml");
-		$entryLink->setAttribute("title", "Atom representation of ".$item_label);
-		$entryLink->setAttribute("href", $baseURI . $uuid. ".atom");
-		$rootEntry->appendChild($entryLink);
-		
-		
-		
-		
-		// Create feed updated element (as opposed to the entry updated element)
-		$entryUpdated = $atomEntryDoc->createElement("updated");
-		$updateDateTM = strtotime($this->updatedTime);
-		$pubDateTM = strtotime($pubDate);
-		if($updateDateTM<$pubDateTM){
-		    $updateDateTM = $pubDateTM;
-		}
-	
-	
-		// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-		$entryUpdatedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00", $updateDateTM));
-		// Append the text node the updated element
-		$entryUpdated->appendChild($entryUpdatedText);
-	
-		// Append the updated node to the root element
-		$rootEntry->appendChild($entryUpdated);
-		
-		
-		/*
-		PUBLICATION TIME - Important metadate used by the CDL archiving service
-		*/
-		$entryPublished = $atomEntryDoc->createElement("published");
-		// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-		$entryPublishedText = $atomEntryDoc->CreateTextNode(date("Y-m-d\TH:i:s\-07:00", strtotime($pubDate)));
-		$entryPublished->appendChild($entryPublishedText);
-		$rootEntry->appendChild($entryPublished);
-	
-	
-	
-		// append one or more author elements to the entry
-		foreach ($creators as $creator) {
-		    $entryPerson = $atomEntryDoc->createElement("author");
-		    $entryPersonName = $atomEntryDoc->createElement("name");
-		    $entryPersonNameText = $atomEntryDoc->CreateTextNode($creator);
-		    $entryPersonName->appendChild($entryPersonNameText);
-		    $entryPerson->appendChild($entryPersonName);
-
-		    $creatorID = $this->db_find_personID($creator);
-		    if($creatorID != false){
-			$entryPersonURI = $atomEntryDoc->createElement("uri");
-			$entryPersonURIText = $atomEntryDoc->CreateTextNode($host."/persons/".$creatorID);
-			$entryPersonURI->appendChild($entryPersonURIText);
-			$entryPerson->appendChild($entryPersonURI);
-		    }
-		    $rootEntry->appendChild($entryPerson);
-		}
-	
-		// append one or more contributor elements to the entry.
-		foreach ($contributors as $contributor) {
-		    $entryPerson = $atomEntryDoc->createElement("contributor");
-		    $entryPersonName = $atomEntryDoc->createElement("name");
-		    $entryPersonNameText = $atomEntryDoc->CreateTextNode($contributor);
-		    $entryPersonName->appendChild($entryPersonNameText);
-		    $entryPerson->appendChild($entryPersonName);
-
-		    $contribID = $this->db_find_personID($contributor);
-		    if($contribID != false){
-			$entryPersonURI = $atomEntryDoc->createElement("uri");
-			$entryPersonURIText = $atomEntryDoc->CreateTextNode($host."/persons/".$contribID);
-			$entryPersonURI->appendChild($entryPersonURIText);
-			$entryPerson->appendChild($entryPersonURI);
-		    }
-		    $rootEntry->appendChild($entryPerson);
-		}
-	
-		// entry atom category element
-		$entryCat= $atomEntryDoc->createElement("category");
-		$entryCat->setAttribute("term", "project");
-		$rootEntry->appendChild($entryCat);
-	
-		// entry atom Summary element
-		$entrySummary = $atomEntryDoc->createElement("summary");
-		$summaryTextContent =  strip_tags($this->shortDes);
-		
-		$summaryText =  $atomEntryDoc->CreateTextNode($summaryTextContent);
-		$entrySummary->appendChild($summaryText);
-		$rootEntry->appendChild($entrySummary);
-		
-		/*
-		We've done the hard part of constructing the Atom Entry. The entry is now ready for integrating into atom feeds.
-		*/
-		$atomEntryDoc->formatOutput = true;
-		$atomEntryXML = $atomEntryDoc->saveXML();
-		
-		$this->atomEntry = $atomEntryXML;
-		
-    }//end make projectAtomCreate function
+					 $contribID = $this->db_find_personID($contributor);
+					 if($contribID != false){
+						  $entryPersonURI = $atomEntryDoc->createElement("uri");
+						  $entryPersonURIText = $atomEntryDoc->CreateTextNode($host."/persons/".$contribID);
+						  $entryPersonURI->appendChild($entryPersonURIText);
+						  $entryPerson->appendChild($entryPersonURI);
+					 }
+					 $rootEntry->appendChild($entryPerson);
+				}
+			
+				// entry atom category element
+				$entryCat= $atomEntryDoc->createElement("category");
+				$entryCat->setAttribute("term", "project");
+				$rootEntry->appendChild($entryCat);
+			
+				// entry atom Summary element
+				$entrySummary = $atomEntryDoc->createElement("summary");
+				$summaryTextContent =  trim(strip_tags($this->shortDes));
+				if(strlen($summaryTextContent) < 10){
+					 foreach ($projItem->xpath("//arch:note[@type='short_des']") as $note) {
+						 $summaryTextContent = $note->asXML();
+					 }
+					 $summaryTextContent =  trim(strip_tags($summaryTextContent));
+				}
+				
+				
+				$summaryText =  $atomEntryDoc->CreateTextNode($summaryTextContent);
+				$entrySummary->appendChild($summaryText);
+				$rootEntry->appendChild($entrySummary);
+				
+				/*
+				We've done the hard part of constructing the Atom Entry. The entry is now ready for integrating into atom feeds.
+				*/
+				$atomEntryDoc->formatOutput = true;
+				$atomEntryXML = $atomEntryDoc->saveXML();
+				
+				$this->atomEntry = $atomEntryXML;
+			 
+		  }//end make projectAtomCreate function
     
     
     
     function fullAtomCreate($projectArchaeoML_string){
-		
-		$baseURI = OpenContext_OCConfig::get_host_config();
-		$baseURI .= "/projects/";
-		
-		$proj_dom = new DOMDocument("1.0", "utf-8");
-		$proj_dom->loadXML($projectArchaeoML_string);
-		
-		$xpath = new DOMXpath($proj_dom);
-			
-		// Register OpenContext's namespace
-		$xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
-		$xpath->registerNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
-		$xpath->registerNamespace("dc", OpenContext_OCConfig::get_namespace("dc", "project"));
-		
-		$query = "/arch:project/@UUID";
-		$projectUUIDnode = $xpath->query($query, $proj_dom);
-		$projectUUID = $projectUUIDnode->item(0)->nodeValue;
-		
-		$query = "/arch:project/arch:name/arch:string";
-		$result_title = $xpath->query($query, $proj_dom);
-			
-		if($result_title != null){
-		    $proj_item_name = $result_title->item(0)->nodeValue;
-		}
-		
-		$query = "//arch:notes/arch:note[@type='long_des']/arch:string";
-		$result_des = $xpath->query($query, $proj_dom);
-			
-		if($result_des != null){
-		    $long_des = $result_des->item(0)->nodeValue;
-		}
-		
-		
-		$query = "//oc:metadata/oc:project_name";
-		$result_proj = $xpath->query($query, $proj_dom);
-			
-		if($result_proj != null){
-		    $project_name = $result_proj->item(0)->nodeValue;
-		}
-			
-		$query = "//oc:metadata/dc:creator";
-		$result_create = $xpath->query($query, $proj_dom);
-		$author_array = array();	
-			
-		foreach($result_create AS $res_creators){
-		    $author_array[] = $res_creators->nodeValue;
-		}
-		
-		$query = "//oc:metadata/dc:contributor";
-		$result_contrib = $xpath->query($query, $proj_dom);	
-		$contributor_array = array();
-			
-		foreach($result_contrib AS $act_contrib){
-		    $contributor_array[] = $act_contrib->nodeValue;
-		}
-	
-		$query = "//oc:metadata/dc:title";
-		$result_dctitle = $xpath->query($query, $proj_dom);	
-		     
-		if($result_dctitle!= null){
-		    $project_title = $result_dctitle->item(0)->nodeValue;
-		}
-	
-		$query = "//oc:manage_info/oc:mediaCount";
-		$result_media = $xpath->query($query, $proj_dom);		
-		     
-		if($result_media!= null){
-		    $mediaCount = $result_media->item(0)->nodeValue;
-		}
-	
-		$query = "//oc:manage_info/oc:diaryCount";
-		$result_diary = $xpath->query($query, $proj_dom);		
-		     
-		if($result_media!= null){
-		    $diaryCount = $result_diary->item(0)->nodeValue;
-		}
-	
-	
-		$query = "//oc:manage_info/oc:projGeoPoly";
-		$result_poly = $xpath->query($query, $proj_dom);		
-		
-		$proj_poly = null;
-		     
-		if($result_poly != null){
-		    foreach($result_poly as $act_poly){
-			$proj_poly = $act_poly->nodeValue;
-		    }
-		}
-		
-		$query = "//oc:manage_info/oc:projGeoPoint";
-		$result_point = $xpath->query($query, $proj_dom);		
-		     
-		if($result_poly!= null){
-		    $proj_point = $result_point->item(0)->nodeValue;
-		}
-		
-	
-	
-		//done querying old xml version
-		
-		$proj_entry_title = $project_title;
-		$proj_feed_title = "Open Context Project/Collection Record: ".$project_name;
-		
-		//echo "<br/>".$proj_feed_title."<br/>".$proj_entry_title."<br/>";
-		
-		
-		$atomFullDoc = new DOMDocument("1.0", "utf-8");
-		
-		$root = $atomFullDoc->createElementNS(OpenContext_OCConfig::get_namespace("atom"), "feed");
-		
-		// add newlines and indent the output - this is at least useful for debugging and making the output easier to read
-		$atomFullDoc->formatOutput = true;
-		
-		$root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
-		$root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
-	       
-		$atomFullDoc->appendChild($root);
-	
-		// Feed Title 
-		$feedTitle = $atomFullDoc->createElement("title");
-		$feedTitleText = $atomFullDoc->createTextNode($proj_feed_title);
-		$feedTitle->appendChild($feedTitleText);
-		$root->appendChild($feedTitle);
-		
-		// Feed updated element (as opposed to the entry updated element)
-		$feedUpdated = $atomFullDoc->createElement("updated");
-		// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-		$feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));   
-		// Append the text node the updated element
-		$feedUpdated->appendChild($feedUpdatedText);
-		// Append the updated node to the root element
-		$root->appendChild($feedUpdated);
-		
-		$linkURI = $baseURI . $projectUUID. ".atom";
-		// feed (self) link element
-		$feedLink = $atomFullDoc->createElement("link");
-		$feedLink->setAttribute("rel", "self");
-		$feedLink->setAttribute("href", $linkURI);
-		$root->appendChild($feedLink);
-		
-		// feed id
-		$feedId = $atomFullDoc->createElement("id");
-		$feedIdText = $atomFullDoc->createTextNode($baseURI . $projectUUID);
-		$feedId->appendChild($feedIdText);
-		$root->appendChild($feedId);
-		
-		
-		$feed_entry = $atomFullDoc->createElement("entry");
-		$root->appendChild($feed_entry);
-		
-		$entryCat = $atomFullDoc->createElement("category");
-		$entryCat->setAttribute("term", "project_overview");
-		$feed_entry->appendChild($entryCat);
-		
-		
-		$entry_title_el = $atomFullDoc->createElement("title");
-		$entry_title_text = $atomFullDoc->createTextNode($proj_entry_title);
-		$entry_title_el->appendChild($entry_title_text);
-		$feed_entry->appendChild($entry_title_el);
-		
-		$entry_id_el = $atomFullDoc->createElement("id");
-		$entry_id_text = $atomFullDoc->createTextNode($baseURI . $projectUUID);
-		$entry_id_el->appendChild($entry_id_text);
-		$feed_entry->appendChild($entry_id_el);
-		
-		// Feed updated element (as opposed to the entry updated element)
-		$entryUpdated = $atomFullDoc->createElement("updated");
-		// Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
-		$entryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));   
-		// Append the text node the updated element
-		$entryUpdated->appendChild($entryUpdatedText);
-		// Append the updated node to the root element
-		$feed_entry->appendChild($entryUpdated);
-		
-		
-		//create GeoRSS information for the item
-		$entry_geo = $atomFullDoc->createElement("georss:point");
-		$entry_geo_val = $atomFullDoc->createTextNode($proj_point);
-		$entry_geo->appendChild($entry_geo_val);
-		$feed_entry->appendChild($entry_geo);
-		
-		if($proj_poly != null){
-			$entry_geo_all_poly = $atomFullDoc->createElement("georss:where");
-			$entry_geo_poly = $atomFullDoc->createElement("gml:Polygon");
-			$entry_geo_ext = $atomFullDoc->createElement("gml:exterior");
-			$entry_geo_lr = $atomFullDoc->createElement("gml:LinearRing");
-			$entry_geo_pos = $atomFullDoc->createElement("gml:posList");
-			$entry_geo_poly_val = $atomFullDoc->createTextNode($proj_poly);
-			$entry_geo_pos->appendChild($entry_geo_poly_val);
-			$entry_geo_lr->appendChild($entry_geo_pos);
-			$entry_geo_ext->appendChild($entry_geo_lr);
-			$entry_geo_poly->appendChild($entry_geo_ext);
-			$entry_geo_all_poly->appendChild($entry_geo_poly);
-			$feed_entry->appendChild($entry_geo_all_poly);
-		}
-		
-		
-		foreach($author_array AS $act_creator){
-		    $author_el = $atomFullDoc->createElement("author");
-		    $name_el = $atomFullDoc->createElement("name");
-		    $name_text = $atomFullDoc->createTextNode($act_creator);
-		    $name_el->appendChild($name_text);
-		    $author_el->appendChild($name_el);
-		    $feed_entry->appendChild($author_el);
-		}
-		
-		foreach($contributor_array AS $act_contrib){
-		    $author_el = $atomFullDoc->createElement("contributor");
-		    $name_el = $atomFullDoc->createElement("name");
-		    $name_text = $atomFullDoc->createTextNode($act_creator);
-		    $name_el->appendChild($name_text);
-		    $author_el->appendChild($name_el);
-		    $feed_entry->appendChild($author_el);
-		}
-		    
-		$content_el = $atomFullDoc->createElement("content");
-		$content_el->setAttribute("type", "xhtml");
-		
-		$content_div_text =
-		'
-		<div xmlns="http://www.w3.org/1999/xhtml">
-		<h2>'.$proj_item_name.'</h2>
-		<p>Number of associated media items: ('.$mediaCount.') Number of Associated Narrative Texts: ('.$diaryCount.')</p><br/>
-		<p><strong>Description of this Project / Collection:</strong></p>
-		'.$long_des.' 
-		</div>
-		';
-		
-		// add the XHTML content string
-		$contentFragment = $atomFullDoc->createDocumentFragment();
-		$contentFragment->appendXML($content_div_text);  // $atom_content from short atom entry
-		$content_el->appendChild($contentFragment);
-		$feed_entry->appendChild($content_el);
-		
-		//now add ArchaeoML String
-		$proj_archaeoML = str_replace('<?xml version="1.0"?>', "", $projectArchaeoML_string);
-		$proj_archaeoML = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $projectArchaeoML_string);
-		$arch_contentFragment = $atomFullDoc->createDocumentFragment();
-		$arch_contentFragment->appendXML($proj_archaeoML);
-		$feed_entry->appendChild($arch_contentFragment);
-		
-		$atom_xml_string = $atomFullDoc->saveXML();
-		
-		$atom_xml_string = str_replace("<default:", "<", $atom_xml_string);
-		$atom_xml_string = str_replace("</default:", "</", $atom_xml_string);
-		$atom_xml_string = str_replace('<content xmlns:default="http://www.w3.org/1999/xhtml"', "<content ", $atom_xml_string);
-		
-		$this->atomFull = $atom_xml_string;
-		return $atom_xml_string ;
+		  
+		  $baseURI = OpenContext_OCConfig::get_host_config();
+		  $baseURI .= "/projects/";
+		  
+		  $proj_dom = new DOMDocument("1.0", "utf-8");
+		  $proj_dom->loadXML($projectArchaeoML_string);
+		  
+		  $xpath = new DOMXpath($proj_dom);
+			  
+		  // Register OpenContext's namespace
+		  $xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
+		  $xpath->registerNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
+		  $xpath->registerNamespace("dc", OpenContext_OCConfig::get_namespace("dc", "project"));
+		  
+		  $query = "/arch:project/@UUID";
+		  $projectUUIDnode = $xpath->query($query, $proj_dom);
+		  $projectUUID = $projectUUIDnode->item(0)->nodeValue;
+		  
+		  $query = "/arch:project/arch:name/arch:string";
+		  $result_title = $xpath->query($query, $proj_dom);
+			  
+		  if($result_title != null){
+				$proj_item_name = $result_title->item(0)->nodeValue;
+		  }
+		  
+		  $query = "//arch:notes/arch:note[@type='long_des']/arch:string";
+		  $result_des = $xpath->query($query, $proj_dom);
+			  
+		  if($result_des != null){
+				$long_des = $result_des->item(0)->nodeValue;
+		  }
+		  
+		  
+		  $query = "//oc:metadata/oc:project_name";
+		  $result_proj = $xpath->query($query, $proj_dom);
+			  
+		  if($result_proj != null){
+				$project_name = $result_proj->item(0)->nodeValue;
+		  }
+			  
+		  $query = "//oc:metadata/dc:creator";
+		  $result_create = $xpath->query($query, $proj_dom);
+		  $author_array = array();	
+			  
+		  foreach($result_create AS $res_creators){
+				$author_array[] = $res_creators->nodeValue;
+		  }
+		  
+		  $query = "//oc:metadata/dc:contributor";
+		  $result_contrib = $xpath->query($query, $proj_dom);	
+		  $contributor_array = array();
+			  
+		  foreach($result_contrib AS $act_contrib){
+				$contributor_array[] = $act_contrib->nodeValue;
+		  }
+	  
+		  $query = "//oc:metadata/dc:title";
+		  $result_dctitle = $xpath->query($query, $proj_dom);	
+				 
+		  if($result_dctitle!= null){
+				$project_title = $result_dctitle->item(0)->nodeValue;
+		  }
+		  
+		  $DOI = false;
+		  $doiHref = false;
+		  $query = "//oc:metadata/dc:identifier[@type='doi']";
+		  $doiNode = $xpath->query($query, $dom);
+		  if( $doiNode != null){
+				$DOI = $doiNode->item(0)->nodeValue;
+				$query = "//oc:metadata/dc:identifier[@type='doi']/@href";
+				$doiHrefNode = $xpath->query($query, $dom);
+				if($doiHrefNode != null){
+					 $doiHref = $doiHrefNode->item(0)->nodeValue;
+				}
+		  }
+		  
+	  
+		  $query = "//oc:manage_info/oc:mediaCount";
+		  $result_media = $xpath->query($query, $proj_dom);		
+				 
+		  if($result_media!= null){
+				$mediaCount = $result_media->item(0)->nodeValue;
+		  }
+	  
+		  $query = "//oc:manage_info/oc:diaryCount";
+		  $result_diary = $xpath->query($query, $proj_dom);		
+				 
+		  if($result_media!= null){
+				$diaryCount = $result_diary->item(0)->nodeValue;
+		  }
+	  
+	  
+		  $query = "//oc:manage_info/oc:projGeoPoly";
+		  $result_poly = $xpath->query($query, $proj_dom);		
+		  
+		  $proj_poly = null;
+				 
+		  if($result_poly != null){
+				foreach($result_poly as $act_poly){
+			  $proj_poly = $act_poly->nodeValue;
+				}
+		  }
+		  
+		  $query = "//oc:manage_info/oc:projGeoPoint";
+		  $result_point = $xpath->query($query, $proj_dom);		
+				 
+		  if($result_poly!= null){
+				$proj_point = $result_point->item(0)->nodeValue;
+		  }
+		  
+	  
+	  
+		  //done querying old xml version
+		  
+		  $proj_entry_title = $project_title;
+		  $proj_feed_title = "Open Context Project/Collection Record: ".$project_name;
+		  
+		  //echo "<br/>".$proj_feed_title."<br/>".$proj_entry_title."<br/>";
+		  
+		  
+		  $atomFullDoc = new DOMDocument("1.0", "utf-8");
+		  
+		  $root = $atomFullDoc->createElementNS(OpenContext_OCConfig::get_namespace("atom"), "feed");
+		  
+		  // add newlines and indent the output - this is at least useful for debugging and making the output easier to read
+		  $atomFullDoc->formatOutput = true;
+		  
+		  $root->setAttribute("xmlns:georss", "http://www.georss.org/georss");
+		  $root->setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+				
+		  $atomFullDoc->appendChild($root);
+	  
+		  // Feed Title 
+		  $feedTitle = $atomFullDoc->createElement("title");
+		  $feedTitleText = $atomFullDoc->createTextNode($proj_feed_title);
+		  $feedTitle->appendChild($feedTitleText);
+		  $root->appendChild($feedTitle);
+		  
+		  // Feed updated element (as opposed to the entry updated element)
+		  $feedUpdated = $atomFullDoc->createElement("updated");
+		  // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+		  $feedUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));   
+		  // Append the text node the updated element
+		  $feedUpdated->appendChild($feedUpdatedText);
+		  // Append the updated node to the root element
+		  $root->appendChild($feedUpdated);
+		  
+		  $linkURI = $baseURI . $projectUUID. ".atom";
+		  // feed (self) link element
+		  $feedLink = $atomFullDoc->createElement("link");
+		  $feedLink->setAttribute("rel", "self");
+		  $feedLink->setAttribute("href", $linkURI);
+		  $root->appendChild($feedLink);
+		  
+		  // feed id
+		  $feedId = $atomFullDoc->createElement("id");
+		  $feedIdText = $atomFullDoc->createTextNode($baseURI . $projectUUID);
+		  $feedId->appendChild($feedIdText);
+		  $root->appendChild($feedId);
+		  
+		  
+		  $feed_entry = $atomFullDoc->createElement("entry");
+		  $root->appendChild($feed_entry);
+		  
+		  $entryCat = $atomFullDoc->createElement("category");
+		  $entryCat->setAttribute("term", "project_overview");
+		  $feed_entry->appendChild($entryCat);
+		  
+		  
+		  $entry_title_el = $atomFullDoc->createElement("title");
+		  $entry_title_text = $atomFullDoc->createTextNode($proj_entry_title);
+		  $entry_title_el->appendChild($entry_title_text);
+		  $feed_entry->appendChild($entry_title_el);
+		  
+		  
+		  if($DOI != false && $doiHref != false){
+				$feedLink = $atomFullDoc->createElement("link");
+				$feedLink->setAttribute("rel", "http://purl.org/dc/elements/1.1/identifier");
+				$feedLink->setAttribute("href", $doiHref);
+				$feedLink->setAttribute("title", "DOI:".$DOI);
+				$feed_entry->appendChild($feedLink);
+		  }
+		  
+		  $entry_id_el = $atomFullDoc->createElement("id");
+		  $entry_id_text = $atomFullDoc->createTextNode($baseURI . $projectUUID);
+		  $entry_id_el->appendChild($entry_id_text);
+		  $feed_entry->appendChild($entry_id_el);
+		  
+		  // Feed updated element (as opposed to the entry updated element)
+		  $entryUpdated = $atomFullDoc->createElement("updated");
+		  // Retrieve the current date and time. Format it in RFC 3339 format. Store it in a text node 
+		  $entryUpdatedText = $atomFullDoc->createTextNode(date("Y-m-d\TH:i:s\-07:00"));   
+		  // Append the text node the updated element
+		  $entryUpdated->appendChild($entryUpdatedText);
+		  // Append the updated node to the root element
+		  $feed_entry->appendChild($entryUpdated);
+		  
+		  
+		  //create GeoRSS information for the item
+		  $entry_geo = $atomFullDoc->createElement("georss:point");
+		  $entry_geo_val = $atomFullDoc->createTextNode($proj_point);
+		  $entry_geo->appendChild($entry_geo_val);
+		  $feed_entry->appendChild($entry_geo);
+		  
+		  if($proj_poly != null){
+			  $entry_geo_all_poly = $atomFullDoc->createElement("georss:where");
+			  $entry_geo_poly = $atomFullDoc->createElement("gml:Polygon");
+			  $entry_geo_ext = $atomFullDoc->createElement("gml:exterior");
+			  $entry_geo_lr = $atomFullDoc->createElement("gml:LinearRing");
+			  $entry_geo_pos = $atomFullDoc->createElement("gml:posList");
+			  $entry_geo_poly_val = $atomFullDoc->createTextNode($proj_poly);
+			  $entry_geo_pos->appendChild($entry_geo_poly_val);
+			  $entry_geo_lr->appendChild($entry_geo_pos);
+			  $entry_geo_ext->appendChild($entry_geo_lr);
+			  $entry_geo_poly->appendChild($entry_geo_ext);
+			  $entry_geo_all_poly->appendChild($entry_geo_poly);
+			  $feed_entry->appendChild($entry_geo_all_poly);
+		  }
+		  
+		  
+		  foreach($author_array AS $act_creator){
+				$author_el = $atomFullDoc->createElement("author");
+				$name_el = $atomFullDoc->createElement("name");
+				$name_text = $atomFullDoc->createTextNode($act_creator);
+				$name_el->appendChild($name_text);
+				$author_el->appendChild($name_el);
+				$feed_entry->appendChild($author_el);
+		  }
+		  
+		  foreach($contributor_array AS $act_contrib){
+				$author_el = $atomFullDoc->createElement("contributor");
+				$name_el = $atomFullDoc->createElement("name");
+				$name_text = $atomFullDoc->createTextNode($act_creator);
+				$name_el->appendChild($name_text);
+				$author_el->appendChild($name_el);
+				$feed_entry->appendChild($author_el);
+		  }
+				
+		  $content_el = $atomFullDoc->createElement("content");
+		  $content_el->setAttribute("type", "xhtml");
+		  
+		  $content_div_text =
+		  '
+		  <div xmlns="http://www.w3.org/1999/xhtml">
+		  <h2>'.$proj_item_name.'</h2>
+		  <p>Number of associated media items: ('.$mediaCount.') Number of Associated Narrative Texts: ('.$diaryCount.')</p><br/>
+		  <p><strong>Description of this Project / Collection:</strong></p>
+		  '.$long_des.' 
+		  </div>
+		  ';
+		  
+		  // add the XHTML content string
+		  $contentFragment = $atomFullDoc->createDocumentFragment();
+		  $contentFragment->appendXML($content_div_text);  // $atom_content from short atom entry
+		  $content_el->appendChild($contentFragment);
+		  $feed_entry->appendChild($content_el);
+		  
+		  //now add ArchaeoML String
+		  $proj_archaeoML = str_replace('<?xml version="1.0"?>', "", $projectArchaeoML_string);
+		  $proj_archaeoML = str_replace('<?xml version="1.0" encoding="utf-8"?>', "", $projectArchaeoML_string);
+		  $arch_contentFragment = $atomFullDoc->createDocumentFragment();
+		  $arch_contentFragment->appendXML($proj_archaeoML);
+		  $feed_entry->appendChild($arch_contentFragment);
+		  
+		  $atom_xml_string = $atomFullDoc->saveXML();
+		  
+		  $atom_xml_string = str_replace("<default:", "<", $atom_xml_string);
+		  $atom_xml_string = str_replace("</default:", "</", $atom_xml_string);
+		  $atom_xml_string = str_replace('<content xmlns:default="http://www.w3.org/1999/xhtml"', "<content ", $atom_xml_string);
+		  
+		  $this->atomFull = $atom_xml_string;
+		  return $atom_xml_string ;
     }//makes a new atom full entry for the project
     
     
@@ -892,6 +943,7 @@ class Project {
         if($result){
             
             $this->noid = $result[0]["noid"];
+				$this->doi = $result[0]["doi"];
             $this->projectUUID = $result[0]["project_id"];
 				$this->itemUUID = $result[0]["project_id"];
 				$this->label = $result[0]["proj_name"];
@@ -910,6 +962,108 @@ class Project {
 	 }
 	 
     
+	 
+	 
+	 
+	 public function addDOI($DOI, $projXML_string = false){
+		  if(!$projXML_string){
+				$projXML_string = $this->archaeoML;
+		  }
+		  if($projXML_string){
+				$dom = new DOMDocument("1.0", "utf-8");
+				$dom->loadXML($projXML_string);
+				$dom->formatOutput = true;
+				$xpath = new DOMXpath($dom);
+					
+				// Register namespace
+				foreach($this->nameSpaces() as $nsKey => $nsURI){
+					 $xpath->registerNamespace($nsKey , $nsURI);
+				}
+				
+				$query = "//oc:metadata/dc:identifier[@type='doi']";
+				$doiNode = $xpath->query($query, $dom);
+				
+				if( $doiNode->item(0) == null){
+					 $query = "//oc:metadata";
+					 $metadataNodeList = $xpath->query($query, $dom);
+					 if($metadataNodeList->item(0) == null){
+						  $query = "//arch:project";
+						  $projNodeList = $xpath->query($query, $dom);
+						  $projNode = $projNodeList->item(0);
+						  $metadataNode = $dom->createElement("oc:metadata");
+						  $projNode->appendChild($metadataNode);
+					 }
+					 else{
+						  $metadataNode = $metadataNodeList->item(0);
+					 }
+					 
+					 if(strstr($DOI, "doi:")){
+						  $DOI = str_replace("doi:", "", $DOI);
+					 }
+					 $DOI = trim($DOI);
+					 $doiHref = self::doiHrefRoot.$DOI;
+					 
+					 $doiNode = $dom->createElement("dc:identifier");
+					 $doiNode->setAttribute("type", "doi");
+					 $doiNode->setAttribute("href", $doiHref);
+					 $doiNodeDOItext = $dom->createTextNode($DOI);
+					 $doiNode->appendChild($doiNodeDOItext);
+					 $metadataNode->appendChild($doiNode);
+					 
+					 if(!$this->itemUUID){
+						  $query = "//arch:project/@UUID";
+						  $projUUIDnode = $xpath->query($query, $dom);
+						  $projUUID = $projUUIDnode->item(0)->nodeValue;
+					 }
+					 else{
+						  $projUUID = $this->itemUUID;
+					 }
+					 
+					 $dom->formatOutput = true;
+					 $projXML_string = $dom->saveXML();
+					 $this->archaeoML = $projXML_string;
+					 
+					 $fullAtom = $this->fullAtomCreate($projXML_string);
+					 
+					 $db_params = OpenContext_OCConfig::get_db_config();
+					 $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+					 $db->getConnection();
+					 $this->setUTFconnection($db);
+					 
+					 $where = "project_id  = '$projUUID' ";
+					 $data = array("doi" => $DOI,
+										"proj_archaeoml" => $projXML_string,
+										"proj_atom" => $fullAtom
+										);
+					 $db->update("projects", $data, $where);
+					 
+					 $nbData = array("public" => false);
+					 $where = "itemUUID  = '$projUUID' ";
+					 $db->update("noid_bindings", $data, $where); //set the project to be no longer public
+				}
+		  }
+		  return $projXML_string;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
     function db_find_personID($personName){
 	
 		  $personID = false;
@@ -926,7 +1080,7 @@ class Project {
 		  ";
 		  
 		  $result = $db->fetchAll($sql, 2);
-				 if($result){
+		  if($result){
 				$personID = $result[0]["person_uuid"];
 		  }
 		  

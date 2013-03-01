@@ -217,6 +217,9 @@ class projectsController extends Zend_Controller_Action
 			$proj = new Project ;
 			$itemFound = $proj->getByID($itemUUID);
 			if($itemFound){
+				
+				//$proj->addDOI("doi:10.6078/M77P8W98"); //add a doi
+
 				$xml_string = $proj->archaeoML;
 				header('Content-type: application/xml; charset=UTF-8'); 
 				echo $xml_string;
