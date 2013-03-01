@@ -736,8 +736,14 @@ class Person {
 		$content_el->appendChild($contentFragment);
 		$feed_entry->appendChild($content_el);
 		
+		$tempDom = new DOMDocument();
+		$tempDom->loadXML($personXML_string);
+		$tempRoot = $tempDom->documentElement; 
+		$pers_archaeoML = $tempDom->saveXML($tempRoot);
+		/*
 		//now add ArchaeoML String
 		$pers_archaeoML = str_replace('<?xml version="1.0"?>', "", $personXML_string);
+		*/
 		$arch_contentFragment = $atomFullDoc->createDocumentFragment();
 		$arch_contentFragment->appendXML($pers_archaeoML);
 		$feed_entry->appendChild($arch_contentFragment);
