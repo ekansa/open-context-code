@@ -638,9 +638,11 @@ class OpenContext_XMLtoItems {
 			
 			
 			$host = OpenContext_OCConfig::get_host_config();
-			$parentXML = file_get_contents($host."/subjects/".$parentID.".xml");
-			@$xmlParent = simplexml_load_string($parentXML);
-			
+			@$parentXML = file_get_contents($host."/subjects/".$parentID.".xml");
+			$xmlParent = false;
+			if($parentXML){
+				@$xmlParent = simplexml_load_string($parentXML);
+			}
 			if($xmlParent){
 				$output = true;
 				unset($xmlParent);
