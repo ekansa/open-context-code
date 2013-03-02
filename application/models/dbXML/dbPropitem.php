@@ -469,8 +469,13 @@ class dbXML_dbPropitem  {
 				$metadataObj = $this->metadataObj;
 				$projectName = $metadataObj->projectName;
 				
+				/*
 				$requestParams = array("stats" => $this->varLabel,
 												"proj" => $projectName);
+				*/
+				
+	 			$requestParams = array("stats" => $this->varLabel,
+												"projID" => $this->projectUUID);
 				
 				$DocumentTypes = $SolrSearch->makeDocumentTypeArray();
 				$param_array = array();
@@ -513,9 +518,11 @@ class dbXML_dbPropitem  {
 					
 		  
 					 if(stristr($varType, "calend")){
-						  $requestParams = array("range" => ($this->varLabel."::cal,".$minVal.",".$maxVal.","."+1YEAR"),
-														 "proj" => $projectName
+						  $requestParams = array(	"range" => ($this->varLabel."::cal,".$minVal.",".$maxVal.","."+1YEAR"),
+														  "projID" => $this->projectUUID
 														 );
+						  
+						  
 					 }
 					 else{
 						  $gap = round((( $maxVal - $minVal) / $this->gapCount), 2);
@@ -531,7 +538,7 @@ class dbXML_dbPropitem  {
 						  }
 						  
 						  $requestParams = array("range" => ($this->varLabel."::".$rangeType.",".$minVal.",". $maxVal.",".$gap),
-														 "proj" => $projectName
+														 "projID" => $this->projectUUID
 														 );
 					 }
 					 
@@ -604,6 +611,9 @@ class dbXML_dbPropitem  {
 				$requestParams = array("taxa" => (trim($this->varLabel)),
 													"proj" => $projectName
 													);
+				
+				$requestParams = array("taxa" => (trim($this->varLabel)),
+												"projID" => $this->projectUUID);
 				
 				//echo print_r($requestParams);
 				
@@ -732,7 +742,7 @@ class dbXML_dbPropitem  {
 														  "count" => $count);
 								
 								if($sType != false){
-									 $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
+									 $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode(OpenContext_UTF8::charset_decode_utf_8($metadataObj->projectName));
 									 if($solrTypes[$sType]["pubQueryParam"] != false){
 										  $queryURL .= "&".$solrTypes[$sType]["pubQueryParam"];
 									 }
@@ -813,7 +823,7 @@ class dbXML_dbPropitem  {
 									 }
 									 if($rank <= $this->categoryCount){
 										  
-										  $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode($metadataObj->projectName);
+										  $queryURL = $host.$solrTypes[$sType]["queryPath"]."?proj=".urlencode(OpenContext_UTF8::charset_decode_utf_8($metadataObj->projectName));
 										  if($solrTypes[$sType]["pubQueryParam"] != false){
 												$queryURL .= "&".$solrTypes[$sType]["pubQueryParam"];
 										  }

@@ -151,8 +151,8 @@ class OpenContext_FacetQuery {
                 // get the project parameter
                 $proj = OpenContext_FacetQuery::test_param_key("proj", $requestParams);
                 if ($proj) {
-					$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_name", $proj, false, true, true, true);
-				}
+						$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_name", $proj, false, true, true, true);
+					}
         
                 // get the category parameter. (note: "cat" maps to "item_class" in our solr schema)
                 $cat = OpenContext_FacetQuery::test_param_key("cat", $requestParams);
@@ -175,6 +175,18 @@ class OpenContext_FacetQuery {
                     }
                     
                 }
+		
+		// get the projectID parameter. 
+                $projID = OpenContext_FacetQuery::test_param_key("projID", $requestParams);
+                if ( $projID) {
+                    if ($param_array["fq"]) {
+								$param_array["fq"] .= OpenContext_FacetQuery::ORparser("project_id", $projID, true, true, true, false);
+                    } else {
+                        $param_array["fq"] = OpenContext_FacetQuery::ORparser("project_id", $projID, false, true, true, false);
+                    }
+                    
+                }			 
+					 
 		
 		// get the dublin core contributor parameter. 
                 $contrib = OpenContext_FacetQuery::test_param_key("contrib", $requestParams);

@@ -25,13 +25,13 @@ class Facet {
             $this->value_string = "";
         }
         else{
-	    //$this->skip_UTF8 = true;
-	    if($this->skip_UTF8){
-		$linkQuery = urlencode($va_key);
-	    }
-	    else{
-		$linkQuery = urlencode(OpenContext_UTF8::charset_decode_utf_8($va_key));
-	    }
+				//$this->skip_UTF8 = true;
+				if($this->skip_UTF8){
+					 $linkQuery = urlencode($va_key);
+				}
+				else{
+					 $linkQuery = urlencode(OpenContext_UTF8::charset_decode_utf_8($va_key));
+				}
 
 
 
