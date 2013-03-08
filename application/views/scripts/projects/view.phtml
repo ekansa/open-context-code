@@ -23,7 +23,11 @@ $atomDoc = new DomDocument();
 $atomDoc->loadXML($atom);
 
 
-$XHTMLbody = $proc->transformToXML($atomDoc);
+$rawXHTMLbody = $proc->transformToXML($atomDoc);
+$Bdoc = new DOMDocument();
+$Bdoc->loadXML($rawXHTMLbody);
+$Bdoc->formatOutput = true;
+$XHTMLbody = $Bdoc->saveXML($Bdoc->documentElement);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
