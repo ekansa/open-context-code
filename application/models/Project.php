@@ -417,6 +417,7 @@ class Project {
 			   "dc" => OpenContext_OCConfig::get_namespace("dc"),
 			   "arch" => OpenContext_OCConfig::get_namespace("arch", "project"),
 			   "gml" => OpenContext_OCConfig::get_namespace("gml"),
+				"xhtml" => OpenContext_OCConfig::get_namespace("xhtml"),
 			   "kml" => OpenContext_OCConfig::get_namespace("kml"));
 	
 		return $nameSpaceArray;
@@ -680,6 +681,14 @@ class Project {
 				$long_des = $result_des->item(0)->nodeValue;
 		  }
 		  
+		  $query = "//arch:notes/arch:note[@type='long_des']/arch:string[@type='xhtml']";
+		  $result_des = $xpath->query($query, $proj_dom);
+			  
+		  if($result_des != null){
+				$long_des = $proj_dom->saveXML($result_des->item(0)->firstChild);
+		  }
+		  
+		  
 		  
 		  $query = "//oc:metadata/oc:project_name";
 		  $result_proj = $xpath->query($query, $proj_dom);
@@ -714,11 +723,11 @@ class Project {
 		  $DOI = false;
 		  $doiHref = false;
 		  $query = "//oc:metadata/dc:identifier[@type='doi']";
-		  $doiNode = $xpath->query($query, $dom);
+		  $doiNode = $xpath->query($query, $proj_dom);
 		  if( $doiNode != null){
 				$DOI = $doiNode->item(0)->nodeValue;
 				$query = "//oc:metadata/dc:identifier[@type='doi']/@href";
-				$doiHrefNode = $xpath->query($query, $dom);
+				$doiHrefNode = $xpath->query($query, $proj_dom);
 				if($doiHrefNode != null){
 					 $doiHref = $doiHrefNode->item(0)->nodeValue;
 				}

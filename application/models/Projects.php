@@ -16,7 +16,7 @@ class Projects {
 	 public $projectList;
 	 public $projectsJSON;
 	 const TMmaxTitleNames = 4; //number of context names to list in a title
-	 const TMmaxSize = 9;
+	 const TMmaxSize = 12;
 	 const TMminSize = 1;
 	 public $forceTheme = false;
 	 
