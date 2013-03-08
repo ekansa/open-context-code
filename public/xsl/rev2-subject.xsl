@@ -162,7 +162,7 @@
 												<h2>Class: <xsl:value-of select="//arch:spatialUnit/oc:item_class/oc:name"/></h2>
 										</div>
 										<div id="item_top_des_cell">
-												<h2 class="top_detail">Project: <a><xsl:attribute name="href">../projects/<xsl:if test="arch:spatialUnit/@ownedBy !=0"><xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:if></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a></h2>
+												<h2 class="top_detail"><xsl:if test="arch:spatialUnit/@ownedBy !=0">Project: <a><xsl:attribute name="href">../projects/<xsl:value-of select="arch:spatialUnit/@ownedBy"/></xsl:attribute><xsl:value-of select="arch:spatialUnit/oc:metadata/oc:project_name"/></a></xsl:if><xsl:if test="arch:spatialUnit/@ownedBy =0">Open Context</xsl:if></h2>
 												<h2 class="views">Number of Views: <xsl:value-of select="arch:spatialUnit/oc:social_usage/oc:item_views/oc:count"/></h2>
 										</div>
 								</div>
@@ -523,6 +523,7 @@
 													 </xsl:choose>)
 																				</div>
 																		  </xsl:for-each>
+																			
 																	 </div>
 																</xsl:for-each>
 														  </div>
