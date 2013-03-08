@@ -160,7 +160,8 @@ class dbXML_dbPropitem  {
 				$this->sourceID = $result[0]["source_id"];
 				$this->value =  html_entity_decode($result[0]["val_text"], ENT_QUOTES, 'UTF-8');
 				$this->varLabel =  html_entity_decode($result[0]["var_label"], ENT_QUOTES, 'UTF-8');
-	    
+				$this->varLabel = trim($this->varLabel);
+				
 				$this->label = ($this->varLabel.": ".$this->value);
 				
 				$this->varType = strtolower($result[0]["var_type"]);
