@@ -39,25 +39,31 @@ class OpenContext_ProjectAtomJson {
 		$proj_atom_string = mb_convert_encoding($proj_atom_string, "utf-8");
 		$proj_dom = new DOMDocument("1.0", "utf-8");
 		//$proj_dom = new DOMDocument("1.0");
-                $proj_dom->loadXML($proj_atom_string);
-                    
-                    
-                $xpath = new DOMXpath($proj_dom);
-		
-                    // Register OpenContext's namespace
-                $xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
-                $xpath->registerNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
-                $xpath->registerNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-                $xpath->registerNamespace("atom", OpenContext_OCConfig::get_namespace("atom"));
-                          
+		$proj_dom->loadXML($proj_atom_string);
+			 
+			 
+		$xpath = new DOMXpath($proj_dom);
+
+			 // Register OpenContext's namespace
+		$xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
+		$xpath->registerNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
+		$xpath->registerNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		$xpath->registerNamespace("atom", OpenContext_OCConfig::get_namespace("atom"));
+					 
                 
 		
 		$query = "//arch:project";
 		$result_arch = $xpath->query($query, $proj_dom);
-                if($result_arch != null){
+      if($result_arch != null){
 			$arch_node = $result_arch->item(0);
-                }
+      }
 		
+		$projectUUID = false;
+		$query = "//arch:project/@UUID";
+		$resultID = $xpath->query($query, $proj_dom);
+      if($resultID != null){
+			$projectUUID = $resultID->item(0)->nodeValue;
+      }
 		
 		
 		$query = "//oc:social_usage";
@@ -108,14 +114,7 @@ class OpenContext_ProjectAtomJson {
                 if($result_title != null){
 			$proj_item_name = $result_title->item(0)->nodeValue;
                 }
-                
-		$query = "//arch:project/@UUID";
-                $result_id = $xpath->query($query, $proj_dom);
-                if($result_id != null){
-			$projectUUID = $result_id->item(0)->nodeValue;
-                }
-		
-		
+     
 		//$relatedTabs = OpenContext_ProjectTables::temp_find_related_tables($proj_item_name);
 		$relatedTabs = OpenContext_ProjectTables::find_related_tables($projectUUID);
 		if($relatedTabs != false){
@@ -196,9 +195,10 @@ class OpenContext_ProjectAtomJson {
                     
                 $uri_to_query = $host."/sets/facets".$proj_root_path.".atom?proj=".$proj_query_name;
 
-		//echo $uri_to_query;
-
-                    
+					if($projectUUID != false){
+						$uri_to_query = $host."/sets/facets".$proj_root_path.".atom?projID=".$projectUUID ;
+					}
+					echo $uri_to_query;
                 $proj_feed_xml = file_get_contents($uri_to_query);
                 
 		@$xml = simplexml_load_string($proj_feed_xml);
