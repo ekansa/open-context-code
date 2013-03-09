@@ -198,7 +198,7 @@ class OpenContext_ProjectAtomJson {
 					if($projectUUID != false){
 						$uri_to_query = $host."/sets/facets".$proj_root_path.".atom?projID=".$projectUUID ;
 					}
-					echo $uri_to_query;
+					//echo $uri_to_query;
                 $proj_feed_xml = file_get_contents($uri_to_query);
                 
 		@$xml = simplexml_load_string($proj_feed_xml);
