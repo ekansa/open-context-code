@@ -44,6 +44,10 @@
 <xsl:include href="rev2-string-replace.xsl"/>
 
 
+<!-- used for selecting unique people -->
+<xsl:key name="people" match="//arch:links/oc:person_links/oc:link/oc:name" use="."/>
+
+
 <xsl:template match="/">
 
 <xsl:variable name="allCreators">
@@ -119,7 +123,6 @@
 <xsl:variable name="citationView">
 		<xsl:value-of select="$citation"/>
 </xsl:variable>
-
 
 
 <div id="main">
@@ -293,11 +296,11 @@
 										
 										
 										<div id="all_people" class="bodyText">
-											<h5>Associated People (<xsl:value-of select="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link)"/> people)</h5>
+											<h5>Associated People</h5>
 											<xsl:if test="count(descendant::atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link[oc:name/text() !='']) != 0" >	
 												<p class="bodyText">
-													<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link[oc:name/text() !='']">
-														<a><xsl:attribute name="href">../persons/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()">, </xsl:if>
+													<xsl:for-each select="atom:feed/atom:entry/arch:project/arch:links/oc:person_links/oc:link/oc:name[generate-id() = generate-id(key('people', .)[1])]">
+														<a><xsl:attribute name="href">../persons/<xsl:value-of select="../oc:id"/></xsl:attribute><xsl:value-of select="."/></a><xsl:if test="position() != last()">, </xsl:if>
 													</xsl:for-each>
 												</p>
 											</xsl:if>

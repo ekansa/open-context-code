@@ -111,6 +111,36 @@ class Project {
         return $output;
     }
     
+	 
+	 //just get the name
+	 function getNameByID($id){
+		  $id = $this->security_check($id);
+        $output = false; //no user
+        $db_params = OpenContext_OCConfig::get_db_config();
+        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+		  $db->getConnection();
+		  $this->setUTFconnection($db);
+	
+	
+        $sql = 'SELECT noid, doi, project_id, proj_name
+                FROM projects
+                WHERE project_id = "'.$id.'"
+                LIMIT 1';
+		
+        $result = $db->fetchAll($sql, 2);
+        if($result){
+            $this->noid = $result[0]["noid"];
+				$this->doi = $result[0]["doi"];
+            $this->projectUUID = $result[0]["project_id"];
+				$this->itemUUID = $result[0]["project_id"];
+				$this->label = $result[0]["proj_name"];
+		  }
+		  return $this->label;
+	 }
+	 
+	 
+	 
+	 
     //add to the view count;
 	 function addViewCount($id, $viewCount){
 		  $id = $this->security_check($id);

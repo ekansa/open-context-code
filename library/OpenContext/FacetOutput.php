@@ -93,6 +93,18 @@ class OpenContext_FacetOutput {
 						  "remLink" => $remLink);
 				$output[] = $facetRem;
 			}
+			elseif($key == 'projID') {
+				$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, false, $type);
+				$remValue = OpenContext_FacetOutput::pipesOR(utf8_encode($value));
+				$projObj = new Project;
+				$remValue = $projObj->getNameByID($value);
+				$facetRem = array("parameter" => $key,
+						  "value" => $value,
+						  "title" => "Project (by ID)",
+						  "remValue_XHTML" => $remValue,
+						  "remLink" => $remLink);
+				$output[] = $facetRem;
+			}
 			elseif($key == 'geotile') {
 				$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, false, $type);
 				$remValue = OpenContext_FacetOutput::pipesOR(utf8_encode($value));

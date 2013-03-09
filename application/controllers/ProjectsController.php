@@ -280,9 +280,10 @@ class projectsController extends Zend_Controller_Action
 					$setPath = "/sets/".$proj->rootPath;
 				}
 		
-				$jsonQuery = $host.$setPath.".json?proj=".urlencode($proj->label);
-				$output["href-proj-sets"] = $host.$setPath."?proj=".urlencode($proj->label);
+				$jsonQuery = $host.$setPath.".json?projID=".urlencode($proj->projectUUID);
+				$output["href-proj-sets"] = $host.$setPath."?projID=".urlencode($proj->projectUUID);
 				$output["href-proj-sets-json"] = $jsonQuery;
+
 				@$jsonString = file_get_contents($jsonQuery);
 				if($jsonString != false){
 					@$sets = Zend_Json::decode($jsonString);
