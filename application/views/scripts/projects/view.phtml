@@ -24,10 +24,17 @@ $atomDoc->loadXML($atom);
 
 
 $rawXHTMLbody = $proc->transformToXML($atomDoc);
-$Bdoc = new DOMDocument();
+$Bdoc = new DOMDocument('1.0', 'utf-8');
 $Bdoc->loadXML($rawXHTMLbody);
 $Bdoc->formatOutput = true;
+/*
 $XHTMLbody = $Bdoc->saveXML($Bdoc->documentElement);
+$XHTMLbody = str_replace("></a>", "> </a>", $XHTMLbody);
+$XHTMLbody = str_replace('<div class="ref-end"/>', '<div class="ref-end"> </div>', $XHTMLbody);
+*/
+$XHTMLbody = $Bdoc->saveHTML();
+$XHTMLbody = str_replace('<!DOCTYPE div PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">','', $XHTMLbody); // a hack to get rid of this for older php
+
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">

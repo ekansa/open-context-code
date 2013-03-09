@@ -29,8 +29,12 @@ if ($XML) {
     //$XHTMLbody = $proc->transformToXML($archaeoMLDoc);
     $newDom = $proc->transformToDoc($archaeoMLDoc);
     $newDom->formatOutput = true;
-    $rootNode = $newDom->getElementsByTagName("div")->item(0);
-    $XHTMLbody = $newDom->saveXML($rootNode);
+    //$rootNode = $newDom->getElementsByTagName("div")->item(0);
+    //$XHTMLbody = $newDom->saveXML($rootNode);
+	 $XHTMLbody = $newDom->saveHTML();
+	 $XHTMLbody = str_replace('<!DOCTYPE div PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">','', $XHTMLbody); // a hack to get rid of this for older php
+
+	 
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
