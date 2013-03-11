@@ -160,12 +160,12 @@
 									  <xsl:if test="position() = 1">
 						<strong>Context:</strong> 
 									<xsl:for-each select="oc:parent">
-									<a><xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a> /
+									<a><xsl:attribute name="href">../../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><xsl:value-of select="oc:name"/></a> /
 									</xsl:for-each> 
 								</xsl:if>
 								  </xsl:for-each>
 								  
-								  <a><xsl:attribute name="href">../subjects/<xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:id"/></xsl:attribute><xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:name"/></a> (Linked item)
+								  <a><xsl:attribute name="href">../../subjects/<xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:id"/></xsl:attribute><xsl:value-of select="arch:resource/arch:links/oc:space_links/oc:link/oc:name"/></a> (Linked item)
 				
 				<br/>
 				<br/>
@@ -217,7 +217,7 @@
 																				<xsl:value-of select="oc:var_label"/>
 																		</td>
 																		<td>
-																				<a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																				<a><xsl:attribute name="href">../../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
 																		</td>
 																</tr>
 														 </xsl:for-each>
