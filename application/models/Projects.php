@@ -132,8 +132,16 @@ class Projects {
 									 
 									 
 									 unset($workingContexts[$timeSpanHash]["point"]);
-									 $workingContexts[$timeSpanHash]["point"] = array("lat"=> ($workingContexts[$timeSpanHash]["prep-geo"]["minLat"] + $workingContexts[$timeSpanHash]["prep-geo"]["maxLat"])/2,
-																							  "lon"=> ($workingContexts[$timeSpanHash]["prep-geo"]["minLon"] + $workingContexts[$timeSpanHash]["prep-geo"]["maxLon"])/2);
+									 
+									 if(abs(($workingContexts[$timeSpanHash]["prep-geo"]["minLon"] + $workingContexts[$timeSpanHash]["prep-geo"]["maxLon"])/2) < 3 && abs(($workingContexts[$timeSpanHash]["prep-geo"]["minLat"] + $workingContexts[$timeSpanHash]["prep-geo"]["maxLat"])/2) < 3){
+										  $workingContexts[$timeSpanHash]["point"] = array("lat"=> ($workingContexts[$timeSpanHash]["prep-geo"]["minLat"] + $workingContexts[$timeSpanHash]["prep-geo"]["maxLat"])/2,
+																									"lon"=> ($workingContexts[$timeSpanHash]["prep-geo"]["minLon"] + $workingContexts[$timeSpanHash]["prep-geo"]["maxLon"])/2);
+									 }
+									 else{
+										   $workingContexts[$timeSpanHash]["point"] = array("lat"=> $workingContexts[$timeSpanHash]["prep-geo"]["minLat"],
+																									"lon"=> $workingContexts[$timeSpanHash]["prep-geo"]["minLon"]);
+									 }
+									 
 									 unset($workingContexts[$timeSpanHash]["polygon"]);
 									 
 									 
