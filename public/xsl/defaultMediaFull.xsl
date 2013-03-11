@@ -241,7 +241,7 @@
 														<xsl:for-each select="arch:resource/arch:links/oc:space_links/oc:link[position() mod 2 = 1]">
 																<div class="list_tab_row">
 																		<div class="list_tab_cell_icon">	
-																				<a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																				<a><xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><img> 
 																					<xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
 																					<xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
 																				</img></a>
@@ -253,7 +253,7 @@
 																	 
 																		<xsl:for-each select="following-sibling::oc:link[1]">
 																				<div class="list_tab_cell_icon">	
-																				  <a><xsl:attribute name="href"><xsl:value-of select="oc:id"/></xsl:attribute><img> 
+																				  <a><xsl:attribute name="href">../subjects/<xsl:value-of select="oc:id"/></xsl:attribute><img> 
 																					  <xsl:attribute name="src">http://www.opencontext.org/database/ui_images/oc_icons/<xsl:value-of select="oc:item_class/oc:iconURI"/></xsl:attribute>
 																					  <xsl:attribute name="alt"><xsl:value-of select="oc:item_class/oc:name"/></xsl:attribute>
 																				  </img></a>
