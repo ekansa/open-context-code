@@ -313,7 +313,7 @@
 								<div id="right_des">
 										<div id="ed-spacer"><br/></div>
 										<div id="editorial">
-												<h5>Project Rreview Status</h5>
+												<h5>Project Editorial Status</h5>
 												<div id="project-edit-status">
 														  <span id="project-edit-stars">
 																  <xsl:attribute name="title"><xsl:value-of select="//oc:metadata/oc:project_name/@statusDes"/> (Click for more)</xsl:attribute>
