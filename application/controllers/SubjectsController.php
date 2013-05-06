@@ -43,17 +43,18 @@ class subjectsController extends Zend_Controller_Action {
 		$spaceItem = New Subject;
 		$itemFound = $spaceItem->getByID($itemUUID);
 		
-		  if($itemFound){
-			  $XML = simplexml_load_string($spaceItem->archaeoML);
-			  $XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
-			  $spaceItem->archaeoML = $XML->asXML();
-			  header("Content-type: application/xml");
-			  echo $spaceItem->archaeoML;
-		  }
-		  else{
-			  $this->view->requestURI = $this->_request->getRequestUri(); 
-			  return $this->render('404error');
-		  }
+		if($itemFound){
+			$spaceItem->getTableAssociations(); //find tables for download associated with the item
+			$XML = simplexml_load_string($spaceItem->archaeoML);
+			$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($spaceItem->projectUUID, $XML, $spaceItem->nameSpaces());
+			$spaceItem->archaeoML = $XML->asXML();
+			header("Content-type: application/xml");
+			echo $spaceItem->archaeoML;
+		}
+		else{
+			$this->view->requestURI = $this->_request->getRequestUri(); 
+			return $this->render('404error');
+		}
 		
 	}//end atom function
 
@@ -157,6 +158,7 @@ class subjectsController extends Zend_Controller_Action {
 		$itemFound = $spaceItem->getByID($itemUUID);
 		
 		if($itemFound){
+			$spaceItem->getTableAssociations(); //find tables for download associated with the item
 			@$XML = simplexml_load_string($spaceItem->archaeoML);
 			if($XML){
 				$crawler = OpenContext_SocialTracking::crawlerDetect(@$_SERVER['HTTP_USER_AGENT']);

@@ -610,6 +610,22 @@
 														</xsl:if>
 												</div><!-- end div for editorial content -->
 												
+												<xsl:if test="//oc:metadata/oc:tableRefs">
+													<div id="table-links">
+														<h5>Downloadable Tables with this Item</h5>
+														<xsl:for-each select="//oc:metadata/oc:tableRefs/oc:link">
+															<p>
+																	<a>
+																			<xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute>
+																			<xsl:attribute name="title">This downloadable table has a record of this item</xsl:attribute>
+																			<xsl:value-of select="."/>
+																	</a>
+															</p>
+														</xsl:for-each>
+													</div>
+												</xsl:if>
+												
+												
 												<div id="media-links">
 														<h5>Linked Media (<xsl:value-of select="count(descendant::arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link)"/>)</h5>
 														  

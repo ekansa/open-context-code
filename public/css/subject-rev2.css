@@ -249,6 +249,11 @@ div.item-multi-obs {
 	font-family: Tahoma, Geneva, sans-serif;
 	margin-bottom: 3%;
 }
+#table-links {
+	border: thin solid #CCCCCC;
+	margin-top:4%;
+	padding:2%;
+}
 #media-links {
 	border: thin solid #CCCCCC;
 	margin-top:4%;

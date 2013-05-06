@@ -4,6 +4,8 @@
 //this class interacts with the database for accessing and changing Subjects (location and object items)
 class Subject {
     
+	 public $db;
+	 
     /*
      General item metadata
     */
@@ -50,10 +52,8 @@ class Subject {
         
         $id = $this->security_check($id);
         $output = false; //no user
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+        
+        $db = $this->startDB();
         
         $sql = 'SELECT *
                 FROM space 
@@ -111,9 +111,7 @@ class Subject {
     function getCreatedTime($id){
         
         $id = $this->security_check($id);
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
+        $db = $this->startDB();
         
         $sql = 'SELECT created
                 FROM space
@@ -135,12 +133,7 @@ class Subject {
     
     function versionUpdate($id, $db = false){
 	
-		  if(!$db){
-				$db_params = OpenContext_OCConfig::get_db_config();
-				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-				$db->getConnection();
-				$this->setUTFconnection($db);
-		  }
+		  $db = $this->startDB();
 		  
 		  $sql = 'SELECT *
 							FROM space
@@ -160,12 +153,7 @@ class Subject {
 	 
 	 //git hub has pretty strict size restrictions this puts subjects into different repos, if the project is big
 	 function assignRepository($projectUUID, $db = false){
-		  if(!$db){
-				$db_params = OpenContext_OCConfig::get_db_config();
-				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-				$db->getConnection();
-				$this->setUTFconnection($db);
-		  }
+		  $db = $this->startDB();
 		  
 		  $output = false;
 		  $sql = "SELECT COUNT(uuid) AS idCount
@@ -188,10 +176,7 @@ class Subject {
 	 //create a new spatial item
     function createUpdate($versionUpdate){
         
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+        $db = $this->startDB();
 			
 		  if(!$this->noid){
 				$this->noid = false;
@@ -306,12 +291,7 @@ class Subject {
     
     //useful function for updating archaeoML, especially if new children items added
     function updateArchaeoML($id, $archaeoML, $db = false){
-		  if(!$db){
-				$db_params = OpenContext_OCConfig::get_db_config();
-				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-				$db->getConnection();
-				$this->setUTFconnection($db);
-		  }
+		  $db = $this->startDB();
 		  
 		  @$xmlOK = simplexml_load_string($archaeoML);
 		  $status = false; //not a success
@@ -382,10 +362,7 @@ class Subject {
     function update_atom_entry(){
 	
 		  $updateOK = false;
-		  $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 	
 		  @$xml = simplexml_load_string($this->atomEntry); 
 		  if($xml){
@@ -1196,10 +1173,7 @@ class Subject {
     function committ_update_archaeoML(){
 	
 		  $updateOK = false;
-		  $db_params = OpenContext_OCConfig::get_db_config();
-		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 		  
 		  @$spatialItem = simplexml_load_string($this->archaeoML); 
 		  if($spatialItem){
@@ -1289,9 +1263,7 @@ class Subject {
 					  "class_uuid" => $classID 
 						);
 		  
-		  $db_params = OpenContext_OCConfig::get_db_config();
-		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
+		  $db = $this->startDB();
 		  try{
 				$db->insert("space", $data);
 		  }catch(Exception $e){
@@ -1570,10 +1542,7 @@ class Subject {
     //this updates geo spatial coordinates to reflect the latest version
     function geoUpdate($spatialItem){
 	
-		  $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 	
 		  $spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
 		  foreach($spatialItem->xpath("//oc:geo_reference") as $geo){
@@ -1622,10 +1591,7 @@ class Subject {
     //this updates chronological range to reflect the latest version
     function chronoUpdate($spatialItem){
 	
-		  $db_params = OpenContext_OCConfig::get_db_config();
-		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 		  
 		  $spatialItem->registerXPathNamespace("oc", self::OC_namespaceURI);
 		  foreach($spatialItem->xpath("//oc:tag[@type='chronological']") as $chrono){
@@ -1677,9 +1643,74 @@ class Subject {
     }
     
 
+	 //get table associations
+    function getTableAssociations(){
+		  $host = OpenContext_OCConfig::get_host_config();  
+		  $db = $this->startDB();
+		  
+		  $sql = "SELECT DISTINCT tableID, page
+		  FROM export_tabs_records
+		  WHERE uuid = '".$this->itemUUID."'
+		  ORDER BY updated, tableID, page
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				
+				$dom = new DOMDocument("1.0", "utf-8");
+				$dom->loadXML($this->archaeoML);
+				$dom->formatOutput = true;
+				$xpath = new DOMXpath($dom);
+				
+				$NSarray = $this->nameSpaces();
+				foreach($NSarray as $prefix => $uri){
+					 $xpath->registerNamespace($prefix, $uri);
+				}
+				$query = "//oc:metadata/oc:tableRefs";
+				$tableRefsList = $xpath->query($query, $dom);
+		  
+				if($tableRefsList->item(0) == null){
+					 $query = "//oc:metadata";
+					 $metadataNodeList = $xpath->query($query, $dom);
+					 $metadataNode = $metadataNodeList->item(0);
+					 $tableRefsNode = $dom->createElement("oc:tableRefs");
+					 $metadataNode->appendChild($tableRefsNode);
+				}
+				else{
+					 $tableRefsNode = $tableRefsList->item(0);
+				}
+				
+				foreach($result as $row){
+					 $tableID = $row["tableID"];
+					 $page = $row["page"];
+					 $useID = $tableID;
+					 if($page > 1){
+						  $useID .= "/".$page;
+					 }
+					  $tableURI = $host."/tables/".$useID;
+					 
+					 $tabObj = new Table;
+					 $tabObj->getByID($useID);
+					 $tableName = $tabObj->label;
+					 
+					 $query = "//oc:metadata/oc:tableRefs/oc:link[@href='$tableURI']";
+					 $sameNodeList = $xpath->query($query, $dom);
+					 if($sameNodeList->item(0)  == null){
+						  $linkNode = $dom->createElement("oc:link");
+						  $linkNode->setAttribute("href", $tableURI);
+						  $linkText = $dom->createTextNode($tableName);
+						  $linkNode->appendChild($linkText);
+						  $tableRefsNode->appendChild($linkNode);
+					 }//end case where we need to add a table link
+				}//end loop through linked tables
+				$this->archaeoML = $dom->saveXML();
+		  }
+		  
+	 }
     
     
-    
+	 
+	 
     
     
     function find_personID($spatialItem, $personName){
@@ -1709,10 +1740,7 @@ class Subject {
     function db_find_personID($personName){
 	
 		  $personID = false;
-		  $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 		  
 		  $sql = "SELECT persons.person_uuid
 		  FROM persons
@@ -1732,11 +1760,7 @@ class Subject {
     
     function atom_pubDate(){
 		
-		  $db_params = OpenContext_OCConfig::get_db_config();
-		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-					
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 			
 		  $sql = "SELECT space.created, space.updated
 		  FROM space
@@ -1774,13 +1798,27 @@ class Subject {
     }
     
 
-     //make sure character encoding is set, so greek characters work
-    function setUTFconnection($db){
-	    $sql = "SET collation_connection = utf8_unicode_ci;";
-	    $db->query($sql, 2);
-	    $sql = "SET NAMES utf8;";
-	    $db->query($sql, 2);
-    } 
+    function startDB(){
+		  if(!$this->db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+				$this->db = $db;
+		  }
+		  else{
+				$db = $this->db;
+		  }
+		  
+		  return $db;
+	 }
+	 
+	 function setUTFconnection($db){
+		  $sql = "SET collation_connection = utf8_unicode_ci;";
+		  $db->query($sql, 2);
+		  $sql = "SET NAMES utf8;";
+		  $db->query($sql, 2);
+    }
    
     
 }

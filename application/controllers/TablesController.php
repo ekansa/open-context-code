@@ -200,13 +200,12 @@ class tablesController extends Zend_Controller_Action
   
     
   public function tabjsonAction(){
+    
+    error_reporting(0);
     $this->_helper->viewRenderer->setNoRender();
     $tableId = $this->_request->getParam('tableid');
     $tableId = OpenContext_TableOutput::tableURL_toCacheID($tableId);
-    
-    
-    
-    
+
     $Final_frontendOptions = array('lifetime' => NULL,'automatic_serialization' => true );
     $Final_backendOptions = array('cache_dir' => './tablecache/' );
     $Final_cache = Zend_Cache::factory('Core','File',$Final_frontendOptions,$Final_backendOptions);
@@ -269,6 +268,7 @@ class tablesController extends Zend_Controller_Action
       
       }
     else{
+      header("HTTP/1.0 404 Not Found");
       echo "Failure!";
     }
   }
