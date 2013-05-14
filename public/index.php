@@ -388,6 +388,14 @@ $setsJsonRoute = new Zend_Controller_Router_Route_Regex('sets/(.*)\.json', array
 
 $router->addRoute('setsJson', $setsJsonRoute);
 
+// Geo-JSON Result
+
+$setsGeoJsonRoute = new Zend_Controller_Router_Route_Regex('sets/(.*)\.geojson', array('controller' => 'sets', 'action' => 'geojson'), array(1 => 'default_context_path'), 'sets/%s/');
+
+$router->addRoute('setsGeoJson', $setsGeoJsonRoute);
+
+
+
 
 // the Open Search service version
 $setsSearchRoute = new Zend_Controller_Router_Route_Regex('sets/search/(.*)\.xml', array('controller' => 'sets', 'action' => 'search'), array(1 => 'default_context_path'), 'sets/%s/');
@@ -471,6 +479,14 @@ $router->addRoute('mapsJson', $mapJsonRoute);
 $mapTimeMapJSONRoute = new Zend_Controller_Router_Route('maps/time-map.json', array('controller' => 'maps', 'action' => 'timemapjson'));
 
 $router->addRoute('mapsTimeMapJSON', $mapTimeMapJSONRoute);
+
+
+// the test geojson map
+$testMapRoute = new Zend_Controller_Router_Route('maps/test-map', array('controller' => 'maps', 'action' => 'testMap'));
+
+$router->addRoute('testMap', $testMapRoute);
+
+
 
 
 //------------------

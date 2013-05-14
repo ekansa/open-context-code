@@ -34,6 +34,12 @@ class mapsController extends Zend_Controller_Action {
         
     }
 
+	 public function testmapAction(){
+		  
+		  
+		  
+	 }
+
 
 
     public function timemapjsonAction(){
