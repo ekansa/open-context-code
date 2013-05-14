@@ -557,6 +557,28 @@ $OAI_url = $host."/oai/request";
 										  </td>
 									 </tr>
 									 
+									 
+									 <tr id="geojson" >
+										  <td>GeoJSON (spatial context facets)</td>
+										  <td>
+												<p>Open Context offers a <a href='http://geojson.org/geojson-spec.html'>GeoJSON</a> representation of geospatial metadata facets.
+												GeoJSON is widely supported by many mapping libraries and is an increasingly popular format for expressing spatial data.
+												The Open Context GeoJSON service can also be accessed as JSON/P data. To make JSON/P requests, simply add the parameter "callback"
+												with its value set to the name of the function that you want to use to "pad" the JSON data.</p>
+												
+												<h5>Plain GeoJSON Example:</h5>
+												<ul class="service-examples">
+													 <li><a href="http://opencontext.org/sets/Turkey/Kenan+Tepe.geojson" title="Plain GeoJSON">http://opencontext.org/sets/Turkey/Kenan+Tepe.geojson</a> plain JSON</li>
+												</ul>
+												
+												<h5>(Geo)JSON/P Example:</h5>
+												<ul class="service-examples">
+													 <li><a href="http://opencontext.org/sets/Turkey/Kenan+Tepe.geojson?callback=loadit" title="(Geo)JSON/P example">http://opencontext.org/sets/Turkey/Kenan+Tepe.geojson?callback=loadit</a> GeoJSON padded within a function called "loadit"</li>
+												</ul>
+										  </td>
+									 </tr>
+									 
+									 
 								</tbody>
 						  </table>
 						  
