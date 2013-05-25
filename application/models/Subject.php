@@ -134,7 +134,7 @@ class Subject {
     function versionUpdate($id, $db = false){
 	
 		  $db = $this->startDB();
-		  
+		   $this->setUTFconnection($db);
 		  $sql = 'SELECT *
 							FROM space
 							WHERE uuid = "'.$id.'"
@@ -177,6 +177,7 @@ class Subject {
     function createUpdate($versionUpdate){
         
         $db = $this->startDB();
+		  $this->setUTFconnection($db);
 			
 		  if(!$this->noid){
 				$this->noid = false;
