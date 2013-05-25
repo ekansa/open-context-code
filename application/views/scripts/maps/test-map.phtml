@@ -16,8 +16,8 @@ if(isset($_GET["geoJSON"])){
 	 $geoJSONuri = $_GET["geoJSON"];
 }
 else{
-	 $geoJSONuri = "http://opencontext/sets/.geojson?geotile=1";
-	 $geoJSONuri = "http://opencontext/sets/.geojson";
+	 $geoJSONuri = $host."/sets/.geojson?geotile=1";
+	 $geoJSONuri = $host."/sets/.geojson";
 }
 
 ?>
