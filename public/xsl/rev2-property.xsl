@@ -522,19 +522,19 @@
 																  <a href="../about/publishing#editorial-status">
 																		<xsl:choose>
 																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 1">
-																						&#9733;&#9734;&#9734;&#9734;&#9734;
+																						&#9679;&#9675;&#9675;&#9675;&#9675;
 																				</xsl:when>
 																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 2">
-																						&#9733;&#9733;&#9734;&#9734;&#9734;
+																						&#9679;&#9679;&#9675;&#9675;&#9675;
 																				</xsl:when>
 																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 3">
-																						&#9733;&#9733;&#9733;&#9734;&#9734;
+																						&#9679;&#9679;&#9679;&#9675;&#9675;
 																				</xsl:when>
 																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 4">
-																						&#9733;&#9733;&#9733;&#9733;&#9734;
+																						&#9679;&#9679;&#9679;&#9679;&#9675;
 																				</xsl:when>
 																				<xsl:when test="//oc:metadata/oc:project_name/@editStatus = 5">
-																						&#9733;&#9733;&#9733;&#9733;&#9733;
+																						&#9679;&#9679;&#9679;&#9679;&#9679;
 																				</xsl:when>
 																				<xsl:otherwise>
 																						Forthcoming
