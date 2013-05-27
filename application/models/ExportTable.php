@@ -12,12 +12,15 @@ class ExportTable {
 	 public $fieldCount; //number of field counts
 	 public $metadata; //array for expression as JSON-LD
 	 
+	 public $citation; //citation generated from metadata
+	 
 	 public $db;
 	 
 	 
-	 function getByID($tableID){
+	 function getByID($tableID, $page = false){
 		  
 		  $tableID = $this->security_check($tableID);
+		  $page = $this->security_check($page);
 		  $db = $this->startDB();
 		  
 		  $sql = "SELECT * FROM export_tabs WHERE tableID = '$tableID' LIMIT 1; ";
@@ -33,12 +36,61 @@ class ExportTable {
 				$metadataJSON = $result[0]["metadata"];
 				$metadata = Zend_Json::decode($metadataJSON);
 				$this->metadata = $metadata;
+				$this->generateCitation();
 				return true;
 		  }
 		  else{
 				return false;
 		  }
 	 }
+	 
+	 
+	 //generate citation from metadata
+	 function generateCitation(){
+		  
+		  $metadata = $this->metadata;
+		  $citation = "";
+		  $first = true;
+		  foreach($metadata["contributorList"] as $nArray){
+				if(!$first){
+					 $citation .= ", ";
+				}
+				$citation .= $nArray["contributor"]["name"];
+				$first = false;
+		  }
+		  
+		  $citation .= " (".date("Y-m-d", strtotime($metadata["published"])).") ";
+		  $citation .= "\"".$metadata["title"]."\" ";
+		  
+		  $first = true;
+		  foreach($metadata["editorList"] as $nArray){
+				if(!$first){
+					 $citation .= ", ";
+				}
+				$citation .= $nArray["editor"]["name"];
+				$first = false;
+		  }
+		  
+		  if(count($metadata["editorList"]>1)){
+				$citation .= " (Eds). Open Context. ";
+		  }
+		  else{
+				$citation .= " (Ed). Open Context. ";
+		  }
+		  
+		  $citation .= htmlentities("<".$metadata["id"]."> ");
+		  
+		  if(isset($metadata["doi"])){
+				$citation .= "DOI <a href=\"http://dx.doi.org/".$metadata["doi"]."\">".$metadata["doi"]."</a>";
+		  }
+		  elseif(isset($metadata["ark"])){
+				$citation .= "ARK <a href=\"http://dx.doi.org/".$metadata["ark"]."\">".$metadata["ark"]."</a>";
+		  }
+		  
+		  $this->citation = $citation;
+		  return $citation;
+	 }
+	 
 	 
 	 
 	 function createUpdate($metadataString){

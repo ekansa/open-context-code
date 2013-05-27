@@ -97,10 +97,10 @@ class tablesController extends Zend_Controller_Action
       
   public function viewAction(){
     //$this->_helper->viewRenderer->setNoRender(); 
-    $tableId = $this->_request->getParam('tableid');
+    $tableID = $this->_request->getParam('tableid');
     
     
-    if($tableId == '.atom'){
+    if($tableID == '.atom'){
       return $this->_forward('atom'); //do the atom action
     }
     elseif($this->_request->getParam('edit')){
@@ -117,17 +117,28 @@ class tablesController extends Zend_Controller_Action
     }
     $this->view->partID = $partID;
     
-    $tableId = OpenContext_TableOutput::tableID_part($tableId, $partID);
+    
+    $exTableObj = new ExportTable;
+    $found = $exTableObj->getByID($tableID);
+    if($found){
+      $this->view->exTableObj = $exTableObj;
+      return $this->render('tview');
+    }
+    
+    
+    
+    
+    $tableID = OpenContext_TableOutput::tableID_part($tableID, $partID);
     
     $Final_frontendOptions = array('lifetime' => NULL,'automatic_serialization' => true );
     $Final_backendOptions = array('cache_dir' => './tablecache/' );
     $Final_cache = Zend_Cache::factory('Core','File',$Final_frontendOptions,$Final_backendOptions);
     $result = false;
-    if($cache_result = $Final_cache->load($tableId )){
+    if($cache_result = $Final_cache->load($tableID )){
       #$this->view->JSONstring = $cache_result;
       
       //save data to MySQL for redundancy, if not already in.
-      //tableDataBaseSave($tableId, $cache_result);
+      //tableDataBaseSave($tableID, $cache_result);
       
       //$result = Zend_Json::decode($cache_result);
       $result = json_decode($cache_result, true);
@@ -137,7 +148,7 @@ class tablesController extends Zend_Controller_Action
       unset($Final_cache);
       //echo "there";
       $tableObj = new Table;
-      $tableObj->getByID($tableId);
+      $tableObj->getByID($tableID);
       $tableObj->get_jsonFile();
       if($tableObj->get_jsonFile()){
         $jsonString = $tableObj->jsonData;
@@ -159,24 +170,23 @@ class tablesController extends Zend_Controller_Action
         $paginator->setCurrentPageNumber($page);
         $this->view->table_data=$paginator;
       }
-      $this->view->table_id=$tableId;
+      $this->view->table_id=$tableID;
       $this->view->table_fields = $result["table_fields"];
       
-      $tableMetadata = $this->get_table_metadata($tableId);
+      $tableMetadata = $this->get_table_metadata($tableID);
       if(!$tableMetadata){
         $tableMetadata = $result["meta"];
       }
-      $tableMetadata = OpenContext_TableOutput::noid_check($tableId, $tableMetadata);
+      $tableMetadata = OpenContext_TableOutput::noid_check($tableID, $tableMetadata);
       
       $this->view->table_metadata = $tableMetadata; 
       $host = OpenContext_OCConfig::get_host_config();
-      $this->view->google_link=generateAuthSubRequestLink($host."/tables/googleservice?tableid=".$tableId);
+      $this->view->google_link=generateAuthSubRequestLink($host."/tables/googleservice?tableid=".$tableID);
     }
     else{
-      //echo "Failure!";
-      //echo "table id: $tableId";
-      //break;
+      
       return $this->_helper->redirector('index', 'tables');
+      
     }
     
     
@@ -187,11 +197,11 @@ class tablesController extends Zend_Controller_Action
   public function tabatomAction(){
     
     $this->_helper->viewRenderer->setNoRender();
-    $tableId = $this->_request->getParam('tableid');
-    $tableId = OpenContext_TableOutput::tableURL_toCacheID($tableId);
+    $tableID = $this->_request->getParam('tableid');
+    $tableID = OpenContext_TableOutput::tableURL_toCacheID($tableID);
     
     $tabObj = new Table;
-    $entryXML = $tabObj->getItemEntry($tableId);
+    $entryXML = $tabObj->getItemEntry($tableID);
     header('Content-type: application/atom+xml', true);
     echo $entryXML;
     
@@ -203,20 +213,20 @@ class tablesController extends Zend_Controller_Action
     
     error_reporting(0);
     $this->_helper->viewRenderer->setNoRender();
-    $tableId = $this->_request->getParam('tableid');
-    $tableId = OpenContext_TableOutput::tableURL_toCacheID($tableId);
+    $tableID = $this->_request->getParam('tableid');
+    $tableID = OpenContext_TableOutput::tableURL_toCacheID($tableID);
 
     $Final_frontendOptions = array('lifetime' => NULL,'automatic_serialization' => true );
     $Final_backendOptions = array('cache_dir' => './tablecache/' );
     $Final_cache = Zend_Cache::factory('Core','File',$Final_frontendOptions,$Final_backendOptions);
     $cache_result = false;
-    if($cache_result = $Final_cache->load($tableId )){
+    if($cache_result = $Final_cache->load($tableID )){
       
     }
     else{
       
       $tableObj = new Table;
-      $tableObj->getByID($tableId);
+      $tableObj->getByID($tableID);
       $tableObj->get_jsonFile();
       if($tableObj->get_jsonFile()){
         $cache_result = $tableObj->jsonData;
@@ -277,7 +287,7 @@ class tablesController extends Zend_Controller_Action
     
     //$this->_helper->viewRenderer->setNoRender();
     //echo "here";
-    $tableId = $this->_request->getParam('tableid');
+    $tableID = $this->_request->getParam('tableid');
     OpenContext_SocialTracking::update_referring_link('tables', $this->_request->getRequestUri(), @$_SERVER['HTTP_USER_AGENT'], @$_SERVER['HTTP_REFERER']);
     
     if(!$this->_request->getParam('partID')){
@@ -288,7 +298,7 @@ class tablesController extends Zend_Controller_Action
     }
     $this->view->partID = $partID;
     
-    $tableId = OpenContext_TableOutput::tableID_part($tableId, $partID);
+    $tableID = OpenContext_TableOutput::tableID_part($tableID, $partID);
 
     $requestParams =  $this->_request->getParams();
     //echo var_dump($requestParams);
@@ -296,7 +306,7 @@ class tablesController extends Zend_Controller_Action
     $Final_frontendOptions = array('lifetime' => NULL,'automatic_serialization' => true );
     $Final_backendOptions = array('cache_dir' => './tablecache/' );
     $Final_cache = Zend_Cache::factory('Core','File',$Final_frontendOptions,$Final_backendOptions);
-    if($cache_result = $Final_cache->load($tableId )){
+    if($cache_result = $Final_cache->load($tableID )){
       
       $result = Zend_Json::decode($cache_result);
       $page = $this->_getParam('page',1);
@@ -306,10 +316,10 @@ class tablesController extends Zend_Controller_Action
         $paginator->setCurrentPageNumber($page);
         $this->view->table_data=$paginator;
       }
-      $this->view->table_id=$tableId;
+      $this->view->table_id=$tableID;
       $this->view->table_fields = $result["table_fields"];
       
-      $tableMetadata = $this->get_table_metadata($tableId);
+      $tableMetadata = $this->get_table_metadata($tableID);
       if(!$tableMetadata){
         $tableMetadata = $result["meta"];
       }
@@ -361,20 +371,20 @@ class tablesController extends Zend_Controller_Action
     $this->view->displayName = $identity->name;
     $this->view->email =  $identity->email;
     
-    $tableId = $_REQUEST['tableId'];
+    $tableID = $_REQUEST['tableId'];
     $newTitle = $_REQUEST['title'];
     $newDescription = $_REQUEST['description'];
     $newTags = $_REQUEST['tags'];
     
     $this->_helper->viewRenderer->setNoRender();
-    //echo $tableId."<br/>";
+    //echo $tableID."<br/>";
     //echo $newTitle."<br/>";
     //echo $newDescription."<br/>";
     //echo $newTags."<br/>";
     $Final_frontendOptions = array('lifetime' => NULL,'automatic_serialization' => true );
     $Final_backendOptions = array('cache_dir' => './tablecache/' );
     $Final_cache = Zend_Cache::factory('Core','File',$Final_frontendOptions,$Final_backendOptions);
-    if($cache_result = $Final_cache->load($tableId )){
+    if($cache_result = $Final_cache->load($tableID )){
       
       $goodToEdit = false;
       $result = Zend_Json::decode($cache_result);
@@ -387,7 +397,7 @@ class tablesController extends Zend_Controller_Action
       
       if($goodToEdit){
         //Table found, authorization is OK for edits.
-        $editDone = OpenContext_TableOutput::table_update($tableId, $result, $newTitle, $newDescription, $newTags);
+        $editDone = OpenContext_TableOutput::table_update($tableID, $result, $newTitle, $newDescription, $newTags);
         $this->view->displayName = $identity->name;
         $this->view->email =  $identity->email;
         $this->view->editDone = $editDone;
@@ -399,9 +409,9 @@ class tablesController extends Zend_Controller_Action
           $paginator->setCurrentPageNumber($page);
           $this->view->table_data=$paginator;
         }
-        $this->view->table_id=$tableId;
+        $this->view->table_id=$tableID;
         $this->view->table_fields = $result["table_fields"];
-        $tableMetadata = $this->get_table_metadata($tableId);
+        $tableMetadata = $this->get_table_metadata($tableID);
         if(!$tableMetadata){
           $tableMetadata = $result["meta"];
         }
@@ -453,7 +463,7 @@ class tablesController extends Zend_Controller_Action
 
   public function googleserviceAction(){
     $this->_helper->viewRenderer->setNoRender();
-    $tableId = $_GET['tableid'];
+    $tableID = $_GET['tableid'];
     if (isset($_GET['token'])) 
       updateAuthSubToken($_GET['token']);
     else 
@@ -498,7 +508,7 @@ class tablesController extends Zend_Controller_Action
     $Final_frontendOptions = array('lifetime' => NULL,'automatic_serialization' => true );
     $Final_backendOptions = array('cache_dir' => './tablecache/' );
     $Final_cache = Zend_Cache::factory('Core','File',$Final_frontendOptions,$Final_backendOptions);
-       if($cache_result = $Final_cache->load($tableId )){
+       if($cache_result = $Final_cache->load($tableID )){
          $result = Zend_Json::decode($cache_result);
          $count=0;
          //foreach($result['table_fields'] as $headerData){
@@ -521,12 +531,12 @@ class tablesController extends Zend_Controller_Action
     }
     
     
-    private function get_table_metadata($tableId){
+    private function get_table_metadata($tableID){
       $db_params = OpenContext_OCConfig::get_db_config();
       $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
       $db->getConnection();
       
-      $sql = "SELECT metadata FROM dataset WHERE cache_id = '$tableId' LIMIT 1";
+      $sql = "SELECT metadata FROM dataset WHERE cache_id = '$tableID' LIMIT 1";
       $result = $db->fetchAll($sql, 2);
       
       if($result){
