@@ -132,14 +132,14 @@
 
         
         <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <crm:E20_Biological_Object>
+            <crm:E20.Biological_Object>
                 <xsl:attribute name="rdf:about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/></xsl:attribute> 
                 <rdfs:label><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdfs:label>
     
                 <crm:P102.has_title>
-                    <crm:E35_Title>
+                    <crm:E35.Title>
                       <rdf:value><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdf:value>
-                    </crm:E35_Title>
+                    </crm:E35.Title>
                 </crm:P102.has_title>
                 
                 <crm:P2.has_type>
@@ -182,14 +182,14 @@
                    
                     <crm:P43F.has_dimension>
                         <crm:E54.Dimension>
-                            <crm:P91F_has_unit>
+                            <crm:P91.has_unit>
                                 <xsl:attribute name="rdf:resource">
                                     <xsl:value-of select="arch:decimal/@href | arch:integeter/@href"/>
                                 </xsl:attribute>
-                            </crm:P91F_has_unit>
-                            <crm:P90F_has_value>
+                            </crm:P91.has_unit>
+                            <crm:P90.has_value>
                                 <xsl:value-of select="arch:decimal | arch:integeter"/>
-                            </crm:P90F_has_value>
+                            </crm:P90.has_value>
                             <rdfs:label><xsl:value-of select="oc:var_label"/>: <xsl:value-of select="oc:show_val"/> (<xsl:value-of select="arch:decimal/@abrv | arch:integeter/@abrv"/>)</rdfs:label>
 										  <xsl:for-each select="oc:annotations[@aboutType='variable']/oc:annotation">
 													 <xsl:if test="oc:relationLink/@type='Measurement type'">
@@ -213,16 +213,56 @@
                 </crm:P53.has_former_or_current_location>
                 -->
                 
-		<xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://purl.org/NET/biol/ns#term_hasTaxonomy']">
-		    <!--Biological Taxonomy Present  -->
-                    <crm:P2f_has_type>
+					 <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://purl.org/NET/biol/ns#term_hasTaxonomy']">
+					 <!--Biological Taxonomy Present  -->
+                    <crm:P2.has_type>
                         <crm:E55.Type>
                             <xsl:attribute name="rdf:about">
                                 <xsl:value-of select="oc:targetLink/@href"/>
                             </xsl:attribute>
                             <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
                         </crm:E55.Type>
-                    </crm:P2f_has_type>
+                    </crm:P2.has_type>
+                </xsl:for-each>
+					 
+					 <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://opencontext.org/vocabularies/open-context-zooarch/zoo-0079']">
+					 <!--Anatomical Entity Present  -->
+                    <crm:P2.has_type>
+                        <crm:E55.Type>
+                            <xsl:attribute name="rdf:about">
+                                <xsl:value-of select="oc:targetLink/@href"/>
+                            </xsl:attribute>
+                            <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+                        </crm:E55.Type>
+                    </crm:P2.has_type>
+                </xsl:for-each>
+					 
+					 <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://opencontext.org/vocabularies/open-context-zooarch/zoo-0077']">
+					 <!--Fusion characterization Present  -->
+								<xsl:if test="oc:targetLink/@href != ''">
+                    <crm:P2.has_type>
+                        <crm:E55.Type>
+                            <xsl:attribute name="rdf:about">
+                                <xsl:value-of select="oc:targetLink/@href"/>
+                            </xsl:attribute>
+                            <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+                        </crm:E55.Type>
+                    </crm:P2.has_type>
+								</xsl:if>
+                </xsl:for-each>
+					 
+					 <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://opencontext.org/vocabularies/open-context-zooarch/zoo-0078']">
+					 <!--Physiological Sex characterization Present  -->
+								<xsl:if test="oc:targetLink/@href != ''">
+                    <crm:P2.has_type>
+                        <crm:E55.Type>
+                            <xsl:attribute name="rdf:about">
+                                <xsl:value-of select="oc:targetLink/@href"/>
+                            </xsl:attribute>
+                            <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+                        </crm:E55.Type>
+                    </crm:P2.has_type>
+								</xsl:if>
                 </xsl:for-each>
 		
                 <crm:P53.has_former_or_current_location>
@@ -256,7 +296,7 @@
                     </crm:P70I.is_documented_in>
 				</xsl:for-each>
 
-            </crm:E20_Biological_Object>
+            </crm:E20.Biological_Object>
         </rdf:RDF>
     </xsl:template>
 
