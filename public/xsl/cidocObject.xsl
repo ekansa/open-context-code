@@ -22,6 +22,7 @@
                 xmlns:oc="http://opencontext.org/schema/space_schema_v1.xsd"
                 xmlns:arch="http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd"
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
+					 xmlns:lawd="http://lawd.info/ontology/"
                 >
     <xsl:output method="xml" indent="yes" encoding="utf-8" />
 
@@ -155,37 +156,53 @@
                 <rdfs:label><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdfs:label>
     
                 <crm:P102.has_title>
-                    <crm:E35.Title>
+                    <crm:E35.Title rdf:about="#title">
                       <rdf:value><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdf:value>
                     </crm:E35.Title>
                 </crm:P102.has_title>
                 
                 <crm:P2.has_type>
                     <crm:E55.Type>
-                        <rdf:value><xsl:value-of select="arch:spatialUnit/oc:item_class/oc:name"/></rdf:value>
+                        <xsl:attribute name="rdf:about">http://opencontext.org/about/concepts#subjects</xsl:attribute>
                     </crm:E55.Type>
                 </crm:P2.has_type>
     
                 <crm:P48.has_preferred_identifier>
-                    <crm:E42.Identifier>
+                    <crm:E42.Identifier rdf:about="#pref-id">
                         <rdf:value><xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></rdf:value>
                     </crm:E42.Identifier>
                 </crm:P48.has_preferred_identifier>
     
                 <crm:P108I.was_produced_by>
-                    <crm:E12.Production>
+                    <crm:E12.Production rdf:about="#production">
                         <rdfs:label>Production of '<xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/>'</rdfs:label>
                             
                             <crm:P126.employed>
-                                <crm:E57.Material>
-                                  <rdfs:label><xsl:value-of select="$Material"/></rdfs:label>
-                                </crm:E57.Material>
+										  <xsl:choose>
+													 <xsl:when test="count(//oc:linkedData/oc:relationLink[@href = 'http://www.cidoc-crm.org/rdfs/cidoc-crm#P45F.consists_of']) !=0" >
+																<xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://www.cidoc-crm.org/rdfs/cidoc-crm#P45F.consists_of']">
+																		  <xsl:if test="oc:targetLink/@href != ''">
+																		  <crm:E57.Material>
+																					 <xsl:attribute name="rdf:about">
+																								<xsl:value-of select="oc:targetLink/@href"/>
+																					 </xsl:attribute>
+																					 <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+																		  </crm:E57.Material>
+																		  </xsl:if>
+																</xsl:for-each>
+													 </xsl:when>
+													 <xsl:otherwise>
+																<crm:E57.Material about="#material">
+																		  <rdfs:label><xsl:value-of select="$Material"/></rdfs:label>
+																</crm:E57.Material>
+													 </xsl:otherwise>
+										  </xsl:choose>
                             </crm:P126.employed>
                             
                             <crm:P4.has_time-span>
-                            <crm:E52.Time-Span>
+                            <crm:E52.Time-Span rdf:about="#time-span">
                               <crm:P82.at_some_time_within>
-                                <claros:Period>
+                                <claros:Period rdf:about="#period">
                                   <claros:period_begin rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_start"/></claros:period_begin>
                                   <claros:period_end rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_finish"/></claros:period_end>
                                 </claros:Period>
@@ -194,13 +211,13 @@
                           </crm:P4.has_time-span>
                             
                             <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://gawd.atlantides.org/terms/origin']">
-				<!--Use Cocordia Origin for location of production event  -->
-				<crm:P7.took_place_at>
-					<crm:E53.Place>
-						<xsl:attribute name="rdf:about"><xsl:value-of select="oc:targetLink/@href"/>#this</xsl:attribute>
-						<rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
-					</crm:E53.Place>
-				</crm:P7.took_place_at>
+										  <!--Use Cocordia Origin for location of production event  -->
+										  <crm:P7.took_place_at>
+											  <crm:E53.Place>
+												  <xsl:attribute name="rdf:about"><xsl:value-of select="oc:targetLink/@href"/>#this</xsl:attribute>
+												  <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+											  </crm:E53.Place>
+										  </crm:P7.took_place_at>
                             </xsl:for-each>
                             
                             
@@ -212,6 +229,7 @@
                    
                     <crm:P43F.has_dimension>
                         <crm:E54.Dimension>
+										  <xsl:attribute name="rdf:about"><xsl:value-of select="oc:propid/@href" /></xsl:attribute>
                             <crm:P91F.has_unit>
                                 <xsl:attribute name="rdf:resource">
                                     <xsl:value-of select="arch:decimal/@href | arch:integeter/@href"/>
@@ -226,13 +244,19 @@
                      
                 </xsl:for-each>
     
-                <!--
-                <crm:P53.has_former_or_current_location>
-                    <xsl:attribute name="rdf:resource">
-                        <xsl:value-of select="$contextURI"/>
-                    </xsl:attribute>
-                </crm:P53.has_former_or_current_location>
-                -->
+                <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://www.cidoc-crm.org/rdfs/cidoc-crm#P2.has_type']">
+					 <!--Has type (link to a controlled vocabulary)  -->
+								<xsl:if test="oc:targetLink/@href != ''">
+                    <crm:P2.has_type>
+                        <crm:E55.Type>
+                            <xsl:attribute name="rdf:about">
+                                <xsl:value-of select="oc:targetLink/@href"/>
+                            </xsl:attribute>
+                            <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
+                        </crm:E55.Type>
+                    </crm:P2.has_type>
+								</xsl:if>
+                </xsl:for-each>
                 
                 <crm:P53.has_former_or_current_location>
                     <crm:E53.Place>
@@ -243,6 +267,13 @@
                     </crm:E53.Place>
                 </crm:P53.has_former_or_current_location>
                 
+					 <lawd:foundAt>
+								<crm:E53.Place>
+                        <xsl:attribute name="rdf:about">
+                            <xsl:value-of select="$contextURI"/>
+                        </xsl:attribute>
+								</crm:E53.Place>
+					 </lawd:foundAt>
                 
                 <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link[oc:type = 'image']">
 					<crm:P138I.has_representation>

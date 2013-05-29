@@ -22,6 +22,7 @@
                 xmlns:oc="http://opencontext.org/schema/space_schema_v1.xsd"
                 xmlns:arch="http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd"
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
+					 xmlns:lawd="http://lawd.info/ontology/"
                 >
     <xsl:output method="xml" indent="yes" encoding="utf-8" />
 
@@ -137,37 +138,38 @@
                 <rdfs:label><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdfs:label>
     
                 <crm:P102.has_title>
-                    <crm:E35.Title>
+                    <crm:E35.Title rdf:about="#title">
                       <rdf:value><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdf:value>
                     </crm:E35.Title>
                 </crm:P102.has_title>
                 
                 <crm:P2.has_type>
                     <crm:E55.Type>
-                        <rdf:value><xsl:value-of select="arch:spatialUnit/oc:item_class/oc:name"/></rdf:value>
-                    </crm:E55.Type>
+                            <xsl:attribute name="rdf:about">http://purl.obolibrary.org/obo/UBERON_0004765</xsl:attribute>
+                            <rdfs:label>skeletal element</rdfs:label>
+								</crm:E55.Type>
                 </crm:P2.has_type>
     
                 <crm:P48.has_preferred_identifier>
-                    <crm:E42.Identifier>
+                    <crm:E42.Identifier rdf:about="#pref-id">
                         <rdf:value><xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></rdf:value>
                     </crm:E42.Identifier>
                 </crm:P48.has_preferred_identifier>
     
                 <crm:P92B.was_brought_into_existence_by>
-                    <crm:E63.Beginning_of_Existence>
+                    <crm:E63.Beginning_of_Existence rdf:about="#begin-exist">
                         <rdfs:label>Beginning of '<xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/>'</rdfs:label>
                             
                             <crm:P126.employed>
-                                <crm:E57.Material>
+                                <crm:E57.Material rdf:about="#material">
                                   <rdfs:label><xsl:value-of select="$Material"/></rdfs:label>
                                 </crm:E57.Material>
                             </crm:P126.employed>
                             
                             <crm:P4.has_time-span>
-                            <crm:E52.Time-Span>
+                            <crm:E52.Time-Span rdf:about="#time-span">
                               <crm:P82.at_some_time_within>
-                                <claros:Period>
+                                <claros:Period rdf:about="#period">
                                   <claros:period_begin rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_start"/></claros:period_begin>
                                   <claros:period_end rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_finish"/></claros:period_end>
                                 </claros:Period>
@@ -182,6 +184,8 @@
                    
                     <crm:P43F.has_dimension>
                         <crm:E54.Dimension>
+								<xsl:attribute name="rdf:about"><xsl:value-of select="oc:propid/@href" /></xsl:attribute>
+								
                             <crm:P91.has_unit>
                                 <xsl:attribute name="rdf:resource">
                                     <xsl:value-of select="arch:decimal/@href | arch:integeter/@href"/>
@@ -274,6 +278,13 @@
                     </crm:E53.Place>
                 </crm:P53.has_former_or_current_location>
                 
+					 <lawd:foundAt>
+								<crm:E53.Place>
+                        <xsl:attribute name="rdf:about">
+                            <xsl:value-of select="$contextURI"/>
+                        </xsl:attribute>
+								</crm:E53.Place>
+					 </lawd:foundAt>
                 
                 <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link[oc:type = 'image']">
 					<crm:P138I.has_representation>
