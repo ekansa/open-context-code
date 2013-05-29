@@ -9,6 +9,7 @@ public/cache/**/*
 public/comp_cache/**/*
 public/time_cache/**/*
 
+public/exports/*
 public/cache/*
 public/comp_cache/*
 public/time_cache/*

@@ -121,6 +121,9 @@ class tablesController extends Zend_Controller_Action
     $exTableObj = new ExportTable;
     $found = $exTableObj->getByID($tableID);
     if($found){
+      if(isset($_GET["page"])){
+        $exTableObj->recPage = $_GET["page"];
+      }
       $this->view->exTableObj = $exTableObj;
       return $this->render('tview');
     }

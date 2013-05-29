@@ -4,6 +4,7 @@
 //this class interacts with the database for accessing and changing table items
 class ExportTable {
     
+	 public $db;
 	 public $tableID;
 	 public $title;
 	 public $updated;
@@ -14,13 +15,28 @@ class ExportTable {
 	 
 	 public $citation; //citation generated from metadata
 	 
-	 public $db;
+	 public $records; //array of records in field-label => value format
+	 public $recPage; //for pagination through records
+	 public $recStartIndex; //start record index for paging through records
+	 public $recEndIndex; //end record index for paging though records
+	 public $recCountPerPage; //number of records per page
+	 
+	 public $formatArray = array("csv" => "Comma Seperated Value (CSV)",
+										  "zip" => "ZIP-compressed CSV file",
+										  "gzip" => "GZIP-compressed CSV file",
+										  "json" => "Javascript Object Notation (JSON) file"
+										  );
 	 
 	 
-	 function getByID($tableID, $page = false){
+	 const defaultRecCountPerPage = 100;
+	 const fileDirectory = "./exports";
+	 const altFileDirectory = "../exports";
+	 
+	 //gets table metadata by id
+	 function getByID($tableID, $setPage = false){
 		  
 		  $tableID = $this->security_check($tableID);
-		  $page = $this->security_check($page);
+		  $setPage = $this->security_check($setPage);
 		  $db = $this->startDB();
 		  
 		  $sql = "SELECT * FROM export_tabs WHERE tableID = '$tableID' LIMIT 1; ";
@@ -43,6 +59,34 @@ class ExportTable {
 				return false;
 		  }
 	 }
+	 
+	 
+	 //get paginagion for sets of preview records.
+	 function actRecordPage(){
+		  if(!$this->recPage){
+				$this->recPage = 1;
+		  }
+		  if(!$this->recCountPerPage){
+				$this->recCountPerPage = self::defaultRecCountPerPage;
+		  }
+		  
+		  $this->recStartIndex = ($this->recPage - 1) * $this->recCountPerPage;
+		  $this->recEndIndex = $this->recStartIndex + $this->recCountPerPage;
+		  
+	 }
+	 
+	 
+	 //output a format in a human readable form
+	 function getHumanReadFormat($formatKey){
+		  $formats = $this->formatArray;
+		  if(array_key_exists($formatKey, $formats)){
+				return $formats[$formatKey];
+		  }
+		  else{
+				return $formatKey;
+		  }
+	 }
+	 
 	 
 	 
 	 //generate citation from metadata
@@ -90,6 +134,91 @@ class ExportTable {
 		  $this->citation = $citation;
 		  return $citation;
 	 }
+	 
+	 
+	 function loadSampleRecords(){
+		  
+		  $this->actRecordPage();
+		  $output = false;
+		  $metadata = $this->metadata;
+		  if(isset($metadata["files"]["json"]["filename"])){
+				
+				$sFilename = self::fileDirectory."/".$metadata["files"]["json"]["filename"];
+				$fileOK = file_exists($sFilename);
+				
+				if(!$fileOK){
+					 $sFilename = self::altFileDirectory."/".$metadata["files"]["json"]["filename"];
+					 $fileOK = file_exists($sFilename);
+				}
+				
+				if($fileOK){
+					 
+					 $fp = fopen($sFilename, 'r');
+					 $rHandle = fopen($sFilename, 'r');
+					 if ($rHandle){
+						  
+						  $sData = '';
+						  while(!feof($rHandle)){
+								$sData .= fread($rHandle, filesize($sFilename));
+						  }
+						  fclose($rHandle);
+						  
+						  unset($rHandle);
+						  $jsonArray = Zend_Json::decode($sData);
+						  unset($sData);
+						  $numRecs = count($jsonArray);
+						  $records = array();
+						  if($this->recStartIndex >= $numRecs){
+								return false;
+						  }
+						  if($this->recEndIndex > $numRecs){
+								$this->recEndIndex = $numRecs;
+						  }
+						  
+						  
+						  $i = $this->recStartIndex;
+						  while($i < $this->recEndIndex){
+								$records[] = $jsonArray[$i];
+								$i++;
+						  }
+						  $this->records = $records;
+						  unset($jsonArray);
+						  $output = $records;
+						  
+					 }
+				}
+		  }
+		  
+		  return $output;
+	 }
+	 
+	 
+	 //generates XHTML OK values for review / sample table records.
+	 function recXHTMLvalue($value){
+		  
+		  $output = $value;
+		  
+		  if(substr($value, 0, 7) == "http://"){
+				$value = "<a href=\"".$value."\">".$value."</a>";
+				$output = $value;
+		  }
+		  
+		  //attempt some cleanup to make valid XHTML
+		  $xmlVal = "<div>".$value."</div>";
+		  @$xml = simplexml_load_string($xmlVal);
+		  if(!$xml){	
+				$output = tidy_repair_string($xmlVal,
+									 array( 
+										  'doctype' => "omit",
+										  'input-xml' => true,
+										  'output-xml' => true 
+									 ));
+		  }  
+		  return $output;
+	 }
+	 
+	 
+	 
 	 
 	 
 	 
@@ -198,6 +327,7 @@ class ExportTable {
 				else{
 					 $error = true;
 				}
+				
 				
 				if(!$error){
 					 $this->metadata = $metadata;
