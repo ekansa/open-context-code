@@ -206,13 +206,15 @@ class ExportTable {
 		  //attempt some cleanup to make valid XHTML
 		  $xmlVal = "<div>".$value."</div>";
 		  @$xml = simplexml_load_string($xmlVal);
-		  if(!$xml){	
-				$output = tidy_repair_string($xmlVal,
-									 array( 
-										  'doctype' => "omit",
-										  'input-xml' => true,
-										  'output-xml' => true 
-									 ));
+		  if(!$xml){
+				if(function_exists('tidy_repair_string')){
+					 $output = tidy_repair_string($xmlVal,
+										  array( 
+												'doctype' => "omit",
+												'input-xml' => true,
+												'output-xml' => true 
+										  ));
+				}
 		  }  
 		  return $output;
 	 }

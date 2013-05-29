@@ -20,19 +20,19 @@ $metadata = $exTableObj->metadata;
         <link href="<?php echo $host; ?>/css/bibliographic.css" rel="stylesheet" type="text/css" />
         <link href="<?php echo $host; ?>/css/general-item-rev2.css" rel="stylesheet" type="text/css" />
         
-        <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-        <script src="<?php echo $host; ?>/js/jquery/doubleScroll.js" type="text/javascript"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+        <script src="<?php echo $host; ?>/js/jquery/jquery.doubleScroll.js" type="text/javascript"></script>
         
         <!--
         <script src="<?php echo $host; ?>/js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
         <script src=https://raw.github.com/sniku/jQuery-doubleScroll/master/jquery.doubleScroll.js" type="text/javascript"></script>
-        -->
+       
         <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
         <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-tab.js" type="text/javascript"></script>
         <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-dropdown.js" type="text/javascript"></script>
-        
+         -->
         <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
         
         
@@ -141,6 +141,7 @@ $metadata = $exTableObj->metadata;
                                 <?php echo $metadata["description"]; ?>
                             </td>
                         </tr>
+                        <!--
                         <tr>
                             <td>
                                 Tags / Keywords
@@ -165,6 +166,7 @@ $metadata = $exTableObj->metadata;
                                 <a href="<?php echo "CHANGE" ; ?>" title="Link to browse this set of records"><?php echo "CHANGE" ; ?></a>
                             </td>
                         </tr>
+                        -->
                         <tr>
                             <td>
                                 Principal Analyst(s) / Observers
@@ -344,6 +346,7 @@ $metadata = $exTableObj->metadata;
         
         -->
         </script>
+        
         
     </body>
 </html>
