@@ -1691,8 +1691,15 @@ class Subject {
 					  $tableURI = $host."/tables/".$useID;
 					 
 					 $tabObj = new Table;
-					 $tabObj->getByID($useID);
-					 $tableName = $tabObj->label;
+					 $found = $tabObj->getByID($useID);
+					 if($found){
+						  $tableName = $tabObj->label;
+					 }
+					 else{
+						  $tableObj = new ExportTable;
+						  $tableObj->getByID($useID);
+						  $tableName = $tableObj->title;
+					 }
 					 
 					 $query = "//oc:metadata/oc:tableRefs/oc:link[@href='$tableURI']";
 					 $sameNodeList = $xpath->query($query, $dom);

@@ -557,8 +557,8 @@ const licenseIRI = "xhv:license";
 		  $output = 0;
 		  if($this->vocabStatus != false){
 				$output = 2;
-				if(strstr($this->vocabStatus, "http://opencontext.org/about/publishing/#edit-stars-")){
-					 $output = str_replace("http://opencontext.org/about/publishing/#edit-stars-", "", $this->vocabStatus);
+				if(strstr($this->vocabStatus, "http://opencontext.org/about/publishing/#edit-level-")){
+					 $output = str_replace("http://opencontext.org/about/publishing/#edit-level-", "", $this->vocabStatus);
 				}
 		  }
 		  return $output;

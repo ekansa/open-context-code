@@ -709,7 +709,7 @@
 						<div about="" rel="dcterms:publisher"><xsl:attribute name="href">http://opencontext.org</xsl:attribute></div>
 						
 						<div about="" rel="bibo:status"><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:project_name/@statusURI"/></xsl:attribute></div>
-						<div about="" rel="bibo:status"><xsl:attribute name="href">http://opencontext.org/about/publishing/#edit-stars-<xsl:value-of select="//oc:metadata/oc:project_name/@editStatus"/></xsl:attribute></div>
+						<div about="" rel="bibo:status"><xsl:attribute name="href">http://opencontext.org/about/publishing/#edit-level-<xsl:value-of select="//oc:metadata/oc:project_name/@editStatus"/></xsl:attribute></div>
 				
 				
 						<xsl:for-each select="//oc:metadata/dc:creator">
