@@ -79,7 +79,7 @@ $metadata = $exTableObj->metadata;
                             ?>
                         </p>
                         
-                        <h2 id="csv-download">Download Table: <a href="<?php echo "CHANGE"; ?>" title="Download and open in Excel or Open Office">CSV format</a></h2>
+                        <h2 id="csv-download">Download Table: <a href="<?php echo $host."/exports/".$metadata["files"]["csv"]["filename"]; ?>" title="Download and open in Excel or Open Office">CSV format</a></h2>
                     </div>
                     
                     
