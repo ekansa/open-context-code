@@ -22,6 +22,7 @@
                 xmlns:oc="http://opencontext.org/schema/space_schema_v1.xsd"
                 xmlns:arch="http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd"
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
+					 xmlns:dcterms="http://purl.org/dc/terms/"
 					 xmlns:lawd="http://lawd.info/ontology/"
 					 xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
 					 xmlns:crmeh="http://purl.org/crmeh#"
@@ -130,9 +131,9 @@
                     </crm:E35.Title>
                 </crm:P102.has_title>
                 
-                <rdfs:instanceOf>
+                <rdf:type>
 								<xsl:attribute name="rdf:resource">http://opencontext.org/about/concepts#subjects</xsl:attribute>
-					 </rdfs:instanceOf> 
+					 </rdf:type> 
                         
                 <crm:P48.has_preferred_identifier>
                     <crm:E42.Identifier rdf:about="#pref-id">
@@ -155,6 +156,17 @@
 								</xsl:if>
                 </xsl:for-each>
                 
+					 
+					 <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://purl.org/dc/terms/references']">
+					 <!--References, especially useful for Pleiades -->
+								<xsl:if test="oc:targetLink/@href != ''">
+										  <dcterms:references>
+													 <xsl:value-of select="oc:targetLink/@href"/>
+										  </dcterms:references>
+								</xsl:if>
+                </xsl:for-each>
+					 
+					 
 					 <!--
                 <xsl:choose>
 								<xsl:when test="($contextClass = 'Trench') or ($contextClass = 'Square') or ($contextClass = 'Area')  or ($contextClass = 'Operation') or ($contextClass = 'Operation') or ($contextClass = 'Field Project')">
