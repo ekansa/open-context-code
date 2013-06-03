@@ -8,10 +8,29 @@ function getXSL($itemClass){
                     "Small Find" => "xsl/cidocObject.xsl",
                     "Arch. Element" => "xsl/cidocObject.xsl",
                     "Objects" => "xsl/cidocObject.xsl",
+                    
                     "Animal Bone" => "xsl/cidocBio.xsl",
                     "Shell" => "xsl/cidocBio.xsl",
                     "Non Diag. Bone" => "xsl/cidocBio.xsl",
-                    "Human Bone" => "xsl/cidocBio.xsl"
+                    "Human Bone" => "xsl/cidocBio.xsl",
+                    "Plant Remains" => "xsl/cidocBio.xsl",
+                    
+                    "Feature" => "xsl/cidocContext.xsl",
+                    "Lot" => "xsl/cidocContext.xsl",
+                    "Locus" => "xsl/cidocContext.xsl",
+                    "Context" => "xsl/cidocContext.xsl",
+                    "Sequence" => "xsl/cidocContext.xsl",
+                    "Basket" => "xsl/cidocContext.xsl",
+                    "Excav. Unit" => "xsl/cidocContext.xsl",
+                    "Stratum" => "xsl/cidocContext.xsl",
+                    
+                    "Trench" => "xsl/cidocSiteArea.xsl",
+                    "Square" => "xsl/cidocSiteArea.xsl",
+                    "Area" => "xsl/cidocSiteArea.xsl",
+                    "Operation" => "xsl/cidocSiteArea.xsl",
+                    "Field Project" => "xsl/cidocSiteArea.xsl",
+                    
+                    "Site" => "xsl/cidocSite.xsl"
                     );
 
     if(array_key_exists($itemClass, $classArray)){

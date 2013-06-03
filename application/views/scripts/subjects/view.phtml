@@ -48,16 +48,7 @@ if ($XML) {
     <link rel="shortcut icon" href="/images/layout/oc-favicon.ico" type="image/x-icon" />
     <link rel="alternate" type="application/atom+xml" tilte="Atom representation" href="<?php echo $host; ?>/subjects/<?php echo $this->itemUUID; ?>.atom" />
 	 <link rel="alternate" type="application/xml" tilte="XML representation" href="<?php echo $host; ?>/subjects/<?php echo $this->itemUUID; ?>.xml" />
-	 <?php
-	 
-	 if(stristr($this->itemClass, "bone")){
-	 
-	 ?>
 	 <link rel="alternate" type="application/rdf+xml" tilte="RDF-XML representation" href="<?php echo $host; ?>/subjects/<?php echo $this->itemUUID; ?>.rdf" />
-	 <?php
-	 }
-	 
-	 ?>
     <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />

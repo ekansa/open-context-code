@@ -785,6 +785,26 @@
 								</div>
 						</xsl:if>
 						
+						<xsl:if test="contains(@href, 'http://gawd.atlantides.org/terms/findspot')">
+								<div xmlns:oac="http://www.openannotation.org/ns/" id="concordiaFindspot" typeof="oac:Annotation">
+								<xsl:attribute name="about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/>#concordiaFindspot</xsl:attribute>
+								
+								<!-- for each record change this to the Pleiades URI of the Origin place (like a mint) -->
+								<a rel="oac:Body">
+								<xsl:attribute name="href"><xsl:value-of select="oc:targetLink/@href"/></xsl:attribute>
+								Origin place, source of the object (like a mint)
+								</a>
+								
+								<!-- for each record change this to the Pleiades URI of the Origin place (like a mint) -->
+								<a rel="oac:Target">
+								<xsl:attribute name="href">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/></xsl:attribute>
+								URI of the Open Context object
+								</a>
+								<span property="dc:title">Annoation linking this Open Context object to an origin location</span>
+								<span property="dc:publisher">OpenContext.org</span>
+								</div>
+						</xsl:if>
+						
 						<xsl:if test="contains(@href, 'http://purl.org/dc/terms/references')">
 								<div xmlns:oac="http://www.openannotation.org/ns/" id="concordiaRelated" typeof="oac:Annotation">
 								<xsl:attribute name="about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/>#concordiaRelated</xsl:attribute>

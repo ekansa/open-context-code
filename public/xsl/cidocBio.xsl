@@ -23,6 +23,7 @@
                 xmlns:arch="http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd"
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
 					 xmlns:lawd="http://lawd.info/ontology/"
+					 xmlns:crmeh="http://purl.org/crmeh#"
                 >
     <xsl:output method="xml" indent="yes" encoding="utf-8" />
 
@@ -128,6 +129,11 @@
             </xsl:for-each>
         </xsl:variable>
     
+		  <xsl:variable name="contextClass">
+            <xsl:for-each select="arch:spatialUnit/oc:context/oc:tree[@id='default']/oc:parent">
+                <xsl:if test="position() = last()"><xsl:value-of select="oc:item_class/oc:name"/></xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
     
         <xsl:variable name="max_Tabs">10</xsl:variable>
 
@@ -142,6 +148,10 @@
                       <rdf:value><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdf:value>
                     </crm:E35.Title>
                 </crm:P102.has_title>
+					 
+					 <rdf:type>
+								<xsl:attribute name="rdf:resource">http://opencontext.org/about/concepts#subjects</xsl:attribute>
+					 </rdf:type>
                 
                 <crm:P2.has_type>
                     <crm:E55.Type>
@@ -269,22 +279,64 @@
 								</xsl:if>
                 </xsl:for-each>
 		
-                <crm:P53.has_former_or_current_location>
-                    <crm:E53.Place>
-                        <xsl:attribute name="rdf:about">
-                            <xsl:value-of select="$contextURI"/>
-                        </xsl:attribute>
-                        <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
-                    </crm:E53.Place>
-                </crm:P53.has_former_or_current_location>
-                
-					 <lawd:foundAt>
-								<crm:E53.Place>
-                        <xsl:attribute name="rdf:about">
-                            <xsl:value-of select="$contextURI"/>
-                        </xsl:attribute>
-								</crm:E53.Place>
-					 </lawd:foundAt>
+					 <xsl:choose>
+								
+								<xsl:when test="($contextClass = 'Trench') or ($contextClass = 'Square') or ($contextClass = 'Area')  or ($contextClass = 'Operation') or ($contextClass = 'Operation') or ($contextClass = 'Field Project')">
+								
+										  <crm:P53.has_former_or_current_location>
+												<crmeh:EHE0004_SiteSubDivision>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+												</crmeh:EHE0004_SiteSubDivision>
+										  </crm:P53.has_former_or_current_location>
+										  
+										  <lawd:foundAt>
+													 <crmeh:EHE0007_Context>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 </crmeh:EHE0007_Context>
+										  </lawd:foundAt>
+								</xsl:when>
+								<xsl:when test="$contextClass = 'Site' ">
+										  <crm:P53.has_former_or_current_location>
+												<crmeh:EHE0002_ArchaeologicalSite>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+												</crmeh:EHE0002_ArchaeologicalSite>
+										  </crm:P53.has_former_or_current_location>
+										  
+										  <lawd:foundAt>
+													 <crmeh:EHE0002_ArchaeologicalSite>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 </crmeh:EHE0002_ArchaeologicalSite>
+										  </lawd:foundAt>
+								</xsl:when>
+								<xsl:otherwise>
+										  <crmeh:EHP3_occupied>
+												<crmeh:EHE0007_Context>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+												</crmeh:EHE0007_Context>
+										  </crmeh:EHP3_occupied>
+										  
+										  <lawd:foundAt>
+													 <crmeh:EHE0007_Context>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 </crmeh:EHE0007_Context>
+										  </lawd:foundAt>
+								</xsl:otherwise>
+					 </xsl:choose>
                 
                 <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link[oc:type = 'image']">
 					<crm:P138I.has_representation>

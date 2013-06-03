@@ -23,6 +23,8 @@
                 xmlns:arch="http://ochre.lib.uchicago.edu/schema/SpatialUnit/SpatialUnit.xsd"
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
 					 xmlns:lawd="http://lawd.info/ontology/"
+					 xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+					 xmlns:crmeh="http://purl.org/crmeh#"
                 >
     <xsl:output method="xml" indent="yes" encoding="utf-8" />
 
@@ -94,45 +96,6 @@
         </xsl:variable>
     
     
-        <xsl:variable name="Material">
-            <xsl:choose>
-                <xsl:when test="//arch:properties/arch:property[oc:var_label = 'Material']">
-                    <xsl:value-of select="//arch:properties/arch:property[oc:var_label = 'Material']/oc:show_val"/>
-				</xsl:when>
-                <xsl:otherwise>
-                    <xsl:choose>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Groundstone'">
-                            Stone
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Non Diag. Bone'">
-                            Bone
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Animal Bone'">
-                            Bone
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Human Bone'">
-                            Bone
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Pottery'">
-                            Cermamic
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Glass'">
-                            Glass
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Shell'">
-                            Shell
-                        </xsl:when>
-                        <xsl:when test="//arch:spatialUnit/oc:item_class/oc:name = 'Coin'">
-                            Metal
-                        </xsl:when>
-                        <xsl:otherwise>
-                            Not specified
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-    
         <xsl:variable name="contextPath">
             <xsl:for-each select="arch:spatialUnit/oc:context/oc:tree[@id='default']/oc:parent">
                 <xsl:value-of select="oc:name"/>
@@ -146,12 +109,18 @@
             </xsl:for-each>
         </xsl:variable>
     
-    
+		  <xsl:variable name="contextClass">
+            <xsl:for-each select="arch:spatialUnit/oc:context/oc:tree[@id='default']/oc:parent">
+                <xsl:if test="position() = last()"><xsl:value-of select="oc:item_class/oc:name"/></xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+	 
+	 
         <xsl:variable name="max_Tabs">10</xsl:variable>
 
         
         <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <crm:E22.Man-Made_Object>
+            <crmeh:EHE0007_Context>
                 <xsl:attribute name="rdf:about">http://opencontext.org/subjects/<xsl:value-of select="$item_id"/></xsl:attribute> 
                 <rdfs:label><xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/></rdfs:label>
     
@@ -161,89 +130,17 @@
                     </crm:E35.Title>
                 </crm:P102.has_title>
                 
-                <crm:P2.has_type>
-                    <crm:E55.Type>
-                        <xsl:attribute name="rdf:about">http://opencontext.org/about/concepts#subjects</xsl:attribute>
-                    </crm:E55.Type>
-                </crm:P2.has_type>
-    
+                <rdf:type>
+								<xsl:attribute name="rdf:resource">http://opencontext.org/about/concepts#subjects</xsl:attribute>
+					 </rdf:type> 
+                        
                 <crm:P48.has_preferred_identifier>
                     <crm:E42.Identifier rdf:about="#pref-id">
                         <rdf:value><xsl:value-of select="arch:spatialUnit/arch:name/arch:string"/></rdf:value>
                     </crm:E42.Identifier>
                 </crm:P48.has_preferred_identifier>
     
-                <crm:P108I.was_produced_by>
-                    <crm:E12.Production rdf:about="#production">
-                        <rdfs:label>Production of '<xsl:value-of select="arch:spatialUnit/oc:metadata/dc:title"/>'</rdfs:label>
-                            
-                            <crm:P126.employed>
-										  <xsl:choose>
-													 <xsl:when test="count(//oc:linkedData/oc:relationLink[@href = 'http://www.cidoc-crm.org/rdfs/cidoc-crm#P45F.consists_of']) !=0" >
-																<xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://www.cidoc-crm.org/rdfs/cidoc-crm#P45F.consists_of']">
-																		  <xsl:if test="oc:targetLink/@href != ''">
-																		  <crm:E57.Material>
-																					 <xsl:attribute name="rdf:about">
-																								<xsl:value-of select="oc:targetLink/@href"/>
-																					 </xsl:attribute>
-																					 <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
-																		  </crm:E57.Material>
-																		  </xsl:if>
-																</xsl:for-each>
-													 </xsl:when>
-													 <xsl:otherwise>
-																<crm:E57.Material about="#material">
-																		  <rdfs:label><xsl:value-of select="$Material"/></rdfs:label>
-																</crm:E57.Material>
-													 </xsl:otherwise>
-										  </xsl:choose>
-                            </crm:P126.employed>
-                            
-                            <crm:P4.has_time-span>
-                            <crm:E52.Time-Span rdf:about="#time-span">
-                              <crm:P82.at_some_time_within>
-                                <claros:Period rdf:about="#period">
-                                  <claros:period_begin rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_start"/></claros:period_begin>
-                                  <claros:period_end rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear"><xsl:value-of select="//oc:social_usage/oc:user_tags/oc:tag/oc:chrono/oc:time_finish"/></claros:period_end>
-                                </claros:Period>
-                              </crm:P82.at_some_time_within>
-                            </crm:E52.Time-Span>
-                          </crm:P4.has_time-span>
-                            
-                            <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://gawd.atlantides.org/terms/origin']">
-										  <!--Use Cocordia Origin for location of production event  -->
-										  <crm:P7.took_place_at>
-											  <crm:E53.Place>
-												  <xsl:attribute name="rdf:about"><xsl:value-of select="oc:targetLink/@href"/>#this</xsl:attribute>
-												  <rdfs:label><xsl:value-of select="oc:targetLink/oc:label"/></rdfs:label>
-											  </crm:E53.Place>
-										  </crm:P7.took_place_at>
-                            </xsl:for-each>
-                            
-                            
-                    </crm:E12.Production>
-                </crm:P108I.was_produced_by>
-    
-    
-                <xsl:for-each select="//arch:properties/arch:property[arch:decimal/@href | arch:integeter/@href]">
                    
-                    <crm:P43F.has_dimension>
-                        <crm:E54.Dimension>
-										  <xsl:attribute name="rdf:about"><xsl:value-of select="oc:propid/@href" /></xsl:attribute>
-                            <crm:P91F.has_unit>
-                                <xsl:attribute name="rdf:resource">
-                                    <xsl:value-of select="arch:decimal/@href | arch:integeter/@href"/>
-                                </xsl:attribute>
-                            </crm:P91F.has_unit>
-                            <crm:P90F.has_value>
-                                <xsl:value-of select="arch:decimal | arch:integeter"/>
-                            </crm:P90F.has_value>
-                            <rdfs:label><xsl:value-of select="oc:var_label"/>: <xsl:value-of select="oc:show_val"/> (<xsl:value-of select="arch:decimal/@abrv | arch:integeter/@abrv"/>)</rdfs:label>
-                        </crm:E54.Dimension>
-                    </crm:P43F.has_dimension>
-                     
-                </xsl:for-each>
-    
                 <xsl:for-each select="//oc:linkedData/oc:relationLink[@href = 'http://www.cidoc-crm.org/rdfs/cidoc-crm#P2.has_type']">
 					 <!--Has type (link to a controlled vocabulary)  -->
 								<xsl:if test="oc:targetLink/@href != ''">
@@ -258,22 +155,63 @@
 								</xsl:if>
                 </xsl:for-each>
                 
-                <crm:P53.has_former_or_current_location>
-                    <crm:E53.Place>
-                        <xsl:attribute name="rdf:about">
-                            <xsl:value-of select="$contextURI"/>
-                        </xsl:attribute>
-                        <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
-                    </crm:E53.Place>
-                </crm:P53.has_former_or_current_location>
+                <xsl:choose>
+																<xsl:when test="($contextClass = 'Trench') or ($contextClass = 'Square') or ($contextClass = 'Area')  or ($contextClass = 'Operation') or ($contextClass = 'Operation') or ($contextClass = 'Field Project')">
+										  <crm:P53.has_former_or_current_location>
+												<crmeh:EHE0004_SiteSubDivision>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+												</crmeh:EHE0004_SiteSubDivision>
+										  </crm:P53.has_former_or_current_location>
+										  
+										  <lawd:foundAt>
+													 <crmeh:EHE0007_Context>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 </crmeh:EHE0007_Context>
+										  </lawd:foundAt>
+								</xsl:when>
+								<xsl:when test="$contextClass = 'Site' ">
+										  <crm:P53.has_former_or_current_location>
+												<crmeh:EHE0002_ArchaeologicalSite>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+												</crmeh:EHE0002_ArchaeologicalSite>
+										  </crm:P53.has_former_or_current_location>
+										  
+										  <lawd:foundAt>
+													 <crmeh:EHE0002_ArchaeologicalSite>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 </crmeh:EHE0002_ArchaeologicalSite>
+										  </lawd:foundAt>
+								</xsl:when>
+								<xsl:otherwise>
+										  <crmeh:EHP3_occupied>
+												<crmeh:EHE0007_Context>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 <rdfs:label><xsl:value-of select="$contextPath"/></rdfs:label>
+												</crmeh:EHE0007_Context>
+										  </crmeh:EHP3_occupied>
+										  
+										  <lawd:foundAt>
+													 <crmeh:EHE0007_Context>
+													 <xsl:attribute name="rdf:about">
+														  <xsl:value-of select="$contextURI"/>
+													 </xsl:attribute>
+													 </crmeh:EHE0007_Context>
+										  </lawd:foundAt>
+								</xsl:otherwise>
+					 </xsl:choose>
                 
-					 <lawd:foundAt>
-								<crm:E53.Place>
-                        <xsl:attribute name="rdf:about">
-                            <xsl:value-of select="$contextURI"/>
-                        </xsl:attribute>
-								</crm:E53.Place>
-					 </lawd:foundAt>
                 
                 <xsl:for-each select="arch:spatialUnit/arch:observations/arch:observation/arch:links/oc:media_links/oc:link[oc:type = 'image']">
 					<crm:P138I.has_representation>
@@ -296,7 +234,15 @@
                     </crm:P70I.is_documented_in>
 				</xsl:for-each>
 
-            </crm:E22.Man-Made_Object>
+				
+				<geo:lat>
+					 <xsl:value-of select="//oc:geo_reference/oc:geo_lat"/>
+				</geo:lat>
+				<geo:lon>
+					 <xsl:value-of select="//oc:geo_reference/oc:geo_long"/>
+				</geo:lon>
+				
+            </crmeh:EHE0007_Context>
         </rdf:RDF>
     </xsl:template>
 
