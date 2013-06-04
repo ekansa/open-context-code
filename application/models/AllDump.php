@@ -48,9 +48,9 @@ class AllDump {
 		foreach($projects as $projectUUID){
 			$projectDir = self::exportDir."/".self::exportPrefix.$projectUUID;
 			
-			$this->exportSubjects($projectDir, $projectUUID); // export subject items
-			$this->exportMedia($projectDir, $projectUUID); // export media items
-			$this->exportDocuments($projectDir, $projectUUID); // export media items
+			//$this->exportSubjects($projectDir, $projectUUID); // export subject items
+			//$this->exportMedia($projectDir, $projectUUID); // export media items
+			//$this->exportDocuments($projectDir, $projectUUID); // export media items
 			
 		}//end loop through export-ready projects
 
@@ -155,6 +155,10 @@ class AllDump {
 		  $readMeText .= "Project: '".$itemObj->label."' \r\n";
 		  $readMeText .= "Project ID: '".$itemObj->itemUUID."' \r\n\r\n\r\n";
 		  if(is_array($projectParts)){
+				if($projectParts[0] == false){
+					 unset($projectParts[0]);
+				}
+				
 				if(count($projectParts)>1){
 					 $partNum = 1;
 					 $readMeText .= "GitHub repository size restrictions require that this project be divided into ".count($projectParts)." parts. The following repositories contain this project's data: \r\n\r\n";
