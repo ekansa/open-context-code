@@ -101,6 +101,9 @@ $metadata = $exTableObj->metadata;
                                 }
                                 ?>
                             </ul>
+                            
+                            
+                            
                         </div>
                     </div>
                     <!-- end otabs-cell div -->
@@ -275,6 +278,40 @@ $metadata = $exTableObj->metadata;
                             </td>
                             <td>
                                 <?php echo $exTableObj->citation; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Copyright License
+                            </td>
+                            <td>
+                                <div class="list_tab">
+                                    <div class="list_tab_row">
+                                        <div id="license-icon">
+                                            <?php
+                                            
+                                            if(isset($metadata["license"]["id"])){
+                                                $licURI = $metadata["license"]["id"];
+                                                $licPict = str_replace("http://creativecommons.org/licenses", "", $licURI);
+                                                $licPict = "http://i.creativecommons.org/l".$licPict."/88x31.png";
+                                                $licName = $metadata["license"]["name"];
+                                            }
+                                            else{
+                                                $licURI = "http://creativecommons.org/licenses/by/3.0";
+                                                $licPict = "http://i.creativecommons.org/l/by/3.0/88x31.png";
+                                                $licName = "Creative Commons Attribution 3.0 License";
+                                            }
+                                            
+                                            ?>
+                                            <img src="<?php echo $licPict; ?>" alt="<?php echo $licName; ?>" />
+                                        </div>
+                                        <div id="license-text">
+                                            To the extent to which copyright applies, this content is licensed with:
+                                            <a rel="license" href="<?php echo $licURI; ?>" title="Click here to view licensing conditions" ><?php echo $licName; ?></a>;
+                                            Attribution Required: Citation, and hyperlinks for online uses.
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
