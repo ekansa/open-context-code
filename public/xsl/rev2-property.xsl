@@ -40,26 +40,8 @@
 
 
 
-<xsl:template name="string-replace">
-		<xsl:param name="arg"/>
-		<xsl:param name="toReplace"/>
-		<xsl:param name="replaceWith"/>
-		<xsl:choose>
-			<xsl:when test="contains($arg, $toReplace)">
-				<xsl:variable name="prefix" select="substring-before($arg, $toReplace)"/>
-				<xsl:variable name="postfix" select="substring($arg, string-length($prefix)+string-length($toReplace)+1)"/>
-				<xsl:value-of select="concat($prefix, $replaceWith)"/>
-				<xsl:call-template name="string-replace">
-					<xsl:with-param name="arg" select="$postfix"/>
-					<xsl:with-param name="toReplace" select="$toReplace"/>
-					<xsl:with-param name="replaceWith" select="$replaceWith"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$arg"/>
-			</xsl:otherwise>
-		</xsl:choose>
-</xsl:template>
+<!-- include other XSL files for generally used functions -->
+<xsl:include href="rev2-string-replace.xsl"/>
 
 
 
@@ -219,6 +201,7 @@
 																				<td>
 																						<xsl:call-template name="makeNote">
 																								<xsl:with-param name="note" select="//arch:notes/arch:note[@type='var_des']"/>
+																								<xsl:with-param name="xhtml" select="//arch:notes/arch:note/arch:string/@type"/>
 																								<xsl:with-param name="noteType">var</xsl:with-param>
 																								<xsl:with-param name="numLinks" select="$numLinks" />
 																						</xsl:call-template>
@@ -838,14 +821,42 @@
 
 <xsl:template name="makeNote">
 		<xsl:param name="note" select="1" />
+		<xsl:param name="xhtml" select="0" />
 		<xsl:param name="noteType" select="1" />
 		<xsl:param name="numLinks" select="0" />
 		<xsl:choose>
 				<xsl:when test="($note) and $numLinks = 0">
-						<div class="described"><xsl:value-of select="$note"/></div>
+						<div class="described">
+						<xsl:choose>
+								<xsl:when test="$xhtml = 'xhtml'">
+									 <!-- <xsl:value-of select="arch:string"/> -->
+									 <xsl:for-each select="$note/*">
+										  <xsl:call-template  name="node-output" >
+												<xsl:with-param name="root" select="."/>
+										  </xsl:call-template>
+									 </xsl:for-each>
+								</xsl:when>
+								<xsl:otherwise>
+									 <xsl:value-of select="$note"/>
+								</xsl:otherwise>
+						</xsl:choose>
+						</div>
 				</xsl:when>
 				<xsl:when test="($note) and $numLinks != 0">
-						<div class="described"><xsl:value-of select="$note"/>
+						<div class="described">
+						<xsl:choose>
+								<xsl:when test="$xhtml = 'xhtml'">
+									 <!-- <xsl:value-of select="arch:string"/> -->
+									 <xsl:for-each select="$note/*">
+										  <xsl:call-template  name="node-output" >
+												<xsl:with-param name="root" select="."/>
+										  </xsl:call-template>
+									 </xsl:for-each>
+								</xsl:when>
+								<xsl:otherwise>
+									 <xsl:value-of select="$note"/>
+								</xsl:otherwise>
+						</xsl:choose>
 						<br/>
 						<br/>
 						See the <a href="#all-linked-data">linked data below</a> for additional description.

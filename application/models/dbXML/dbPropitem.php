@@ -242,6 +242,10 @@ class dbXML_dbPropitem  {
 				if($xml){
 					 $this->varDesXMLok = true;
 				}
+				else{
+					 $this->varDesXMLok = false;
+				}
+				$this->pen_getVarDescription(); //if there's no variable description, check in the var_notes table
         }
         
         return $found;
@@ -336,22 +340,26 @@ class dbXML_dbPropitem  {
     public function pen_getVarDescription(){
 		  $db = $this->db;
 		  
-		  $sql = "SELECT * FROM var_notes WHERE variable_uuid = '".$this->varUUID."'";
-		  
-		  $result = $db->fetchAll($sql, 2);
-				 if($result){
-				$this->varDescription = $result[0]["note_text"];
+		  if(strlen($this->varDescription)<1){
+				$sql = "SELECT * FROM var_notes WHERE variable_uuid = '".$this->varUUID."'";
 				
-				$xmlNote = "<div>".chr(13);
-				$xmlNote .= $this->varDescription.chr(13);
-				$xmlNote .= "</div>".chr(13);
-				
-				@$xml = simplexml_load_string($xmlNote);
-				if($xml){
-					 $this->varDesXMLok = true;
+				$result = $db->fetchAll($sql, 2);
+				if($result){
+					 $this->varDescription = $result[0]["note_text"];
+					 
+					 $xmlNote = "<div>".chr(13);
+					 $xmlNote .= $this->varDescription.chr(13);
+					 $xmlNote .= "</div>".chr(13);
+					 
+					 @$xml = simplexml_load_string($xmlNote);
+					 if($xml){
+						  $this->varDesXMLok = true;
+					 }
+					 else{
+						  $this->varDesXMLok = false;
+					 }
 				}
 		  }
-	
     }//end function
     
     
@@ -609,9 +617,11 @@ class dbXML_dbPropitem  {
 				$metadataObj = $this->metadataObj;
 				$projectName = $metadataObj->projectName;
 				
+				/*
 				$requestParams = array("taxa" => (trim($this->varLabel)),
 													"proj" => $projectName
 													);
+				*/
 				
 				$requestParams = array("taxa" => (trim($this->varLabel)),
 												"projID" => $this->projectUUID);
