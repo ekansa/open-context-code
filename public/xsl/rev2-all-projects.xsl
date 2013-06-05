@@ -80,26 +80,27 @@ BEGIN Container for main page content
                             <!-- Carousel items -->
                                 <div class="carousel-inner">
                                     <xsl:for-each select="atom:feed/atom:entry">
-                                        <div>
-                                        <xsl:choose>
-                                            <xsl:when test="position()=1">
-                                                <xsl:attribute name="class">item active</xsl:attribute>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:attribute name="class">item</xsl:attribute>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                            <div class="hero_image">
-                                                <img>
-                                                    <xsl:attribute name="src"><xsl:value-of select="./atom:link[@rel='enclosure']/@href" /></xsl:attribute>
-                                                    <xsl:attribute name="alt">Representative image of the '<xsl:value-of select="arch:project/arch:name/arch:string" />' project</xsl:attribute>
-                                                </img>
-                                            </div>
-                                            <div class="carousel-caption">
-                                                <h4><a><xsl:attribute name="href">../projects/<xsl:value-of select="arch:project/@UUID"/></xsl:attribute><xsl:value-of select="arch:project/arch:name/arch:string" /></a></h4>
-                                                <p><xsl:value-of select="arch:project/arch:notes/arch:note[@type='short_des']/arch:string" disable-output-escaping="yes" /></p>
-                                            </div>
-                                        </div>
+														<xsl:sort select=".//oc:project_name/@editStatus" order="descending"/>
+														<div>
+														<xsl:choose>
+															 <xsl:when test="position()=1">
+																  <xsl:attribute name="class">item active</xsl:attribute>
+															 </xsl:when>
+															 <xsl:otherwise>
+																  <xsl:attribute name="class">item</xsl:attribute>
+															 </xsl:otherwise>
+														</xsl:choose>
+															 <div class="hero_image">
+																  <img>
+																		<xsl:attribute name="src"><xsl:value-of select="./atom:link[@rel='enclosure']/@href" /></xsl:attribute>
+																		<xsl:attribute name="alt">Representative image of the '<xsl:value-of select="arch:project/arch:name/arch:string" />' project</xsl:attribute>
+																  </img>
+															 </div>
+															 <div class="carousel-caption">
+																  <h4><a><xsl:attribute name="href">../projects/<xsl:value-of select="arch:project/@UUID"/></xsl:attribute><xsl:value-of select="arch:project/arch:name/arch:string" /></a></h4>
+																  <p><xsl:value-of select="arch:project/arch:notes/arch:note[@type='short_des']/arch:string" disable-output-escaping="yes" /></p>
+															 </div>
+														</div>
                                     </xsl:for-each>
                                 </div>
                                 <!-- Carousel nav -->
