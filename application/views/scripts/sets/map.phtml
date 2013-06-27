@@ -138,7 +138,11 @@ unset($geoParams["page"]);
 unset($geoParams["sort"]);
 unset($geoParams["recs"]);
 $geoJSONuri = OpenContext_FacetOutput::generateFacetURL($geoParams, false, false, false, false, "facets_geojson");
-
+if(isset($geoParams["geotile"])){
+	 if(strlen($geoParams["geotile"]) == 0){
+		  $geoJSONuri .= "&geotile=";
+	 }
+}
 
 ?>
 
@@ -680,12 +684,15 @@ BEGIN Container for main page content
 				var bounds = new L.LatLngBounds();
 				var maxCount = 0;
 				var minCount = 1000000000000;
-				
+				/*
 				var terrain = L.tileLayer('http://api.tiles.mapbox.com/v3/ekansa.map-tba42j14/{z}/{x}/{y}.png', {
 						 attribution: 'Open Context, 2012',
 					 }).addTo(map);
-				
+				*/
 				L.TileLayer.multi({
+					 13: {
+						  url:'http://api.tiles.mapbox.com/v3/ekansa.map-tba42j14/{z}/{x}/{y}.png'
+					 },
 					 14: {
 						 url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
 						 subdomains:'1234'
@@ -699,7 +706,7 @@ BEGIN Container for main page content
 				 }, {
 					 minZoom: 0,
 					 maxZoom: 18,
-					 attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; '
+					 attribution: 'Open Context, 2013. Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; '
 						 + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, '
 						 + '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
 						 +  '&mdash; '

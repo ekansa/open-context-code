@@ -1098,7 +1098,9 @@ class OpenContextItem {
 					 //$dynamicGeoTileField = $i."_geo_tile";
 					 $dynamicGeoTileField = $tileArray["field"]."_geo_tile";
 					 $tile = $tileArray["value"];
-					 $solrDocument->$dynamicGeoTileField = $tile;
+					 
+					 //$solrDocument->$dynamicGeoTileField = $tile; //commented out. don't add dynamic fields for this, a memory hog
+					 
 					 if($i >= self::maxZoom){
 						  break; //stop, no need to make tiles deeper than this
 					 }

@@ -104,8 +104,8 @@ class SolrSearch{
 
 
     const MaxsRecords = 150;
-    const geoLevelDeep = 3; //how many levels in geo tiles down will we go?
-	 const maxGeoTileDepth = 19; //maximum depth / resolution of geotiles
+    const geoLevelDeep = 4; //how many levels in geo tiles down will we go?
+	 const maxGeoTileDepth = 20; //maximum depth / resolution of geotiles
     
     //initialize the search, set search document types to false
     function initialize(){
@@ -330,6 +330,9 @@ class SolrSearch{
 			if(is_numeric($geoPath)){
 				$this->makeGeoTileParameters($geoPath);
 			}
+			elseif(strlen($geoPath) == 0){
+				$this->makeGeoTileParameters($geoPath);
+			}
 		}
     }
     
@@ -337,17 +340,24 @@ class SolrSearch{
     function makeGeoTileParameters($geoPath){
 	
 		$okGeo = true;
-		$geoPathSplit = str_split($geoPath);
-		//validate numbers, make sure they are less than or = 3
-		foreach($geoPathSplit as $geoItem){
-			if(is_numeric($geoItem)){
-				if($geoItem < 0 || $geoItem > 3){
-					$okGeo = false;
-				}
-			}
-			else{
-				$okGeo = false;
-			}
+		if(strlen($geoPath)>0){
+		  $geoPathSplit = str_split($geoPath);
+		  //validate numbers, make sure they are less than or = 3
+		  foreach($geoPathSplit as $geoItem){
+			  if(is_numeric($geoItem)){
+				  if($geoItem < 0 || $geoItem > 3){
+					  $okGeo = false;
+					  $this->geoPath = false;
+				  }
+			  }
+			  else{
+				  $okGeo = false;
+				  $this->geoPath = false;
+			  }
+		  }
+		}
+		else{
+		  $this->geoPath = "";
 		}
 		
 		if($okGeo){
@@ -355,7 +365,9 @@ class SolrSearch{
 		   
 			$this->geoPath = $geoPath;
 			$this->geoParam = "geo_path:" . $geoPath . "*";
+			$geoFacetFields = array('geo_path');
 			
+			/*
 			$baseTileArray = array(0,
 					   1,
 					   2,
@@ -379,12 +391,6 @@ class SolrSearch{
 					 foreach($baseTileArray as $baseTile){
 						  $newTile = $prefix.$baseTile;
 						  $newPrefixArray[] = $newTile;
-						  /*
-						  if(!in_array($newTile, $newPrefixArray) && strlen($newTile)<= self::maxGeoTileDepth){
-								echo "base".$baseTile."\r\n";
-								$newPrefixArray[] = $newTile;
-						  }
-						  */
 					 }	 
 				}
 				unset($tilePrefixArray);
@@ -401,6 +407,8 @@ class SolrSearch{
 					 $geoFacetFields[] = $facetField;
 				}
 			}
+			*/
+			
 			
 			//echo print_r($geoFacetFields);
 			//die;
@@ -1075,12 +1083,29 @@ class SolrSearch{
     
     //another Solr Query to get available GeoTiles
     function getGeoTiles(){
+		  $requestParams = $this->requestParams;
+		  
 		$solrFacets = $this->facets;
 		$geoTileFacets = array();
 		if(isset($solrFacets["facet_fields"])){
+		  
+		  $geoLevelDeep = strlen($this->geoPath) + self::geoLevelDeep;
+		  if(isset($requestParams["geodeep"]) && $this->geoPath){
+				if(is_numeric($requestParams["geodeep"])){
+					 if($requestParams["geodeep"] > 0){
+						  $geoLevelDeep = strlen($this->geoPath) + round($requestParams["geodeep"],0);
+					 }
+				}
+		  }
+		  if($geoLevelDeep > self::maxGeoTileDepth){
+				$geoLevelDeep = self::maxGeoTileDepth;
+		  }
+		  
+		  
 			$geoTileFacets = array();
 			foreach($solrFacets["facet_fields"] as $key => $valueArray){
 				if(stristr($key, "_geo_tile")){
+					 //if searching against facet fields, which is very memory intensive
 					if(count($valueArray)>0){
 						$geoKeyPrefix = str_replace("_geo_tile", "", $key);
 						foreach($valueArray as $tileKey => $count){
@@ -1089,7 +1114,24 @@ class SolrSearch{
 						}
 					}
 				}
+				elseif($key == "geo_path"){
+					 if(count($valueArray)>0){
+
+						  foreach($valueArray as $tileKey => $count){
+								
+								$actTileKey = substr($tileKey, 0, $geoLevelDeep); //get the begining of the path, so you can sum together
+								//echo $actTileKey."/r/n";
+								if(!array_key_exists($actTileKey, $geoTileFacets)){
+									 $geoTileFacets[$actTileKey] = $count;
+								}
+								else{
+									 $geoTileFacets[$actTileKey] += $count; //add the count the this path
+								}
+						  }
+					 }
+				}
 			}
+			
 			if(count($geoTileFacets)>0){
 				$this->geoTileFacets = $geoTileFacets;
 			}
