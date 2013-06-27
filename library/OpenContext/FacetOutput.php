@@ -1696,27 +1696,32 @@ class OpenContext_FacetOutput {
 		//$newURL = "/sets/"; //default for xhtml
 		$newURL = $baseController;
 		
-		$extension = ""; //default for xhtml
 		if($type == "facets_atom"){
 			$newURL = $baseController."facets/";
 			$extension = '.atom';
 		}
-		if($type == "facets_json"){
+		elseif($type == "facets_json"){
 			$newURL = $baseController."facets/";
 			$extension = '.json';
 		}
-		if($type == "facets_kml"){
+		elseif($type == "facets_kml"){
 			$newURL = $baseController."facets/";
 			$extension = '.kml';
 		}
-		if($type == "results_atom"){
+		elseif($type == "results_atom"){
 			$extension = '.atom';
 		}
-		if($type == "results_json"){
+		elseif($type == "results_json"){
 			$extension = '.json';
 		}
-		if($type == "results_kml"){
+		elseif($type == "results_kml"){
 			$extension = '.kml';
+		}
+		elseif($type == "facets_geojson"){
+			$extension = '.geojson';
+		}
+		else{
+			$extension = ""; //default for xhtml
 		}
 		
 		if(array_key_exists("default_context_path", $requestParams)){

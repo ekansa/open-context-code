@@ -1,17 +1,136 @@
 <?php
 
-// used to help create hyperlinks; set to current hostname.
-//$host = "http://ishmael.ischool.berkeley.edu";
-//$host = "http://opencontext";
+function URIescape($uri){
+    return str_replace("&", "&amp;", $uri);
+}
+
+
 $host = OpenContext_OCConfig::get_host_config();
-$GMapURI = OpenContext_OCConfig::get_google_api();
-//$GMapURI = "http://maps.google.com/maps?file=api&amp;v=2&amp;key=".$GMapURI;
-//$GMapURI = "http://maps.google.com/maps/api/js?sensor=false&amp;key=".$GMapURI;
-$GMapURI = "http://maps.googleapis.com/maps/api/js?sensor=false";
 
-$OAI_url = $host."/oai/request";
-$lastUpdate = date("F j, Y", strtotime(OpenContext_OCConfig::last_update()));
+define ('HOST', $host);
 
+$auth = Zend_Auth::getInstance();
+if (!$auth->hasIdentity()){
+    $displayName = false;
+}
+else{
+    $identity = $auth->getIdentity();
+    $displayName = $identity->name;
+}
+
+
+$requestURI = $this->requestURI;
+$request_array = explode('?', $requestURI, 2);
+//array explode  ( string $delimiter  , string $string  [, int $limit  ] )
+
+if (substr_compare($request_array[0], '/' , -1)) {  // if the uri doesn't end in a slash (minus query parameters), 
+    $request_array[0] = $request_array[0] . '/';  // add one
+}
+
+
+if (isset($request_array[1])) { // if there are query parameters,
+    $request_array[1] = "?" . $request_array[1];  // prepend a '?' to the set of parameters since we exploded on the '?' to get this string.
+    //echo $request_array[1]; // for testing
+} else {
+    $request_array[1] = null;
+}
+
+
+
+
+$requestParams = $this->requestParams;
+if(!isset($requestParams["q"])){
+    
+    $checkParam = $requestParams;
+    unset($checkParam["page"]);
+    unset($checkParam["recs"]);
+    unset($checkParam["sort"]);
+    
+    if(count($checkParam)>3){
+        $searchMessage = "Search this set of data";
+    }
+    else{
+        $searchMessage = "Search all analytic data";
+    }
+    
+    $full_link = $host.$requestURI;
+    $full_link  = str_replace("&", "&amp;", $full_link );
+    $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
+
+    $fulltext = '';
+    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
+    $fulltext .= '<span style="text-align:left; margin-left:2%; font-size:.75em;" >';
+    $fulltext .= 'Or, type a search term in the box';
+    $fulltext .= '</span><br/>';
+    $fulltext .= '<div id="b_search_tab">
+                    <div id="b_search_row" class="b_search">
+                        <div id="b_search_cell_in" >
+                                <input name="q" class="bb" type="text" id="q_string" value="Search here..."
+                                onfocus="if(this.value==\'Search here...\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'Search here...\';"
+                                />
+                        </div>
+                        <div id="b_search_cell_button">
+                                <button class="bb" type="submit" onclick="textSearch();">Search</button>
+                        </div>
+                    </div>
+                </div>
+    ';
+    
+}
+else{
+    $fulltext = "";
+}
+
+
+
+$numFound = $this->numFound;
+$facets = $this->facets;
+$docs = $this->docs;
+
+if(!isset($requestParams["rel"])){
+    $link_filter_message = "<p>Some data in Open Context uses shared terminology systems published by experts in various fields:</p>";
+    $link_filter_message .= "<ul>".chr(13);
+    
+    $eolLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "rel", "http://purl.org/NET/biol/ns#term_hasTaxonomy", true);
+    $pleiadesLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "rel", "http://gawd.atlantides.org/terms/origin", true);
+    
+    $link_filter_message .= "<li><a href='$eolLink'>Browse Items</a> with <strong>biological taxa</strong> (from <a href='http://wwww.eol.org'>Encyclopedia of Life</a>)</li>".chr(13);
+    $link_filter_message .= "<li><a href='$pleiadesLink'>Browse Items</a> linked to <strong>ancient places</strong> (from <a href='http://pleiades.stoa.org'>Pleaides</a>)</li>".chr(13);
+    $link_filter_message .= "<li><a href='../about/concepts#linked-data'><em>More about Linked Data in Open Context</em></a></li>".chr(13);
+    $link_filter_message .= "</ul>".chr(13);
+}
+else{
+    $link_filter_message = "<p><a href='../about/concepts#linked-data'><em>More about Linked Data in Open Context</em></a></p>".chr(13);
+}
+
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host);
+
+
+$facet_fields = $facets["facet_fields"];
+$facet_queries = $facets["facet_queries"];
+$extendedFacets = true; //show more available facets 
+
+
+//do advanced search interface
+if(substr_count($requestURI, "advanced=true")>0){
+    $advanced = true;
+}
+else{
+    $advanced = false;
+}
+
+if($numFound>0){
+    $facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $facet_fields, $facet_queries, $requestParams, $request_array, $host, $advanced);
+}
+else{
+    $facet_output = "(No results to this cquery, please try other search options)";
+}
+
+
+
+$googleURI = "";
+$facetAtomURI = "";
+$openSearchURI = "";
 
 
 ?>

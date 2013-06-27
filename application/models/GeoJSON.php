@@ -9,6 +9,7 @@
 class GeoJSON {
     
 	 public $requestParams; // array of the request parameters and values
+	 public $numFound; //total number of items found
 	 
 	 public $geoTileFacetArray; //array of geotile facets
 	 public $tileGeoJSONarray; //array of geotile facets as GeoJSON array
@@ -18,6 +19,7 @@ class GeoJSON {
 	 
 	 function processGeoTileFacets(){
 		  
+		  $requestParams = $this->requestParams;
 		  if(is_array($this->geoTileFacetArray)){
 				$tileGeoJSONarray = array();
 				foreach($this->geoTileFacetArray as $geoTile){
@@ -36,7 +38,8 @@ class GeoJSON {
 					 $actGeoJSON["geometry"]["coordinates"] = $coordinateArray;
 					 
 					 $properties = array();
-					 $properties["name"] =  "Open Context ".$geoTile["name"];
+					 $boundingBox = "Bounded by: ".$geoTile["geoBounding"][0]." Lat, ".$geoTile["geoBounding"][1]." Lon, and ".$geoTile["geoBounding"][2]." Lat, ".$geoTile["geoBounding"][3]." Lon";
+					 $properties["name"] =  "Region ".$boundingBox." ";
 					 $properties["href"] =  $geoTile["href"];
 					 $properties["hrefGeoJSON"] =  str_replace(".json", ".geojson", $geoTile["result_href"]);
 					 $properties["count"] =  $geoTile["count"];
@@ -47,7 +50,32 @@ class GeoJSON {
 				$this->tileGeoJSONarray = $tileGeoJSONarray;
 		  }
 		  else{
-				$this->tileGeoJSONarray = false;
+				
+				$tileGeoJSONarray = array();
+				$actGeoJSON = array("type" => "Feature",
+												"geometry" => array("type" => "Polygon")
+												);
+				$coordinateArray = array();
+				$polyArray = array();
+				$geoObj = new GlobalMapTiles;
+				$geoArray = $geoObj->QuadTreeToLatLon($requestParams["geotile"]);
+				$polyArray[] = array( $geoArray[1], $geoArray[0]);
+				$polyArray[] = array( $geoArray[3], $geoArray[0]);
+				$polyArray[] = array( $geoArray[3], $geoArray[2]);
+				$polyArray[] = array( $geoArray[1], $geoArray[2]);
+				$coordinateArray[] = $polyArray;
+				$actGeoJSON["geometry"]["coordinates"] = $coordinateArray;
+				$properties = array();
+				$boundingBox = "Bounded by: ".$geoArray[0]." Lat, ".$geoArray[1]." Lon, and ".$geoArray[2]." Lat, ".$geoArray[3]." Lon";
+				$properties["name"] =  "Region ".$boundingBox."";
+				$properties["href"] =  false;
+				$properties["hrefGeoJSON"] =  false;
+				$properties["count"] =  $this->numFound;
+					 
+				$actGeoJSON["properties"] =  $properties;
+				$tileGeoJSONarray[] =  $actGeoJSON;
+				
+				$this->tileGeoJSONarray = $tileGeoJSONarray;
 		  }
 		  
 		  return $this->tileGeoJSONarray;

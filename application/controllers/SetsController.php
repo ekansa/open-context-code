@@ -104,6 +104,10 @@ class setsController extends Zend_Controller_Action {
 		 $atom_string = $SolrSearch->makeSpaceAtomFeed();
 		 $this->view->spaceResults = $SolrSearch->atom_to_object($atom_string);
 		 
+		 if(isset($requestParams["map"])){
+		  return $this->render("map");
+		 }
+		 
 		 /*
 		 $output = array("numFound" => $SolrSearch->numFound,
 				 "facets" => $SolrSearch->facets,
@@ -728,6 +732,8 @@ class setsController extends Zend_Controller_Action {
 		  
 		  
 		  $GeoJSON = new GeoJSON;
+		  $GeoJSON->numFound = $SolrSearch->numFound;
+		  $GeoJSON->requestParams = $requestParams;
 		  if(isset($requestParams["geotile"])){
 				$GeoJSON->geoTileFacetArray = $FacetURLs->geoTileFacetURLs;
 				$geoJSONfeatures = $GeoJSON->processGeoTileFacets();

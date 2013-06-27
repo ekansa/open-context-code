@@ -105,6 +105,7 @@ class SolrSearch{
 
     const MaxsRecords = 150;
     const geoLevelDeep = 3; //how many levels in geo tiles down will we go?
+	 const maxGeoTileDepth = 19; //maximum depth / resolution of geotiles
     
     //initialize the search, set search document types to false
     function initialize(){
@@ -350,63 +351,67 @@ class SolrSearch{
 		}
 		
 		if($okGeo){
+		   $requestParams = $this->requestParams;
+		   
 			$this->geoPath = $geoPath;
 			$this->geoParam = "geo_path:" . $geoPath . "*";
-			
-			$level = 0;
-			$maxLevel = 3;
-			$facetArray = array(0=> $geoPath,
-					1=> $geoPath,
-					2=> $geoPath,
-					3=> $geoPath
-					);
 			
 			$baseTileArray = array(0,
 					   1,
 					   2,
 					   3);
+			
 			$level = 0;
-			$nextLength = strlen($geoPath) + self::geoLevelDeep;
-			if($nextLength >= 20){
-				$nextLength = 20;
+			$geoLevelDeep = self::geoLevelDeep;
+			if(isset($requestParams["geodeep"])){
+				if(is_numeric($requestParams["geodeep"])){
+					 if($requestParams["geodeep"] > self::geoLevelDeep && $requestParams["geodeep"] <= (self::geoLevelDeep*2)){
+						  $geoLevelDeep = $requestParams["geodeep"];
+					 }
+				}
 			}
 			
-			$tileSuffixArray = $facetArray ;
-			while($level < self::geoLevelDeep){
-				$newSuffixArray = array();
-				foreach($baseTileArray as $baseTile){
-					foreach($tileSuffixArray as $oldSuffix){
-					
-					if(!in_array($oldSuffix, $newSuffixArray)){
-						$newSuffixArray[] = $oldSuffix;
-					}
-					
-					$newTile = $oldSuffix.$baseTile;
-					if(!in_array($newTile, $newSuffixArray)){
-						$newSuffixArray[] = $newTile;
-					}
-					}
+			$tilePrefixArray = array(0 => $geoPath);
+			$level = 0;
+			while($level < $geoLevelDeep){
+				$newPrefixArray = array();
+				foreach($tilePrefixArray as $prefix){
+					 foreach($baseTileArray as $baseTile){
+						  $newTile = $prefix.$baseTile;
+						  $newPrefixArray[] = $newTile;
+						  /*
+						  if(!in_array($newTile, $newPrefixArray) && strlen($newTile)<= self::maxGeoTileDepth){
+								echo "base".$baseTile."\r\n";
+								$newPrefixArray[] = $newTile;
+						  }
+						  */
+					 }	 
 				}
-				unset($tileSuffixArray);
-				$tileSuffixArray = $newSuffixArray;
-				unset($newSuffixArray);
-			$level++;   
+				unset($tilePrefixArray);
+				$tilePrefixArray = $newPrefixArray;
+				unset($newPrefixArray);
+			$level++;
 			}
 			
 			$geoFacetFields = array();
-			foreach($tileSuffixArray as $tile){
-				if(strlen($tile) == $nextLength){
-					//only compute facets for deeper tiles, no need for shallow tiles, since these won't be interesting to map
-					$geoFacetFields[] = $tile."_geo_tile";
+			foreach($tilePrefixArray as $tile){
+				$tile = substr($tile, 0, self::maxGeoTileDepth);
+				$facetField = $tile."_geo_tile";
+				if(!in_array($facetField,$geoFacetFields)){
+					 $geoFacetFields[] = $facetField;
 				}
 			}
+			
+			//echo print_r($geoFacetFields);
+			//die;
 			
 			$this->geoFacets = $geoFacetFields;
 		}//end case with valid numeric path
     }//end function
     
-    
-    
+	 
+	 
+	 
     //create an array of document types to search in
     function makeDocumentTypeArray(){
 	
@@ -900,12 +905,23 @@ class SolrSearch{
 		  if ($this->pingSolr($solr)) {
 		  //if (true) {
 				 try {
-			
-					 $response = $solr->search(	$this->query,
-												 $this->offset,
-												 $this->number_recs,
-												 $this->param_array);
+					 $param_array = $this->param_array;
+					 
+					 if(count($param_array["facet.field"])<10){	  
+						  $response = $solr->search(	$this->query,
+													  $this->offset,
+													  $this->number_recs,
+													  $this->param_array);
+					 }
+					 else{
+						  
+						  $response = $solr->search(	$this->query,
+													  $this->offset,
+													  $this->number_recs,
+													  $this->param_array,
+													  "POST");
 								  
+					 }
 					 $this->queryString = $solr->queryString;
 					 $docs_array = array();
 					 

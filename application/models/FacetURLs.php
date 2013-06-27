@@ -337,6 +337,7 @@ class FacetURLs{
 			foreach($geoTileFacets as $tileKey => $tileCount){
 				$tileKey = (string)$tileKey;
 				$requestParams["geotile"] =  (string)$tileKey;
+				$requestParams["geotile"] = substr($requestParams["geotile"],0,20); //don't go too deep
 				$link = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "xhtml");
 				$linkJSON_facets = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "facets_json");
 				$linkJSON_results = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "results_json");
