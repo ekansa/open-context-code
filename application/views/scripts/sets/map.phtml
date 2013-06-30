@@ -137,10 +137,16 @@ $geoParams = $requestParams;
 unset($geoParams["page"]);
 unset($geoParams["sort"]);
 unset($geoParams["recs"]);
+$geoTileZoomOut = false;
 $geoJSONuri = OpenContext_FacetOutput::generateFacetURL($geoParams, false, false, false, false, "facets_geojson");
 if(isset($geoParams["geotile"])){
 	 if(strlen($geoParams["geotile"]) == 0){
 		  $geoJSONuri .= "&geotile=";
+	 }
+	 else{
+		  $zoomOutParams = $requestParams;
+		  $zoomOutParams["geotile"] = substr($requestParams["geotile"], 0, (strlen($requestParams["geotile"])-1));
+		  $geoTileZoomOut = OpenContext_FacetOutput::generateFacetURL($zoomOutParams, false, false);
 	 }
 }
 
@@ -425,7 +431,13 @@ BEGIN Container for main page content
                             </div>
 									 
 									 <div id="map"></div>
+									 <?php
 									 
+									 if($geoTileZoomOut != false){
+										  echo "<div id=\"geo_zoom_out\"><a href=\"".$geoTileZoomOut."\">Zoom out map tiles</a></div>";
+									 }
+									 
+									 ?>
                         </div>
                         <div id="item_list_tab">
                         <?php

@@ -108,6 +108,12 @@ class OpenContext_FacetOutput {
 			elseif($key == 'geotile') {
 				$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, false, $type);
 				$remValue = OpenContext_FacetOutput::pipesOR(utf8_encode($value));
+				$zoomOutParams = $requestParams;
+				if(strlen($requestParams[$key])>0){
+					$zoomOutParams[$key] = substr($requestParams[$key], 0, (strlen($requestParams[$key])-1));
+					$geoTileZoomOut = OpenContext_FacetOutput::generateFacetURL($zoomOutParams, false, false);
+					$remValue .= " (<a href=\"".$geoTileZoomOut."\">Zoom out a tile level</a>)";
+				}
 				$facetRem = array("parameter" => $key,
 						  "value" => $value,
 						  "title" => "Geo-spatial Tile",
