@@ -17,10 +17,14 @@ class GeoJSON {
 	 public $facetArray; // array of standard facets
 	 public $contextGeoJSONarray; //array of json data for contexts
 	 
+	 public $denominatorData; //array of data for the denominator, if doing a comparison. false if not
+	 public $propOf; //string describing what defines the denominator, if doing a comparison
+	 
 	 function processGeoTileFacets(){
 		  
 		  $requestParams = $this->requestParams;
 		  if(is_array($this->geoTileFacetArray)){
+				$this->getDenominator(); //get comparative denominator data, if requested
 				$tileGeoJSONarray = array();
 				foreach($this->geoTileFacetArray as $geoTile){
 					 
@@ -43,6 +47,7 @@ class GeoJSON {
 					 $properties["href"] =  $geoTile["href"];
 					 $properties["hrefGeoJSON"] =  str_replace(".json", ".geojson", $geoTile["result_href"]);
 					 $properties["count"] =  $geoTile["count"];
+					 $properties = $this->getTileDenominator($properties, $geoTile["linkQuery"]); //get a demoninator, if present
 					 
 					 $actGeoJSON["properties"] =  $properties;
 					 $tileGeoJSONarray[] =  $actGeoJSON;
@@ -209,6 +214,37 @@ class GeoJSON {
 				return false;
 		  }
 	 }//end function 
+	 
+	 
+	 function getTileDenominator($properties, $tileID){
+		  $denominatorData = $this->denominatorData;
+		  if(is_array($denominatorData)){
+				
+				if(isset($denominatorData["geoTileFacets"])){
+					 foreach($denominatorData["geoTileFacets"] as $geoTile){
+						  $actTileID = $geoTile["linkQuery"];
+						  if($actTileID === $tileID){
+								$properties["denominator"] = $geoTile["count"];
+								$properties["propOf"] = $this->propOf;
+								break;
+						  }
+					 }
+				}
+				
+		  }
+		  return $properties;
+	 }
+	 
+	 
+	 
+	 //get denominator data, if requested, else false
+	 function getDenominator(){
+		  $requestParams = $this->requestParams;
+		  $PropotionObj = new ProportionalData;
+		  $PropotionObj->requestParams = $requestParams;
+		  $this->denominatorData = $PropotionObj->getDenominatorData();
+		  $this->propOf = $PropotionObj->propOf;
+	 }
 	 
    
 }//end class

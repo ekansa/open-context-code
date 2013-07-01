@@ -132,23 +132,23 @@ $googleURI = "";
 $facetAtomURI = "";
 $openSearchURI = "";
 
-
+//get the link for geojson data
 $geoParams = $requestParams;
 unset($geoParams["page"]);
 unset($geoParams["sort"]);
 unset($geoParams["recs"]);
-$geoTileZoomOut = false;
 $geoJSONuri = OpenContext_FacetOutput::generateFacetURL($geoParams, false, false, false, false, "facets_geojson");
 if(isset($geoParams["geotile"])){
 	 if(strlen($geoParams["geotile"]) == 0){
 		  $geoJSONuri .= "&geotile=";
 	 }
-	 else{
-		  $zoomOutParams = $requestParams;
-		  $zoomOutParams["geotile"] = substr($requestParams["geotile"], 0, (strlen($requestParams["geotile"])-1));
-		  $geoTileZoomOut = OpenContext_FacetOutput::generateFacetURL($zoomOutParams, false, false);
-	 }
 }
+
+//get the link for comparative / proportional data
+$PropotionObj = new ProportionalData;
+$PropotionObj->requestParams = $requestParams;
+$PropotionLinkURL = $PropotionObj->proportionalVisLink();
+$PropotionLinkText = $PropotionObj->linkPropOf;
 
 ?>
 
@@ -430,14 +430,14 @@ BEGIN Container for main page content
                                 </div>
                             </div>
 									 
+									 <div class="map-legend">
+										  <div id="map-legend-row"></div>
+									 </div>
+									 <div class="map-contr">
+										  <div id="map-contr-row"></div>
+									 </div>
 									 <div id="map"></div>
-									 <?php
-									 
-									 if($geoTileZoomOut != false){
-										  echo "<div id=\"geo_zoom_out\"><a href=\"".$geoTileZoomOut."\">Zoom out map tiles</a></div>";
-									 }
-									 
-									 ?>
+					 
                         </div>
                         <div id="item_list_tab">
                         <?php
@@ -556,12 +556,7 @@ BEGIN Container for main page content
     </div>
     <?php echo $this->render('footer.phtml'); //reader document footer ?>
         
-		  <!--
 		  
-		  <div id="map" style="height:700px;width:90%;margin-left:auto; margin-right:auto;"></div>
-		  
-		  -->
-    
 		  <script >
 				
 				//var startColor = convertToRGB('#6D03B0');    /* The beginning of your gradient */
@@ -569,6 +564,60 @@ BEGIN Container for main page content
 				
 				var startColor = convertToRGB('#FFC800');
 				var endColor   = convertToRGB('#FF0000');
+				var proportional = false; //boolean, if we are doing propotional data
+				var proportionLinkURL = "<?php echo $PropotionLinkURL; ?>";
+				var proportionLinkText = "<?php echo $PropotionLinkText; ?>";
+				
+				function colorLegend(){
+					 
+					 var rDiv = document.getElementById("map-legend-row");
+					 
+					 if(proportional){
+						  //startDiv.innerHTML = Math.round(minCount * 100, 1) + "%";
+						  //endDiv.innerHTML = Math.round(minCount * 100, 1) + "%";
+						  var startInner ="1%";
+						  var endInner = "100%";
+						  var controlInner = "Raw Count";
+					 }
+					 else{
+						  var startInner = minCount;
+						  var endInner = maxCount;
+						  var controlInner = "Proportion of " + proportionLinkText;
+					 }
+					 
+					 if(proportionLinkURL != false){
+						  var rcDiv = document.getElementById("map-contr-row");
+						  var actDiv = document.createElement("div");
+						  actDiv.setAttribute("class", "map-contr-cell");
+						  actDiv.innerHTML = "Map by [<a href=\"" + proportionLinkURL + "\">" + controlInner + "</a>]";
+						  rcDiv.appendChild(actDiv);
+					 }
+					 
+					 
+					 var subDivs = 25;
+					 for (var i = 1; i <= subDivs; i++) {
+						  var actCount = maxCount * ( i / subDivs);
+						  var actColor = assignColorByCount(actCount, maxCount);
+						  var actDiv = document.createElement("div");
+						  
+						  actDiv.setAttribute("style", ("background-color: rgb(" + actColor + ");"));
+						  if(i == 1){
+								actDiv.setAttribute("class", "map-legend-cell-ends");
+								actDiv.innerHTML = startInner;
+						  }
+						  else if(i == subDivs){
+								actDiv.setAttribute("class", "map-legend-cell-ends");
+								actDiv.innerHTML = endInner;
+						  }
+						  else{
+								actDiv.setAttribute("class", "map-legend-cell");
+						  }
+						  
+						  rDiv.appendChild(actDiv);
+					 }
+					 
+				}
+				
 				
 				function hex (c) {
 					 var s = "0123456789abcdef";
@@ -686,8 +735,22 @@ BEGIN Container for main page content
 					 }
 					 if (feature.properties) {
 						  var popupContent = "<div> The context <em>'" + feature.properties.name  + "'</em> has " + feature.properties.count;
-						  popupContent += " items. <a href='" + feature.properties.href + "'>Click here</a> to filter by this geographic region</div>";
+						  //popupContent += " items. "
+						  //popupContent += "<a href='" + feature.properties.href + "'>Click here</a> to filter by this geographic region</div>";
+						  
+						  popupContent += " items";
+						  if(proportional){
+								popupContent += " (" + Math.round((feature.properties.count / feature.properties.denominator) * 100, 1);
+								popupContent += "% of all " + feature.properties.denominator + " '" + feature.properties.propOf + "' in this context). ";
+						  }
+						  popupContent += ". ";
+						  if(feature.properties.href){
+								popupContent += "<a href='" + feature.properties.href + "'>Click here</a> to filter by this region / context."
+						  }
+						  popupContent += "</div>";
+						  
 						  layer.bindPopup(popupContent);
+						  
 					 }
 				}
 				
@@ -738,7 +801,23 @@ BEGIN Container for main page content
 						  if(minCount > tileData.features[i].properties.count){
 								minCount = tileData.features[i].properties.count;
 						  }
+						  if("denominator" in tileData.features[i].properties){
+								if( tileData.features[i].properties.denominator > 0){
+									 var tempMin = tileData.features[i].properties.count / tileData.features[i].properties.denominator;
+									 if(minCount > tempMin){
+										  minCount = tempMin;
+									 }
+								}
+						  }
 					 }
+					 
+					 if("denominator" in tileData.features[0].properties){
+						  proportional = true;
+						  maxCount = 1;
+						  minCount = .001;
+					 }
+					 
+					 colorLegend(); //make the color legend;
 					 
 					 //loop through features to make points with the correct color icon
 					 var iconArray = new Array();
@@ -746,26 +825,6 @@ BEGIN Container for main page content
 						  if(tileData.features[i].geometry.type == "Polygon"){
 								var pointCoords = getPolyCenter(tileData.features[i].geometry.coordinates);
 								var latlng = new L.LatLng(pointCoords[0], pointCoords[1]);
-								/*
-								var actCount = tileData.features[i].properties.count;
-								var iconURL = createColorMapIconURL(actCount, maxCount);
-								iconArray[actCount] =  L.icon({
-														  iconUrl: iconURL,
-														  shadowUrl: "http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png",
-														  iconAnchor:  [10, 38],
-														  shadowAnchor: [12, 40]
-														  });
-								
-								var marker = L.marker(latlng, {icon: iconArray[actCount]}).addTo(map);
-								var polyPointContent = "<div> The context <em>'" + tileData.features[i].properties.name  + "'</em> has " + tileData.features[i].properties.count;
-								//polyPointContent += " items. <a href='../maps/test-map?geoJSON=" + tileData.features[i].properties.hrefGeoJSON + "'>Click here</a> to filter by this geographic region</div>";
-								polyPointContent += " items. ";
-								if(tileData.features[i].properties.href){
-									 polyPointContent += "<a href='" + tileData.features[i].properties.href + "'>Click here</a> to filter by this geographic region."
-								}
-								polyPointContent += "</div>";
-								marker.bindPopup(polyPointContent);
-								*/
 						  }
 						  if(tileData.features[i].geometry.type == "Point"){
 								var latlng = new L.LatLng(tileData.features[i].geometry.coordinates[1], tileData.features[i].geometry.coordinates[0]);
@@ -783,7 +842,11 @@ BEGIN Container for main page content
 								var marker = L.marker(latlng, {icon: iconArray[actCount]}).addTo(map);
 								var pointContent = "<div> The context <em>'" + tileData.features[i].properties.name  + "'</em> has " + tileData.features[i].properties.count;
 								//pointContent += " items. <a href='../maps/test-map?geoJSON=" + tileData.features[i].properties.hrefGeoJSON + "'>Click here</a> to filter by this geographic region</div>";
-								polyPointContent += " items. ";
+								polyPointContent += " items ";
+								if(proportional){
+									 polyPointContent += "(" + Math.round((tileData.features[i].properties.count / tileData.features[i].properties.denominator) * 100, 1) + "%)";
+								}
+								polyPointContent += ". ";
 								if(tileData.features[i].properties.href){
 									 polyPointContent += "<a href='" + tileData.features[i].properties.href + "'>Click here</a> to filter by this geographic region."
 								}
@@ -798,6 +861,11 @@ BEGIN Container for main page content
 						  style: function(feature) {
 								if(feature.geometry.type == "Polygon"){
 									 var actCount = feature.properties.count;
+									 if("denominator" in feature.properties){
+										  if( feature.properties.denominator > 0){
+												actCount = actCount / feature.properties.denominator;
+										  }
+									 }
 									 var newColorRGB = assignColorByCount(actCount, maxCount);
 									 var newColorHex =  "#" + convertToHex(newColorRGB);
 									 return {color: newColorHex , icon: iconArray[actCount]};

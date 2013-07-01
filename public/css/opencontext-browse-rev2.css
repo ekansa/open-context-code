@@ -2,7 +2,7 @@
 /* CSS Document */
 #main_map{
     min-width:1000px;
-    width: 80%;
+    width: 85%;
     margin-left:auto;
     margin-right:auto;
     text-align:left;
@@ -48,6 +48,53 @@
 	padding-left:5%;
 	min-height:400px;
 	margin-bottom: 3%;
+}
+div.map-legend{
+	width:96%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:2%;
+	display: table;
+}
+div.map-contr{
+	width:96%;
+	margin-left:auto;
+	margin-right:auto;
+	display: table;
+}
+#map-legend-row{
+	display: table-row;
+}
+#map-contr-row{
+	display: table-row;
+}
+div.map-contr-cell{
+	display:table-cell;
+	padding: 2px;
+	text-align: right;
+	width:100%;
+	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+	font-size: .9em;
+}
+div.map-contr-cell a{
+	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+	font-size: .9em;
+	color: #fff;
+}
+div.map-legend-cell{
+	display:table-cell;
+	padding: 2px;
+}
+div.map-legend-cell-ends{
+	display:table-cell;
+	padding: 2px;
+	text-align: center;
+	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+	font-size: 1em;
+	font-weight: bold;
+	color: #EEEEEE;
+	text-shadow: 0 -1px 0 rgba(0, 0 ,0, .5);
+	width: 10%;
 }
 #map {
 	height:700px;

@@ -22,6 +22,9 @@ class OpenContext_FacetOutput {
 		if(isset($requestParams['callback'])){
 			unset($requestParams['callback']);
 		}
+		if(isset($requestParams['comp'])){
+			unset($requestParams['comp']);
+		}
 		
 		$output = array();
 		
