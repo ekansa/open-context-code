@@ -75,11 +75,13 @@ div.map-contr-cell{
 	width:100%;
 	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
 	font-size: .9em;
+	color: #E0EEEE;
 }
 div.map-contr-cell a{
 	font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
 	font-size: .9em;
 	color: #fff;
+	text-decoration: underline;
 }
 div.map-legend-cell{
 	display:table-cell;

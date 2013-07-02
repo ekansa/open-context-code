@@ -934,6 +934,9 @@ class OpenContext_FacetOutput {
 		if(isset($requestParams["page"])){
 			unset($requestParams["page"]);
 		}
+		if(isset($requestParams['comp'])){
+			unset($requestParams['comp']);
+		}
 		
 		$localSettings = false; 
 		$defaultSettingsFile = $host."/browse_settings/default_tree.xml";

@@ -19,6 +19,7 @@ class GeoJSON {
 	 
 	 public $denominatorData; //array of data for the denominator, if doing a comparison. false if not
 	 public $propOf; //string describing what defines the denominator, if doing a comparison
+	 public $nominatorCurrentVal; //string describing the current nominator, if doing a comparison
 	 
 	 function processGeoTileFacets(){
 		  
@@ -226,6 +227,7 @@ class GeoJSON {
 						  if($actTileID === $tileID){
 								$properties["denominator"] = $geoTile["count"];
 								$properties["propOf"] = $this->propOf;
+								$properties["nominatorCurrentVal"] = $this->nominatorCurrentVal;
 								break;
 						  }
 					 }
@@ -244,6 +246,7 @@ class GeoJSON {
 		  $PropotionObj->requestParams = $requestParams;
 		  $this->denominatorData = $PropotionObj->getDenominatorData();
 		  $this->propOf = $PropotionObj->propOf;
+		  $this->nominatorCurrentVal = $PropotionObj->nominatorCurrentVal;
 	 }
 	 
    

@@ -149,7 +149,7 @@ $PropotionObj = new ProportionalData;
 $PropotionObj->requestParams = $requestParams;
 $PropotionLinkURL = $PropotionObj->proportionalVisLink();
 $PropotionLinkText = $PropotionObj->linkPropOf;
-
+$nominatorCurrentVal = $PropotionObj->nominatorCurrentVal;
 ?>
 
 
@@ -567,6 +567,7 @@ BEGIN Container for main page content
 				var proportional = false; //boolean, if we are doing propotional data
 				var proportionLinkURL = "<?php echo $PropotionLinkURL; ?>";
 				var proportionLinkText = "<?php echo $PropotionLinkText; ?>";
+				var nominatorCurrentVal = "<?php echo $nominatorCurrentVal; ?>";
 				
 				function colorLegend(){
 					 
@@ -577,19 +578,23 @@ BEGIN Container for main page content
 						  //endDiv.innerHTML = Math.round(minCount * 100, 1) + "%";
 						  var startInner ="1%";
 						  var endInner = "100%";
-						  var controlInner = "Raw Count";
+						  var curMapView = "Percent '" + nominatorCurrentVal + "' of '" + proportionLinkText + "'";
+						  var controlInner = "Raw Count of '" + nominatorCurrentVal + "'";
 					 }
 					 else{
 						  var startInner = minCount;
 						  var endInner = maxCount;
-						  var controlInner = "Proportion of " + proportionLinkText;
+					 
+						  var curMapView = "Raw Count of '" + nominatorCurrentVal + "'";
+						  var controlInner = "Percent '" + nominatorCurrentVal + "' of '" + proportionLinkText + "'";
 					 }
 					 
 					 if(proportionLinkURL != false){
 						  var rcDiv = document.getElementById("map-contr-row");
 						  var actDiv = document.createElement("div");
 						  actDiv.setAttribute("class", "map-contr-cell");
-						  actDiv.innerHTML = "Map by [<a href=\"" + proportionLinkURL + "\">" + controlInner + "</a>]";
+						  actDiv.innerHTML = "Map view: <span class=\"act-map-view\">" + curMapView + "</span>, ";
+						  actDiv.innerHTML += "Swtich view to: <a href=\"" + proportionLinkURL + "\">" + controlInner + "</a>";
 						  rcDiv.appendChild(actDiv);
 					 }
 					 
@@ -738,6 +743,8 @@ BEGIN Container for main page content
 						  //popupContent += " items. "
 						  //popupContent += "<a href='" + feature.properties.href + "'>Click here</a> to filter by this geographic region</div>";
 						  
+						  
+						  popupContent += " '" + nominatorCurrentVal + "'";
 						  popupContent += " items";
 						  if(proportional){
 								popupContent += " (" + Math.round((feature.properties.count / feature.properties.denominator) * 100, 1);
@@ -816,6 +823,11 @@ BEGIN Container for main page content
 						  maxCount = 1;
 						  minCount = .001;
 					 }
+					 if("propOf" in tileData.features[0].properties && !proportionLinkText){
+						  proportionLinkText = tileData.features[0].properties.propOf;
+					 }
+					 
+					 
 					 
 					 colorLegend(); //make the color legend;
 					 

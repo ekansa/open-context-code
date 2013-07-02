@@ -11,6 +11,7 @@ class ProportionalData{
     
     public $linkPropOf; //string that describes / defines a link for getting a comparative percentage view
     public $linkPropOfURL; //url for getting a comparative percentage view
+    public $nominatorCurrentVal; //string of the currently queried term, used to make it easier to understand proportions
     
     const cacheLife = 7200; // cache lifetime, measured in seconds, 7200 = 2 hours
     const cacheDir = "./cache/"; //cache directory for the denominator data
@@ -91,8 +92,10 @@ class ProportionalData{
                 foreach($requestParams["taxa"] as $actRequestTaxa){
                     if(substr_count($actRequestTaxa, $lookCompData)>0){
                         $this->propOf = $lookCompData;
-                       $foundNumber = true;
-                       $foundIndex  = $i;
+                        $nominatorRequestValArray = $this->pathStringToArray($actRequestTaxa);
+                        $this->nominatorCurrentVal = $nominatorRequestValArray[count($nominatorRequestValArray) - 1]; //get the value of the last element of the array
+                        $foundNumber = true;
+                        $foundIndex  = $i;
                     }
                 $i++;
                 }
@@ -114,26 +117,11 @@ class ProportionalData{
                    
                     if(substr_count($actRequestTaxa, $lookCompData)>0){
                     
-                        $linkedData = new LinkedDataRef;
-                        if(stristr($lookCompData,"::")){
-                            $relArray = explode("::",$lookCompData);
-                        }
-                        else{
-                            $relArray = array($lookCompData);
-                        }
-                        
-                        $firstLoop = true;
-                        foreach($relArray as $actRel){
-                            if($linkedData->lookup_refURI($actRel)){
-                                if($firstLoop){
-                                    $this->propOf = $linkedData->refLabel;
-                                }
-                                else{
-                                    $this->propOf .= "::".$linkedData->refLabel;
-                                }
-                            }
-                            $firstLoop = false;
-                        }
+                        $nominatorRequestValArray = $this->pathStringToArray($actRequestTaxa);
+                        $this->nominatorCurrentVal = $this->relURIsToLabels($nominatorRequestValArray[count($nominatorRequestValArray) - 1]); //get the value of the last element of the array
+                    
+                        $relArray = $this->pathStringToArray($lookCompData); //make an array of the path string
+                        $this->propOf = $this->relURIsToLabels($relArray);
                         unset($linkedData);
                     
                         $foundNumber = true;
@@ -172,6 +160,41 @@ class ProportionalData{
 	}
     
     
+    //convert an array of REL uris into human readable labels
+    function relURIsToLabels($relURIarray){
+        $output = false;
+        
+        if(!is_array($relURIarray)){
+            $relURIarray = array($relURIarray);
+        }
+        
+        $linkedData = new LinkedDataRef;
+        foreach($relURIarray as $actRel){
+            if($linkedData->lookup_refURI($actRel)){
+                if(!$output){
+                    $output = $linkedData->refLabel;
+                }
+                else{
+                    $output .= "::".$linkedData->refLabel;
+                }
+            }
+        }
+        
+        return $output;
+    }
+    
+    
+    //turns a path string into an array
+    function pathStringToArray($pathString, $pathDelim = "::"){
+        if(stristr($pathString, $pathDelim)){
+            return explode($pathDelim, $pathString);
+        }
+        else{
+            return array( 0 => $pathString);
+        }
+    }
+    
+    
     //calculate the greatest common demoninator
     function gcd($a, $b){
         return ($b) ? $this->gcd($b, $a % $b) : $a;
@@ -194,6 +217,7 @@ class ProportionalData{
         }
         if(isset($requestParams["comp"])){
             $actCompParam = false;
+            $this->makeDenominatorDataLink();
             unset($requestParams["comp"]);
             $output = $host.(OpenContext_FacetOutput::generateFacetURL($requestParams, null, null, false, false, $type));
         }
@@ -204,22 +228,18 @@ class ProportionalData{
             $compVal = $compValArray[$compValIndex];
             
             if(stristr($compVal, "::")){ //case where the comp val is a hierachy
-                $compValEx = explode("::", $compVal);
+                $compValEx = $this->pathStringToArray($compVal);
+                $this->nominatorCurrentVal = $compValEx[count($compValEx)-1]; //the current queried term
                 unset($compValEx[count($compValEx)-1]); //remove the last part of the taxonomic or rel path
                 $useCompVal =  $actCompParam."::".implode("::", $compValEx);
                 if($actCompParam == "rel"){
                     
                     $linkedData = new LinkedDataRef;
-                    foreach($compValEx as $actRel){
-                        if($linkedData->lookup_refURI($actRel)){
-                            if(!$this->linkPropOf){
-                                $this->linkPropOf = $linkedData->refLabel;
-                            }
-                            else{
-                                $this->linkPropOf .= "::".$linkedData->refLabel;
-                            }
-                        }
+                    if($linkedData->lookup_refURI($this->nominatorCurrentVal)){
+                        $this->nominatorCurrentVal = $linkedData->refLabel;
                     }
+                    unset($linkedData);
+                    $this->linkPropOf = $this->relURIsToLabels($compValEx);
                 }
                 else{
                     $this->linkPropOf = implode("::", $compValEx);
