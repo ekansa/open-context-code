@@ -91,9 +91,9 @@ class ProportionalData{
                 $i=0;
                 foreach($requestParams["taxa"] as $actRequestTaxa){
                     if(substr_count($actRequestTaxa, $lookCompData)>0){
-                        $this->propOf = $lookCompData;
+                        $this->propOf = str_replace("||", " OR ", $lookCompData);
                         $nominatorRequestValArray = $this->pathStringToArray($actRequestTaxa);
-                        $this->nominatorCurrentVal = $nominatorRequestValArray[count($nominatorRequestValArray) - 1]; //get the value of the last element of the array
+                        $this->nominatorCurrentVal = str_replace("||", " OR ", $nominatorRequestValArray[count($nominatorRequestValArray) - 1]); //get the value of the last element of the array
                         $foundNumber = true;
                         $foundIndex  = $i;
                     }
@@ -169,15 +169,34 @@ class ProportionalData{
         }
         
         $linkedData = new LinkedDataRef;
-        foreach($relURIarray as $actRel){
-            if($linkedData->lookup_refURI($actRel)){
-                if(!$output){
-                    $output = $linkedData->refLabel;
-                }
-                else{
-                    $output .= "::".$linkedData->refLabel;
+        foreach($relURIarray as $rawActRel){
+            
+            if(stristr($rawActRel, "||")){
+                $actRelEx = explode("||", $rawActRel);
+            }
+            else{
+                $actRelEx = array($rawActRel);
+            }
+            
+            $tempOutput = false;
+            foreach($actRelEx as $actRel){
+                if($linkedData->lookup_refURI($actRel)){
+                    if(!$tempOutput){
+                        $tempOutput = $linkedData->refLabel;
+                    }
+                    else{
+                        $tempOutput .= " OR ".$linkedData->refLabel; //add ORs
+                    }
                 }
             }
+            
+            if(!$output){
+                $output = $tempOutput;
+            }
+            else{
+                $output .= "::".$tempOutput; //put into a hierarch path
+            }
+            
         }
         
         return $output;
@@ -212,12 +231,12 @@ class ProportionalData{
         $actCompParam = false;
         foreach($requestParams as $paramKey => $vals){
             if($paramKey == "rel" || $paramKey == "taxa"){
-                $actCompParam = $paramKey;   
+                $actCompParam = $paramKey;   //the last param key that is a rel or taxa is used to make a proportional comparison
             }
         }
         if(isset($requestParams["comp"])){
             $actCompParam = false;
-            $this->makeDenominatorDataLink();
+            $this->makeDenominatorDataLink(); //do this so that 
             unset($requestParams["comp"]);
             $output = $host.(OpenContext_FacetOutput::generateFacetURL($requestParams, null, null, false, false, $type));
         }
@@ -229,16 +248,11 @@ class ProportionalData{
             
             if(stristr($compVal, "::")){ //case where the comp val is a hierachy
                 $compValEx = $this->pathStringToArray($compVal);
-                $this->nominatorCurrentVal = $compValEx[count($compValEx)-1]; //the current queried term
+                $this->nominatorCurrentVal = str_replace("||", " OR ", $compValEx[count($compValEx)-1]); //the current queried term
                 unset($compValEx[count($compValEx)-1]); //remove the last part of the taxonomic or rel path
                 $useCompVal =  $actCompParam."::".implode("::", $compValEx);
                 if($actCompParam == "rel"){
-                    
-                    $linkedData = new LinkedDataRef;
-                    if($linkedData->lookup_refURI($this->nominatorCurrentVal)){
-                        $this->nominatorCurrentVal = $linkedData->refLabel;
-                    }
-                    unset($linkedData);
+                    $this->nominatorCurrentVal = $this->relURIsToLabels($this->nominatorCurrentVal);
                     $this->linkPropOf = $this->relURIsToLabels($compValEx);
                 }
                 else{

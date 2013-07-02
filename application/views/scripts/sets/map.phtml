@@ -165,6 +165,7 @@ $nominatorCurrentVal = $PropotionObj->nominatorCurrentVal;
         <link href="<?php echo $host; ?>/css/opencontext-browse-rev2.css" rel="stylesheet" type="text/css" />
         <link href="<?php echo $host; ?>/css/atomresults.css" rel="stylesheet" type="text/css" />
         
+		  <script src="<?php echo $host; ?>/components/js/browse" type="text/javascript"></script>
 		  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		  <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
 		  <script src="http://moonlite.github.io/Leaflet.MultiTileLayer/scripts/lib/Leaflet.MultiTileLayer/src/L.TileLayer.Multi.js"></script>
@@ -175,6 +176,26 @@ $nominatorCurrentVal = $PropotionObj->nominatorCurrentVal;
 		  <script type="text/javascript">
         <!--
             
+				
+				<?php
+        
+        echo "var baseURI = '".$host.$requestURI."'; \n";
+        echo "var contextBase = '".$host.$request_array[0]."'; \n";
+        echo "var paramterBase = '".$request_array[1]."'; \n";
+        echo "var numItems = ".count($this->spaceResults)."; \n";
+        
+        echo chr(13).chr(13);
+        
+        $activeTaxaValue = OpenContext_FacetOutput::active_taxon_value($requestParams); //for local taxonomies
+        echo "var activeTaxaValue = '".$activeTaxaValue."'; \n";
+        
+        echo chr(13);
+        $activeRelationValue = OpenContext_FacetOutput::active_taxon_value($requestParams, false); //for linked data relations
+        echo "var activeRelationValue = '".$activeRelationValue."'; \n";
+        
+        ?>
+				
+				
      window.onload = function(){
         ConvertRowsToLinks("item_list_tab");
         //AddRowLinks();
