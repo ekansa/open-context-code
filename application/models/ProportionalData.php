@@ -248,11 +248,12 @@ class ProportionalData{
             
             if(stristr($compVal, "::")){ //case where the comp val is a hierachy
                 $compValEx = $this->pathStringToArray($compVal);
-                $this->nominatorCurrentVal = str_replace("||", " OR ", $compValEx[count($compValEx)-1]); //the current queried term
+                $rawFinalCompValue = $compValEx[count($compValEx)-1];
+                $this->nominatorCurrentVal = str_replace("||", " OR ", $rawFinalCompValue); //the current queried term
                 unset($compValEx[count($compValEx)-1]); //remove the last part of the taxonomic or rel path
                 $useCompVal =  $actCompParam."::".implode("::", $compValEx);
                 if($actCompParam == "rel"){
-                    $this->nominatorCurrentVal = $this->relURIsToLabels($this->nominatorCurrentVal);
+                    $this->nominatorCurrentVal = $this->relURIsToLabels($rawFinalCompValue);
                     $this->linkPropOf = $this->relURIsToLabels($compValEx);
                 }
                 else{
