@@ -217,6 +217,8 @@ class OpenContext_FacetQuery {
                 */
                 
                 }
+					 
+					 
         
                 // "tagger" maps to "tag_creator_name" in our solr schema
                 $tagger = OpenContext_FacetQuery::test_param_key("tagger", $requestParams);
@@ -1390,7 +1392,7 @@ public static function trimLastDelim($string, $actDelim = "::"){
                 foreach($search_array AS $term){
                         $term = OpenContext_FacetQuery::solrEscape($term);
 								if(strlen($term)>0){
-									$output .= $solrField.":\\".$term."\\ + ";
+									$output .= $solrField.":\\\"".$term."\\\" + ";
 								}
                 }//end loop
                 

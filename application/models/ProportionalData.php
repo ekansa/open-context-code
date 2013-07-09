@@ -67,12 +67,13 @@ class ProportionalData{
     function makeDenominatorDataLink(){
         $output = false;
         $requestParams = $this->requestParams;
+        $newJSONrequestURI = false;
         if(isset($requestParams["comp"])){
             $host = OpenContext_OCConfig::get_host_config();
             $compData = $requestParams["comp"];
             unset($requestParams["comp"]);
             $requestParams["recs"] = 1;
-		
+        
             if(stristr($compData, "prop::")){
                 $propKey = str_replace("prop::", "", $compData);
                 $this->propOf = $propKey;

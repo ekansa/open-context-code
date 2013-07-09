@@ -367,52 +367,6 @@ class SolrSearch{
 			$this->geoParam = "geo_path:" . $geoPath . "*";
 			$geoFacetFields = array('geo_path');
 			
-			/*
-			$baseTileArray = array(0,
-					   1,
-					   2,
-					   3);
-			
-			$level = 0;
-			$geoLevelDeep = self::geoLevelDeep;
-			if(isset($requestParams["geodeep"])){
-				if(is_numeric($requestParams["geodeep"])){
-					 if($requestParams["geodeep"] > self::geoLevelDeep && $requestParams["geodeep"] <= (self::geoLevelDeep*2)){
-						  $geoLevelDeep = $requestParams["geodeep"];
-					 }
-				}
-			}
-			
-			$tilePrefixArray = array(0 => $geoPath);
-			$level = 0;
-			while($level < $geoLevelDeep){
-				$newPrefixArray = array();
-				foreach($tilePrefixArray as $prefix){
-					 foreach($baseTileArray as $baseTile){
-						  $newTile = $prefix.$baseTile;
-						  $newPrefixArray[] = $newTile;
-					 }	 
-				}
-				unset($tilePrefixArray);
-				$tilePrefixArray = $newPrefixArray;
-				unset($newPrefixArray);
-			$level++;
-			}
-			
-			$geoFacetFields = array();
-			foreach($tilePrefixArray as $tile){
-				$tile = substr($tile, 0, self::maxGeoTileDepth);
-				$facetField = $tile."_geo_tile";
-				if(!in_array($facetField,$geoFacetFields)){
-					 $geoFacetFields[] = $facetField;
-				}
-			}
-			*/
-			
-			
-			//echo print_r($geoFacetFields);
-			//die;
-			
 			$this->geoFacets = $geoFacetFields;
 		}//end case with valid numeric path
     }//end function
@@ -1115,17 +1069,23 @@ class SolrSearch{
 					}
 				}
 				elseif($key == "geo_path"){
-					 if(count($valueArray)>0){
+					 $rawTilesCount = count($valueArray); //count of raw geo-tile facet data from solr, values of the geo_path field
+					 if($rawTilesCount>0){
 
-						  foreach($valueArray as $tileKey => $count){
-								
-								$actTileKey = substr($tileKey, 0, $geoLevelDeep); //get the begining of the path, so you can sum together
-								//echo $actTileKey."/r/n";
-								if(!array_key_exists($actTileKey, $geoTileFacets)){
-									 $geoTileFacets[$actTileKey] = $count;
-								}
-								else{
-									 $geoTileFacets[$actTileKey] += $count; //add the count the this path
+						  if($rawTilesCount < 2){
+								$geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
+								$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tile
+						  }
+						  else{
+								$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
+								$foundGeoTiles = count($geoTileFacets);
+								if($foundGeoTiles == 1){
+									 while($foundGeoTiles < 2 && $geoLevelDeep <= self::maxGeoTileDepth){
+										  //go into a deeper zoom level while there's only one tile currently in the array
+										  $geoLevelDeep = $geoLevelDeep + 1;
+										  $geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
+										  $foundGeoTiles = count($geoTileFacets);
+									 }
 								}
 						  }
 					 }
@@ -1139,6 +1099,23 @@ class SolrSearch{
     }//end funciton
     
     
+	 //makes facet array for geotiles
+	 function makeGeoTileArray($valueArray,  $geoLevelDeep){
+		  $geoTileFacets = array();
+		  foreach($valueArray as $tileKey => $count){
+								
+				$actTileKey = substr($tileKey, 0, $geoLevelDeep); //get the begining of the path, so you can sum together
+				//echo $actTileKey."/r/n";
+				if(!array_key_exists($actTileKey, $geoTileFacets)){
+					 $geoTileFacets[$actTileKey] = $count;
+				}
+				else{
+					 $geoTileFacets[$actTileKey] += $count; //add the count the this path
+				}
+		  }
+		  return $geoTileFacets;
+	 }
+	 
     
     
     function makeAltLinks(){

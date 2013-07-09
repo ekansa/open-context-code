@@ -875,15 +875,15 @@ BEGIN Container for main page content
 								var marker = L.marker(latlng, {icon: iconArray[actCount]}).addTo(map);
 								var pointContent = "<div> The context <em>'" + tileData.features[i].properties.name  + "'</em> has " + tileData.features[i].properties.count;
 								//pointContent += " items. <a href='../maps/test-map?geoJSON=" + tileData.features[i].properties.hrefGeoJSON + "'>Click here</a> to filter by this geographic region</div>";
-								polyPointContent += " items ";
+								pointContent += " items ";
 								if(proportional){
-									 polyPointContent += "(" + Math.round((tileData.features[i].properties.count / tileData.features[i].properties.denominator) * 100, 1) + "%)";
+									 pointContent += "(" + Math.round((tileData.features[i].properties.count / tileData.features[i].properties.denominator) * 100, 1) + "%)";
 								}
-								polyPointContent += ". ";
+								pointContent += ". ";
 								if(tileData.features[i].properties.href){
-									 polyPointContent += "<a href='" + tileData.features[i].properties.href + "'>Click here</a> to filter by this geographic region."
+									 pointContent += "<a href='" + tileData.features[i].properties.href + "'>Click here</a> to filter by this geographic region."
 								}
-								polyPointContent += "</div>";
+								pointContent += "</div>";
 								marker.bindPopup(pointContent);
 						  }
 					 }
