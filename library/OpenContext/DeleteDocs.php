@@ -323,7 +323,7 @@ class OpenContext_DeleteDocs {
 			//too big to save in one place, need to break and save elsewhere
 			$bigStringObj = new BigString;
 			$bigStringObj->saveVersionBigString($itemUUID, $versionID, $currentVersion, $itemType, "archaeoML", $xmlString, $db);
-			
+			$output = true;
 			if($output){
 				//save note that a big value was saved
 				$data = array("id_version" => $versionID,

@@ -317,9 +317,16 @@ class OpenContext_XMLtoOpenContextItem {
 		
 		
 		// Get the default context path
-		if ($xmlItem->xpath("//oc:context/oc:tree[@id='default']")) {
+		if($xmlItem->xpath("//arch:spatialUnit/oc:context")){
+			$xpathPrefix = "//arch:spatialUnit/oc:context";
+		}
+		else{
+			$xpathPrefix = "//oc:context";
+		}
+		
+		if ($xmlItem->xpath($xpathPrefix."/oc:tree[@id='default']")) {
 			$contextArray = array();
-			foreach ($xmlItem->xpath("//oc:context/oc:tree[@id='default']") as $default_tree) {
+			foreach ($xmlItem->xpath($xpathPrefix."/oc:tree[@id='default']") as $default_tree) {
 				foreach ($default_tree->xpath("oc:parent/oc:name") as $pathItem) {
 				$pathItem = (string)$pathItem;
 				$contextArray[] = $pathItem;
@@ -334,10 +341,10 @@ class OpenContext_XMLtoOpenContextItem {
 		
 		// Get the additional context paths
 		// first check for the presence of additional paths
-		if ($xmlItem->xpath("//oc:context/oc:tree[not(@id='default')]")) {
+		if ($xmlItem->xpath($xpathPrefix."/oc:tree[not(@id='default')]")) {
 	
 			$treeCount = 1; //differentiate between different context trees
-			foreach ($xmlItem->xpath("//oc:context/oc:tree[not(@id='default')]") as $non_default_tree) {
+			foreach ($xmlItem->xpath($xpathPrefix."/oc:tree[not(@id='default')]") as $non_default_tree) {
 				
 				$treeID = false;
 				foreach ($non_default_tree->xpath("@id") as $treeID) {

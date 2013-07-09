@@ -967,6 +967,7 @@ class OpenContextItem {
 		  /*
 		  This enables indexing of hierarchic taxonomies, these are used for faceted searches
 		  */
+		  $allNote = "";
 		  if(is_array($this->properties)){
 				foreach($this->properties as $prop){
 					 $value = $prop["value"];
@@ -1039,6 +1040,7 @@ class OpenContextItem {
 				$solrDocument->var_vals = Zend_Json::encode($keyVarArray);
 				foreach($keyVarArray as $varKey => $val){
 					 $solrDocument->setMultiValue("notes", $varKey.": ".$val); //add notes for full-text searches
+					 $allNote .= $varKey.": ".$val." ";
 				}
 		  }
 		  
@@ -1067,10 +1069,13 @@ class OpenContextItem {
 			
 		  if(is_array($this->alphaNotes)){
 				foreach($this->alphaNotes as $note){
-					 $solrDocument->setMultiValue("notes", $note); //add notes for full-text searches
+					 //$solrDocument->setMultiValue("notes", $note); //add notes for full-text searches
+					 $allNote .= " ".$note." ";
 				}
 		  }
 		  
+		  //testing to see if solr actually indexes all of these 
+		  $solrDocument->setMultiValue("notes", $allNote); //add notes for full-text searches
 		  
 			
 		  //take care of geographic data
