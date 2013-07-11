@@ -3,7 +3,7 @@ $requestURI = $this->requestURI;
 $host = OpenContext_OCConfig::get_host_config();
 $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
 header('HTTP/1.0 503 Service Unavailable');
-        header('Retry-After: '.OpenContext_UserMessages::httpEndDate());
+        header('Retry-After: '.OpenContext_UserMessages::solrResartEstimate());
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -72,8 +72,8 @@ header('HTTP/1.0 503 Service Unavailable');
 								<div class="fourOhFour">
 									 <p class="big-code"><?php echo $requestURI; ?></p>
 									 <div class="fourOhFour-img">
-										  <img src="http://static.alexandriaarchive.org/images/general/404error.jpg" title="A little humor for a sad subject" alt="Sad 404 graphic" />
-										  <p>Image Source: <a href="http://www.flickr.com/photos/guspim/2280690094/" title="Flickr Link">Gustavo</a> via Flickr (Creative Commons Share-a-like License)</p>
+										  <img src="http://farm1.staticflickr.com/28/93569705_1c562b413a.jpg" title="A little humor for a sad subject" alt="Sad 503 graphic" />
+										  <p>Image Source: <a href="http://www.flickr.com/photos/racatumba/93569705/sizes/m/in/photostream/" title="Flickr Link">Racatumba</a> via Flickr (Creative Commons Share-a-like License)</p>
 									 </div>
 								</div>
 						  </div>

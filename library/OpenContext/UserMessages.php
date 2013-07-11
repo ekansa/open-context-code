@@ -9,6 +9,19 @@ class OpenContext_UserMessages {
 	const downEnd = "March 4, 2011"; //date of the start of down time
 	const dateFormat = "l, F j, o";
 	
+	
+	//add some time to the current time to let folks know when to make the next request
+	//allows solr time to restart
+	public static function solrResartEstimate(){
+		
+		$timeFuture = time() + 2*60; //2 * 60 seconds
+		//$downEnd = date(self::dateFormat, $timeFuture);
+		$downEnd = 120; //retry after 120 seconds.
+		return $downEnd;
+	}
+	
+	
+	
 	public static function getSolrDownMessage(){
 		$downStart = date(self::dateFormat, strtotime(self::downStart));
 		$downEnd = date(self::dateFormat, strtotime(self::downEnd));
