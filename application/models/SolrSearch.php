@@ -1073,7 +1073,9 @@ class SolrSearch{
 					 if($rawTilesCount>0){
 
 						  if($rawTilesCount < 2){
-								$geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
+								if($geoLevelDeep < self::maxGeoTileDepth - 5){
+									 $geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
+								}
 								$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tile
 						  }
 						  else{
