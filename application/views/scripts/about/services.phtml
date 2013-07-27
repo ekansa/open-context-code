@@ -665,14 +665,30 @@ $OAI_url = $host."/oai/request";
 									 <tr>
 										  <td>RDF</td>
 										  <td>
-												<p>We are currently developing RDF representations (in RDF/XML and RDF/Turtle) for richer
-												and easier to parse expression of linked data than in the XHTML+RDFa format. 
+												<p>We are currently testing RDF representations (in RDF/XML) using the CIDOC-CRM ontology. Our implementation
+												of the CIDOC-CRM is based on examples by <a href="http://arachne.uni-koeln.de/">Archane</a>,
+												<a href="http://www.clarosnet.org/wiki/index.php?title=Main_Page">CLAROS</a>,
+												and the <a href="http://collection.britishmuseum.org/">British Museum</a> as well as discussions from the
+												<a href="https://github.com/lawdi/LAWD/issues/3">LAWDI group</a>.
 												</p>
+												<p>Open Context generates RDF through XSL transformation of ArchaeoML XML.
+												Our current implementation of the CIDOC-CRM in RDF is not finalized, and we welcome
+												<a href="https://github.com/ekansa/open-context-code/issues">feedback</a> offering suggestions
+												for improvement.</p>
 												<h5>Examples:</h5>
 												<ul class="service-examples">
-													 <li>Check back soon!
+													 <li><a href="http://opencontext.org/subjects/0CF37A48-3C8D-45CA-C7D8-58C2B9F03889.rdf">http://opencontext.org/subjects/0CF37A48-3C8D-45CA-C7D8-58C2B9F03889.rdf</a>
+														  returns RDF describing a bone.
 													 </li>
-													 
+													 <li><a href="http://opencontext.org/subjects/C39B7060-0CA0-4C15-FDE9-025D6CDA32E4.rdf">http://opencontext.org/subjects/C39B7060-0CA0-4C15-FDE9-025D6CDA32E4.rdf</a>
+														  returns RDF describing an archaeological context.
+													 </li>
+													 <li><a href="http://opencontext.org/subjects/FC96A49E-FE12-488B-4EFF-02D4E147B885.rdf">http://opencontext.org/subjects/FC96A49E-FE12-488B-4EFF-02D4E147B885.rdf</a>
+														  returns RDF describing an excavation area.
+													 </li>
+													 <li><a href="http://opencontext.org/subjects/871B9EF8-BC68-4190-5F8A-00882C0040A4.rdf">http://opencontext.org/subjects/871B9EF8-BC68-4190-5F8A-00882C0040A4.rdf</a>
+														  returns RDF describing an archaeological site.
+													 </li>
 												</ul>
 										  </td>
 									 </tr>
