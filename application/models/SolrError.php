@@ -122,7 +122,7 @@ class SolrError {
 			$mail->addBcc('kansaeric@gmail.com', 'Eric Kansa');
 			$mail->setSubject('Open Context Solr Search Down!');
 			$mail->send($transport);
-			$this->view->mailError = "";
+			$this->mailError = "";
 		} catch (Zend_Exception $e) {
 			//echo $e;
 		} 
