@@ -141,9 +141,11 @@ class projectsController extends Zend_Controller_Action
 		$itemFound = $proj->getByID($itemUUID);
 		 
 		if($itemFound){
-
+			
+			$proj->getTableAssociations("atom");
 			$proj_name = $proj->label;
 			$proj_atom = $proj->atomFull;
+			
 			$projectEditStatus = $proj->editStatus;
 			$view_count = $proj->viewCount;
 			$sp_view_count = $proj->totalViewCount;
@@ -218,6 +220,7 @@ class projectsController extends Zend_Controller_Action
 			$itemFound = $proj->getByID($itemUUID);
 			if($itemFound){
 				
+				$proj->getTableAssociations();
 				//$proj->addDOI("doi:10.6078/M77P8W98"); //add a doi
 
 				$xml_string = $proj->archaeoML;

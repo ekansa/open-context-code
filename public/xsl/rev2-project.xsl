@@ -293,7 +293,20 @@
 												</div>
 										</xsl:if>
 										
-										
+										<xsl:if test="//oc:metadata/oc:tableRefs">
+											<div id="table-links">
+												<h5>Downloadable Tables with this Project</h5>
+												<xsl:for-each select="//oc:metadata/oc:tableRefs/oc:link">
+													<p>
+															<a>
+																	<xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute>
+																	<xsl:attribute name="title">This downloadable table has a record of this item</xsl:attribute>
+																	<xsl:value-of select="."/>
+															</a>
+													</p>
+												</xsl:for-each>
+											</div>
+										</xsl:if>
 										
 										<div id="all_people" class="bodyText">
 											<h5>Associated People</h5>
@@ -452,6 +465,7 @@
 												</p>
 												
 										</div>
+										
 								
 										<div id="item-license" >
 													 <h5>Copyright Licensing</h5>

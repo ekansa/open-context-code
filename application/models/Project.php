@@ -4,6 +4,8 @@
 //this class interacts with the database for accessing and changing project items
 class Project {
     
+	 public $db; //database object
+	 
     public $noid;
 	 public $doi;
     public $projectUUID;
@@ -52,10 +54,7 @@ class Project {
         
         $id = $this->security_check($id);
         $output = false; //no user
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 	
 	
         $sql = 'SELECT *
@@ -116,10 +115,7 @@ class Project {
 	 function getNameByID($id){
 		  $id = $this->security_check($id);
         $output = false; //no user
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+        $db = $this->startDB();
 	
 	
         $sql = 'SELECT noid, doi, project_id, proj_name
@@ -145,10 +141,7 @@ class Project {
 	 function addViewCount($id, $viewCount){
 		  $id = $this->security_check($id);
 		 
-		  $db_params = OpenContext_OCConfig::get_db_config();
-		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 		  
 		  
 		  
@@ -193,9 +186,7 @@ class Project {
 		  }
 
 		  //spatial item is a simple xml object for an spatial item's Atom xml
-		  $db_params = OpenContext_OCConfig::get_db_config();
-		  $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
+		  $db = $this->startDB();
 		  
 		  $rank = false;
 			  
@@ -304,12 +295,7 @@ class Project {
     
     function versionUpdate($id, $db = false){
 		
-		if(!$db){
-			$db_params = OpenContext_OCConfig::get_db_config();
-			$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-			$db->getConnection();
-			$this->setUTFconnection($db);
-		}
+		$db = $this->startDB();
 		
 		$sql = 'SELECT proj_archaeoml AS archaeoML
 					FROM projects
@@ -328,10 +314,7 @@ class Project {
     //create a new diary / document item
     function createUpdate($versionUpdate){
         
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+       $db = $this->startDB();
     
 		  if(!$this->noid){
 			  $this->noid = false;
@@ -967,10 +950,7 @@ class Project {
         
         $id = $this->security_check($id);
         $output = false; //no user
-        $db_params = OpenContext_OCConfig::get_db_config();
-        $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+        $db = $this->startDB();
 	
 	
         $sql = 'SELECT *
@@ -1086,7 +1066,89 @@ class Project {
 	 
 	 
 	 
-	 
+	 //get table associations
+    function getTableAssociations($xmlType = "xml"){
+		  $host = OpenContext_OCConfig::get_host_config();  
+		  $db = $this->startDB();
+		  
+		  $sql = "SELECT DISTINCT export_tabs_records.tableID, export_tabs_records.page
+		  FROM export_tabs_records
+		  JOIN space ON export_tabs_records.uuid = space.uuid
+		  WHERE space.project_id = '".$this->projectUUID."'
+		  ORDER BY export_tabs_records.updated, export_tabs_records.tableID, export_tabs_records.page
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				
+				$dom = new DOMDocument("1.0", "utf-8");
+				if($xmlType == "xml"){
+					 $dom->loadXML($this->archaeoML);
+				}
+				else{
+					 $dom->loadXML($this->atomFull);
+				}
+				$dom->formatOutput = true;
+				$xpath = new DOMXpath($dom);
+				
+				$NSarray = $this->nameSpaces();
+				foreach($NSarray as $prefix => $uri){
+					 $xpath->registerNamespace($prefix, $uri);
+				}
+				$query = "//oc:metadata/oc:tableRefs";
+				$tableRefsList = $xpath->query($query, $dom);
+		  
+				if($tableRefsList->item(0) == null){
+					 $query = "//oc:metadata";
+					 $metadataNodeList = $xpath->query($query, $dom);
+					 $metadataNode = $metadataNodeList->item(0);
+					 $tableRefsNode = $dom->createElement("oc:tableRefs");
+					 $metadataNode->appendChild($tableRefsNode);
+				}
+				else{
+					 $tableRefsNode = $tableRefsList->item(0);
+				}
+				
+				foreach($result as $row){
+					 $tableID = $row["tableID"];
+					 $page = $row["page"];
+					 $useID = $tableID;
+					 if($page > 1){
+						  $useID .= "/".$page;
+					 }
+					  $tableURI = $host."/tables/".$useID;
+					 
+					 $tabObj = new Table;
+					 $found = $tabObj->getByID($useID);
+					 if($found){
+						  $tableName = $tabObj->label;
+					 }
+					 else{
+						  $tableObj = new ExportTable;
+						  $tableObj->getByID($useID);
+						  $tableName = $tableObj->title;
+					 }
+					 
+					 $query = "//oc:metadata/oc:tableRefs/oc:link[@href='$tableURI']";
+					 $sameNodeList = $xpath->query($query, $dom);
+					 if($sameNodeList->item(0)  == null){
+						  $linkNode = $dom->createElement("oc:link");
+						  $linkNode->setAttribute("href", $tableURI);
+						  $linkText = $dom->createTextNode($tableName);
+						  $linkNode->appendChild($linkText);
+						  $tableRefsNode->appendChild($linkNode);
+					 }//end case where we need to add a table link
+				}//end loop through linked tables
+				$this->archaeoML = $dom->saveXML();
+				if($xmlType == "xml"){
+					 $this->archaeoML = $dom->saveXML();
+				}
+				else{
+					 $this->atomFull = $dom->saveXML();
+				}
+		  }
+		  
+	 }
 	 
 	 
 	 
@@ -1139,14 +1201,25 @@ class Project {
         return $input;
     }
     
-    private function setUTFconnection($db){
-	    $sql = "SET collation_connection = utf8_general_ci;";
-	    $db->query($sql, 2);
-	    $sql = "SET NAMES utf8;";
-	    $db->query($sql, 2);
-    } 
-    
-    
-    
-    
+    function startDB(){
+		  if(!$this->db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+				$this->db = $db;
+		  }
+		  else{
+				$db = $this->db;
+		  }
+		  
+		  return $db;
+	 }
+	 
+	 function setUTFconnection($db){
+		  $sql = "SET collation_connection = utf8_unicode_ci;";
+		  $db->query($sql, 2);
+		  $sql = "SET NAMES utf8;";
+		  $db->query($sql, 2);
+    }
 }

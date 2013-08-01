@@ -193,6 +193,14 @@ div.clear_container {
 	border-color: #D7D7D7;
 	padding: 6px;
 }
+#table-links {
+	width:93%;
+	margin-top: 10px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #D7D7D7;
+	padding: 6px;
+}
 #all_people{
 	width:93%;
 	margin-top: 10px;
