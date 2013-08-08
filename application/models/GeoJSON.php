@@ -21,6 +21,11 @@ class GeoJSON {
 	 public $propOf; //string describing what defines the denominator, if doing a comparison
 	 public $nominatorCurrentVal; //string describing the current nominator, if doing a comparison
 	 
+	 
+	 public $contextPathArray; //array of context paths from the requestParams. Array generated from parsing "OR" (||) terms.
+	 
+	 public $db; //database object
+	 
 	 function processGeoTileFacets(){
 		  
 		  $requestParams = $this->requestParams;
@@ -142,6 +147,10 @@ class GeoJSON {
 						  }
 						  
 						  $actGeoJSON["geometry"]["coordinates"] = $coordinateArray;
+						  $contextPoly = $this->getContextPolygon($context["name"]);
+						  if(is_array($contextPoly )){
+								$actGeoJSON["geometry"] = $contextPoly;
+						  }
 						  
 						  $properties = array();
 						  $properties["name"] =  $context["name"];
@@ -161,6 +170,123 @@ class GeoJSON {
 		  
 		  return $this->contextGeoJSONarray;
 	 }//end function
+	 
+	 
+	 //get geospatial feature data about a context path
+	 function getContextPolygon($contextName){
+		  $output = false;
+		  $db = $this->startDB();
+		  
+		  $contextPathArray = $this->getContextPathArray();
+		  $contextCondition = $this->geoPathCondition($contextPathArray, $contextName);
+		  
+		  $sql = "SELECT * FROM geodata WHERE $contextCondition LIMIT 1; ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				$jsonString = $result[0]["geoJSON"];
+				$geoJSONfrag = Zend_Json::decode($jsonString);
+				if(is_array($geoJSONfrag)){
+					 if(isset($geoJSONfrag["geometry"])){
+						  $output = $geoJSONfrag["geometry"];
+					 }
+					 else{
+						  $output = $geoJSONfrag;
+					 }
+				}
+		  }
+		  return $output;
+	 }
+	 
+	 
+	 //makes an array of context paths, with one if there are no "||" (or) terms in the context, otherwise this returns multiple paths
+	 function getContextPathArray(){
+		  if(!is_array($this->contextPathArray)){
+				$output = array();
+				$requestParams = $this->requestParams;
+				if(isset($requestParams["default_context_path"])){
+					 $rawDefaultPath = $requestParams["default_context_path"];
+					 
+					 //this fixes a problem of a trailing "/" at the end of some requests for default contexts
+					 if(substr($rawDefaultPath, -1, 1) == "/"){
+						  $rawDefaultPath = substr($rawDefaultPath, 0, (strlen($rawDefaultPath)-1));
+					 }
+				
+					 if(strlen($rawDefaultPath)>0){
+						  $allPaths = array(0 => "");
+						  if(strstr($rawDefaultPath, "/")){
+								$rawPathArray = explode("/", $rawDefaultPath);
+						  }
+						  else{
+								$rawPathArray = array( 0 => $rawDefaultPath);
+						  }
+						  
+						  foreach($rawPathArray as $rawPathItem){
+								if(strstr($rawPathItem, "||")){
+									 //an OR term is present!
+									 $pathItems = explode("||", $rawPathItem);
+								}
+								else{
+									 $pathItems = array(0 => $rawPathItem);
+								}
+								
+								$newAllPaths = array();
+								foreach($pathItems as $pathItem){
+									 foreach($allPaths as $prevPaths){
+										  if(strlen($prevPaths) > 1){
+												$newAllPaths[] = $prevPaths."/".$pathItem;
+										  }
+										  else{
+												$newAllPaths[] = $pathItem;
+										  }
+									 }
+								}
+								$allPaths = $newAllPaths;
+								unset($newAllPaths);
+						  }
+						  
+						  $output = $allPaths;
+					 }//case where there's stringlength > 0
+				
+				}
+				$this->contextPathArray = $output;
+		  }
+		  else{
+				$output = $this->contextPathArray; //already made the contextPathArray.
+		  }
+		  
+		  return $output;
+	 }
+	 
+	 
+	 //generate a query condition based on the context path and the active context name (context name from the facet needing a polygon)
+	 function geoPathCondition($contextPathArray, $contextName){
+		  $firstLoop = true;
+		  if(count($contextPathArray)>0){
+				$output = "";
+				foreach($contextPathArray as $contextPath){
+					 if(substr($contextPath, -1, 1) == "/"){
+						  $contextPath = substr($contextPath, 0, (strlen($contextPath)-1)); //strip trailing "/" if present
+					 }
+					 $queryTerm = $contextPath."/".$contextName;
+					 if($firstLoop){
+						  $output = " path = '$queryTerm' ";
+						  $firstLoop = false;
+					 }
+					 else{
+						  $output .= " OR path = '$queryTerm' ";
+					 }
+					 
+				}
+		  }
+		  else{
+				$output = " path = '$contextName' ";
+		  }
+		  
+		  $output ="(".$output.")";
+		  
+		  return $output;
+	 }
 	 
 	 
 	 
@@ -250,4 +376,31 @@ class GeoJSON {
 	 }
 	 
    
+	
+	
+	 function startDB(){
+		  if(!$this->db){
+				$db_params = OpenContext_OCConfig::get_db_config();
+				$db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
+				$db->getConnection();
+				$this->setUTFconnection($db);
+				$this->db = $db;
+		  }
+		  else{
+				$db = $this->db;
+		  }
+		  
+		  return $db;
+	 }
+	 
+	 function setUTFconnection($db){
+		  $sql = "SET collation_connection = utf8_unicode_ci;";
+		  $db->query($sql, 2);
+		  $sql = "SET NAMES utf8;";
+		  $db->query($sql, 2);
+    }
+	 
+	 
+	 
+	 
 }//end class
