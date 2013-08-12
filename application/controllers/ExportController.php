@@ -56,11 +56,13 @@ class exportController extends Zend_Controller_Action {
 	public function xmlDumpAction() {
 		mb_internal_encoding( 'UTF-8' );
 		$this->_helper->viewRenderer->setNoRender();
-		
+		$output = array();
 		$AllDumpObj = new AllDump;
-		$AllDumpObj->exportAll();
-		
-		echo "Done ".($AllDumpObj->exportCount);
+		$outputDirs = $AllDumpObj->exportAll();
+		$output["count"] = $AllDumpObj->exportCount;
+		$output["directories"] = $outputDirs;
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
 	}
 	
 	
