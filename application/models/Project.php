@@ -296,6 +296,7 @@ class Project {
     function versionUpdate($id, $db = false){
 		
 		$db = $this->startDB();
+		$this->setUTFconnection($db);
 		
 		$sql = 'SELECT proj_archaeoml AS archaeoML
 					FROM projects
@@ -315,7 +316,8 @@ class Project {
     function createUpdate($versionUpdate){
         
        $db = $this->startDB();
-    
+		  $this->setUTFconnection($db);
+	 
 		  if(!$this->noid){
 			  $this->noid = false;
 		  }
@@ -1073,8 +1075,7 @@ class Project {
 		  
 		  $sql = "SELECT DISTINCT export_tabs_records.tableID, export_tabs_records.page
 		  FROM export_tabs_records
-		  JOIN space ON export_tabs_records.uuid = space.uuid
-		  WHERE space.project_id = '".$this->projectUUID."'
+		  WHERE export_tabs_records.project_id = '".$this->projectUUID."'
 		  ORDER BY export_tabs_records.updated, export_tabs_records.tableID, export_tabs_records.page
 		  ";
 		  
@@ -1151,8 +1152,48 @@ class Project {
 	 }
 	 
 	 
-	 
-	 
+	 //get the project's copyright license
+	 function getProjectLicenseByID($id = false){
+		  
+		  $output = false;
+		  $archaeML_string = false;
+		  
+		  if($this->archaeoML){
+				$archaeML_string = $this->archaeoML;
+				$this->getItemXML($id);
+		  }
+		  else{
+				if($id != false){
+					 $archaeML_string = $this->getItemXML($id);
+				}
+		  }
+		  
+		  if($archaeML_string != false){
+				@$itemXML = simplexml_load_string($archaeML_string);
+				if($itemXML != false){
+					 $nameSpaceArray = $this->nameSpaces();
+					 foreach($nameSpaceArray as $prefix => $uri){
+						  @$itemXML->registerXPathNamespace($prefix, $uri);
+					 }
+					 
+					 // get project license
+					 $uri = false;
+					 foreach($itemXML->xpath("//oc:copyright_lic/oc:lic_URI") as $xpathResult){
+						 $uri = (string)$xpathResult;
+					 }
+					 $name = false;
+					 foreach($itemXML->xpath("//oc:copyright_lic/oc:lic_name") as $xpathResult){
+						 $name = (string)$xpathResult;
+					 }
+					 
+					 if($uri != false){
+						  $output = array("uri" => $uri, "name" => $name);
+					 }
+				}
+		  }
+		  
+		  return $output;
+	 }
 	 
 	 
 	 
@@ -1168,10 +1209,7 @@ class Project {
     function db_find_personID($personName){
 	
 		  $personID = false;
-		  $db_params = OpenContext_OCConfig::get_db_config();
-				 $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-		  $db->getConnection();
-		  $this->setUTFconnection($db);
+		  $db = $this->startDB();
 		  
 		  $sql = "SELECT persons.person_uuid
 		  FROM persons
