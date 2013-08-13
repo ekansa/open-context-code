@@ -292,7 +292,7 @@ class AllDump {
 				foreach($result as $row){
 					 $itemUUID = $row["itemUUID"];
 					 $repoPart = $row["repo"];
-					 $this->validateRepo($repoPart, $projectUUID);
+					 $repoPart = $this->validateRepo($repoPart, $projectUUID);
 					 $itemObj = New Subject;
 					 $itemObj->getByID($itemUUID);
 					 $xml = $itemObj->archaeoML;
@@ -330,7 +330,7 @@ class AllDump {
 				foreach($result as $row){
 					 $itemUUID = $row["itemUUID"];
 					 $repoPart = $row["repo"];
-					 $this->validateRepo($repoPart, $projectUUID);
+					 $repoPart = $this->validateRepo($repoPart, $projectUUID);
 					 
 					 $itemObj = New Media;
 					 $itemObj->getByID($itemUUID);
@@ -368,7 +368,7 @@ class AllDump {
 				foreach($result as $row){
 					 $itemUUID = $row["itemUUID"];
 					 $repoPart = $row["repo"];
-					 $this->validateRepo($repoPart, $projectUUID);
+					 $repoPart = $this->validateRepo($repoPart, $projectUUID);
 					 
 					 $itemObj = New Document;
 					 $itemObj->getByID($itemUUID);
