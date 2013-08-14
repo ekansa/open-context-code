@@ -13,6 +13,8 @@ class AllDump {
     const exportDir = "./data"; //export directory
 	 const exportPrefix = "opencontext-"; //prefix ahead of the project UUID
 	
+	 const localGitDirectory = "C:\GitHub\\";
+	
     public $db; //database object, used over and over so connection is established only once
     
 	 public $itemTypeDirs = array("spatial" => "subjects",
@@ -28,6 +30,7 @@ class AllDump {
 	
 	 public $projectDirs = array();
     
+	 public $lookForUpdatedSubjects = false;
     
 	 function exportAll(){
 	
@@ -41,6 +44,8 @@ class AllDump {
 				$projectDirs = array();
 				
 				foreach($projects as $projectUUID){
+					 
+					 $this->GITsynch($projectUUID); //make sure that any existing GitHub repository files are in the proper structure
 					 
 					 $projectDirs[$projectUUID][] = self::exportPrefix.$projectUUID; //all projects will have one base root.
 					 $this->projectDirs = $projectDirs;
@@ -125,9 +130,46 @@ class AllDump {
 				foreach($result as $row){
 					 $output[] = $row["itemUUID"];
 				}
+				
+				if($this->lookForUpdatedSubjects){
+					 $output = $this->checkUpdatedSubjects($output);
+				}
+				
+		  }
+		  else{
+				//no projects to export. so look to see if any individual space items need exporting
+				$output = $this->checkUpdatedSubjects($output);
 		  }
 		  
-		  return $output; 
+		  return $output;
+	 }
+	 
+	 
+	 function checkUpdatedSubjects($projects){
+		  
+		  $db = $this->startDB();
+			
+		  if(!is_array($projects)){
+				$projects = array();
+		  }
+		  
+		  $sql = "SELECT DISTINCT space.project_id
+		  FROM space
+		  JOIN noid_bindings ON noid_bindings.itemUUID = space.uuid
+		  WHERE noid_bindings.public = 0
+		  AND noid_bindings.itemUpdated > timestampadd(day, -7, now());
+		  ";
+		  
+		  $result = $db->fetchAll($sql, 2);
+		  if($result){
+				foreach($result as $row){
+					 if(!in_array($row["project_id"], $projects)){
+						  $projects[] = $row["project_id"];
+					 }
+				}
+		  }
+		  
+		  return $projects; 
 	 }
 	 
 	 
@@ -476,6 +518,105 @@ class AllDump {
 			 $output = false;
 		 }
 		 return $output;
+	 }
+	
+	
+	
+	 //updates the repo field to reflect where an XML file really is (incase of edits)
+	 function GITsynch($projectUUID){
+		  $output = false;
+		  $directories = $this->directoryToArray(self::localGitDirectory, false);
+		  if(is_array($directories)){
+				$rawProjectDirs = array();
+				foreach($directories as $dir){
+					 if(strstr($dir, $projectUUID)){
+						  $rawProjectDirs[$dir] = $dir;
+					 }
+				}
+				
+				if(count($rawProjectDirs)>0){
+					 $projectDirs = array();
+					 foreach($rawProjectDirs as $path){
+						  $pathEx = explode("/", $path);
+						  $repoName = $pathEx[count($pathEx)-1];
+						  $projectDirs[$repoName] = $path;
+					 }
+					 
+					 $outProject = array();
+					 foreach($projectDirs as $repoName => $path){
+						  $outProject[$repoName]["subjects"] = $this->GITsynchSubjects($projectUUID, $repoName, $path);
+					 }
+					 
+					 $output = $outProject;
+				}
+		  }
+		  
+		  return $output;
+	  
+	 }
+	
+	 
+	 function GITsynchSubjects($projectUUID, $repoName, $path){
+		  
+		  $output = array("OK" => 0, "Changed" => 0);
+		  $repoFiles = $this->directoryToArray($path."/subjects/", false);
+		  $db = $this->startDB();
+		  foreach($repoFiles as $filepathName){
+				
+				$uuid = $this->UUIDfromFileName($filepathName);
+				$sql = "SELECT repo FROM space WHERE uuid = '$uuid' LIMIT 1; ";
+				$result = $db->fetchAll($sql, 2);
+				if($result){
+					 $dbRepo = $result[0]["repo"];
+					 if($dbRepo != $repoName){
+						  $sql = "UPDATE space SET repo = '$repoName' WHERE uuid = '$uuid' LIMIT 1; ";
+						  $db->query($sql);
+						  $output["Changed"] = $output["Changed"] + 1;
+					 }
+					 else{
+						  $output["OK"] = $output["OK"] + 1;
+					 }
+				}
+				else{
+					 echo "Holly crap! $filepathName not in the database! ";
+					 die;
+				}
+		  }
+		  
+		  return $output;
+	 }
+	 
+	 //get the UUID from the filename
+	 function UUIDfromFileName($filepathName){
+		  $pathEx = explode("/", $filepathName);
+		  $filename = $pathEx[count($pathEx)-1];
+		  $fileEx = explode(".", $filename);
+		  $uuid = $fileEx[0];
+		  return $uuid;
+	 }
+	 
+	 
+	 //make an array of files in a directory
+	 function directoryToArray($directory, $recursive = true) {
+		  $array_items = array();
+		  if ($handle = opendir($directory)) {
+			  while (false !== ($file = readdir($handle))) {
+				  if ($file != "." && $file != "..") {
+					  if (is_dir($directory. "/" . $file)) {
+						  if($recursive) {
+							  $array_items = array_merge($array_items, $this->directoryToArray($directory. "/" . $file, $recursive));
+						  }
+						  $file = $directory . "/" . $file;
+						  $array_items[] = preg_replace("/\/\//si", "/", $file);
+					  } else {
+						  $file = $directory . "/" . $file;
+						  $array_items[] = preg_replace("/\/\//si", "/", $file);
+					  }
+				  }
+			  }
+			  closedir($handle);
+		  }
+		  return $array_items;
 	 }
 	
 	

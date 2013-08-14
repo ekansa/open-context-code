@@ -67,4 +67,23 @@ class exportController extends Zend_Controller_Action {
 	
 	
 	
+	//iterate through and export all of the projects, subjects, media, and diary items
+	public function xmlDumpCheckAction() {
+		mb_internal_encoding( 'UTF-8' );
+		$this->_helper->viewRenderer->setNoRender();
+		
+		$AllDumpObj = new AllDump;
+		$output = array("error" => "need a projectUUID parameter");
+		
+		if(isset($_GET["projectUUID"])){
+			$projectUUID = $_GET["projectUUID"];
+			$output = $AllDumpObj->GITsynch($projectUUID);
+			
+		}
+		
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
+	}
+	
+	
 }
