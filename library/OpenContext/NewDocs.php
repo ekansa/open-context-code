@@ -351,6 +351,7 @@ class OpenContext_NewDocs {
 				$where = array();
 				$where[] = "itemUUID = '$itemUUID' ";
 				$data = array(	"ItemUpdated" => date("Y-m-d\TH:i:s\Z"),
+						"public" => 0,
 						"solr_indexed" => 0);
 				
 				$db->update('noid_bindings', $data, $where);

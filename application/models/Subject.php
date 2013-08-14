@@ -153,21 +153,31 @@ class Subject {
 	 
 	 //git hub has pretty strict size restrictions this puts subjects into different repos, if the project is big
 	 function assignRepository($projectUUID, $db = false){
-		  $db = $this->startDB();
-		  
-		  $output = false;
-		  $sql = "SELECT COUNT(uuid) AS idCount
-					 FROM  space 
-					 WHERE project_id = '$projectUUID'
-					 GROUP BY  project_id; ";
-		  
-		  $result = $db->fetchAll($sql, 2);
-        if($result){
-				$idCount = $result[0]["idCount"];
-				$repoID = floor(($idCount / self::maxRepoSize))+1;
-				$output = "opencontext-".$projectUUID;
-				if($repoID > 1){
-					 $output .= "-".$repoID;
+		  if(!$this->repo){
+				$db = $this->startDB();
+				
+				$output = false;
+				$sql = "SELECT COUNT(uuid) AS idCount
+						  FROM  space 
+						  WHERE project_id = '$projectUUID'
+						  GROUP BY  project_id; ";
+				
+				$result = $db->fetchAll($sql, 2);
+				if($result){
+					 $idCount = $result[0]["idCount"];
+					 $repoID = floor(($idCount / self::maxRepoSize))+1;
+					 $output = "opencontext-".$projectUUID;
+					 if($repoID > 1){
+						  $output .= "-".$repoID;
+					 }
+				}
+		  }
+		  else{
+				if(!strstr($this->repo, "opencontext-")){
+					 $output = "opencontext-".$projectUUID;
+				}
+				else{
+					 $output = $this->repo;
 				}
 		  }
 		  return $output;
@@ -182,7 +192,7 @@ class Subject {
 		  if(!$this->noid){
 				$this->noid = false;
 		  }
-			
+		  
 		  $repoID = $this->assignRepository($this->projectUUID, $db); //make an ide for the repository
 		  
 		  $data = array("noid" => $this->noid,
