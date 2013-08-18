@@ -117,9 +117,9 @@ $metadata = $exTableObj->metadata;
                 <table id="metadata">
                     <tbody>
                         <tr>
-                            <td>
+                            <th>
                                 Table Name
-                            </td>
+                            </th>
                             <td>
                                 <?php echo $metadata["title"];
                                 
@@ -129,17 +129,17 @@ $metadata = $exTableObj->metadata;
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Number of Records
-                            </td>
+                            </th>
                             <td>
                                 <?php echo $metadata["recordCount"]; ?>
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Table Description
-                            </td>
+                            </th>
                             <td>
                                 <?php echo $metadata["description"]; ?>
                             </td>
@@ -171,9 +171,9 @@ $metadata = $exTableObj->metadata;
                         </tr>
                         -->
                         <tr>
-                            <td>
+                            <th>
                                 Principal Analyst(s) / Observers
-                            </td>
+                            </th>
                             <td>
                                 <?php
                                 $first = true;
@@ -189,9 +189,9 @@ $metadata = $exTableObj->metadata;
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Directing / Supervisory People (Editorial Role)
-                            </td>
+                            </th>
                             <td>
                                 <?php
                                 $first = true;
@@ -207,9 +207,9 @@ $metadata = $exTableObj->metadata;
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Projects and Collections
-                            </td>
+                            </th>
                             <td>
                                 <?php
                                 $first = true;
@@ -225,9 +225,9 @@ $metadata = $exTableObj->metadata;
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Table Publication Date
-                            </td>
+                            </th>
                             <td>
                                 <?php
                                 
@@ -237,9 +237,9 @@ $metadata = $exTableObj->metadata;
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Table Metadata Update
-                            </td>
+                            </th>
                             <td>
                                 <?php
                                 echo date("F j, Y, g:i a", strtotime($metadata["updated"])); 
@@ -250,9 +250,9 @@ $metadata = $exTableObj->metadata;
                         if(isset($metadata["doi"])){
                         ?>
                         <tr>
-                            <td>
+                            <th>
                                 Document Object Identifier (DOI)
-                            </td>
+                            </th>
                             <td>
                                 <?php echo "DOI <a href=\"http://dx.doi.org/".$metadata["doi"]."\">".$metadata["doi"]."</a>"; ?>
                             </td>
@@ -262,9 +262,9 @@ $metadata = $exTableObj->metadata;
                         elseif(isset($metadata["ark"])){
                         ?>
                         <tr>
-                            <td>
+                            <th>
                                 CDL Archival Identifier (ARK)
-                            </td>
+                            </th>
                             <td>
                                 <?php echo "<a href=\"http://dx.doi.org/".$metadata["ark"]."\">".$metadata["ark"]."</a>"; ?>
                             </td>
@@ -273,17 +273,17 @@ $metadata = $exTableObj->metadata;
                         }//end conditional with ARK
                         ?>
                         <tr>
-                            <td>
+                            <th>
                                 Suggested Citation
-                            </td>
+                            </th>
                             <td>
                                 <?php echo $exTableObj->citation; ?>
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <th>
                                 Copyright License
-                            </td>
+                            </th>
                             <td>
                                 <div class="list_tab">
                                     <div class="list_tab_row">
@@ -349,12 +349,26 @@ $metadata = $exTableObj->metadata;
                                 if(is_array($records)){
                                     foreach($records as $actRecord){
                                         echo "<tr>".chr(13);
+                                        foreach($metadata["tableFields"] as $tfield){
+                                            if(isset($actRecord[$tfield])){
+                                                $value = $actRecord[$tfield];
+                                                $value = $exTableObj->recXHTMLvalue($value);
+                                            }
+                                            else{
+                                                $value = "";
+                                            }
+                                            echo "<td>";
+                                            echo $value;
+                                            echo "</td>";
+                                            /*
                                         foreach($actRecord as $field=>$value){
                                             //$value = htmlentities($value);
                                             $value = $exTableObj->recXHTMLvalue($value);
                                             echo "<td>";
                                             echo $value;
                                             echo "</td>";
+                                        }
+                                        */
                                         }
                                         echo "</tr>".chr(13);
                                     }

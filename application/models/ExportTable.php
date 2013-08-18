@@ -24,7 +24,8 @@ class ExportTable {
 	 public $formatArray = array("csv" => "Comma Seperated Value (CSV)",
 										  "zip" => "ZIP-compressed CSV file",
 										  "gzip" => "GZIP-compressed CSV file",
-										  "json" => "Javascript Object Notation (JSON) file"
+										  "json" => "Javascript Object Notation (JSON) file",
+										  "json-prev" => "Javascript Object Notation (JSON) file [Sample, limited records]"
 										  );
 	 
 	 
@@ -141,14 +142,23 @@ class ExportTable {
 		  $this->actRecordPage();
 		  $output = false;
 		  $metadata = $this->metadata;
-		  if(isset($metadata["files"]["json"]["filename"])){
-				
+		  
+		  $sFilename  = false;
+		  if(isset($metadata["files"]["json-prev"]["filename"])){
+				$sFilename = self::fileDirectory."/".$metadata["files"]["json-prev"]["filename"];
+				$altSfilename = self::altFileDirectory."/".$metadata["files"]["json-prev"]["filename"];
+		  }
+		  elseif(isset($metadata["files"]["json"]["filename"])){
 				$sFilename = self::fileDirectory."/".$metadata["files"]["json"]["filename"];
+				$altSfilename = self::altFileDirectory."/".$metadata["files"]["json"]["filename"];
+		  }
+		  
+		  if($sFilename != false){
+				
 				$fileOK = file_exists($sFilename);
 				
 				if(!$fileOK){
-					 $sFilename = self::altFileDirectory."/".$metadata["files"]["json"]["filename"];
-					 $fileOK = file_exists($sFilename);
+					 $fileOK = file_exists($altSfilename );
 				}
 				
 				if($fileOK){

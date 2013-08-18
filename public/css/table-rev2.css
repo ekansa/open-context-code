@@ -63,7 +63,13 @@ Heaader grey: #666666;
 	background-color:#fff;
 }
 #metadata td {
-	padding: 2px;
+	padding-top: 1%;
+	padding-bottom: 1%;
+	padding-left: 2%;
+	padding-right: 1%;
+}
+#metadata th {
+	padding: 1%;
 }
 #tab-area{
 	width: 90%;
