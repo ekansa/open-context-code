@@ -132,11 +132,15 @@ const licenseIRI = "xhv:license";
 				if($feed){
 					 foreach ($feed as $entry) {
 						  $updated = $entry->updated();
-						  $data["updated"] = $mysqldate = date("m/d/y g:i A", strtotime($updated));
+						  $data["updated"] = date('Y-m-d H:i:s', strtotime($updated));
+						  $db->update("vocabularies", $data, $where);
 						  break;
 					 }
 				}
-				$db->update("vocabularies", $data, $where);
+				else{
+					 $data["updated"] = date('Y-m-d H:i:s');
+					 $db->update("vocabularies", $data, $where);
+				}
 		  }
 		  
 	 }
