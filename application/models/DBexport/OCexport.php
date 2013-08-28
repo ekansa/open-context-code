@@ -150,7 +150,7 @@ class DBexport_OCexport  {
 		  
 		  $sql = 'SELECT space.uuid, space.project_id
 		  FROM space
-		  WHERE 1
+		  WHERE updated  >=  "2013-08-24 00:00:00"
 		  ';
 		  
 		  $result = $db->fetchAll($sql);
@@ -175,8 +175,8 @@ class DBexport_OCexport  {
 					 
 					 $sql = "SELECT uuid FROM repository WHERE uuid = '$uuid' LIMIT 1; ";
 					 
-					 $repoResult = $db->fetchAll($sql);
-					 
+					 //$repoResult = $db->fetchAll($sql);
+					 $repoResult = false;
 					 if(!$repoResult){
 						  
 						  $sql = "SELECT itemUUID FROM noid_bindings WHERE itemUUID = '$uuid' LIMIT 1; ";
@@ -204,9 +204,14 @@ class DBexport_OCexport  {
 										  $output["subjects"][] = $uuid;
 									 }
 									 catch (Exception $e) {
-										  $e = (string)$e;
-										  echo $e;
-										  die;
+										  
+										  unset($data["uuid"]);
+										  $where = "uuid = '$uuid' ";
+										  $db->update("repository", $data, $where);
+										  $output["up-subjects"][] = $uuid;
+										  //$e = (string)$e;
+										  //echo $e;
+										  //die;
 									 }
 									 
 								}

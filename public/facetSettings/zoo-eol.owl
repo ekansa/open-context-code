@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://opencontext.org/settings/zoo-eol"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     ontologyIRI="http://opencontext.org/settings/zoo-eol">
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Annotation>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <Literal datatypeIRI="&rdfs;Literal">Open Context EOL and UBERON facets</Literal>
+    </Annotation>
+    <Declaration>
+        <Class IRI="/00080"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00081"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00082"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00084"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00086"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00087"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00088"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00089"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00090"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00091"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00092"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="/00093"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="/00081"/>
+        <Class IRI="/00080"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00082"/>
+        <Class IRI="/00080"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00084"/>
+        <Class IRI="/00080"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00086"/>
+        <Class IRI="/00080"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00087"/>
+        <Class IRI="/00081"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00088"/>
+        <Class IRI="/00087"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00089"/>
+        <Class IRI="/00088"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00090"/>
+        <Class IRI="/00088"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00091"/>
+        <Class IRI="/00087"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00092"/>
+        <Class IRI="/00087"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00093"/>
+        <Class IRI="/00087"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00080</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Biological Taxa</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00081</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/1642</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00081</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mammal</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00082</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/695</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00082</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Bird</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00084</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/2775704</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00084</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Fish</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00086</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/2195</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00086</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mollusc</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00087</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/7678</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00087</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Artiodactyla (Even-toed ungulates)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00088</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/2851411</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00088</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Caprinae (Goat, antelopes, sheep)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00089</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/39510</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00089</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Ovis (Sheep)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00090</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/42403</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00090</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Capra (Goat, ibex)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00091</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/7685</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00091</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Cervidae (Deer, elk, moose, caribou)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00092</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/34548</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00092</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Bos (Cattle, oxen)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00093</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/7681</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00093</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Suidae (Hogs, pigs)</Literal>
+    </AnnotationAssertion>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net -->
+
