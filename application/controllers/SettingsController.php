@@ -51,6 +51,21 @@ class settingsController extends Zend_Controller_Action {
 		echo Zend_Json::encode($output);
 	}
 	
+	function relEquivAction(){
+		
+		$this->_helper->viewRenderer->setNoRender();
+		$time_start = $this->microtime_float();
+		$items = $_GET["eol"];
+		$hierarchyObj = new Facets_Hierarchy ;
+		$data = $hierarchyObj->generateRelSearchEquivalent($items, "eol");
+		
+		$time_end = $this->microtime_float();
+		$time = $time_end - $time_start;
+		$output = array("time" => $time, "data" => $data);
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
+	}
+	
 	
 	private function microtime_float(){
 		list($usec, $sec) = explode(" ", microtime());

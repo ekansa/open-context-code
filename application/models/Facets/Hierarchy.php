@@ -7,13 +7,65 @@ Manages hierarchy data for URIs to enable faceted search
 class Facets_Hierarchy {
 
 	 public $db; //database connection object
-    
+    public $countReqChildren; //count of the number of requested children
+	 
+	 
+	 public $relTypes = array("eol" => "http://purl.org/NET/biol/ns#term_hasTaxonomy"
+									  
+									  
+									  );
+	 
+	 
+	 
+	 
+	 
+	 
+	 //this gets an identifier from a GET request and creates a search string
+	 //equivalent to a "rel[]=..." search. Or (||) deliminate between various URI that are children concepts in vocabulary hierarchy
+	 function generateRelSearchEquivalent($rawParent, $typeKey){
+		  $output = false;
+		  $relTypes = $this->relTypes;
+		  if(isset($relTypes[$typeKey])){
+				$actRel = $relTypes[$typeKey];
+				if(strstr($rawParent, "||")){
+					 $parentURIs = explode("||", $rawParent);
+				}
+				else{
+					 $parentURIs = $rawParent;
+				}
+				
+				if($typeKey == "eol"){
+					 $eolObj = new Facets_EOL;
+					 $parentURIs = $eolObj->validateURIs($parentURIs);
+				}
+				
+				$searchURIs = $this->getLabeledListChildURIs($parentURIs);
+				if(is_array($searchURIs)){
+					 $this->countReqChildren = count($searchURIs);
+					 if($this->countReqChildren > 0){
+						  $output = $actRel."::";
+						  $firstLoop = true;
+						  foreach($searchURIs as $searchURIkey => $label){
+								if(!$firstLoop){
+									 $output .= "||";
+								}
+								$output .= $searchURIkey;
+								$firstLoop = false;
+						  }
+					 }
+				}
+		  }
+		  
+		  return $output;
+	 }
+	 
+	 
 	 
 	 //gets a list of children where there are labels for the items
 	 //this filters down a list to only those ChildURIs that are actually used
-	 function getLabeledListChildURIs($parentURI, $recursive = true, $tree = false){
+	 function getLabeledListChildURIs($parentURIs, $recursive = true, $tree = false){
 		  $children = array();
-		  $rawChildren = $this->getListChildURIs($parentURI, $recursive, $tree);
+		  $rawChildren = $this->getListChildURIs($parentURIs, $recursive, $tree);
 		  if(is_array($rawChildren)){
 				foreach($rawChildren as $uriKey => $label){
 					 $label = trim($label);
@@ -27,7 +79,7 @@ class Facets_Hierarchy {
 	 }
 	 
 	 //gets children of a given URI as a nested / tree array
-	 function getNestedChildURIs($parentURI, $recursive = true, $tree = false){
+	 function getNestedChildURIs($parentURIs, $recursive = true, $tree = false){
 		  
 		  $db = $this->startDB();
 		  
@@ -38,10 +90,25 @@ class Facets_Hierarchy {
 				$treeCondition = " ";
 		  }
 		  
+		  if(!is_array($parentURIs)){
+				$parentURIs = array(0 => $parentURIs);
+		  }
+		  $parentCondition = " (";
+		  $pFirst = true;
+		  foreach($parentURIs as $parentURI){
+				if(!$pFirst){
+					 $parentCondition .= " OR ";
+				}
+				$parentCondition .= " hi.parentURI = '$parentURI' ";
+				$pFirst = false;
+		  }
+		  $parentCondition .= ") ";
+		  
+		  
 		  $sql = "SELECT DISTINCT hi.childURI, ld.linkedLabel
 		  FROM hierarchies AS hi
 		  LEFT JOIN linked_data AS ld ON hi.childURI = ld.linkedURI
-		  WHERE hi.parentURI = '$parentURI'
+		  WHERE $parentCondition
 		  $treeCondition
 		  ";
 		  
@@ -67,7 +134,7 @@ class Facets_Hierarchy {
 	 
 	 
 	 //gets children of a given URI as a List
-	 function getListChildURIs($parentURI, $recursive = true, $tree = false){
+	 function getListChildURIs($parentURIs, $recursive = true, $tree = false){
 		  
 		  $children = array();
 		  $db = $this->startDB();
@@ -79,13 +146,27 @@ class Facets_Hierarchy {
 				$treeCondition = " ";
 		  }
 		  
+		  if(!is_array($parentURIs)){
+				$parentURIs = array(0 => $parentURIs);
+		  }
+		  $parentCondition = " (";
+		  $pFirst = true;
+		  foreach($parentURIs as $parentURI){
+				if(!$pFirst){
+					 $parentCondition .= " OR ";
+				}
+				$parentCondition .= " hi.parentURI = '$parentURI' ";
+				$pFirst = false;
+		  }
+		  $parentCondition .= ") ";
+		  
+		  
 		  $sql = "SELECT DISTINCT hi.childURI, ld.linkedLabel
 		  FROM hierarchies AS hi
 		  LEFT JOIN linked_data AS ld ON hi.childURI = ld.linkedURI
-		  WHERE hi.parentURI = '$parentURI'
+		  WHERE $parentCondition 
 		  $treeCondition
 		  ";
-		  
 		  
 		  $result =  $db->fetchAll($sql);
 		  if($result){

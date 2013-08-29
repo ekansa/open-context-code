@@ -19,14 +19,14 @@ class SolrSearch{
     public $spatial; //boolean, search spatial docs (default = false)
     public $image; //boolean, search image docs (default = false)
     public $media; //boolean, search media docs (default = false)
-	public $video; //boolean, do video search (default = false)
+	 public $video; //boolean, do video search (default = false)
     public $person; //boolean, search person docs (default = false)
     public $project; //boolean, search project docs (default = false)
     public $document; //boolean, search document docs (default = false)
     public $table; //boolean, search table docs (default = false)
     public $site; //boolean, search site documentation docs (default = false)
     
-	public $reconcile; //are we attempting entity reconcilation? (default = false)
+	 public $reconcile; //are we attempting entity reconcilation? (default = false)
     public $requestURI; //request URI
     public $requestParams; // array of the request parameters and values
     
@@ -73,6 +73,7 @@ class SolrSearch{
     public $geoParam; // query parameter for geoTile
     public $geoFacets; // facets to display for geotile
    
+	 public $doPost; //long query, needs to get POSTed
     public $param_array; //SOLR query parameter array 
     public $query; //SOLR query
     public $queryString; //raw solr query string
@@ -166,6 +167,7 @@ class SolrSearch{
 		$this->facetURI_JSON= false;
 		$this->facetURI_KML= false;
 	
+		  $this->doPost = false;
     }//end function
 
 
@@ -714,6 +716,23 @@ class SolrSearch{
 		  $slashCount = $this->slashCount;
 		  $context_depth = $this->context_depth;
 		  
+		  
+		  if(isset($requestParams["eol"])){
+				//this makes translates a taxon idenfied in the request to a set of || (OR) deliminated children taxon URIs for a "rel[]" parameter request
+				$eolReq = $requestParams["eol"];
+				$hierarchyObj = new Facets_Hierarchy ;
+				$relReq = $hierarchyObj->generateRelSearchEquivalent($eolReq , "eol");
+				if($relReq != false){
+					 if($hierarchyObj->countReqChildren >= 5){
+						  $this->doPost = true;
+					 }
+					 $requestParams["rel"][] = $relReq;
+				}
+		  }
+		  
+		  
+		  
+		  
 		  $extendedFacets = OpenContext_FacetQuery::unfold_deep_parameters($requestParams, $slashCount);
 		  
 		  
@@ -869,20 +888,19 @@ class SolrSearch{
 				 try {
 					 $param_array = $this->param_array;
 					 
-					 if(count($param_array["facet.field"])<10){	  
+					 if((count($param_array["facet.field"])<10) && !$this->doPost){	  
 						  $response = $solr->search(	$this->query,
 													  $this->offset,
 													  $this->number_recs,
 													  $this->param_array);
 					 }
 					 else{
-						  
 						  $response = $solr->search(	$this->query,
 													  $this->offset,
 													  $this->number_recs,
 													  $this->param_array,
 													  "POST");
-								  
+						 
 					 }
 					 $this->queryString = $solr->queryString;
 					 $docs_array = array();

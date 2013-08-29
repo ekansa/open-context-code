@@ -235,6 +235,44 @@ class Facets_EOL {
 	 }
 	 
 	 
+	 
+	 //get the numeric ID from the EOLuri
+	 function validateURIs($eolURIs){
+		  
+		  if(is_array($eolURIs)){
+				$newURIs = array();
+				foreach($eolURIs as $actURI){
+					 $newURIs[] = $this->URIfromEOLtaxonID($actURI);
+				}
+				unset($eolURIs);
+				$eolURIs = $newURIs;
+				unset($newURIs);
+		  }
+		  else{
+				$eolURIs = $this->URIfromEOLtaxonID($eolURIs);
+		  }
+		  
+		  return $eolURIs;
+	 }
+	 
+	 //get the numeric ID from the EOLuri
+	 function URIfromEOLtaxonID($eolID){
+		  
+		  if(is_numeric($eolID)){
+				$eolURI = self::baseEOLpageURI.$eolID;
+		  }
+		  else{
+				if(strstr($eolID,self::baseEOLpageURI)){
+					 $eolURI = $eolID;
+				}
+				else{
+					 $eolURI = false;
+				}
+		  }
+		  return $eolURI;
+	 }
+	 
+	 
 	 function startDB(){
 		  if(!$this->db){
 				$db_params = OpenContext_OCConfig::get_db_config();
