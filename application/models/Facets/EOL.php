@@ -21,7 +21,7 @@ class Facets_EOL {
 	 const baseEOLpageJSON = "http://eol.org/api/pages/1.0/";
 	 const EOLpageJSONsuffix = ".json?images=0&videos=0&sounds=0&maps=0&text=2&iucn=false&subjects=overview&licenses=all&details=false&common_names=false&synonyms=false&references=false&vetted=0";
 	 
-	 const baseEOLhierachyJSON = "http://eol.org/api/hierarchy_entries/1.0/";
+	 const baseEOLhierarchyJSON = "http://eol.org/api/hierarchy_entries/1.0/";
 	 const EOLhierarchyJSONsuffix = ".json?common_names=false&synonyms=false";
 	 
 	 
@@ -58,7 +58,7 @@ class Facets_EOL {
 	 }
 	 
 	 
-	 //save the hierachy data obtained from the EOL API
+	 //save the hierarchy data obtained from the EOL API
 	 function saveEOLpageHierarchyData($hierarchyArray){
 		  
 		  $output = false;
@@ -148,13 +148,13 @@ class Facets_EOL {
 		  $preferredHierarchies = $this->preferredHierarchies;
 		  $eolID = $this->idFromEOLpageURI($eolURI);
 		  $pageArray = $this->getPageJSON($eolID);
-		  $hierachyEntryID = false;
+		  $hierarchyEntryID = false;
 		  if(is_array($pageArray)){
 				if(isset($pageArray["taxonConcepts"])){
 					 if(is_array($pageArray["taxonConcepts"])){
 						  foreach($pageArray["taxonConcepts"] as $taxCon){
 								if(in_array($taxCon["nameAccordingTo"], $preferredHierarchies)){
-									 $hierachyEntryID = $taxCon["identifier"]; //got the hierarchy entry ID !!
+									 $hierarchyEntryID = $taxCon["identifier"]; //got the hierarchy entry ID !!
 									 break;
 								}
 						  }
@@ -166,9 +166,9 @@ class Facets_EOL {
 				//die;
 		  }
 		  
-		  if($hierachyEntryID != false){
+		  if($hierarchyEntryID != false){
 				sleep(1); //give the EOL a break
-				$output = $this->getHierachyJSON($hierachyEntryID);
+				$output = $this->getHierarchyJSON($hierarchyEntryID);
 		  }
 		  else{
 				//echo "no hierarchy id";
@@ -182,11 +182,11 @@ class Facets_EOL {
 	 
 	 
 	 //get JSON data for an EOL hierarchy entry
-	 function getHierachyJSON($hierachyEntryID){
+	 function getHierarchyJSON($hierarchyEntryID){
 		  $output = false;
 		  
-		  if(is_numeric($hierachyEntryID)){
-				$JSONurl = self::baseEOLhierachyJSON.$hierachyEntryID.self::EOLhierarchyJSONsuffix;
+		  if(is_numeric($hierarchyEntryID)){
+				$JSONurl = self::baseEOLhierarchyJSON.$hierarchyEntryID.self::EOLhierarchyJSONsuffix;
 				@$jsonString = file_get_contents($JSONurl);
 				if($jsonString){
 					 $output = Zend_Json::decode($jsonString);

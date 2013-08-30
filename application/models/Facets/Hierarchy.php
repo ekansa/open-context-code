@@ -7,16 +7,230 @@ Manages hierarchy data for URIs to enable faceted search
 class Facets_Hierarchy {
 
 	 public $db; //database connection object
-    public $countReqChildren; //count of the number of requested children
+	 public $requestParams; //request parameters
+    public $countReqChildren; //count of the number of requested children (number of URIs that will be sent to SOLR for an OR search)
+	 
+	 public $activeVocabFacets; //facets made on the currently active hierarchic vocabulary
+	 public $activeOWLsettings; 
 	 
 	 
 	 public $relTypes = array("eol" => "http://purl.org/NET/biol/ns#term_hasTaxonomy"
-									  
-									  
 									  );
+	 public $owlSettingFiles = array("eol" => "zoo-eol.owl");
+	 const settingsDirectory = "facetSettings";
+	 
+	 
+	 function consolidateRawHierachicFacets($typeKey, $rawFacets){
+		  $requestParams = $this->requestParams;
+		  $actHierarchyURIs = $this->getActiveHierarchyURIs($typeKey);
+		  $relType = $this->getVocabRelationType($typeKey);
+		  if($actHierarchyURIs != false && $relType != false){
+				
+				$solrRelField = sha1($relType)."_lent_taxon";
+				if(isset($rawFacets[$solrRelField])){
+					 $rawRelFacets = $rawFacets[$solrRelField];
+					 
+					 if(!is_array($actHierarchyURIs)){
+						  $actHierarchyURIs = array( 0=> $actHierarchyURIs);
+					 }
+					 
+					 $consolidatedVocabFacets = array();
+					 foreach($actHierarchyURIs as $actParentURI){
+						  $actChildrenURIs = $this->getLabeledListChildURIs($actParentURI); //get URIs for all the children of the parent URI
+						  if(is_array($actChildrenURIs)){
+								$consolidatedVocabFacets[$actParentURI] = 0;
+								$newFacets = array();
+								foreach($rawRelFacets as $facetURIkey => $count){
+									 if(array_key_exists($facetURIkey, $actChildrenURIs)){ //check to see if a facet is a child of the the current parent
+										  $consolidatedVocabFacets[$actParentURI] = $consolidatedVocabFacets[$actParentURI] + $count; //add the count of the current
+									 }
+									 else{
+										  if($facetURIkey != $actParentURI){
+												$newFacets[$facetURIkey] = $count; //only add if the facet URI is not in the children list and not the parent.
+										  }
+									 }
+								}//end loop through current facets
+								unset($rawRelFacets);
+								$rawRelFacets = $newFacets;
+								unset($newFacets);
+						  }
+						  
+					 }
+					 
+					 
+					 foreach($rawRelFacets as $facetURIkey => $count){
+						  $consolidatedVocabFacets[$facetURIkey] = $count;
+					 }
+					 arsort($consolidatedVocabFacets);
+					 
+					 $newFacets = array();
+					 $newFacets[$typeKey] = $consolidatedVocabFacets;
+					 foreach($rawFacets as $typeKey => $typeFacets){
+						  if($typeKey != $solrRelField){
+								$newFacets[$typeKey] = $typeFacets;
+						  }
+						  else{
+								//$newFacets[$typeKey] = $rawRelFacets; // add in the facets removed of those values that were consolidated
+						  }
+					 }
+					 unset($rawFacets);
+					 $rawFacets = $newFacets;
+					 unset($newFacets);
+					 
+				}//end case with related facets
+		  }
+		  
+		  return $rawFacets;
+	 }
+	 
+	 function consolidatePreparedHierachicFacets($typeKey, $relFacets){
+		  $requestParams = $this->requestParams;
+		  $actHierarchyURIs = $this->getActiveHierarchyURIs($typeKey);
+		  if($actHierarchyURIs != false){
+				$host = OpenContext_OCConfig::get_host_config();
+				
+				if(!is_array($actHierarchyURIs)){
+					 $actHierarchyURIs = array( 0=> $actHierarchyURIs);
+				}
+				
+				$tempVocabFacets = array();
+				$vocabFacetSorting = array();
+				foreach($actHierarchyURIs as $actParentURI){
+					 
+					 $actChildrenURIs = $this->getLabeledListChildURIs($actParentURI); //get URIs for all the children of the parent URI
+					 if(is_array($actChildrenURIs)){
+						  $actParentFacet = array("name" => $actParentURI,
+								 "href" => $host.OpenContext_FacetOutput::generateFacetURL($requestParams, $typeKey, $actParentURI),
+								 "facet_href" => $host.OpenContext_FacetOutput::generateFacetURL($requestParams, $typeKey, $actParentURI, false, false, "facets_json"),
+								 "result_href" => $host.OpenContext_FacetOutput::generateFacetURL($requestParams, $typeKey, $actParentURI, false, false, "results_json"),
+								 "linkQuery" => urlencode($actParentURI),
+								 "param" => $typeKey,
+								 "count" => 0);
+
+						  $newRelFacets = array();
+						  foreach($relFacets as $facet){
+								if(array_key_exists($facet["name"], $actChildrenURIs)){ //check to see if a facet is a child of the the current parent
+									 $actParentFacet["count"] = $actParentFacet["count"] + $facet["count"]; //add the count of the current
+									 $vocabFacetSorting[$actParentURI] = $actParentFacet["count"];
+								}
+								else{
+									 if($facet["name"] != $actParentURI){
+										  $newRelFacets[] = $facet; //only add if the facet URI is not in the children list and not the parent.
+									 }
+								}
+						  }//end loop through current facets
+						  unset($relFacets);
+						  $relFacets = $newRelFacets;
+						  unset($newRelFacets);
+						  $tempVocabFacets[$actParentURI] = $actParentFacet;
+					 }//end case where parentURI has children
+				}//end loop through parents
+				
+				arsort($vocabFacetSorting); //sort the vocab facets from high to low of counts;
+				$activeVocabFacets = array();
+				foreach($vocabFacetSorting as $parentURIkey => $count){
+					 $activeVocabFacets[] = $tempVocabFacets[$parentURIkey];
+				}
+				$this->activeVocabFacets = $activeVocabFacets;
+		  }
+		  return $relFacets; //return the trimmed down facets
+	 }
+	 
+	 
+	 //get the active URIs to colsolidate. The active URIs are child nodes of the current request node
+	 function getActiveHierarchyURIs($typeKey){
+		  
+		  $actHierarchyURIs = false;
+		  $requestParams = $this->requestParams;
+		  if(isset($requestParams[$typeKey])){
+				$rawParent = $requestParams[$typeKey];
+				$owlSettingFiles = $this->owlSettingFiles;
+				$relTypes = $this->relTypes;
+				if(array_key_exists($typeKey, $owlSettingFiles)){
+					 $actRelType = $this->getVocabRelationType($typeKey); //what type of linking relation is associated with the current vocabulary, as expressed in $typeKey
+					 $owlSettings = $this->getSettingsFromOWL($owlSettingFiles[$typeKey]); //get the hierarchy settings for the current vocabulary
+					 if(is_array($owlSettings)){
+						  $this->activeOWLsettings = $owlSettings; //may need it later!
+						  $OWLobj = new OWL;
+						  if($rawParent != "root"){
+								if(strstr($rawParent, "||")){
+									 $requestParentURIs = explode("||", $rawParent);
+								}
+								else{
+									 $requestParentURIs = array(0 => $rawParent);
+								}
+								
+								if($typeKey == "eol"){
+									 $eolObj = new Facets_EOL;
+									 $requestParentURIs = $eolObj->validateURIs($requestParentURIs);
+								}
+								
+								$OWLrootIRIs = array();
+								foreach($requestParentURIs as $actParentURI){
+									 $OWLactIRIs = $OWLobj->getIRIfromDefinedBy($actParentURI, $owlSettings["classes"]); 
+									 if($OWLactIRIs != false){
+										  $OWLrootIRIs = array_merge($OWLrootIRIs, $OWLactIRIs);
+									 }
+								}
+						  }
+						  else{
+								$OWLrootIRIs = $owlSettings["rootParents"]; //the default, is the first root of the owl setting
+						  }
+					 
+						  //now convert the OWL root IRIs of the current parent (nodes) into URIs of child nodes
+						  foreach($OWLrootIRIs as $OWLrootIRI){
+								$actURIs = $OWLobj->getDefinedByViaHierachy($OWLrootIRI, $owlSettings["classes"], $owlSettings["hierarchy"]);
+								if($actURIs != false){
+									 if(is_array($actHierarchyURIs)){
+										  $actHierarchyURI = array_merge($actHierarchyURIs, $actURIs);
+									 }
+									 else{
+										  $actHierarchyURIs = $actURIs;
+									 }
+								}
+						  }//end loop generateing $actHierarchyURIs
+		  
+					 }//end case with owlsettings converted to an array
+				}//end case with owlSettings
+		  }//end case with a request using the typeKey
+		  
+		  return $actHierarchyURIs;
+	 }
 	 
 	 
 	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 //get the facet search hieararchy settings from an OWL file
+	 function getSettingsFromOWL($owlFile){
+		  $settings = false;
+		  $OWLstring = $this->loadSettingsFile($owlFile);
+		  if($OWLstring != false){
+				@$xml = simplexml_load_string($OWLstring);
+				if($xml){
+					 unset($OWLstring);
+					 
+					 $OWLobj = new OWL;
+					 $OWLobj->xml = $xml;
+					 $OWLobj->OWLtoArray();
+					 $settings = $OWLobj->owlArray;
+					 unset($OWLobj);
+				}
+				
+		  }
+		  
+		  return $settings;
+	 }
 	 
 	 
 	 
@@ -27,32 +241,37 @@ class Facets_Hierarchy {
 		  $relTypes = $this->relTypes;
 		  if(isset($relTypes[$typeKey])){
 				$actRel = $relTypes[$typeKey];
-				if(strstr($rawParent, "||")){
-					 $parentURIs = explode("||", $rawParent);
-				}
-				else{
-					 $parentURIs = $rawParent;
-				}
-				
-				if($typeKey == "eol"){
-					 $eolObj = new Facets_EOL;
-					 $parentURIs = $eolObj->validateURIs($parentURIs);
-				}
-				
-				$searchURIs = $this->getLabeledListChildURIs($parentURIs);
-				if(is_array($searchURIs)){
-					 $this->countReqChildren = count($searchURIs);
-					 if($this->countReqChildren > 0){
-						  $output = $actRel."::";
-						  $firstLoop = true;
-						  foreach($searchURIs as $searchURIkey => $label){
-								if(!$firstLoop){
-									 $output .= "||";
+				if($rawParent != "root"){
+					 if(strstr($rawParent, "||")){
+						  $parentURIs = explode("||", $rawParent);
+					 }
+					 else{
+						  $parentURIs = $rawParent;
+					 }
+					 
+					 if($typeKey == "eol"){
+						  $eolObj = new Facets_EOL;
+						  $parentURIs = $eolObj->validateURIs($parentURIs);
+					 }
+					 
+					 $searchURIs = $this->getLabeledListChildURIs($parentURIs);
+					 if(is_array($searchURIs)){
+						  $this->countReqChildren = count($searchURIs);
+						  if($this->countReqChildren > 0){
+								$output = $actRel."::";
+								$firstLoop = true;
+								foreach($searchURIs as $searchURIkey => $label){
+									 if(!$firstLoop){
+										  $output .= "||";
+									 }
+									 $output .= $searchURIkey;
+									 $firstLoop = false;
 								}
-								$output .= $searchURIkey;
-								$firstLoop = false;
 						  }
 					 }
+				}
+				else{
+					 $output = $actRel;
 				}
 		  }
 		  
@@ -240,6 +459,40 @@ class Facets_Hierarchy {
 		  }
 		  
 		  return $output;
+	 }
+	 
+	 //gets the linking relationship associated with a given vocabulary type
+	 function getVocabRelationType($typeKey){
+		  $relTypes = $this->relTypes;
+		  if(array_key_exists($typeKey, $relTypes)){
+				$actRelType = $relTypes[$typeKey]; //what type of linking relation is associated with the current vocabulary, as expressed in $typeKey
+		  }
+		  else{
+				return false;
+		  }
+		  return $actRelType;
+	 }
+	 
+	 
+	 //load a settings file from the settings directory
+	 function loadSettingsFile($baseFilename, $itemDir = self::settingsDirectory){
+		  iconv_set_encoding("internal_encoding", "UTF-8");
+		  iconv_set_encoding("output_encoding", "UTF-8");
+		  $data = false;
+		  $fileDirName = $itemDir."/".$baseFilename;
+		  $fileOK = file_exists($fileDirName);
+		  if($fileOK){
+				$rHandle = fopen($fileDirName, 'r');
+				if($rHandle){
+					 $data = '';
+					 while(!feof($rHandle)){
+						  $data  .= fread($rHandle, filesize($fileDirName));
+					 }
+					 fclose($rHandle);
+					 unset($rHandle);
+				}
+		  }
+		  return $data;
 	 }
 	 
 	 

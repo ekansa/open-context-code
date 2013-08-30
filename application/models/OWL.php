@@ -38,6 +38,7 @@ const BaseVocabCommitsFeed = "http://github.com/ekansa/oc-ontologies/commits/mas
 const localOntologyDirectory = "C:\\GitHub\\oc-ontologies\\vocabularies\\";
 const labelAbbrevIRI = "rdfs:label";
 const commentAbbrevIRI = "rdfs:comment";
+const definedByAbbrevIRI = "rdfs:isDefinedBy";
 const objectPropRange = "ObjectPropertyRange";
 const vocabReviewIRI = "bibo:status";
 const attributionIRI = "cc:attributionName";
@@ -219,7 +220,9 @@ const licenseIRI = "xhv:license";
                     $parentIsChild = true; 
                }
                if(!$parentIsChild){
-                    $rootParents[] = $parent;
+						  if(!in_array($parent, $rootParents)){
+								$rootParents[] = $parent;
+						  }
 						  if(!array_key_exists($parent, $classes)){
 								$classes[$parent] = array();
 						  }
@@ -233,7 +236,7 @@ const licenseIRI = "xhv:license";
             foreach($rootParents as $parent){
                 $hierarchy[$parent] = $this->childClasses($parent, $xml);
             }
-            $owlArray["hierachy"] = $hierarchy;
+            $owlArray["hierarchy"] = $hierarchy;
             
 				$properties = array();
 				foreach($xml->xpath("//owl:Declaration/owl:ObjectProperty/@IRI") as $xpathResult){
@@ -409,6 +412,73 @@ const licenseIRI = "xhv:license";
 		  return $output;
 	 }
 	 
+	 //get the "definedBy" property (usually a URI) for an item
+	 function IRIgetDefinedBy($actIRI, $actArray){
+		  $output = false;
+		  if(array_key_exists($actIRI, $actArray)){
+				$actConArray =  $actArray[$actIRI];
+				foreach($actConArray as $annoationArray){
+					 if(array_key_exists(self::definedByAbbrevIRI, $annoationArray)){
+						  $output = $annoationArray[self::definedByAbbrevIRI];
+					 }
+				}
+		  }
+		  return $output;
+	 }
+	 
+	 //searches hierarchy tree to get URIs for child nodes of a given parent IRI
+	 function getDefinedByViaHierachy($parentIRI, $owlClasses, $owlHierarchyNode){
+		  $outputURIs = false;
+		  if(is_array($owlHierarchyNode)){
+				foreach($owlHierarchyNode as $nodeIRIkey => $childIRIs){
+					 if($nodeIRIkey == $parentIRI){
+						  if(!$outputURIs){
+								$outputURIs = array();
+						  }
+						  if(is_array($childIRIs)){
+								foreach( $childIRIs as $childIRIkey => $subChildren){
+									 $actChildURI = $this->IRIgetDefinedBy($childIRIkey , $owlClasses);
+									 if($actChildURI != false){
+										  $outputURIs[] = $actChildURI;
+									 }
+								}
+						  }
+					 }
+					 else{
+						  if(!$outputURIs){
+								$outputURIs = $this->getDefinedByViaHierachy($parentIRI, $owlClasses, $owlHierarchyNode[$nodeIRIkey]);
+						  }
+					 }
+				}
+		  }
+		  return $outputURIs;
+	 }
+	 
+	 
+	 
+	 
+	 //get the OWL concept IRI(s) based on a "definedBy" relationship
+	 function getIRIfromDefinedBy($definedBy, $actArray){
+		  $output = false;
+		  foreach($actArray as $actIRI => $actConArray){
+				foreach($actConArray as $annoationArray){
+					 if(array_key_exists(self::definedByAbbrevIRI, $annoationArray)){
+						  $actDefinedBy = $annoationArray[self::definedByAbbrevIRI];
+						  if($actDefinedBy == $definedBy){
+								if(is_array($output)){
+									 $output[] = $actIRI;
+								}
+								else{
+									 $output = array();
+									 $output[] = $actIRI;
+								}
+						  }
+					 }
+				}
+		  }
+		  return $output;
+	 }
+	 
 	 //get comments or notes about the vocabulary itself
 	 function VocabGetComment(){
 		  $owlArray = $this->owlArray;
@@ -440,13 +510,13 @@ const licenseIRI = "xhv:license";
 		  return $output;
 	 }
 	 
-	  //get an Object Property Range for a given IRI
+	  //get parents in the hierachy for a given IRI
 	 function getClassParents($actIRI){
 		  $parents = array();
 		  $owlArray = $this->owlArray;
 		  $output = false;
-		  if(isset($owlArray["hierachy"])){
-				$hierarchy =  $owlArray["hierachy"];
+		  if(isset($owlArray["hierarchy"])){
+				$hierarchy =  $owlArray["hierarchy"];
 				$actConceptParents = $this->findParentPaths($actIRI, $hierarchy);
 				if(count($actConceptParents)>0){
 					 $output = $actConceptParents;
@@ -481,8 +551,8 @@ const licenseIRI = "xhv:license";
 	 
 	 function outputClassParentsHTML($actConceptParents){
 		  $owlArray = $this->owlArray;
-		  if(isset($owlArray["hierachy"])){
-				$hierarchy =  $owlArray["hierachy"];
+		  if(isset($owlArray["hierarchy"])){
+				$hierarchy =  $owlArray["hierarchy"];
 				
 				$doc = new DOMDocument();
 				$doc->formatOutput = true;

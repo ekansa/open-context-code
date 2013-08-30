@@ -727,7 +727,9 @@ class SolrSearch{
 						  $this->doPost = true;
 					 }
 					 $requestParams["rel"][] = $relReq;
+					 $requestParams["rel"][] = $hierarchyObj->getVocabRelationType("eol");
 				}
+				unset($hierarchyObj);
 		  }
 		  
 		  

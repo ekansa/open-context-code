@@ -866,6 +866,15 @@ class OpenContext_FacetOutput {
 		
 	}
 
+	//hierarchy combine
+	public static function hierarchyCombine($facet_fields, $requestParams){
+		
+		
+		$hierarchyObj = new Facets_Hierarchy ;
+		$hierarchyObj->requestParams = $requestParams;
+		$facet_fields = $hierarchyObj->consolidateRawHierachicFacets("eol", $facet_fields);
+		return $facet_fields;
+	}
 
 	public static function ORsplitPaths($taxonomy, $levelDeliminater = "::"){
 		if(substr_count($taxonomy, $levelDeliminater)>0){
@@ -990,7 +999,7 @@ class OpenContext_FacetOutput {
 		
 		//combine facets from different fields if these came from an "OR" search
 		$facet_fields = OpenContext_FacetOutput::downTaxaCombine($facet_fields, $requestParams);
-		
+		$facet_fields = OpenContext_FacetOutput::hierarchyCombine($facet_fields, $requestParams);
 		
 		//do advanced (multiple select) search options?
 		$checkBoxFacets = true;

@@ -102,6 +102,14 @@ class FacetCategory{
             $this->arrayParameter = false;
             $this->extendLastArrayParameter = false;
         }
+        elseif ($this->facet_cat == 'eol') {
+            $this->parameter = "eol";
+            $this->checkParameter = "eol";
+            $this->facet_category_label = "EOL linked Biological Taxa";
+            $this->facet_category_feed = "eol";
+            $this->arrayParameter = false;
+            $this->extendLastArrayParameter = false;
+        }
         elseif ($this->facet_cat == 'image_media_count') {
             $this->parameter = "images";
             $this->checkParameter = "images";

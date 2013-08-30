@@ -66,97 +66,123 @@ class FacetURLs{
     
     
     function facetLinking(){
-		$host = OpenContext_OCConfig::get_host_config(); 
-		$requestParams = $this->requestParams;
-		
-		$FacetURLs = array();
-		$facet_fields = $this->facetFields;
-		
-		
-		//combine facets from different fields if these came from an "OR" search
-		
-		if(is_array($facet_fields)){		
-			foreach ($facet_fields as $facet_cat => $value_array) {
-			
-				$facet_category_label = "";
-				$linkURLprefix = false;
-				$linkURLsuffix = null;
-						
-				if (count($value_array)) { // make sure there are facets before displaying the label; TODO: verify this is the behavior we want
-					
-					$facetCategory = new FacetCategory;
-					$facetCategory->getAltRepresentations = true; //make alternative representations for links
-					$facetCategory->facet_cat = $facet_cat;
-					$facetCategory->setParameter();
-					$facetCategory->prepareFacetURL($requestParams);
-					$facet_category_label = $facetCategory->facet_category_label;
-					$checkParameter = $facetCategory->checkParameter;
-					$skipUTF8 = false; //do some functions for more UTF8 processing
-					
-					if(stristr($facet_category_label, "description")){
-						if(isset($requestParams["taxa"])){
-							$lastTaxonNum = count($requestParams["taxa"])-1;
-							$lastTaxon = str_replace("::", " :: ", $requestParams["taxa"][$lastTaxonNum]);
-							$facet_category_label = "Fliter(s) for ".str_replace("||", " OR ", $lastTaxon);
-							$facetCategory->facet_category_label = $facet_category_label;
-							$skipUTF8 = true;
+		  $host = OpenContext_OCConfig::get_host_config(); 
+		  $requestParams = $this->requestParams;
+		  
+		  $FacetURLs = array();
+		  $facet_fields = $this->facetFields;
+		  
+		  
+		  //combine facets from different fields if these came from an "OR" search
+		  
+		  if(is_array($facet_fields)){		
+			  foreach ($facet_fields as $facet_cat => $value_array) {
+			  
+				  $facet_category_label = "";
+				  $linkURLprefix = false;
+				  $linkURLsuffix = null;
+						  
+				  if (count($value_array)) { // make sure there are facets before displaying the label; TODO: verify this is the behavior we want
+					  
+					  $facetCategory = new FacetCategory;
+					  $facetCategory->getAltRepresentations = true; //make alternative representations for links
+					  $facetCategory->facet_cat = $facet_cat;
+					  $facetCategory->setParameter();
+					  $facetCategory->prepareFacetURL($requestParams);
+					  $facet_category_label = $facetCategory->facet_category_label;
+					  $checkParameter = $facetCategory->checkParameter;
+					  $skipUTF8 = false; //do some functions for more UTF8 processing
+					  
+					  if(stristr($facet_category_label, "description")){
+						  if(isset($requestParams["taxa"])){
+							  $lastTaxonNum = count($requestParams["taxa"])-1;
+							  $lastTaxon = str_replace("::", " :: ", $requestParams["taxa"][$lastTaxonNum]);
+							  $facet_category_label = "Fliter(s) for ".str_replace("||", " OR ", $lastTaxon);
+							  $facetCategory->facet_category_label = $facet_category_label;
+							  $skipUTF8 = true;
+						  }
+					  }
+					  
+					  if($facetCategory->facet_category_label == "Context"){
+						  $skipUTF8 = true;
+					  }
+					  
+					  foreach ($value_array as $va_key => $va_value) {
+					  
+						  $link = null;
+						  $Facet = new Facet;
+						  $Facet->skip_UTF8 = $skipUTF8;
+						  
+						  $Facet->checkParmater = $checkParameter;
+							
+						  $Facet->normalFacet($va_key, $va_value, $host, $facetCategory->linkURLprefix, $facetCategory->linkURLsuffix);
+						  $link = $Facet->link;
+						  $linkQuery = $Facet->linkQuery;
+						  $value_out = $Facet->standard_link_html;
+						  $value_string = $Facet->value_string;
+						  
+						  //now for json facets
+						  $Facet->normalFacet($va_key, $va_value, $host, $facetCategory->facJSON_linkURLprefix, $facetCategory->facJSON_linkURLsuffix);
+						  $linkJSON = $Facet->link;
+						  
+						  //now for json results
+						  $Facet->normalFacet($va_key, $va_value, $host, $facetCategory->resJSON_linkURLprefix, $facetCategory->resJSON_linkURLsuffix);
+						  $linkJSONresults = $Facet->link;
+						  
+						  
+						  $LinkingArray = array("name" => $value_string,
+									  "href" => $link,
+									  "facet_href" => $linkJSON,
+									  "result_href" => $linkJSONresults,
+									  "linkQuery" =>$linkQuery,
+									  "param" => $checkParameter,
+									  "count" => $va_value);
+						  
+						  if($this->doContextMetadata && $facetCategory->facet_category_feed == "context"){
+							  $date_range = $this->contextGeoTime($value_string);
+							  $LinkingArray["geoTime"] = $date_range;
+						  }
+						  
+						  if($link && strlen($value_string)>0){
+							  $FacetURLs[$facetCategory->facet_category_feed][] = $LinkingArray;
+						  }
 						}
-					}
-					
-					if($facetCategory->facet_category_label == "Context"){
-						$skipUTF8 = true;
-					}
-					
-					foreach ($value_array as $va_key => $va_value) {
-					
-						$link = null;
-						$Facet = new Facet;
-						$Facet->skip_UTF8 = $skipUTF8;
-						
-						$Facet->checkParmater = $checkParameter;
-						 
-						$Facet->normalFacet($va_key, $va_value, $host, $facetCategory->linkURLprefix, $facetCategory->linkURLsuffix);
-						$link = $Facet->link;
-						$linkQuery = $Facet->linkQuery;
-						$value_out = $Facet->standard_link_html;
-						$value_string = $Facet->value_string;
-						
-						//now for json facets
-						$Facet->normalFacet($va_key, $va_value, $host, $facetCategory->facJSON_linkURLprefix, $facetCategory->facJSON_linkURLsuffix);
-						$linkJSON = $Facet->link;
-						
-						//now for json results
-						$Facet->normalFacet($va_key, $va_value, $host, $facetCategory->resJSON_linkURLprefix, $facetCategory->resJSON_linkURLsuffix);
-						$linkJSONresults = $Facet->link;
-						
-						
-						$LinkingArray = array("name" => $value_string,
-									"href" => $link,
-									"facet_href" => $linkJSON,
-									"result_href" => $linkJSONresults,
-									"linkQuery" =>$linkQuery,
-									"param" => $checkParameter,
-									"count" => $va_value);
-						
-						if($this->doContextMetadata && $facetCategory->facet_category_feed == "context"){
-							$date_range = $this->contextGeoTime($value_string);
-							$LinkingArray["geoTime"] = $date_range;
-						}
-						
-						if($link && strlen($value_string)>0){
-							$FacetURLs[$facetCategory->facet_category_feed][] = $LinkingArray;
-						}
+				  
+				  }//end case with values in this facet
+			  
+			  }//end loop through facets
+		  
+		  }//end case with facet URLs
+		  
+		  
+		  
+		  if(isset($requestParams["eol"]) && isset($FacetURLs["linking-relation-target"])){
+				$hierarchyObj = new Facets_Hierarchy ;
+				$hierarchyObj->requestParams = $requestParams;
+				//$reducedLinkingTargetFacets = $hierarchyObj->consolidatePreparedHierachicFacets($requestParams["eol"], "eol", $FacetURLs["linking-relation-target"]);
+				$reducedLinkingTargetFacets = $hierarchyObj->consolidatePreparedHierachicFacets("eol", $FacetURLs["linking-relation-target"]);
+				if(is_array($hierarchyObj->activeVocabFacets)){
+					 $newFacetURLs = array();
+					 $newFacetURLs["eol"] = $hierarchyObj->activeVocabFacets;
+					 foreach($FacetURLs as $facetCatKey => $facets){
+						  if( $facetCatKey == "linking-relation-target"){
+								$newFacetURLs[$facetCatKey] = $reducedLinkingTargetFacets;
+						  }
+						  else{
+								$newFacetURLs[$facetCatKey] = $facets;
+						  }
 					 }
+					 unset($FacetURLs);
+					 $FacetURLs = $newFacetURLs;
+					 unset($newFacetURLs);
+				}
 				
-				}//end case with values in this facet
-			
-			}//end loop through facets
-		
-		}//end case with facet URLs
-		
-		$this->FacetURLs = $FacetURLs;
-		$this->timeFacets(); //get time facets
-		$this->geoTileFacets(); //get geo tile facets
+				
+		  }
+		  
+		  $this->FacetURLs = $FacetURLs;
+		  $this->timeFacets(); //get time facets
+		  $this->geoTileFacets(); //get geo tile facets
     }
    
    
@@ -323,46 +349,46 @@ class FacetURLs{
     }//end function
 
 
-
+	 //greates geotile facets with counts and URLs for querying
     function geoTileFacets(){
 	
-		$geoTileFacets = $this->geoTileFacets;
-		if(is_array($geoTileFacets)){
-			$host = OpenContext_OCConfig::get_host_config();
-			$requestParams = $this->requestParams;
-			$geoTileFacetURLs = array();
-			
-			$geoObj = new GlobalMapTiles;
-			
-			foreach($geoTileFacets as $tileKey => $tileCount){
-				$tileKey = (string)$tileKey;
-				$requestParams["geotile"] =  (string)$tileKey;
-				$requestParams["geotile"] = substr($requestParams["geotile"],0,20); //don't go too deep
-				$link = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "xhtml");
-				$linkJSON_facets = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "facets_json");
-				$linkJSON_results = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "results_json");
-				
-				$geoArray = $geoObj->QuadTreeToLatLon($tileKey);
-				
-				$LinkingArray = array("name" => "Geographic region ($tileKey)" ,
-								"href" => $link,
-								"facet_href" => $linkJSON_facets,
-								"result_href" => $linkJSON_results,
-								"linkQuery" => $tileKey,
-								"param" => "geotile",
-								"count" => $tileCount,
-								"geoBounding" => $geoArray
-								);
-				
-				unset($geoArray);
-				$geoTileFacetURLs[] = $LinkingArray;
-			}//end loop
-			
-			$this->geoTileFacetURLs = $geoTileFacetURLs;
-		}
-		else{
-			$this->geoTileFacetURLs = false;
-		}
+		  $geoTileFacets = $this->geoTileFacets;
+		  if(is_array($geoTileFacets)){
+			  $host = OpenContext_OCConfig::get_host_config();
+			  $requestParams = $this->requestParams;
+			  $geoTileFacetURLs = array();
+			  
+			  $geoObj = new GlobalMapTiles;
+			  
+			  foreach($geoTileFacets as $tileKey => $tileCount){
+				  $tileKey = (string)$tileKey;
+				  $requestParams["geotile"] =  (string)$tileKey;
+				  $requestParams["geotile"] = substr($requestParams["geotile"],0,20); //don't go too deep
+				  $link = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "xhtml");
+				  $linkJSON_facets = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "facets_json");
+				  $linkJSON_results = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "results_json");
+				  
+				  $geoArray = $geoObj->QuadTreeToLatLon($tileKey);
+				  
+				  $LinkingArray = array("name" => "Geographic region ($tileKey)" ,
+								  "href" => $link,
+								  "facet_href" => $linkJSON_facets,
+								  "result_href" => $linkJSON_results,
+								  "linkQuery" => $tileKey,
+								  "param" => "geotile",
+								  "count" => $tileCount,
+								  "geoBounding" => $geoArray
+								  );
+				  
+				  unset($geoArray);
+				  $geoTileFacetURLs[] = $LinkingArray;
+			  }//end loop
+			  
+			  $this->geoTileFacetURLs = $geoTileFacetURLs;
+		  }
+		  else{
+			  $this->geoTileFacetURLs = false;
+		  }
 	
     }//end function
 

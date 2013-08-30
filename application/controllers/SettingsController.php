@@ -67,6 +67,21 @@ class settingsController extends Zend_Controller_Action {
 	}
 	
 	
+	function eolSettingsAction(){
+		
+		$this->_helper->viewRenderer->setNoRender();
+		$time_start = $this->microtime_float();
+		$hierarchyObj = new Facets_Hierarchy ;
+		$data = $hierarchyObj->getSettingsFromOWL("zoo-eol.owl");
+		
+		$time_end = $this->microtime_float();
+		$time = $time_end - $time_start;
+		$output = array("time" => $time, "data" => $data);
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
+	}
+	
+	
 	private function microtime_float(){
 		list($usec, $sec) = explode(" ", microtime());
 		return ((float)$usec + (float)$sec);

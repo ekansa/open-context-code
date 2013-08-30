@@ -247,7 +247,7 @@ class ProportionalData{
             $compValIndex = count($compValArray)-1; //the last taxonomic path in the array of paths
             $compVal = $compValArray[$compValIndex];
             
-            if(stristr($compVal, "::")){ //case where the comp val is a hierachy
+            if(stristr($compVal, "::")){ //case where the comp val is a hierarchy
                 $compValEx = $this->pathStringToArray($compVal);
                 $rawFinalCompValue = $compValEx[count($compValEx)-1];
                 $this->nominatorCurrentVal = str_replace("||", " OR ", $rawFinalCompValue); //the current queried term
