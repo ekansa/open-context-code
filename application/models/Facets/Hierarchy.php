@@ -10,6 +10,8 @@ class Facets_Hierarchy {
 	 public $requestParams; //request parameters
     public $countReqChildren; //count of the number of requested children (number of URIs that will be sent to SOLR for an OR search)
 	 
+	 
+	 public $requestParentURIs = array(); //an array of URIs for requested in the hierarchy search. these are the root nodes to find children
 	 public $activeVocabFacets; //facets made on the currently active hierarchic vocabulary
 	 public $activeOWLsettings; 
 	 
@@ -24,7 +26,7 @@ class Facets_Hierarchy {
 		  $requestParams = $this->requestParams;
 		  $actHierarchyURIs = $this->getActiveHierarchyURIs($typeKey);
 		  $relType = $this->getVocabRelationType($typeKey);
-		  if($actHierarchyURIs != false && $relType != false){
+		  if(isset($requestParams[$typeKey]) && $relType != false){
 				
 				$solrRelField = sha1($relType)."_lent_taxon";
 				if(isset($rawFacets[$solrRelField])){
@@ -34,6 +36,9 @@ class Facets_Hierarchy {
 						  $actHierarchyURIs = array( 0=> $actHierarchyURIs);
 					 }
 					 
+					 
+					 $requestParentURIs = $this->requestParentURIs; //array of URI(s) of the requested parrent node(s)
+					 
 					 $consolidatedVocabFacets = array();
 					 foreach($actHierarchyURIs as $actParentURI){
 						  $actChildrenURIs = $this->getLabeledListChildURIs($actParentURI); //get URIs for all the children of the parent URI
@@ -41,11 +46,11 @@ class Facets_Hierarchy {
 								$consolidatedVocabFacets[$actParentURI] = 0;
 								$newFacets = array();
 								foreach($rawRelFacets as $facetURIkey => $count){
-									 if(array_key_exists($facetURIkey, $actChildrenURIs)){ //check to see if a facet is a child of the the current parent
+									 if(array_key_exists($facetURIkey, $actChildrenURIs) && !in_array($facetURIkey, $requestParentURIs)){ //check to see if a facet is a child of the the current parent
 										  $consolidatedVocabFacets[$actParentURI] = $consolidatedVocabFacets[$actParentURI] + $count; //add the count of the current
 									 }
 									 else{
-										  if($facetURIkey != $actParentURI){
+										  if($facetURIkey != $actParentURI && !in_array($facetURIkey, $requestParentURIs)){
 												$newFacets[$facetURIkey] = $count; //only add if the facet URI is not in the children list and not the parent.
 										  }
 									 }
@@ -53,15 +58,23 @@ class Facets_Hierarchy {
 								unset($rawRelFacets);
 								$rawRelFacets = $newFacets;
 								unset($newFacets);
+								
+								if($consolidatedVocabFacets[$actParentURI] == 0){
+									 unset($consolidatedVocabFacets[$actParentURI]);
+								}
+								
 						  }
 						  
 					 }
 					 
 					 
 					 foreach($rawRelFacets as $facetURIkey => $count){
-						  $consolidatedVocabFacets[$facetURIkey] = $count;
+						  if($count>0){
+								$consolidatedVocabFacets[$facetURIkey] = $count;
+						  }
 					 }
 					 arsort($consolidatedVocabFacets);
+					 
 					 
 					 $newFacets = array();
 					 $newFacets[$typeKey] = $consolidatedVocabFacets;
@@ -165,6 +178,7 @@ class Facets_Hierarchy {
 									 $requestParentURIs = $eolObj->validateURIs($requestParentURIs);
 								}
 								
+								$this->requestParentURIs = $requestParentURIs; //array of URI(s) of the requested parrent node(s)
 								$OWLrootIRIs = array();
 								foreach($requestParentURIs as $actParentURI){
 									 $OWLactIRIs = $OWLobj->getIRIfromDefinedBy($actParentURI, $owlSettings["classes"]); 
@@ -172,6 +186,7 @@ class Facets_Hierarchy {
 										  $OWLrootIRIs = array_merge($OWLrootIRIs, $OWLactIRIs);
 									 }
 								}
+								
 						  }
 						  else{
 								$OWLrootIRIs = $owlSettings["rootParents"]; //the default, is the first root of the owl setting
@@ -246,7 +261,7 @@ class Facets_Hierarchy {
 						  $parentURIs = explode("||", $rawParent);
 					 }
 					 else{
-						  $parentURIs = $rawParent;
+						  $parentURIs = array(0 => $rawParent);
 					 }
 					 
 					 if($typeKey == "eol"){
@@ -255,17 +270,22 @@ class Facets_Hierarchy {
 					 }
 					 
 					 $searchURIs = $this->getLabeledListChildURIs($parentURIs);
+					 $output = $actRel."::";
+					 $firstParent = true;
+					 foreach($parentURIs as $parentURI){
+						  if(!$firstParent){
+								 $output .= "||";
+						  }
+						  $output .= $parentURI;
+						  $firstParent = false;  
+					 }
+					 
+					 
 					 if(is_array($searchURIs)){
 						  $this->countReqChildren = count($searchURIs);
 						  if($this->countReqChildren > 0){
-								$output = $actRel."::";
-								$firstLoop = true;
 								foreach($searchURIs as $searchURIkey => $label){
-									 if(!$firstLoop){
-										  $output .= "||";
-									 }
-									 $output .= $searchURIkey;
-									 $firstLoop = false;
+									 $output .= "||".$searchURIkey; //added after the requested parent
 								}
 						  }
 					 }

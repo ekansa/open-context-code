@@ -41,7 +41,7 @@ class settingsController extends Zend_Controller_Action {
 		
 		$this->_helper->viewRenderer->setNoRender();
 		$time_start = $this->microtime_float();
-		$parentURI = "http://eol.org/pages/7687";
+		$parentURI = $_GET["eol"];
 		$hierarchyObj = new Facets_Hierarchy ;
 		$data = $hierarchyObj->getLabeledListChildURIs($parentURI);
 		$time_end = $this->microtime_float();
