@@ -70,8 +70,8 @@ class settingsController extends Zend_Controller_Action {
 		$this->_helper->viewRenderer->setNoRender();
 		$time_start = $this->microtime_float();
 		
-		$parentURI = "http://eol.org/pages/1703";
-		$childURI = "http://eol.org/pages/4658568";
+		$parentURI = "http://eol.org/pages/2195";
+		$childURI = "http://eol.org/pages/14022305";
 		$vocabURI = "http://eol.org";
 		$tree = "default";
 		

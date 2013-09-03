@@ -36,7 +36,6 @@ class Facets_Hierarchy {
 						  $actHierarchyURIs = array( 0=> $actHierarchyURIs);
 					 }
 					 
-					 
 					 $requestParentURIs = $this->requestParentURIs; //array of URI(s) of the requested parrent node(s)
 					 
 					 $consolidatedVocabFacets = array();
@@ -54,12 +53,16 @@ class Facets_Hierarchy {
 					 $rawRelFacets = $newFacets;
 					 unset($newFacets);
 					 
-					 
 					 foreach($actHierarchyURIs as $actParentURI){
 						  $actChildrenURIs = $this->getLabeledListChildURIs($actParentURI); //get URIs for all the children of the parent URI
 						  
+						  $consolidatedVocabFacets[$actParentURI] = 0;
+						  if(isset($rawRelFacets[$actParentURI])){
+								$consolidatedVocabFacets[$actParentURI] = $rawRelFacets[$actParentURI];
+								unset($rawRelFacets[$actParentURI]);
+						  }
+						  
 						  if(is_array($actChildrenURIs)){
-								$consolidatedVocabFacets[$actParentURI] = 0;
 								$newFacets = array();
 								foreach($rawRelFacets as $facetURIkey => $count){
 									 if(array_key_exists($facetURIkey, $actChildrenURIs) && !in_array($facetURIkey, $requestParentURIs)){ //check to see if a facet is a child of the the current parent
@@ -77,32 +80,35 @@ class Facets_Hierarchy {
 								unset($rawRelFacets);
 								$rawRelFacets = $newFacets;
 								unset($newFacets);
-								
-								if($consolidatedVocabFacets[$actParentURI] == 0){
-									 unset($consolidatedVocabFacets[$actParentURI]);
-								}
-								
+						  }
+						  
+						  if($consolidatedVocabFacets[$actParentURI] == 0){
+								unset($consolidatedVocabFacets[$actParentURI]);
 						  }
 						  
 					 }
-					 // http://eol.org/pages/4445650
 					 
-					 //echo "<h2>cooked</h2>"; 
-					 //echo print_r($consolidatedVocabFacets);
-					 //echo "<h2>raw</h2>";
-					 //echo print_r($rawRelFacets);
-					 
+					/*
+					 echo "<h2>cooked</h2>"; 
+					 echo print_r($consolidatedVocabFacets);
+					 echo "<h2>raw</h2>";
+					 echo print_r($rawRelFacets);
+					 */
 					 
 					 foreach($rawRelFacets as $facetURIkey => $count){
 						  if($count>0){
-								$consolidatedVocabFacets[$facetURIkey] = $count;
+								if(!isset($consolidatedVocabFacets[$facetURIkey])){
+									 $consolidatedVocabFacets[$facetURIkey] = $count;
+								}
 						  }
 					 }
 					 arsort($consolidatedVocabFacets);
 					 
-					 //echo "<h2>done</h2>"; 
-					 //echo print_r($consolidatedVocabFacets);
-					 //die;
+					 /*
+					 echo "<h2>done</h2>"; 
+					 echo print_r($consolidatedVocabFacets);
+					 die;
+					 */
 					 
 					 $newFacets = array();
 					 $newFacets[$typeKey] = $consolidatedVocabFacets;
@@ -232,7 +238,7 @@ class Facets_Hierarchy {
 									 }
 								}
 						  }//end loop generateing $actHierarchyURIs
-		  
+						  
 					 }//end case with owlsettings converted to an array
 				}//end case with owlSettings
 		  }//end case with a request using the typeKey
