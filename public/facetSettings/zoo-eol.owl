@@ -244,7 +244,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00081</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mammal</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mammalia (Mammals)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -254,7 +254,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00082</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Bird</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Aves (Bird)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -274,7 +274,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00084</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Fish</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Osteichthyes (Fish)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -284,7 +284,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00085</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Lagomorpha (Hares, Pikas, and Rabbits)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Lagomorpha (Hares, pikas, rabbits)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -294,7 +294,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00086</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mollusc</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mollusca (Molluscs)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -384,7 +384,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00095</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Perissodactyla (Horses, Rhinoceroses, and Tapirs)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Perissodactyla (Horses, rhinoceroses, tapirs)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -414,7 +414,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00098</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Soricomorpha (Hedgehogs, Shrews, Moles and Others)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Soricomorpha (Hedgehogs, shrews, moles, etc.)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -424,7 +424,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00099</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Cetacea (Dolphins, Porpoises, and Whales)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Cetacea (Dolphins, porpoises, whales)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -434,7 +434,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00100</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Canidae (Coyotes, Dogs, Foxes, Jackals, and Wolves)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Canidae (Coyotes, dogs, foxes, jackals, wolves)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -444,7 +444,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00101</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mustelidae (Badgers, Otters, Weasels)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Mustelidae (Badgers, otters, weasels)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
@@ -484,7 +484,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00105</IRI>
-        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Canis (Dogs, Wolves, Jackals)</Literal>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Canis (Dogs, wolves, jackals)</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
