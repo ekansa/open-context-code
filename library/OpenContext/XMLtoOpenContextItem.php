@@ -1177,7 +1177,9 @@ class OpenContext_XMLtoOpenContextItem {
 					$relationURI = $relationURI."";
 				}
 				if($linkedData->xpath(".//oc:targetLink/@href")){
-					$linkedData[$relationURI] = array();
+					if(!isset($linkedData[$relationURI])){
+						$linkedData[$relationURI] = array();
+					}
 					foreach ($linkedData->xpath(".//oc:targetLink/@href") as $targetURI) {
 						$targetURI = $targetURI."";
 						if($relationURI != false && $targetURI != false){
