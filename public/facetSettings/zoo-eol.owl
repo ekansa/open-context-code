@@ -112,6 +112,9 @@
     <Declaration>
         <Class IRI="/00108"/>
     </Declaration>
+    <Declaration>
+        <Class IRI="/00109"/>
+    </Declaration>
     <SubClassOf>
         <Class IRI="/00081"/>
         <Class IRI="/00080"/>
@@ -222,6 +225,10 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="/00108"/>
+        <Class IRI="/00080"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00109"/>
         <Class IRI="/00080"/>
     </SubClassOf>
     <AnnotationAssertion>
@@ -508,6 +515,16 @@
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00108</IRI>
         <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Plantae (Plants)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00109</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/1552</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00109</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Amphibia (Amphibians)</Literal>
     </AnnotationAssertion>
 </Ontology>
 
