@@ -272,6 +272,10 @@ class Facets_EOL {
 		  return $eolURI;
 	 }
 	 
+	 function getVocabURI(){
+		  return self::vocabURI;
+	 }
+	 
 	 
 	 function startDB(){
 		  if(!$this->db){

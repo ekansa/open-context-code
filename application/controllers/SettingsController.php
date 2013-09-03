@@ -100,12 +100,13 @@ class settingsController extends Zend_Controller_Action {
 	}
 	
 	
-	function eolSettingsAction(){
+	function vocabTreeAction(){
 		
 		$this->_helper->viewRenderer->setNoRender();
 		$time_start = $this->microtime_float();
+		$vocab = $_GET["vocab"];
 		$hierarchyObj = new Facets_Hierarchy ;
-		$data = $hierarchyObj->getSettingsFromOWL("zoo-eol.owl");
+		$data = $hierarchyObj->loadActiveHierarchySettings($vocab );
 		
 		$time_end = $this->microtime_float();
 		$time = $time_end - $time_start;
