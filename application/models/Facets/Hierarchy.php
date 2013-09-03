@@ -14,11 +14,15 @@ class Facets_Hierarchy {
 	 public $requestParentURIs = array(); //an array of URIs for requested in the hierarchy search. these are the root nodes to find children
 	 public $activeVocabFacets; //facets made on the currently active hierarchic vocabulary
 	 public $activeOWLsettings; 
-	 
+	 public $activeOWLhash;
+	 public $activeVocabURI;
 	 
 	 public $relTypes = array("eol" => "http://purl.org/NET/biol/ns#term_hasTaxonomy"
 									  );
-	 public $owlSettingFiles = array("eol" => "zoo-eol.owl");
+	 
+	 public $vocabURIs = array("eol" => "http://eol.org/"
+									  );
+	 
 	 const settingsDirectory = "facetSettings";
 	 
 	 
@@ -191,13 +195,11 @@ class Facets_Hierarchy {
 		  $requestParams = $this->requestParams;
 		  if(isset($requestParams[$typeKey])){
 				$rawParent = $requestParams[$typeKey];
-				$owlSettingFiles = $this->owlSettingFiles;
 				$relTypes = $this->relTypes;
-				if(array_key_exists($typeKey, $owlSettingFiles)){
-					 $actRelType = $this->getVocabRelationType($typeKey); //what type of linking relation is associated with the current vocabulary, as expressed in $typeKey
-					 $owlSettings = $this->getSettingsFromOWL($owlSettingFiles[$typeKey]); //get the hierarchy settings for the current vocabulary
+				$actRelType = $this->getVocabRelationType($typeKey); //what type of linking relation is associated with the current vocabulary, as expressed in $typeKey
+				if($actRelType != false){
+					 $owlSettings = $this->loadActiveHierarchySettings($typeKey); //get the hierarchy settings for the current vocabulary
 					 if(is_array($owlSettings)){
-						  $this->activeOWLsettings = $owlSettings; //may need it later!
 						  $OWLobj = new OWL;
 						  if($rawParent != "root"){
 								if(strstr($rawParent, "||")){
@@ -615,9 +617,11 @@ class Facets_Hierarchy {
 		  iconv_set_encoding("internal_encoding", "UTF-8");
 		  iconv_set_encoding("output_encoding", "UTF-8");
 		  $data = false;
+		  $this->activeOWLhash = false;
 		  $fileDirName = $itemDir."/".$baseFilename;
 		  $fileOK = file_exists($fileDirName);
 		  if($fileOK){
+				$this->activeOWLhash = sha1_file($fileDirName);
 				$rHandle = fopen($fileDirName, 'r');
 				if($rHandle){
 					 $data = '';
@@ -630,6 +634,82 @@ class Facets_Hierarchy {
 		  }
 		  return $data;
 	 }
+	 
+	 //finds the hiearchy settings for a given type, if it exists
+	 function loadActiveHierarchySettings($typeKey){
+		  
+		  $output = false;
+		  $db = $this->startDB();
+		  
+		  $sql = "SELECT filename, filehash AS priorHash
+		  FROM vocabularies
+		  WHERE vocab = '$typeKey'
+		  AND mainlocation = '".self::settingsDirectory."'
+		  ";
+		  
+		  $result =  $db->fetchAll($sql);
+		  if($result){
+				$owlFile = $result[0]["filename"];
+				$priorHash = $result[0]["priorHash"];
+				$settings = $this->getSettingsFromOWL($owlFile);
+				if(is_array($settings)){
+					 $vocabURIs = $this->vocabURIs;
+					 if(array_key_exists($typeKey, $vocabURIs)){
+						  $this->activeVocabURI = $vocabURIs[$typeKey]; //the URI for the currently active hiearchic vocabulary
+					 }
+					 if($this->activeOWLhash != $priorHash){
+						  $this->updateOCtoSettings($typeKey, $settings);
+					 }
+					 $this->activeOWLsettings = $settings;
+					 $output = $settings;
+				}
+		  }
+		  return $output;
+	 }
+	 
+	 function updateOCtoSettings($typeKey, $settings){
+		  $db = $this->startDB();
+		  if(isset($settings["classes"])){
+				$classes = $settings["classes"];
+				unset($settings);
+				$OWLobj = new OWL;
+				foreach($classes as $iriKey => $class){
+					 $prefLabel = $OWLobj->IRIgetLabel($iriKey, $classes);
+					 $classURI = $OWLobj->IRIgetDefinedBy($iriKey, $classes);
+					 $this->addUpdateURIlabel($prefLabel, $classURI);
+				}
+		  }
+		  
+		  $data = array("filehash" => $this->activeOWLhash);
+		  $where = "vocab = '$typeKey' ";
+		  $db->update("vocabularies", $data, $where);
+	 }
+	 
+	 function addUpdateURIlabel($prefLabel, $classURI){
+		  
+		  $db = $this->startDB();
+		  
+		  $sql = "SELECT * FROM linkedentities WHERE uri = '$classURI' LIMIT 1; ";
+		  $result =  $db->fetchAll($sql);
+		  if($result){
+				//label already exists, update it
+				$where = "uri = '$classURI' ";
+				$data = array("local_label" => $prefLabel);
+				$db->update("linkedentities", $data, $where);
+		  }
+		  else{
+				//new entity being added
+				$data = array("uri" => $classURI,
+								  "label" => $prefLabel,
+								  "local_label" => $prefLabel,
+								  "vocabURI" => $this->activeVocabURI,
+								  "type" => self::settingsDirectory
+								  );
+				
+				$db->insert("linkedentities", $data);
+		  }
+	 }
+	 
 	 
 	 
 	 function startDB(){
