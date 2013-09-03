@@ -1169,22 +1169,22 @@ class OpenContext_XMLtoOpenContextItem {
 				$OpenContextItem->addfullPropertyPath($taxonomyArray); //add taxonomy path
 			}
 			
-			$linkedData = array();
+			$linkedDataArray = array();
 			foreach ($xmlItem->xpath($xpathPrefix."/arch:properties/arch:property/oc:linkedData") as $linkedData) {
 				$relationURI = false;
 				$targetURI = false;
-				foreach ($linkedData->xpath(".//oc:relationLink/@href") as $relationURI) {
-					$relationURI = $relationURI."";
+				foreach ($linkedData->xpath(".//oc:relationLink/@href") as $relationURIxpath) {
+					$relationURI = (string)$relationURIxpath;
 				}
 				if($linkedData->xpath(".//oc:targetLink/@href")){
-					if(!isset($linkedData[$relationURI])){
-						$linkedData[$relationURI] = array();
+					if(!array_key_exists($relationURI, $linkedDataArray)){
+						$linkedDataArray[$relationURI] = array();
 					}
 					foreach ($linkedData->xpath(".//oc:targetLink/@href") as $targetURI) {
 						$targetURI = $targetURI."";
 						if($relationURI != false && $targetURI != false){
-							if(!in_array($targetURI, $linkedData[$relationURI])){
-								$linkedData[$relationURI][] = $targetURI;
+							if(!in_array($targetURI, $linkedDataArray[$relationURI])){
+								$linkedDataArray[$relationURI][] = $targetURI;
 								//$OpenContextItem->addURIreference($relationURI, $targetURI);
 							}
 						}
@@ -1209,10 +1209,15 @@ class OpenContext_XMLtoOpenContextItem {
 				}
 			}
 			
-			if(count($linkedData)>0){
+			//echo print_r($linkedDataArray);
+			//die;
+			
+			if(count($linkedDataArray)>0){
 				$hierObj = new Facets_Hierarchy;
-				foreach($linkedData as $relationURI => $targArray){
-					if($hierObj->getVocabTypeFromRelation($relationURI) != false){
+				foreach($linkedDataArray as $relationURI => $targArray){
+					$actTargArray = $targArray;
+					$vocabType = $hierObj->getVocabTypeFromRelation($relationURI);
+					if($vocabType  != false){
 						//if the relation URI is a property used for a hierarchic taxonomy,
 						//do this to remove target URIs to entities higher up in the hierarchy. We'll
 						//only index the most specific classification
@@ -1221,16 +1226,17 @@ class OpenContext_XMLtoOpenContextItem {
 							$targParentCounts[$targURI] = count($hierObj->getListParentURIs($targURI));
 						}
 						arsort($targParentCounts); //sort from biggest to largest, largest has the most parents, is deepest in the hierarchy
-						unset($targArray);
-						$targArray = array();
-						foreach($targParentCounts as $targURI => $count){
-							$targArray[] = $targURI;
+						unset($actTargArray);
+						$actTargArray = array();
+						foreach($targParentCounts as $targetURI => $count){
+							$OpenContextItem->addURIreference($relationURI, $targetURI);
 							break;
 						}
 					}
-					
-					foreach($targArray as $targURI){
-						$OpenContextItem->addURIreference($relationURI, $targetURI);
+					else{
+						foreach($targArray as $targetURI){
+							$OpenContextItem->addURIreference($relationURI, $targetURI);
+						}
 					}
 				}
 				unset($hierObj);
