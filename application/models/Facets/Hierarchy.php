@@ -589,6 +589,20 @@ class Facets_Hierarchy {
 		  return $actRelType;
 	 }
 	 
+	 //get the type of vocbulary used for a given relationURI
+	 function getVocabTypeFromRelation($relationURI){
+		  $output = false;
+		  $this->relTypes;
+		  foreach($this->relTypes as $typeKey => $relURI){
+				if($relURI == $relationURI){
+					 $output = $typeKey;
+				}
+		  }
+		  
+		  return $output;
+	 }
+	 
+	 
 	 
 	 //load a settings file from the settings directory
 	 function loadSettingsFile($baseFilename, $itemDir = self::settingsDirectory){
