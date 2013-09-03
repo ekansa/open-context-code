@@ -51,6 +51,39 @@ class settingsController extends Zend_Controller_Action {
 		echo Zend_Json::encode($output);
 	}
 	
+	function uriParentsAction(){
+		
+		$this->_helper->viewRenderer->setNoRender();
+		$time_start = $this->microtime_float();
+		$childURI = $_GET["eol"];
+		$hierarchyObj = new Facets_Hierarchy ;
+		$data = $hierarchyObj->getListParentURIs($childURI);
+		$time_end = $this->microtime_float();
+		$time = $time_end - $time_start;
+		$output = array("time" => $time, "data" => $data);
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
+	}
+	
+	function addRelAction(){
+		
+		$this->_helper->viewRenderer->setNoRender();
+		$time_start = $this->microtime_float();
+		
+		$parentURI = "http://eol.org/pages/1703";
+		$childURI = "http://eol.org/pages/4658568";
+		$vocabURI = "http://eol.org";
+		$tree = "default";
+		
+		$hierarchyObj = new Facets_Hierarchy ;
+		$data = $hierarchyObj->addHierarchyFromParams($parentURI, $childURI, $vocabURI, $tree);
+		$time_end = $this->microtime_float();
+		$time = $time_end - $time_start;
+		$output = array("time" => $time, "data" => $data);
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
+	}
+	
 	function relEquivAction(){
 		
 		$this->_helper->viewRenderer->setNoRender();

@@ -40,13 +40,32 @@ class Facets_Hierarchy {
 					 $requestParentURIs = $this->requestParentURIs; //array of URI(s) of the requested parrent node(s)
 					 
 					 $consolidatedVocabFacets = array();
+					 
+					 $newFacets = array();
+					 foreach($rawRelFacets as $facetURIkey => $count){
+						  if(in_array($facetURIkey, $requestParentURIs)){
+								//$consolidatedVocabFacets[$facetURIkey] = $count;
+						  }
+						  else{
+								$newFacets[$facetURIkey] = $count; 
+						  }
+					 }
+					 unset($rawRelFacets);
+					 $rawRelFacets = $newFacets;
+					 unset($newFacets);
+					 
+					 
 					 foreach($actHierarchyURIs as $actParentURI){
 						  $actChildrenURIs = $this->getLabeledListChildURIs($actParentURI); //get URIs for all the children of the parent URI
+						  
 						  if(is_array($actChildrenURIs)){
 								$consolidatedVocabFacets[$actParentURI] = 0;
 								$newFacets = array();
 								foreach($rawRelFacets as $facetURIkey => $count){
 									 if(array_key_exists($facetURIkey, $actChildrenURIs) && !in_array($facetURIkey, $requestParentURIs)){ //check to see if a facet is a child of the the current parent
+										  $consolidatedVocabFacets[$actParentURI] = $consolidatedVocabFacets[$actParentURI] + $count; //add the count of the current
+									 }
+									 elseif($facetURIkey == $actParentURI){
 										  $consolidatedVocabFacets[$actParentURI] = $consolidatedVocabFacets[$actParentURI] + $count; //add the count of the current
 									 }
 									 else{
@@ -66,6 +85,12 @@ class Facets_Hierarchy {
 						  }
 						  
 					 }
+					 // http://eol.org/pages/4445650
+					 
+					 //echo "<h2>cooked</h2>"; 
+					 //echo print_r($consolidatedVocabFacets);
+					 //echo "<h2>raw</h2>";
+					 //echo print_r($rawRelFacets);
 					 
 					 
 					 foreach($rawRelFacets as $facetURIkey => $count){
@@ -75,6 +100,9 @@ class Facets_Hierarchy {
 					 }
 					 arsort($consolidatedVocabFacets);
 					 
+					 //echo "<h2>done</h2>"; 
+					 //echo print_r($consolidatedVocabFacets);
+					 //die;
 					 
 					 $newFacets = array();
 					 $newFacets[$typeKey] = $consolidatedVocabFacets;
@@ -427,6 +455,74 @@ class Facets_Hierarchy {
 		  
 		  return $children;
 	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	  //gets children of a given URI as a List
+	 function getListParentURIs($chilrenURIs, $recursive = true, $tree = false){
+		  
+		  $parents = array();
+		  $db = $this->startDB();
+		  
+		  if($tree != false){
+				$treeCondition = " AND hi.tree = '$tree' ";
+		  }
+		  else{
+				$treeCondition = " ";
+		  }
+		  
+		  if(!is_array($chilrenURIs)){
+				$chilrenURIs = array(0 => $chilrenURIs);
+		  }
+		  $childrenCondition = " (";
+		  $pFirst = true;
+		  foreach($chilrenURIs as $childURI){
+				if(!$pFirst){
+					 $childrenCondition .= " OR ";
+				}
+				$childrenCondition .= " hi.childURI = '$childURI' ";
+				$pFirst = false;
+		  }
+		  $childrenCondition .= ") ";
+		  
+		  
+		  $sql = "SELECT DISTINCT hi.parentURI, ld.linkedLabel
+		  FROM hierarchies AS hi
+		  LEFT JOIN linked_data AS ld ON hi.parentURI = ld.linkedURI
+		  WHERE $childrenCondition 
+		  $treeCondition
+		  ";
+		  
+		  $result =  $db->fetchAll($sql);
+		  if($result){
+				foreach($result as $row){
+					 $parentURI = $row["parentURI"];
+					 if(!array_key_exists($childURI, $parents)){
+						  $parents[$parentURI] = $row["linkedLabel"];
+					 }
+					 if($recursive){
+						  $grandParents = $this->getListParentURIs($parentURI, $recursive, $tree);
+						  foreach($grandParents as $uriKey => $label){
+								 if(!array_key_exists($uriKey, $parents)){
+									 $parents[$uriKey] = $label;
+								}
+						  }
+					 }
+				}
+		  }
+		  
+		  return $parents;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 	 
 	 
 	 
