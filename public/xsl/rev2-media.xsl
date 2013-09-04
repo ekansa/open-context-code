@@ -246,7 +246,7 @@
 																				<xsl:if test="count(descendant::arch:resource/arch:notes/arch:note) !=0 ">
 																						<div class="item-notes">
 																								<h5>Item Notes</h5>
-																								<xsl:for-each select="arch:notes/arch:note">
+																								<xsl:for-each select="arch:resource/arch:notes/arch:note">
 																										<div class="item-note">
 																										<xsl:choose>
 																											 <xsl:when test="arch:string/@type = 'xhtml'">
@@ -402,7 +402,7 @@
 														<br/>
 														<h5>Suggested Citation</h5>
 														<div id="citation">
-																<xsl:value-of select="$citationView"/>
+																<xsl:value-of select="$citationView"/><xsl:if test="//oc:metadata/dc:identifier[@type ='doi']">DOI:<a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']"/></a></xsl:if>
 														</div>
 												</div>
 												<div id="media-links">
