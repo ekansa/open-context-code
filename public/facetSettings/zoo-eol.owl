@@ -115,6 +115,9 @@
     <Declaration>
         <Class IRI="/00109"/>
     </Declaration>
+    <Declaration>
+        <Class IRI="/00110"/>
+    </Declaration>
     <SubClassOf>
         <Class IRI="/00081"/>
         <Class IRI="/00080"/>
@@ -145,7 +148,7 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="/00088"/>
-        <Class IRI="/00087"/>
+        <Class IRI="/00110"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="/00089"/>
@@ -161,7 +164,7 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="/00092"/>
-        <Class IRI="/00087"/>
+        <Class IRI="/00110"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="/00093"/>
@@ -230,6 +233,10 @@
     <SubClassOf>
         <Class IRI="/00109"/>
         <Class IRI="/00080"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="/00110"/>
+        <Class IRI="/00087"/>
     </SubClassOf>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
@@ -525,6 +532,16 @@
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>/00109</IRI>
         <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Amphibia (Amphibians)</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:isDefinedBy"/>
+        <IRI>/00110</IRI>
+        <Literal datatypeIRI="&xsd;anyURI">http://eol.org/pages/7687</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>/00110</IRI>
+        <Literal xml:lang="en" datatypeIRI="&rdf;PlainLiteral">Bovidae (Antelopes, cattle, gazelles, goats, sheep,etc.)</Literal>
     </AnnotationAssertion>
 </Ontology>
 
