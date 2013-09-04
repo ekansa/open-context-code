@@ -345,6 +345,33 @@ class OpenContext_FacetOutput {
 					$output[] = $facetRem;
 				}
 			}
+			elseif($key == 'eol') {
+				if(!is_array($value)){
+					$value = array(0=>$value);
+				}
+				
+				foreach ($value as $value) {
+					$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, $value, $type);
+					if($value != "root"){
+						$remValue = OpenContext_FacetOutput::removals_path_parameter($requestParams, $key, $value, "::");
+						$remValue["display"] = $remValue["display"]."; includes more specific sub-taxa";
+					}
+					else{
+						$remValue = array();
+						$remValue["display"] = "All items classified with biological taxa";
+						$remValue["remLinks"] = "";
+						$remValue["simple"] = "All items classified with biological taxa";
+					}
+					$facetRem = array("parameter" => $key,
+							  "value" => $value,
+							  "title" => "Biological Taxa",
+							  "remValue_XHTML" => $remValue["display"],
+							  "remValues" => $remValue["remLinks"],
+							  "simpleValues" => $remValue["simple"],
+							  "remLink" => $remLink);
+					$output[] = $facetRem;
+				}
+			}
 			else{
 				continue;
 			}
