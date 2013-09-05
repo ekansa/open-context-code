@@ -180,7 +180,7 @@
 																<h5>Document Contents</h5>
 																<div id="document-content">
 																		<xsl:choose>
-																				<xsl:when test="arch:resource/arch:content/arch:internalDocument/arch:string/@type = 'xhtml'">
+																				<xsl:when test="(arch:resource/@ownedBy !='3DE4CD9C-259E-4C14-9B03-8B10454BA66E') and (arch:resource/arch:content/arch:internalDocument/arch:string/@type = 'xhtml')">
 																					 <!-- <xsl:value-of select="arch:string"/> -->
 																					 <xsl:for-each select="arch:resource/arch:content/arch:internalDocument/arch:string/*">
 																						  <xsl:call-template  name="node-output" >
@@ -189,6 +189,7 @@
 																					 </xsl:for-each>
 																				</xsl:when>
 																				<xsl:otherwise>
+																						
 																					 <xsl:value-of select="arch:resource/arch:content/arch:internalDocument/arch:string" disable-output-escaping="yes" />
 																				</xsl:otherwise>
 																		</xsl:choose>
