@@ -568,7 +568,7 @@
 														<br/>
 														<h5>Suggested Citation</h5>
 														<div id="citation">
-															 <xsl:value-of select="$citationView"/>
+															 <xsl:value-of select="$citationView"/><xsl:if test="//oc:metadata/dc:identifier[@type ='doi']">DOI:<a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']"/></a></xsl:if>
 														</div>
 													 
 													 
