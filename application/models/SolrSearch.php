@@ -1020,19 +1020,27 @@ class SolrSearch{
 		  if (true) {
 				try {
 		  
-			  $response = $solr->search($query,
-						  0, //offset
-						  1, //number of records
-						  $param_array);
-							
-			  foreach (($response->response->docs) as $doc) {
-					if($doUpdate){
-					  $this->lastUpdate = $doc->update;
-					}
-					else{
-					  $this->lastPublished = $doc->pub_date;
-					}
-			  }
+				if(!$this->doPost){
+					 $response = $solr->search($query,
+								 0, //offset
+								 1, //number of records
+								 $param_array);
+				}
+				else{
+					 $response = $solr->search($query,
+								 0, //offset
+								 1, //number of records
+								 $param_array,
+								 "POST");
+				}
+				foreach (($response->response->docs) as $doc) {
+					 if($doUpdate){
+						$this->lastUpdate = $doc->update;
+					 }
+					 else{
+						$this->lastPublished = $doc->pub_date;
+					 }
+				}
 			  
 			  $rawResponse = Zend_Json::decode($response->getRawResponse());
 			  
