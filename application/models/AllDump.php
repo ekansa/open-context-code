@@ -398,7 +398,7 @@ class AllDump {
 		  
 		  $db = $this->startDB();
 		  
-		  $sql = "SELECT noid_bindings.itemUUID, resource.repo
+		  $sql = "SELECT noid_bindings.itemUUID, diary.repo
 		  FROM noid_bindings
 		  JOIN diary ON diary.uuid = noid_bindings.itemUUID
 		  WHERE public = 0
