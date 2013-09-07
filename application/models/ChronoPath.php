@@ -6,7 +6,7 @@ class ChronoPath {
     
     const defaultMaximumDateBP = 5000000000; //5 Billion Year Ago
 	 const maxPathDepth = 30;
-	 const minumumIntervalSpan = .5; //smallest size of a time interval that we care about
+	 const minumumIntervalSpan = 1; //smallest size of a time interval that we care about
 	 
 	 const prefixDelim = "-";
 	 
@@ -24,9 +24,9 @@ class ChronoPath {
 		  }
 		  else{
 				
-				$intervalSpan = $this->pathConvertBeginEnd($path);
-				if($intervalSpan > self::minumumIntervalSpan){
-					 $halfSpan = $intervalSpan/2;
+				$levelIntervalSpan = $this->pathConvertBeginEnd($path);
+				if($levelIntervalSpan > self::minumumIntervalSpan){
+					 $halfSpan = $levelIntervalSpan/2;
 					 
 					 if($endDateBP > $this->pathMaximiumBP){
 						  //you've got a data range that doesn't fit into the current Maxiumum BP for this path
@@ -65,24 +65,24 @@ class ChronoPath {
 		  $this->blockStart = 0;
 		  $this->blockEnd = $this->pathMaximiumBP;
 		  
-		  $intervalSpan = $this->pathMaximiumBP;
+		  $levelIntervalSpan = $this->pathMaximiumBP;
 		  $i = 0;
 		  while($i < $level){
 		  
-				$intervalSpan = $intervalSpan / 2;
+				$levelIntervalSpan = $levelIntervalSpan / 2;
 				$actPathSquare = substr($path, $i, 1);
 				if($actPathSquare == "0"){
-					 $this->blockEnd = $this->blockEnd - $intervalSpan;
+					 $this->blockEnd = $this->blockEnd - $levelIntervalSpan;
 				}
 				elseif($actPathSquare == "1"){
 					 //do nothing to change start and ends
 				}
 				elseif($actPathSquare == "2"){
-					 $this->blockStart = $this->blockStart + $intervalSpan;
-					 $this->blockEnd = $this->blockEnd - $intervalSpan;
+					 $this->blockStart = $this->blockStart + $levelIntervalSpan;
+					 $this->blockEnd = $this->blockEnd - $levelIntervalSpan;
 				}
 				elseif($actPathSquare == "3"){
-					 $this->blockStart = $this->blockStart + $intervalSpan;
+					 $this->blockStart = $this->blockStart + $levelIntervalSpan;
 				}
 				else{
 					 
@@ -91,7 +91,7 @@ class ChronoPath {
 				$i++;
 		  }
 		  
-		  return $intervalSpan;
+		  return $levelIntervalSpan;
 	 }
 	 
 	 
