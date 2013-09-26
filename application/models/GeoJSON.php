@@ -49,7 +49,9 @@ class GeoJSON {
 					 
 					 $properties = array();
 					 $boundingBox = "Bounded by: ".$geoTile["geoBounding"][0]." Lat, ".$geoTile["geoBounding"][1]." Lon, and ".$geoTile["geoBounding"][2]." Lat, ".$geoTile["geoBounding"][3]." Lon";
-					 $properties["name"] =  "Region ".$boundingBox." ";
+					 
+					 //$properties["name"] =  "Region ".$boundingBox." ";
+					 $properties["name"] =  "Title: ".$geoTile["linkQuery"]." ";
 					 $properties["href"] =  $geoTile["href"];
 					 $properties["hrefGeoJSON"] =  str_replace(".json", ".geojson", $geoTile["result_href"]);
 					 $properties["count"] =  $geoTile["count"];

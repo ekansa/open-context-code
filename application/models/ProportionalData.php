@@ -235,6 +235,7 @@ class ProportionalData{
         $output = false;
         $requestParams = $this->requestParams;
         $actCompParam = false;
+		  $selectedComp = false;
         foreach($requestParams as $paramKey => $vals){
             if($paramKey == "rel" || $paramKey == "taxa" ){
                 $actCompParam = $paramKey;   //the last param key that is a rel or taxa is used to make a proportional comparison
@@ -242,6 +243,7 @@ class ProportionalData{
         }
         if(isset($requestParams["comp"])){
             $actCompParam = false;
+				$selectedComp = $requestParams["comp"];
             $this->makeDenominatorDataLink(); //do this so that 
             unset($requestParams["comp"]);
             $output = $host.(OpenContext_FacetOutput::generateFacetURL($requestParams, null, null, false, false, $type));
@@ -274,7 +276,9 @@ class ProportionalData{
 		  
 		  if(isset($requestParams["eol"])){
 				if($requestParams["eol"] != "root"){
-					 $output = $host.(OpenContext_FacetOutput::generateFacetURL($requestParams, "comp", "eol", false, false, $type));
+					 if(!$selectedComp){
+						  $output = $host.(OpenContext_FacetOutput::generateFacetURL($requestParams, "comp", "eol", false, false, $type));
+					 }
 					 $this->linkPropOfURL = $host.(OpenContext_FacetOutput::generateFacetURL($requestParams, "comp", "eol", false, false, "xhtml"));
 					 $this->nominatorCurrentVal = str_replace("||", " OR ", $requestParams["eol"]); //the current queried term
 					 $this->nominatorCurrentVal = $this->relURIsToLabels($this->nominatorCurrentVal);
