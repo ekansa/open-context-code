@@ -294,7 +294,10 @@ class Document {
 		  $host = OpenContext_OCConfig::get_host_config();
 		  $baseURI = $host."/documents/";
 		  
-		  $mediaItem = simplexml_load_string($archaeML_string);
+		  @$mediaItem = simplexml_load_string($archaeML_string);
+		  if(!@$mediaItem){
+				return false;
+		  }
 	  
 		  // Register OpenContext's namespace
 		  //$mediaItem->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));

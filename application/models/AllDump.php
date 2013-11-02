@@ -99,7 +99,7 @@ class AllDump {
 									 $this->exportSubjects($projectUUID, $actDirectories);
 								}
 								elseif($XMLtype == "media"){
-									 $this->exportMedia($projects, $actDirectories);
+									 $this->exportMedia($projectUUID, $actDirectories);
 								}
 								elseif($XMLtype == "documents"){
 									 $this->exportDocuments($projectUUID, $actDirectories);
