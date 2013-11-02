@@ -210,9 +210,11 @@ class SolrDocsIndex {
 						 $solrDoc = $this->personItemSolrDoc($itemXMLstring);
 					 }
 					 elseif($item['itemType'] == 'document'){
-						 $itemObj = New Document;
-						 $itemXMLstring = $itemObj->getItemXML($itemUUID);
-						 $solrDoc = $this->docItemSolrDoc($itemXMLstring);
+						  $itemObj = New Document;
+						  $itemXMLstring = $itemObj->getItemXML($itemUUID);
+						  if(strlen($itemXMLstring)>10){
+								$solrDoc = $this->docItemSolrDoc($itemXMLstring);
+						  }
 					 }
 					 elseif($item['itemType'] == 'project'){
 						 $itemObj = New Project;

@@ -30,10 +30,10 @@ class Facet {
     
     function defaultContextFacet($va_key, $va_value){
         $request_array = $this->request_array;
-	$linkQuery = urlencode($va_key);
-	$link = $this->host . $request_array[0] . $linkQuery  . $request_array[1];
-	$value_out = '<a href="' .  $link  . '" > '. $va_key .'</a>' . ': ' . $va_value;
-	$value_string = $va_key;
+		  $linkQuery = urlencode($va_key);
+		  $link = $this->host . $request_array[0] . $linkQuery  . $request_array[1];
+		  $value_out = '<a href="' .  $link  . '" > '. $va_key .'</a>' . ': ' . $va_value;
+		  $value_string = $va_key;
         
         $this->parameter = "default_context";
         $this->linkQuery;
@@ -46,7 +46,7 @@ class Facet {
     function check_doc_exists($docID){
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
         
         $sql = 'SELECT doc_id
                 FROM documents
@@ -76,7 +76,7 @@ class Facet {
     function update_doc($docID){
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
         
         $where = array();
         $where[] = "doc_id = '".$docID."'";
@@ -93,7 +93,7 @@ class Facet {
     function insert_doc($docID){
         $db_params = OpenContext_OCConfig::get_db_config();
         $db = new Zend_Db_Adapter_Pdo_Mysql($db_params);
-	$db->getConnection();
+		  $db->getConnection();
 
         $data = array("doc_id" => $docID,
                       "study_id" => $this->studyID,

@@ -395,6 +395,13 @@ $setsGeoJsonRoute = new Zend_Controller_Router_Route_Regex('sets/(.*)\.geojson',
 $router->addRoute('setsGeoJson', $setsGeoJsonRoute);
 
 
+// the test chrono data for visualization
+$chronoJSONRoute = new Zend_Controller_Router_Route_Regex('sets/(.*)\.chrono-json', array('controller' => 'sets', 'action' => 'chronojson'), array(1 => 'default_context_path'), 'sets/%s/');
+
+$router->addRoute('chronoJson', $chronoJSONRoute);
+
+
+
 
 
 // the Open Search service version
@@ -479,12 +486,6 @@ $router->addRoute('mapsJson', $mapJsonRoute);
 $mapTimeMapJSONRoute = new Zend_Controller_Router_Route('maps/time-map.json', array('controller' => 'maps', 'action' => 'timemapjson'));
 
 $router->addRoute('mapsTimeMapJSON', $mapTimeMapJSONRoute);
-
-
-// the test geojson map
-$testMapRoute = new Zend_Controller_Router_Route('maps/test-map', array('controller' => 'maps', 'action' => 'testMap'));
-
-$router->addRoute('testMap', $testMapRoute);
 
 
 

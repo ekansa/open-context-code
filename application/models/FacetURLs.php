@@ -14,7 +14,11 @@ class FacetURLs{
     public $timeSpanFacets; //treated somewhat differently
     public $geoTileFacets; //geo tile facets
     public $geoTileFacetURLs; //array of URLs to geo-tile facets
-    
+	 
+	 public $chronoTileFacets; //geo tile facets
+    public $chronoTileFacetURLs; //array of URLs to geo-tile facets
+    public $chronoData; //array of chronotile data in a schema for visualization
+	 
     public $doContextMetadata; //boolean, do context metadata
     public $default_context_path; //default context path
     public $original_default_context_path; //original, unprocessed default context path
@@ -183,6 +187,7 @@ class FacetURLs{
 		  $this->FacetURLs = $FacetURLs;
 		  $this->timeFacets(); //get time facets
 		  $this->geoTileFacets(); //get geo tile facets
+		  $this->chronoTileFacets(); //get chrono tile facets
     }
    
    
@@ -393,7 +398,394 @@ class FacetURLs{
     }//end function
 
 
+	 //creates chornotile facets with counts and URLs for querying
+    function chronoTileFacets(){
+	
+		  $chronoTileFacets = $this->chronoTileFacets;
+		  if(is_array($chronoTileFacets)){
+				$host = OpenContext_OCConfig::get_host_config();
+				$requestParams = $this->requestParams;
+				$chronoTileFacetURLs = array();
+				
+				$chronoObj = new ChronoPath;
+				
+				foreach($chronoTileFacets as $tileKey => $tileCount){
+					 $tileKey = (string)$tileKey;
+					 if(strlen($tileKey)>1){
+						  $chronoObj-> pathConvertBeginEnd($tileKey);
+						  $chronoArray = array("startBP" => round($chronoObj->blockStart, 0),
+													  "endBP" => round($chronoObj->blockEnd, 0),
+													  "startBCE" => 1950 - round($chronoObj->blockStart,0),
+													  "endBCE" => 1950 - round($chronoObj->blockEnd)
+													  );
+					 }
+					 else{
+						  $tileKey = "recent";
+						  $chronoArray = array("startBP" => 0,
+													  "endBP" => 0,
+													  "startBCE" => date("Y")+0,
+													  "endBCE" => 1950
+													  );
+					 }
+					 
+					 $requestParams["trange"] =  (string)$tileKey;
+					 $requestParams["trange"] = substr($requestParams["trange"],0,44); //don't go too deep
+					 $link = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "xhtml");
+					 $linkJSON_facets = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "facets_json");
+					 $linkJSON_results = $host.OpenContext_FacetOutput::generateFacetURL($requestParams, false, false, false, false, "results_json");
+					 
+					 $LinkingArray = array("name" => "Time Range ($tileKey)" ,
+									 "href" => $link,
+									 "facet_href" => $linkJSON_facets,
+									 "result_href" => $linkJSON_results,
+									 "linkQuery" => $tileKey,
+									 "param" => "trange",
+									 "count" => $tileCount,
+									 "timeBounding" => $chronoArray
+									 );
+					 
+					 unset($chronoArray);
+					 $chronoTileFacetURLs[] = $LinkingArray;
+				}//end loop
+				
+				$this->chronoTileFacetURLs = $chronoTileFacetURLs;
+		  }
+		  else{
+				$this->chronoTileFacetURLs = false;
+				$this->chronoData = false;
+		  }
+	
+    }//end function
 
+	 
+	 
+	 function makeChronoData(){
+		  
+		  if(is_array($this->chronoTileFacetURLs)){
+				$chronoTileFacetURLs = $this->chronoTileFacetURLs;
+				$preChronoData = array();
+				$totalCount = 0;
+				$minBP =  pow(10,9);
+				$maxBP = -1 * pow(10,9);
+				foreach($chronoTileFacetURLs as $chronoTile){
+					 $duration = $chronoTile["timeBounding"]["endBP"] - $chronoTile["timeBounding"]["startBP"];
+					 if($chronoTile["timeBounding"]["endBP"] > $maxBP){
+						  $maxBP = $chronoTile["timeBounding"]["endBP"];
+					 }
+					  if($chronoTile["timeBounding"]["startBP"] < $minBP){
+						  $minBP = $chronoTile["timeBounding"]["startBP"];
+					 }
+					 $totalCount +=  $chronoTile["count"];
+					 $duration = round($duration, 0);
+					 $duration = (string)$duration;
+					 $keyExists = array_key_exists($duration, $preChronoData);
+					 while($keyExists){
+						  $duration = $duration . " ";
+						  $keyExists = array_key_exists($duration, $preChronoData);
+					 }
+					 $preChronoData[$duration] = $chronoTile;
+				}
+				
+				krsort($preChronoData); //sort the data from the longest duration to the shortest.
+				
+				$numDataPoints = 100;
+				$maxDuration = $maxBP - $minBP;
+				$graphMax = pow(10, round(log10($maxBP) ,0));
+				$qMax = $graphMax * .025;
+				$tooSmall = false;
+				while($graphMax < $maxBP){
+					 $tooSmall = true;
+					 $graphMax = $graphMax + $qMax;
+				}
+				if(!$tooSmall){
+					 while(($graphMax - $qMax) > $maxBP){
+						  $graphMax = $graphMax - $qMax;
+					 }
+					 
+				}
+				
+				
+				$graphMin =  pow(10, round(log10($minBP) ,0));
+				$qMin = $graphMin * .025;
+				$tooBig = false;
+				while($graphMin > $minBP){
+					 $tooBig = true;
+					 $graphMin = $graphMin - $qMin;
+				}
+				if(!$tooBig){
+					 while(($graphMin + $qMin) < $minBP){
+						  $graphMin = $graphMin + $qMin;
+					 }
+					 
+				}
+				
+				$graphSpan = $graphMax - $graphMin;
+				$spanLen = $graphSpan / 100;
+				/*
+				//for testing
+				
+				$chronoData = array("maxBP" => $maxBP,
+										  "minBP" => $minBP,
+										  "maxDuration" => $maxDuration,
+										  "graphMax" => $graphMax,
+										  "graphMin" => $graphMin,
+										  "minLog" => pow(10, round(log10($minBP) ,0))
+										  );
+				*/
+				
+				$chronoData = array();
+				foreach($preChronoData as $chronoTile){
+					 $count = $chronoTile["count"];
+					 $duration = $chronoTile["timeBounding"]["endBP"] - $chronoTile["timeBounding"]["startBP"];
+					 $curveDuration = $duration * .2;
+					 $earlyCurveStart = $chronoTile["timeBounding"]["endBP"];
+					 $earlyCurveEnd = $chronoTile["timeBounding"]["endBP"] - $curveDuration;
+					 $lateCurveStart = $chronoTile["timeBounding"]["startBP"] + $curveDuration;
+					 $lateCurveEnd = $chronoTile["timeBounding"]["startBP"];
+					 
+					 $height = $count;
+					 if($height / $totalCount < .02){
+						  $height = round($totalCount * .02, 0);
+					 }
+					 
+					 
+					 $values = array();
+					 $data = array();
+					 $spanAdvance = $graphMax;
+					 while($spanAdvance >= $graphMin){
+						  $activeX = round(1950 - $spanAdvance, 0);
+						  $actVal = array();
+						  $actVal[] = $activeX;
+						  
+						  if($spanAdvance <= $chronoTile["timeBounding"]["endBP"] &&  $spanAdvance >= $chronoTile["timeBounding"]["startBP"]){
+								//$datum["y"] = round($height * 100, 2);
+								if($spanAdvance >= $earlyCurveEnd && $curveDuration !=0){
+									 
+									 $pFactor =  ($earlyCurveStart - $spanAdvance)/ $curveDuration;
+									 //echo "earlyCurveStart = $earlyCurveStart earlyCurveEnd = $earlyCurveEnd curveDuration = $curveDuration spanAdvance = $spanAdvance pFactor = $pFactor";
+									 //echo "<br/>";
+									 
+									 $heightfactor = sin(1.5 * $pFactor);
+									 $actVal[] = round($height * $heightfactor, 0);
+								}
+								elseif($spanAdvance <= $lateCurveStart && $curveDuration !=0){
+									 $pFactor =  1 - (($lateCurveStart - $spanAdvance)/ $curveDuration);
+									 $heightfactor = sin(1.5 * $pFactor);
+									 //echo "earlyCurveStart = $earlyCurveStart earlyCurveEnd = $earlyCurveEnd curveDuration = $curveDuration spanAdvance = $spanAdvance pFactor = $pFactor";
+ 									 //echo "lateCurveStart = $lateCurveStart lateCurveEnd = $lateCurveEnd curveDuration = $curveDuration spanAdvance = $spanAdvance pFactor = $pFactor";
+									 //echo "<br/>";
+									 $actVal[] = round($height * $heightfactor, 0);
+								}
+								else{
+									  $actVal[] = round($height, 0);
+								}
+								
+						  }
+						  else{
+								$actVal[] = 0;
+						  }
+						  
+						  $values[] = $actVal;
+						  $spanAdvance = $spanAdvance - $spanLen;
+					 }
+					 //die;
+					 $chronoData[] = array("name" => $chronoTile["timeBounding"]["endBCE"]." to ".$chronoTile["timeBounding"]["startBCE"],
+												  "key"  => $chronoTile["timeBounding"]["endBP"]." to ".$chronoTile["timeBounding"]["startBP"]." BP",
+												  "href" => $chronoTile["href"],
+												  "count" => $chronoTile["count"],
+												  
+												  
+												  "values" => $values);
+					 
+				}
+				
+				$this->chronoData = $chronoData;
+		  }
+	 }
+	 
+	
+	 
+
+	 function SuxmakeChronoData(){
+		  
+		  if(is_array($this->chronoTileFacetURLs)){
+				$chronoTileFacetURLs = $this->chronoTileFacetURLs;
+				$preChronoData = array();
+				$totalCount = 0;
+				$minBP =  pow(10,9);
+				$maxBP = -1 * pow(10,9);
+				foreach($chronoTileFacetURLs as $chronoTile){
+					 $duration = $chronoTile["timeBounding"]["endBP"] - $chronoTile["timeBounding"]["startBP"];
+					 if($chronoTile["timeBounding"]["endBP"] > $maxBP){
+						  $maxBP = $chronoTile["timeBounding"]["endBP"];
+					 }
+					  if($chronoTile["timeBounding"]["startBP"] < $minBP){
+						  $minBP = $chronoTile["timeBounding"]["startBP"];
+					 }
+					 $totalCount +=  $chronoTile["count"];
+					 $duration = round($duration, 0);
+					 $duration = (string)$duration;
+					 $keyExists = array_key_exists($duration, $preChronoData);
+					 while($keyExists){
+						  $duration = $duration . " ";
+						  $keyExists = array_key_exists($duration, $preChronoData);
+					 }
+					 $preChronoData[$duration] = $chronoTile;
+				}
+				
+				krsort($preChronoData); //sort the data from the longest duration to the shortest.
+				
+				$numDataPoints = 100;
+				$maxDuration = $maxBP - $minBP;
+				$graphMax = pow(10, round(log10($maxBP) ,0));
+				$qMax = $graphMax * .025;
+				$tooSmall = false;
+				while($graphMax < $maxBP){
+					 $tooSmall = true;
+					 $graphMax = $graphMax + $qMax;
+				}
+				if(!$tooSmall){
+					 while(($graphMax - $qMax) > $maxBP){
+						  $graphMax = $graphMax - $qMax;
+					 }
+					 
+				}
+				
+				
+				$graphMin =  pow(10, round(log10($minBP) ,0));
+				$qMin = $graphMin * .025;
+				$tooBig = false;
+				while($graphMin > $minBP){
+					 $tooBig = true;
+					 $graphMin = $graphMin - $qMin;
+				}
+				if(!$tooBig){
+					 while(($graphMin + $qMin) < $minBP){
+						  $graphMin = $graphMin + $qMin;
+					 }
+					 
+				}
+				
+				$graphSpan = $graphMax - $graphMin;
+				$spanLen = $graphSpan / 100;
+				
+				$chronoData = array();
+				foreach($preChronoData as $chronoTile){
+					 $count = $chronoTile["count"];
+					 $duration = $chronoTile["timeBounding"]["endBP"] - $chronoTile["timeBounding"]["startBP"];
+					 $durationCount = $duration / $spanLen;
+					 if(round($durationCount, 0) < $durationCount){
+						  $durationCount = round($durationCount, 0) - 1;
+					 }
+					 if($durationCount >= 3){
+						  $curveDurations = true;
+					 }
+					 else{
+						  $curveDurations = false;
+					 }
+					 $currentDurationIndex = 1;
+					 
+					 $maxHeight = $count;
+					 if($maxHeight / $totalCount < .02){
+						  $maxHeight = $totalCount * .02;
+					 }
+					 
+					 $heightsAdded = false;
+					 $heightValues = $this->makeSheights($maxHeight, $chronoTile["timeBounding"]["endBP"], $chronoTile["timeBounding"]["startBP"]);
+					 
+					 $values = array();
+					 $spanAdvance = $graphMax;
+					 while($spanAdvance >= $graphMin){
+						  $activeX = round(1950 - $spanAdvance, 0);
+						  $actZeroVal = array();
+						  $actZeroVal[] = $activeX;
+						  $actZeroVal[] = 0;
+						  if($spanAdvance <= $chronoTile["timeBounding"]["endBP"] &&  $spanAdvance >= $chronoTile["timeBounding"]["startBP"]){
+								if($curveDurations){
+									 if($currentDurationIndex == 1){
+										 $values[] = array($activeX , $maxHeight * .5);
+									 }
+									 elseif($currentDurationIndex == $durationCount){
+										 $values[] = array($activeX , $maxHeight * .5);
+									 }
+									 else{
+										  $values[] = array($activeX , $maxHeight);
+									 }
+								}
+								$currentDurationIndex ++;
+								
+								/*
+								if(!$heightsAdded){
+									 foreach($heightValues as $actVal){
+										  $values[] = $actVal;
+									 }
+									 $heightsAdded = true;
+								}
+								*/
+						  }
+						  else{
+								$values[] = $actZeroVal;
+						  }
+						  
+						  $spanAdvance = $spanAdvance - $spanLen;
+					 }
+					 
+					 
+					 $chronoData[] = array("name" => $chronoTile["timeBounding"]["endBCE"]." to ".$chronoTile["timeBounding"]["startBCE"],
+												  "key"  => $chronoTile["timeBounding"]["endBP"]." to ".$chronoTile["timeBounding"]["startBP"]." BP",
+												  "href" => $chronoTile["href"],
+												  "count" => $chronoTile["count"],
+												  "values" => $values);
+					 
+				}
+				
+				$this->chronoData = $chronoData;
+		  }
+	 }
+
+
+	 function makeSheights($maxHeight, $endBP, $startBP){
+		  
+		  $heightFactors = array(	0 => .05,
+										 1 => .15,
+										 2 => .25,
+										 3 => .5,
+										 4 => .75,
+										 5 => .85,
+										 6 => .95
+										);
+
+		  $duration = $endBP - $startBP;
+		  $durationSeg = $duration / 5;
+		  $smallDurationSeg = $durationSeg / count($heightFactors);
+
+		  
+		  $output = array();
+		  $currentX = $endBP;
+		  foreach($heightFactors as $heightFactor){
+				$activeX = round(1950 - $currentX, 0);
+				$height = round($maxHeight * $heightFactor, 0);
+				$output[] = array($activeX ,  $height);
+				$currentX = $currentX - $smallDurationSeg;
+		  }
+		  $seg = 2;
+		  while($seg <= 4){
+				$activeX = round(1950 - $currentX, 0);
+				$output[] = array($activeX,  $maxHeight);
+				$currentX = $currentX - $durationSeg;
+				$seg++;
+		  }
+		  
+		  krsort($heightFactors);
+		  foreach($heightFactors as $heightFactor){
+				$activeX = round(1950 - $currentX, 0);
+				$height = round($maxHeight * $heightFactor, 0);
+				$output[] = array($activeX ,  $height);
+				$currentX = $currentX - $smallDurationSeg;
+		  }
+		  
+		  return $output;
+	 }
 
 
 }

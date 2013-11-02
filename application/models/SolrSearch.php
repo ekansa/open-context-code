@@ -73,6 +73,8 @@ class SolrSearch{
     public $geoParam; // query parameter for geoTile
     public $geoFacets; // facets to display for geotile
    
+	 public $timePath; // path for time-range tile
+	
 	 public $doPost; //long query, needs to get POSTed
     public $param_array; //SOLR query parameter array 
     public $query; //SOLR query
@@ -83,6 +85,7 @@ class SolrSearch{
     public $lastPublished; //last published
     public $facets; //solr facet counts found in query
     public $geoTileFacets; //solr output of geotile facets
+	 public $chronoTileFacets; //solr output of chronological tiles
     public $documentsArray; //solr records found in query
     public $numFound; //total number of records found in Solr search
     public $lastPage;
@@ -108,6 +111,8 @@ class SolrSearch{
     const geoLevelDeep = 4; //how many levels in geo tiles down will we go?
 	 const maxGeoTileDepth = 20; //maximum depth / resolution of geotiles
     
+	 const timeLevelDeep = 4; //how many levels of a time path to do down?
+	 
     //initialize the search, set search document types to false
     function initialize(){
 	
@@ -137,6 +142,8 @@ class SolrSearch{
 		$this->geoFacets = false;
 		$this->geoParam = false;
 		$this->geoPath = false;
+		$this->timePath = false;
+		
 		
 		$this->reconcile = false;
 		
@@ -326,97 +333,95 @@ class SolrSearch{
     
     //geo tile facets from the request parameter
     function makeGeoFromRequestParam(){
-		$requestParams = $this->requestParams;
-		if(isset($requestParams["geotile"])){
-			$geoPath = $requestParams["geotile"];
-			if(is_numeric($geoPath)){
-				$this->makeGeoTileParameters($geoPath);
-			}
-			elseif(strlen($geoPath) == 0){
-				$this->makeGeoTileParameters($geoPath);
-			}
-		}
+		  $requestParams = $this->requestParams;
+		  if(isset($requestParams["geotile"])){
+				$geoPath = $requestParams["geotile"];
+				if(is_numeric($geoPath)){
+					$this->makeGeoTileParameters($geoPath);
+				}
+				elseif(strlen($geoPath) == 0){
+					$this->makeGeoTileParameters($geoPath);
+				}
+		  }
     }
     
     //make geo tile facet from a geopath
     function makeGeoTileParameters($geoPath){
 	
-		$okGeo = true;
-		if(strlen($geoPath)>0){
-		  $geoPathSplit = str_split($geoPath);
-		  //validate numbers, make sure they are less than or = 3
-		  foreach($geoPathSplit as $geoItem){
-			  if(is_numeric($geoItem)){
-				  if($geoItem < 0 || $geoItem > 3){
-					  $okGeo = false;
-					  $this->geoPath = false;
-				  }
-			  }
-			  else{
-				  $okGeo = false;
-				  $this->geoPath = false;
-			  }
+		  $okGeo = true;
+		  if(strlen($geoPath)>0){
+				$geoPathSplit = str_split($geoPath);
+				//validate numbers, make sure they are less than or = 3
+				foreach($geoPathSplit as $geoItem){
+					 if(is_numeric($geoItem)){
+						  if($geoItem < 0 || $geoItem > 3){
+							  $okGeo = false;
+							  $this->geoPath = false;
+						  }
+					 }
+					 else{
+						  $okGeo = false;
+						  $this->geoPath = false;
+					 }
+				}
 		  }
-		}
-		else{
-		  $this->geoPath = "";
-		}
-		
-		if($okGeo){
-		   $requestParams = $this->requestParams;
-		   
-			$this->geoPath = $geoPath;
-			$this->geoParam = "geo_path:" . $geoPath . "*";
-			$geoFacetFields = array('geo_path');
-			
-			$this->geoFacets = $geoFacetFields;
-		}//end case with valid numeric path
+		  else{
+				$this->geoPath = "";
+		  }
+		  
+		  if($okGeo){
+				$requestParams = $this->requestParams;
+				
+				$this->geoPath = $geoPath;
+				$this->geoParam = "geo_path:" . $geoPath . "*";
+				$geoFacetFields = array('geo_path');
+				
+				$this->geoFacets = $geoFacetFields;
+		  }//end case with valid numeric path
     }//end function
-    
-	 
 	 
 	 
     //create an array of document types to search in
     function makeDocumentTypeArray(){
 	
-		$typeParameter = "";
-		$DocumentTypes = array();
-		if($this->substance){
-			$DocumentTypes[] = "substance";
-		}
-		if($this->spatial){
-			$this->defaultSort = false; //sort by interest score
-			$DocumentTypes[] = "spatial";
-		}
-		if($this->image){
-			$DocumentTypes[] = "image";
-		}
-		if($this->video){
-			$DocumentTypes[] = "video";
-		}
-		if($this->person){
-			$DocumentTypes[] = "person";
-		}
-		if($this->project){
-			$DocumentTypes[] = "project";
-		}
-		if($this->document){
-			$DocumentTypes[] = "document";
-		}
-		if($this->table){
-			$DocumentTypes[] = "table";
-		}
-		if($this->site){
-			$DocumentTypes[] = "site";
-		}
-		if($this->media){
-			$DocumentTypes[] = "acrobat pdf";
-			$DocumentTypes[] = "external";
-			$DocumentTypes[] = "KML";
-			$DocumentTypes[] = "GIS";
-		}
-	
-		return $DocumentTypes;
+		  $typeParameter = "";
+		  $DocumentTypes = array();
+		  if($this->substance){
+			  $DocumentTypes[] = "substance";
+		  }
+		  if($this->spatial){
+			  $this->defaultSort = false; //sort by interest score
+			  $DocumentTypes[] = "spatial";
+		  }
+		  if($this->image){
+			  $DocumentTypes[] = "image";
+		  }
+		  if($this->video){
+			  $DocumentTypes[] = "video";
+		  }
+		  if($this->person){
+			  $DocumentTypes[] = "person";
+		  }
+		  if($this->project){
+			  $DocumentTypes[] = "project";
+		  }
+		  if($this->document){
+			  $DocumentTypes[] = "document";
+		  }
+		  if($this->table){
+			  $DocumentTypes[] = "table";
+		  }
+		  if($this->site){
+			  $DocumentTypes[] = "site";
+		  }
+		  if($this->media){
+			  $DocumentTypes[] = "acrobat pdf";
+			  $DocumentTypes[] = "external";
+			  $DocumentTypes[] = "KML";
+			  $DocumentTypes[] = "GIS";
+		  }
+	  
+		  return $DocumentTypes;
     }
     
     
@@ -536,23 +541,28 @@ class SolrSearch{
     function addFacetFields($param_array){
 	
 		  if($this->spatial && !$this->allDocs){
-				$param_array["facet.field"][] = "time_span";
+				//$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "time_path";
 				$param_array["facet.field"][] = "geo_point";
 		  }
 		  if($this->image && !$this->allDocs){
-				$param_array["facet.field"][] = "time_span";
+				//$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "time_path";
 				$param_array["facet.field"][] = "geo_point";
 		  }
 		  if($this->media && !$this->allDocs){
-				$param_array["facet.field"][] = "time_span";
+				//$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "time_path";
 				$param_array["facet.field"][] = "geo_point";
 		  }
 		  if($this->document && !$this->allDocs){
-				$param_array["facet.field"][] = "time_span";
+				//$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "time_path";
 				$param_array["facet.field"][] = "geo_point";
 		  }
 		  if($this->project && !$this->allDocs){
-				$param_array["facet.field"][] = "time_span";
+				//$param_array["facet.field"][] = "time_span";
+				$param_array["facet.field"][] = "time_path";
 				$param_array["facet.field"][] = "geo_point";
 				$param_array["facet.field"][] = "subject";
 				$param_array["facet.field"][] = "coverage";
@@ -712,6 +722,7 @@ class SolrSearch{
 		  $this->checkTaxaPeopleFacets(); //check to see if we need to get taxa and people facets
 		  $this->makeGeoFromRequestParam(); //make geo parameters, if needed	
 		  
+		  
 		  $requestParams = $this->requestParams;
 		  $slashCount = $this->slashCount;
 		  $context_depth = $this->context_depth;
@@ -779,19 +790,19 @@ class SolrSearch{
 		  
 		  
 		  if($this->reconcile){
-			  //reconcilation doesn't need many facets, remove superfluous ones
-			  $skipFacets = array("project_name", "creator", "item_class", "person_link",
-								  "contributor", "image_media_count", "other_binary_media_count",
-								  "diary_count");
-				  
-			  $fixedFacets = array();
-			  foreach($param_array["facet.field"] as $facetField){
-				  if(!in_array($facetField, $skipFacets)){
-					  $fixedFacets[] = $facetField ;
-				  }
-			  }
-			  $param_array["facet.field"] = $fixedFacets;
-			  unset($fixedFacets);
+				//reconcilation doesn't need many facets, remove superfluous ones
+				$skipFacets = array("project_name", "creator", "item_class", "person_link",
+									"contributor", "image_media_count", "other_binary_media_count",
+									"diary_count");
+					
+				$fixedFacets = array();
+				foreach($param_array["facet.field"] as $facetField){
+					if(!in_array($facetField, $skipFacets)){
+						$fixedFacets[] = $facetField ;
+					}
+				}
+				$param_array["facet.field"] = $fixedFacets;
+				unset($fixedFacets);
 		  }
   
 		  
@@ -811,12 +822,12 @@ class SolrSearch{
 		  }
 		  
 		  if($this->geoParam != false){
-			  $query = "(".$query.") && (".$this->geoParam.")";
-			  if(is_array($this->geoFacets)){
-				  foreach($this->geoFacets as $geoFacet){
-						$param_array["facet.field"][] = $geoFacet;
-				  }
-			  }
+				$query = "(".$query.") && (".$this->geoParam.")";
+				if(is_array($this->geoFacets)){
+					 foreach($this->geoFacets as $geoFacet){
+						  $param_array["facet.field"][] = $geoFacet;
+					 }
+				}
 		  }
 		  
 		  unset($param_array["bq"]);
@@ -934,6 +945,7 @@ class SolrSearch{
 					 }
 					 $this->pseudoBoost();
 					 $this->getGeoTiles();
+					 $this->getChronoTiles();
 				
 				} catch (Exception $e) {
 					 $this->solrDown = true;
@@ -1067,67 +1079,66 @@ class SolrSearch{
     function getGeoTiles(){
 		  $requestParams = $this->requestParams;
 		  
-		$solrFacets = $this->facets;
-		$geoTileFacets = array();
-		if(isset($solrFacets["facet_fields"])){
-		  
-		  $geoLevelDeep = strlen($this->geoPath) + self::geoLevelDeep;
-		  if(isset($requestParams["geodeep"]) && $this->geoPath){
-				if(is_numeric($requestParams["geodeep"])){
-					 if($requestParams["geodeep"] > 0){
-						  $geoLevelDeep = strlen($this->geoPath) + round($requestParams["geodeep"],0);
+		  $solrFacets = $this->facets;
+		  $geoTileFacets = array();
+		  if(isset($solrFacets["facet_fields"])){
+			 
+				$geoLevelDeep = strlen($this->geoPath) + self::geoLevelDeep;
+				if(isset($requestParams["geodeep"]) && $this->geoPath){
+					 if(is_numeric($requestParams["geodeep"])){
+						  if($requestParams["geodeep"] > 0){
+								$geoLevelDeep = strlen($this->geoPath) + round($requestParams["geodeep"],0);
+						  }
 					 }
 				}
-		  }
-		  if($geoLevelDeep > self::maxGeoTileDepth){
-				$geoLevelDeep = self::maxGeoTileDepth;
-		  }
-		  
-		  
-			$geoTileFacets = array();
-			foreach($solrFacets["facet_fields"] as $key => $valueArray){
-				if(stristr($key, "_geo_tile")){
-					 //if searching against facet fields, which is very memory intensive
-					if(count($valueArray)>0){
-						$geoKeyPrefix = str_replace("_geo_tile", "", $key);
-						foreach($valueArray as $tileKey => $count){
-							$geoKey = $geoKeyPrefix.$tileKey;
-							$geoTileFacets[$geoKey] = $count;
-						}
-					}
+				if($geoLevelDeep > self::maxGeoTileDepth){
+					 $geoLevelDeep = self::maxGeoTileDepth;
 				}
-				elseif($key == "geo_path"){
-					 $rawTilesCount = count($valueArray); //count of raw geo-tile facet data from solr, values of the geo_path field
-					 if($rawTilesCount>0){
-
-						  if($rawTilesCount < 2){
-								if($geoLevelDeep < self::maxGeoTileDepth - 5){
-									 $geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
-								}
-								$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tile
+			 
+				
+				$geoTileFacets = array();
+				foreach($solrFacets["facet_fields"] as $key => $valueArray){
+					 if(stristr($key, "_geo_tile")){
+						  //if searching against facet fields, which is very memory intensive
+						  if(count($valueArray)>0){
+								 $geoKeyPrefix = str_replace("_geo_tile", "", $key);
+								 foreach($valueArray as $tileKey => $count){
+									 $geoKey = $geoKeyPrefix.$tileKey;
+									 $geoTileFacets[$geoKey] = $count;
+								 }
 						  }
-						  else{
-								$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
-								$foundGeoTiles = count($geoTileFacets);
-								if($foundGeoTiles == 1){
-									 while($foundGeoTiles < 2 && $geoLevelDeep <= self::maxGeoTileDepth){
-										  //go into a deeper zoom level while there's only one tile currently in the array
-										  $geoLevelDeep = $geoLevelDeep + 1;
-										  $geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
-										  $foundGeoTiles = count($geoTileFacets);
+					 }
+					 elseif($key == "geo_path"){
+						  $rawTilesCount = count($valueArray); //count of raw geo-tile facet data from solr, values of the geo_path field
+						  if($rawTilesCount>0){
+	 
+								if($rawTilesCount < 2){
+									 if($geoLevelDeep < self::maxGeoTileDepth - 5){
+										  $geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
+									 }
+									 $geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tile
+								}
+								else{
+									 $geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
+									 $foundGeoTiles = count($geoTileFacets);
+									 if($foundGeoTiles == 1){
+										  while($foundGeoTiles < 2 && $geoLevelDeep <= self::maxGeoTileDepth){
+												//go into a deeper zoom level while there's only one tile currently in the array
+												$geoLevelDeep = $geoLevelDeep + 1;
+												$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
+												$foundGeoTiles = count($geoTileFacets);
+										  }
 									 }
 								}
 						  }
 					 }
 				}
-			}
-			
-			if(count($geoTileFacets)>0){
-				$this->geoTileFacets = $geoTileFacets;
-			}
-		}
+				 
+				if(count($geoTileFacets)>0){
+					$this->geoTileFacets = $geoTileFacets;
+				}
+		  }
     }//end funciton
-    
     
 	 //makes facet array for geotiles
 	 function makeGeoTileArray($valueArray,  $geoLevelDeep){
@@ -1136,6 +1147,9 @@ class SolrSearch{
 								
 				$actTileKey = substr($tileKey, 0, $geoLevelDeep); //get the begining of the path, so you can sum together
 				//echo $actTileKey."/r/n";
+				if(strlen($actTileKey)<1){
+					 $actTileKey = "";
+				}
 				if(!array_key_exists($actTileKey, $geoTileFacets)){
 					 $geoTileFacets[$actTileKey] = $count;
 				}
@@ -1147,6 +1161,49 @@ class SolrSearch{
 	 }
 	 
     
+	 function getChronoTiles(){
+		  $requestParams = $this->requestParams;
+		  
+		  $solrFacets = $this->facets;
+		  $chronoTileFacets = array();
+		  if(isset($solrFacets["facet_fields"])){
+			 
+				$chronoLevelDeep = strlen($this->timePath) + self::timeLevelDeep;
+				if($chronoLevelDeep<15){
+					 $chronoLevelDeep = 15;
+				}
+				foreach($solrFacets["facet_fields"] as $key => $valueArray){
+					 if($key == "time_path"){
+						  $rawTilesCount = count($valueArray); //count of raw geo-tile facet data from solr, values of the geo_path field
+						  if($rawTilesCount>0){
+	 
+								if($rawTilesCount < 2){
+									 $chronoLevelDeep = 50;
+									 $chronoTileFacets = $this->makeGeoTileArray($valueArray,  $chronoLevelDeep); //make the geo tile
+								}
+								else{
+									 $chronoTileFacets = $this->makeGeoTileArray($valueArray,   $chronoLevelDeep); //make the geo tiles
+									 $foundChronoTiles = count($chronoTileFacets);
+									 if( $foundChronoTiles  == 1){
+										  while($foundChronoTiles  < 2 && $chronoLevelDeep <= 40){
+												//go into a deeper zoom level while there's only one tile currently in the array
+												$chronoLevelDeep = $chronoLevelDeep + 1;
+												$chronoTileFacets = $this->makeGeoTileArray($valueArray,  $chronoLevelDeep ); //make the geo tiles
+												$foundChronoTiles = count($chronoTileFacets);
+										  }
+									 }
+								}
+						  }
+					 }
+				}
+				
+				if(count($chronoTileFacets)>0){
+					 $this->chronoTileFacets = $chronoTileFacets;
+				}
+		  }
+    }//end funciton
+	 
+	 
     
     function makeAltLinks(){
 	

@@ -126,6 +126,16 @@ class FacetCategory{
             $this->arrayParameter = false;
             $this->extendLastArrayParameter = false;
         }
+        /*
+        elseif ($this->facet_cat == 'time_path') {
+            $this->parameter = "tpath";
+            $this->checkParameter = "time_path";
+            $this->facet_category_label = "Date Range";
+            $this->facet_category_feed = "date range";
+            $this->arrayParameter = false;
+            $this->extendLastArrayParameter = false;
+        }
+        */
         elseif ($this->facet_cat == 'user_tag') {
             $this->parameter = "tag";
             $this->checkParameter = urlencode("tag[]");
@@ -204,13 +214,13 @@ class FacetCategory{
     function prepareFacetURL($requestParams){
 	
         $explodeDelimiter = "xxblankxx";
-	$valueBlank = $explodeDelimiter;
-        
-	$addArrayParam = false;
-        
+        $valueBlank = $explodeDelimiter;
+             
+        $addArrayParam = false;
+             
         if($this->arrayParameter){
-             $addArrayParam = true; //paramater is an array parameter
-	}
+            $addArrayParam = true; //paramater is an array parameter
+        }
         
         if($this->parameter == "prop"){
             if($this->arrayKeyParameterValue == "unset OC variable"){

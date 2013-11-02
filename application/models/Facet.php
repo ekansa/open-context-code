@@ -58,11 +58,11 @@ class Facet {
         $value_string = mb_convert_encoding($this->value_string, "UTF-8");
         $va_value = $this->va_value;
         
-	$fac_val_node = $facetXHTML->createElement("li");
-		
-	if($linkStyle != false){
-	    $fac_val_node->setAttribute("style", $linkStyle);
-	}
+		  $fac_val_node = $facetXHTML->createElement("li");
+			  
+		  if($linkStyle != false){
+				$fac_val_node->setAttribute("style", $linkStyle);
+		  }
         
         if($linkClass != false){
             $fac_val_node->setAttribute("class", $linkClass);
@@ -71,8 +71,8 @@ class Facet {
             $fac_val_node->setAttribute("class", "facetListItem");
         }
         
-	$facetID = substr(sha1($checkParameter.$linkQuery),0,10);
-	$fac_val_node->setAttribute("id", "f_".$facetID);
+		  $facetID = substr(sha1($checkParameter.$linkQuery),0,10);
+		  $fac_val_node->setAttribute("id", "f_".$facetID);
 	
         if($advanced){
             $fac_input = $facetXHTML->createElement("input");
@@ -84,29 +84,29 @@ class Facet {
             $fac_val_node->appendChild($fac_input);
         }	
                 
-	$fac_val_link = $facetXHTML->createElement("a");
-	$fac_val_link->setAttribute("href", $link);
-	$fac_val_link->setAttribute("class", "facet_value");
-		
-	if(!$linkID){
-	    $linkID = "l_".$facetID;	
-	}
-			
-	$fac_val_link->setAttribute("id", $linkID);
-	    
-	$facet_val_node_link_val = $facetXHTML->createTextNode($value_string."");
-        $fac_val_link->appendChild($facet_val_node_link_val);
-	$fac_val_node->appendChild($fac_val_link);
-	$fac_val_fcount_style = $facetXHTML->createElement("span");
-        $fac_val_fcount_style->setAttribute("id", "fc_".$facetID);
-	$fac_val_fcount_style->setAttribute("class", "facet_count");
-	$fac_val_fcount_style_val = $facetXHTML->createTextNode($va_value);
-	$fac_val_fcount_style->appendChild($fac_val_fcount_style_val);
-	//$fac_val_link->appendChild($fac_val_fcount_style);
-        $fac_val_node->appendChild($fac_val_fcount_style);
-	$fac_val_node->setAttribute("title", $facet_category_label."- ".$value_string);
-		
-	return $fac_val_node;
+		  $fac_val_link = $facetXHTML->createElement("a");
+		  $fac_val_link->setAttribute("href", $link);
+		  $fac_val_link->setAttribute("class", "facet_value");
+			  
+		  if(!$linkID){
+				$linkID = "l_".$facetID;	
+		  }
+				  
+		  $fac_val_link->setAttribute("id", $linkID);
+				
+		  $facet_val_node_link_val = $facetXHTML->createTextNode($value_string."");
+		  $fac_val_link->appendChild($facet_val_node_link_val);
+		  $fac_val_node->appendChild($fac_val_link);
+		  $fac_val_fcount_style = $facetXHTML->createElement("span");
+		  $fac_val_fcount_style->setAttribute("id", "fc_".$facetID);
+		  $fac_val_fcount_style->setAttribute("class", "facet_count");
+		  $fac_val_fcount_style_val = $facetXHTML->createTextNode($va_value);
+		  $fac_val_fcount_style->appendChild($fac_val_fcount_style_val);
+		  //$fac_val_link->appendChild($fac_val_fcount_style);
+		  $fac_val_node->appendChild($fac_val_fcount_style);
+		  $fac_val_node->setAttribute("title", $facet_category_label."- ".$value_string);
+			  
+		  return $fac_val_node;
     }
     
     

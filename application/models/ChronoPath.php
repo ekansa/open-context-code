@@ -4,7 +4,8 @@
 //this class calculates a chronology path for making time-span facets
 class ChronoPath {
     
-    const defaultMaximumDateBP = 5000000000; //5 Billion Year Ago
+    //const defaultMaximumDateBP = 5000000000; //5 Billion Year Ago
+	 const defaultMaximumDateBP = 10000000; //10 million years ago
 	 const maxPathDepth = 30;
 	 const minumumIntervalSpan = 1; //smallest size of a time interval that we care about
 	 
@@ -15,11 +16,33 @@ class ChronoPath {
 	 public $blockMiddle;
 	 public $pathMaximiumBP;
 	 
+	 //create a path from BCE dates, first by converting into BP dates
+	 function createPathBCEdates($lateDateBCE, $earlyDateBCE, $path = ""){
+		  if($lateDateBCE > 1950 ){
+				return false;
+		  }
+		  else{
+				if($earlyDateBCE > 1950){
+					 $earlyDateBCE = 1950;
+				}
+		  }
+		  
+		  $lateDateBP = 1950 - $lateDateBCE;
+		  $earlyDateBP = 1950 - $earlyDateBCE;
+		  if($earlyDateBP < $lateDateBP){
+				$temp = $earlyDateBP;
+				$earlyDateBP = $lateDateBP;
+				$lateDateBP = $temp;
+		  }
+		 
+		  return $this->createPath($lateDateBP, $earlyDateBP, $path);
+	 }
+	 
 	 //Creates a chronology path as a string of numbers between 0-3, representing time spans for start and end dates BP
 	 //you can pass a path prefix like "10M-" to the $path to set the maxium BP for the current chronogy path
-	 function createPath($startDateBP, $endDateBP, $path = ""){
+	 function createPath($lateDateBP, $earlyDateBP, $path = ""){
 		  
-		  if($startDateBP > $endDateBP){
+		  if($lateDateBP > $earlyDateBP){
 				return false; //start date can't be the same as the end date
 		  }
 		  else{
@@ -28,27 +51,27 @@ class ChronoPath {
 				if($levelIntervalSpan > self::minumumIntervalSpan){
 					 $halfSpan = $levelIntervalSpan/2;
 					 
-					 if($endDateBP > $this->pathMaximiumBP){
+					 if($earlyDateBP > $this->pathMaximiumBP){
 						  //you've got a data range that doesn't fit into the current Maxiumum BP for this path
 						  return false;
 					 }
 					 
-					 if($startDateBP < $this->blockStart + $halfSpan){
+					 if($lateDateBP < $this->blockStart + $halfSpan){
 						  $Npath = "0";
-						  if($endDateBP >= $this->blockEnd - $halfSpan ){
+						  if($earlyDateBP >= $this->blockEnd - $halfSpan ){
 								$Npath = "1";
 						  }
 					 }
 					 else{
 						  $Npath = "2";
-						  if($endDateBP >= $this->blockEnd - $halfSpan ){
+						  if($earlyDateBP >= $this->blockEnd - $halfSpan ){
 								$Npath = "3";
 						  }
 					 }
 					 $path .= $Npath;
 					 
 					 if($this->getPathLevel($path) <= self::maxPathDepth){
-						  $path = $this->createPath($startDateBP, $endDateBP, $path);
+						  $path = $this->createPath($lateDateBP, $earlyDateBP, $path);
 					 }
 				}
 				return $path;

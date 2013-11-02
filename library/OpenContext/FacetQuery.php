@@ -139,132 +139,143 @@ class OpenContext_FacetQuery {
 
 	public static function build_simple_parameters($requestParams, $docType){
                 
-                // start building the array of query parameters to send to solr
-                $param_array = array();
-               
-                $param_array["facet"] = "true";
-                $param_array["facet.mincount"] = "1";
-                $param_array["fq"] = null; // initialize the fq paramter; otherwise we could get "Undefined index: fq" errors
-                $param_array["facet.field"] = null;
-        
-        
-                // get the project parameter
-                $proj = OpenContext_FacetQuery::test_param_key("proj", $requestParams);
-                if ($proj) {
-						$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_name", $proj, false, true, true, true);
-					}
-        
-                // get the category parameter. (note: "cat" maps to "item_class" in our solr schema)
-                $cat = OpenContext_FacetQuery::test_param_key("cat", $requestParams);
-                if ($cat) {
-                    if ($param_array["fq"]) {
-						$param_array["fq"] .= OpenContext_FacetQuery::ORparser("item_class", $cat, true, true, true, false);
-                    } else {
-                        $param_array["fq"] = OpenContext_FacetQuery::ORparser("item_class", $cat, false, true, true, false);
-                    }
-                    
-                }
+		// start building the array of query parameters to send to solr
+		$param_array = array();
+	  
+		$param_array["facet"] = "true";
+		$param_array["facet.mincount"] = "1";
+		$param_array["fq"] = null; // initialize the fq paramter; otherwise we could get "Undefined index: fq" errors
+		$param_array["facet.field"] = null;
+
+
+		// get the project parameter
+		$proj = OpenContext_FacetQuery::test_param_key("proj", $requestParams);
+		if ($proj) {
+			$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_name", $proj, false, true, true, true);
+		}
+
+		// get the category parameter. (note: "cat" maps to "item_class" in our solr schema)
+		$cat = OpenContext_FacetQuery::test_param_key("cat", $requestParams);
+		if ($cat) {
+			if ($param_array["fq"]) {
+				$param_array["fq"] .= OpenContext_FacetQuery::ORparser("item_class", $cat, true, true, true, false);
+			} else {
+				$param_array["fq"] = OpenContext_FacetQuery::ORparser("item_class", $cat, false, true, true, false);
+			}
+		}
         
 		// get the dublin core creator parameter. 
-                $creator = OpenContext_FacetQuery::test_param_key("creator", $requestParams);
-                if ($creator) {
-                    if ($param_array["fq"]) {
-								$param_array["fq"] .= OpenContext_FacetQuery::ORparser("creator", $creator, true, true, true, false);
-                    } else {
-                        $param_array["fq"] = OpenContext_FacetQuery::ORparser("creator", $creator, false, true, true, false);
-                    }
-                    
-                }
+		$creator = OpenContext_FacetQuery::test_param_key("creator", $requestParams);
+		if ($creator) {
+			if ($param_array["fq"]) {
+				$param_array["fq"] .= OpenContext_FacetQuery::ORparser("creator", $creator, true, true, true, false);
+			} else {
+				$param_array["fq"] = OpenContext_FacetQuery::ORparser("creator", $creator, false, true, true, false);
+			}
+		}
 		
 		// get the projectID parameter. 
-                $projID = OpenContext_FacetQuery::test_param_key("projID", $requestParams);
-                if ( $projID) {
-                    if ($param_array["fq"]) {
-								$param_array["fq"] .= OpenContext_FacetQuery::ORparser("project_id", $projID, true, true, true, false);
-                    } else {
-                        $param_array["fq"] = OpenContext_FacetQuery::ORparser("project_id", $projID, false, true, true, false);
-                    }
-                    
-                }			 
+		$projID = OpenContext_FacetQuery::test_param_key("projID", $requestParams);
+		if ( $projID) {
+			if ($param_array["fq"]) {
+				$param_array["fq"] .= OpenContext_FacetQuery::ORparser("project_id", $projID, true, true, true, false);
+			} else {
+				$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_id", $projID, false, true, true, false);
+			}
+			 
+		}			 
 					 
 		
 		// get the dublin core contributor parameter. 
-                $contrib = OpenContext_FacetQuery::test_param_key("contrib", $requestParams);
-                if ($contrib) {
-                    if ($param_array["fq"]) {
-								$param_array["fq"] .= OpenContext_FacetQuery::ORparser("contributor", $contrib, true, true, true, false);
-                    } else {
-                        $param_array["fq"] = OpenContext_FacetQuery::ORparser("contributor", $contrib, false, true, true, false);
-                    }
-                    
-                }
+		$contrib = OpenContext_FacetQuery::test_param_key("contrib", $requestParams);
+		if ($contrib) {
+			if ($param_array["fq"]) {
+				$param_array["fq"] .= OpenContext_FacetQuery::ORparser("contributor", $contrib, true, true, true, false);
+			} else {
+				$param_array["fq"] = OpenContext_FacetQuery::ORparser("contributor", $contrib, false, true, true, false);
+			}
+		}
         
-                // get the full_text parameter
-                $textSearch = OpenContext_FacetQuery::test_param_key("q", $requestParams);
-                if ($textSearch) {
-                    //$textSearch = OpenContext_FacetQuery::solrEscape($textSearch);
-                    //$textQuery = "full_text:".$textSearch;
-                    $textQuery = OpenContext_FacetQuery::solr_fulltext_terms($textSearch, "full_text");
-                    if ($param_array["fq"]) {
-                        //$param_array["fq"] .= " && full_text:" . $textSearch;
-                        $param_array["fq"] .= " && ".$textQuery;
-                    } else {
-                        //$param_array["fq"] = "full_text:" . $textSearch;
-                        $param_array["fq"] = $textQuery;
-                    }
-                /* Note: solr syntaxt for multiple query terms is ?q=full_text:taxon+full_text:ovis
-                  q=full_text:"Distal diaphysis fragment"+full_text:Metapodial
-                */
-                
-                }
+		// get the full_text parameter
+		$textSearch = OpenContext_FacetQuery::test_param_key("q", $requestParams);
+		if ($textSearch) {
+			 //$textSearch = OpenContext_FacetQuery::solrEscape($textSearch);
+			 //$textQuery = "full_text:".$textSearch;
+			 $textQuery = OpenContext_FacetQuery::solr_fulltext_terms($textSearch, "full_text");
+			 if ($param_array["fq"]) {
+				  //$param_array["fq"] .= " && full_text:" . $textSearch;
+				  $param_array["fq"] .= " && ".$textQuery;
+			 } else {
+				  //$param_array["fq"] = "full_text:" . $textSearch;
+				  $param_array["fq"] = $textQuery;
+			 }
+		/* Note: solr syntaxt for multiple query terms is ?q=full_text:taxon+full_text:ovis
+		  q=full_text:"Distal diaphysis fragment"+full_text:Metapodial
+		*/
+		
+		}
 					 
-					 
+		// "tagger" maps to "tag_creator_name" in our solr schema
+      $tagger = OpenContext_FacetQuery::test_param_key("tagger", $requestParams);
+      if ($tagger) {
+         if ($param_array["fq"]) {
+				$param_array["fq"] .= OpenContext_FacetQuery::ORparser("tag_creator_name", $tagger, true, true, true, false);
+         } else {
+            $param_array["fq"] = OpenContext_FacetQuery::ORparser("tag_creator_name", $tagger, false, true, true, false);
+         }
+      }
         
-                // "tagger" maps to "tag_creator_name" in our solr schema
-                $tagger = OpenContext_FacetQuery::test_param_key("tagger", $requestParams);
-                if ($tagger) {
-                    if ($param_array["fq"]) {
-			$param_array["fq"] .= OpenContext_FacetQuery::ORparser("tag_creator_name", $tagger, true, true, true, false);
-                    } else {
-                        $param_array["fq"] = OpenContext_FacetQuery::ORparser("tag_creator_name", $tagger, false, true, true, false);
-                    }
-                }
+      $image = OpenContext_FacetQuery::test_param_key("image", $requestParams);
+      if ($image == 'true') {
+         if ($param_array["fq"]) {
+               $param_array["fq"] .= " && image_media_count:[1 TO *]";
+         } else {
+            $param_array["fq"] = "image_media_count:[1 TO *]";
+         }
+      }
         
-                $image = OpenContext_FacetQuery::test_param_key("image", $requestParams);
-                if ($image == 'true') {
-                        
-                    if ($param_array["fq"]) {
-                        $param_array["fq"] .= " && image_media_count:[1 TO *]";
-                    } else {
-                        $param_array["fq"] = "image_media_count:[1 TO *]";
-                    }
-                }
+		// other binary media
+      $other = OpenContext_FacetQuery::test_param_key("other", $requestParams);
+		if ($other == 'true') {
+         if ($param_array["fq"]) {
+            $param_array["fq"] .= " && other_binary_media_count:[1 TO *]";
+         } else {
+            $param_array["fq"] = "other_binary_media_count:[1 TO *]";
+         }
+      }
         
-                // other binary media
-                $other = OpenContext_FacetQuery::test_param_key("other", $requestParams);
-                 if ($other == 'true') {
-                     
-                     if ($param_array["fq"]) {
-                         $param_array["fq"] .= " && other_binary_media_count:[1 TO *]";
-                     } else {
-                         $param_array["fq"] = "other_binary_media_count:[1 TO *]";
-                     }
-                 }
+      // diary items
+      $diary = OpenContext_FacetQuery::test_param_key("diary", $requestParams);
+      if ($diary == 'true') {
+         if ($param_array["fq"]) {
+            $param_array["fq"] .= " && diary_count:[1 TO *]";
+         } else {
+            $param_array["fq"] = "diary_count:[1 TO *]";
+         }
+      }
+		
+		
+		// time-tiles
+      $timetile = OpenContext_FacetQuery::test_param_key("trange", $requestParams);
+      if ($timetile) {
+			if(stristr($timetile, "recent")){
+				$timetile = "*";
+			}
+			else{
+				$timetile .= "*";
+			}
+         if ($param_array["fq"]) {
+            $param_array["fq"] .= " && time_path:".$timetile;
+         } else {
+            $param_array["fq"] = "time_path:".$timetile;
+         }
+      }
+		
+		
         
-                // diary items
-                $diary = OpenContext_FacetQuery::test_param_key("diary", $requestParams);
-                if ($diary == 'true') {
-                    
-                    if ($param_array["fq"]) {
-                        $param_array["fq"] .= " && diary_count:[1 TO *]";
-                    } else {
-                        $param_array["fq"] = "diary_count:[1 TO *]";
-                    }
-                }
-        
-                // person links
-                $person = OpenContext_FacetQuery::test_param_key("person", $requestParams);
-                if ($person) {
+      // person links
+      $person = OpenContext_FacetQuery::test_param_key("person", $requestParams);
+      if ($person) {
                     // handle non-ascii characters - encode enities as UTF8: &#199; becomes Ç
                     //echo $person;
 		    /*
@@ -279,7 +290,7 @@ class OpenContext_FacetQuery {
                     }
 		   */
 		    
-		    $personQuery = OpenContext_FacetQuery::ORparser("person_link", $person, false, true, true, false);
+		   $personQuery = OpenContext_FacetQuery::ORparser("person_link", $person, false, true, true, false);
 			$person_bad = substr_count($personQuery, "O\\\\\'");
                     
                     if($person_bad>0){

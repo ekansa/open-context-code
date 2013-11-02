@@ -34,7 +34,7 @@ $concept = $OWL->concept;
 		  <script src="https://www.google.com/jsapi?key=<?php echo $GoogleAPIkey; ?>" type="text/javascript"></script>
     
 		  <link rel="alternate" href="<?php echo $OWL->vocabCommits; ?>" type="application/atom+xml" />
-		  <link rel="alternate" href="<?php echo $OWL->vocabURI.".owl"; ?>" type="application/rdf+xml" />
+		  <link rel="alternate" href="<?php echo $OWL->vocabURI.".owl"; ?>" type="application/owl+xml" />
 		  <link rel="alternate" href="<?php echo $OWL->vocabURI.".json"; ?>" type="application/json" />
 
 		  <?php echo $this->render('vocab-update-widget-js.phtml'); //render javascript for displaying news feeds ?>

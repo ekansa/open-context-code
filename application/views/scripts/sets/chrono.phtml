@@ -1,0 +1,873 @@
+<?php
+
+function URIescape($uri){
+    return str_replace("&", "&amp;", $uri);
+}
+
+
+$host = OpenContext_OCConfig::get_host_config();
+
+define ('HOST', $host);
+
+$auth = Zend_Auth::getInstance();
+if (!$auth->hasIdentity()){
+    $displayName = false;
+}
+else{
+    $identity = $auth->getIdentity();
+    $displayName = $identity->name;
+}
+
+
+$requestURI = $this->requestURI;
+$request_array = explode('?', $requestURI, 2);
+//array explode  ( string $delimiter  , string $string  [, int $limit  ] )
+
+if (substr_compare($request_array[0], '/' , -1)) {  // if the uri doesn't end in a slash (minus query parameters), 
+    $request_array[0] = $request_array[0] . '/';  // add one
+}
+
+
+if (isset($request_array[1])) { // if there are query parameters,
+    $request_array[1] = "?" . $request_array[1];  // prepend a '?' to the set of parameters since we exploded on the '?' to get this string.
+    //echo $request_array[1]; // for testing
+} else {
+    $request_array[1] = null;
+}
+
+
+
+
+$requestParams = $this->requestParams;
+if(!isset($requestParams["q"])){
+    
+    $checkParam = $requestParams;
+    unset($checkParam["page"]);
+    unset($checkParam["recs"]);
+    unset($checkParam["sort"]);
+    
+    if(count($checkParam)>3){
+        $searchMessage = "Search this set of data";
+    }
+    else{
+        $searchMessage = "Search all analytic data";
+    }
+    
+    $full_link = $host.$requestURI;
+    $full_link  = str_replace("&", "&amp;", $full_link );
+    $full_link  = str_replace("&amp;amp;", "&amp;", $full_link );
+
+    $fulltext = '';
+    $fulltext .= '<input id="act_uri" type="hidden" value="'.$full_link.'" />';
+    $fulltext .= '<span style="text-align:left; margin-left:2%; font-size:.75em;" >';
+    $fulltext .= 'Or, type a search term in the box';
+    $fulltext .= '</span><br/>';
+    $fulltext .= '<div id="b_search_tab">
+                    <div id="b_search_row" class="b_search">
+                        <div id="b_search_cell_in" >
+                                <input name="q" class="bb" type="text" id="q_string" value="Search here..."
+                                onfocus="if(this.value==\'Search here...\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'Search here...\';"
+                                />
+                        </div>
+                        <div id="b_search_cell_button">
+                                <button class="bb" type="submit" onclick="textSearch();">Search</button>
+                        </div>
+                    </div>
+                </div>
+    ';
+    
+}
+else{
+    $fulltext = "";
+}
+
+
+
+$numFound = $this->numFound;
+$facets = $this->facets;
+$docs = $this->docs;
+
+if(!isset($requestParams["rel"])){
+    $link_filter_message = "<p>Some data in Open Context uses shared terminology systems published by experts in various fields:</p>";
+    $link_filter_message .= "<ul>".chr(13);
+    
+    $eolLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "eol", "root", false);
+    $eolTaxaLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "rel", "http://purl.org/NET/biol/ns#term_hasTaxonomy", true);
+    $pleiadesLink = OpenContext_FacetOutput::generateFacetURL($requestParams, "rel", "http://gawd.atlantides.org/terms/origin", true);
+    
+    $link_filter_message .= "<li><a href='$eolLink'>Browse Items</a> with <strong>biological taxa</strong> (from <a href='http://wwww.eol.org'>Encyclopedia of Life</a>)</li>".chr(13);
+    $link_filter_message .= "<li><a href='$pleiadesLink'>Browse Items</a> linked to <strong>ancient places</strong> (from <a href='http://pleiades.stoa.org'>Pleaides</a>)</li>".chr(13);
+    $link_filter_message .= "<li><a href='../about/concepts#linked-data'><em>More about Linked Data in Open Context</em></a></li>".chr(13);
+    $link_filter_message .= "</ul>".chr(13);
+}
+else{
+    $link_filter_message = "<p><a href='../about/concepts#linked-data'><em>More about Linked Data in Open Context</em></a></p>".chr(13);
+}
+
+$filter_output = OpenContext_FacetOutput::make_filters_html($requestParams, $host);
+
+
+$facet_fields = $facets["facet_fields"];
+$facet_queries = $facets["facet_queries"];
+$extendedFacets = true; //show more available facets 
+
+
+//do advanced search interface
+if(substr_count($requestURI, "advanced=true")>0){
+    $advanced = true;
+}
+else{
+    $advanced = false;
+}
+
+if($numFound>0){
+    $facet_output = OpenContext_FacetOutput::facets_available($extendedFacets, $facet_fields, $facet_queries, $requestParams, $request_array, $host, $advanced);
+}
+else{
+    $facet_output = "(No results to this cquery, please try other search options)";
+}
+
+
+
+$googleURI = "";
+$facetAtomURI = "";
+$openSearchURI = "";
+
+//get the link for geojson data
+$geoParams = $requestParams;
+unset($geoParams["page"]);
+unset($geoParams["sort"]);
+unset($geoParams["recs"]);
+$geoJSONuri = OpenContext_FacetOutput::generateFacetURL($geoParams, false, false, false, false, "facets_geojson");
+
+$satelliteView = 0;
+if(isset($geoParams["geotile"])){
+    $tileLen = strlen($geoParams["geotile"]);
+	 if($tileLen == 0){
+		  $geoJSONuri .= "&geotile=";
+	 }
+    elseif($tileLen >= 14){
+        $satelliteView = true;
+    }
+}
+if(isset($requestParams["default_context_path"])){
+    if(substr_count($requestParams["default_context_path"], "/") > 1){
+        $satelliteView = true;
+    }
+}
+
+
+//get the link for comparative / proportional data
+$PropotionObj = new ProportionalData;
+$PropotionObj->requestParams = $requestParams;
+$PropotionLinkURL = $PropotionObj->proportionalVisLink();
+$PropotionLinkText = $PropotionObj->linkPropOf;
+$nominatorCurrentVal = $PropotionObj->nominatorCurrentVal;
+?>
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title><?php echo 'Open Context Browse: ('.$numFound.' Items Showing)'; ?></title>
+        <link rel="shortcut icon" href="../images/layout/oc-favicon.ico" type="image/x-icon" />
+        <link href="<?php echo $host; ?>/css/oc-layout-rev2.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $host; ?>/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $host; ?>/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" /> 
+        <link href="<?php echo $host; ?>/css/opencontext-browse-rev2.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $host; ?>/css/atomresults.css" rel="stylesheet" type="text/css" />
+        
+		  <script src="<?php echo $host; ?>/components/js/browse" type="text/javascript"></script>
+		  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		  <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+		  <!-- <script src="http://moonlite.github.io/Leaflet.MultiTileLayer/scripts/lib/Leaflet.MultiTileLayer/src/L.TileLayer.Multi.js"></script> -->
+        <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+        <script src="<?php echo $host; ?>/js/map-browse/GoogleLayers.js" type="text/javascript"></script>
+		  <script src="<?php echo $host; ?>/js/map-browse/OC-map.js" type="text/javascript"></script>
+        
+        <script src="http://nvd3.org/lib/d3.v2.js"></script>
+        <script src="http://nvd3.org/nv.d3.js"></script>
+        <script src="http://nvd3.org/lib/fisheye.js"></script>
+        <link rel="stylesheet" href="http://nvd3.org/src/nv.d3.css">
+        
+		  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+		  <link rel="geotiles" href="<?php echo $geoJSONuri; ?>"/>
+		  <style type="text/css" >
+            .info {
+               padding: 6px 8px;
+               font: 14px/16px Arial, Helvetica, sans-serif;
+               background: white;
+               background: rgba(255,255,255,0.8);
+               box-shadow: 0 0 15px rgba(0,0,0,0.2);
+               border-radius: 5px;
+            }
+            .info h4 {
+               margin: 0 0 5px;
+               color: #777;
+            }
+            #chart svg {
+                height: 300px;
+            }
+        </style>
+        
+        
+		  <script type="text/javascript">
+        <!--
+            
+				
+				<?php
+        
+        echo "var baseURI = '".$host.$requestURI."'; \n";
+        echo "var contextBase = '".$host.$request_array[0]."'; \n";
+        echo "var paramterBase = '".$request_array[1]."'; \n";
+        echo "var numItems = ".count($this->spaceResults)."; \n";
+        
+        echo chr(13).chr(13);
+        
+        $activeTaxaValue = OpenContext_FacetOutput::active_taxon_value($requestParams); //for local taxonomies
+        echo "var activeTaxaValue = '".$activeTaxaValue."'; \n";
+        
+        echo chr(13);
+        $activeRelationValue = OpenContext_FacetOutput::active_taxon_value($requestParams, false); //for linked data relations
+        echo "var activeRelationValue = '".$activeRelationValue."'; \n";
+        
+        ?>
+				
+				
+     window.onload = function(){
+        ConvertRowsToLinks("item_list_tab");
+        //AddRowLinks();
+      }
+      
+      function ConvertRowsToLinks(xTableId){
+            convertRows(xTableId, "item_row");
+            convertRows(xTableId, "item_row_shade");
+      }
+
+
+      function convertRows(xTableId, rowClass){
+        var rows = document.getElementById(xTableId).getElementsByClassName(rowClass);
+        for(i=0; i < rows.length; i++){
+          var link = rows[i].getElementsByTagName("a")
+          if(link.length >= 1){
+            rows[i].onclick = new Function("document.location.href='" + link[0].href + "'");
+            rows[i].onmouseover = new Function("this.style.cursor = 'pointer'");
+            rows[i].onmouseout = new Function("this.style.cursor = 'default'");
+          }
+        }
+      }
+      
+      
+      
+      function openList(listId){
+            var displayControl = listId + "control";
+            var displayStatus = document.getElementById(listId).style.display;
+            if( displayStatus == "none"){
+                document.getElementById(listId).style.display = "";
+                document.getElementById(displayControl).innerHTML = "<em>(Hide list below)</em>";
+            }
+            else{
+                document.getElementById(listId).style.display = "none";
+                document.getElementById(displayControl).innerHTML = "More...";
+            }
+      
+      }
+
+      -->
+        </script>
+	  
+      
+  </head>
+
+  <body >
+        
+        <!-- 
+            Logo,
+        -->    
+        <?php echo $this->render('header.phtml'); //reader document top ?>
+           
+        <!-- 
+            Navigation tabs, search box
+        -->
+        <?php echo $this->render('main-navigation.phtml'); //render main navigation area ?>
+        
+        
+       <!--
+BEGIN Container for main page content
+--> 
+    <div id="main_map"> 
+        <!--Begin code for showing available facets-->
+        <div id="main_content">
+            <div id="main_row">
+                <div id="left_cont">
+                    <div id="filter_options">
+                        <h3>Browse and Filter</h3>
+                        <p>Click on one of the links below to further limit your view of <em>analytic data</em> in Open Context.</p>
+                        <div id="search_sort_block">
+                        <?php echo  $fulltext; ?>
+                        
+                        <!-- facet sorting options -->
+                        <?php
+                        
+                        $SortOptionsObj = New SortOptions;
+                        $SortOptionsObj->requestParams = $requestParams;
+                        echo $SortOptionsObj->makeFacetSortLinks();
+                        
+                        ?>
+                        </div>
+                    </div>
+                    <div id="all_facets">
+                            <?php echo $facet_output; ?>
+                        <br/>
+                            <?php
+                            
+                            $pelagios = New PelagiosV2;
+                            $pelagios->initialize($requestParams);
+                            $pelagios->getRelated();
+                            $pelagios->displayPelagiosData();
+                            
+                            echo $pelagios->HTMLoutput;
+                            
+                            ?>
+                        <br/>
+                        <p>View in <a href="<?php echo URIescape($this->facetURI_KML); ?>">GoogleEarth</a></p>
+                        <p>Get in <a href="<?php echo URIescape($this->facetURI_Atom); ?>">Atom</a></p>
+                        <br/>
+                            <?php echo $link_filter_message; ?>
+                    </div>
+                </div>
+                <div id="right_cont_map">   
+                    <div id="selected_filters" >
+                        <p>Open Context currently has <strong><?php echo $numFound; ?></strong> items, filtered by the following criteria:</p>
+                        <div>
+                            <?php echo $filter_output; ?>
+                        </div>
+                        
+                        <div style="text-align:right;">
+                        <?php
+                        
+                        $tableMax = OpenContext_OCConfig::get_maxExport();
+                        if($numFound <= $tableMax && $displayName != false){
+                            echo "<br/>";
+                            echo '<p class="tinyText">'.$displayName.', <a href="'.$host.'/createtab/export-table?setURI='.urlencode($host.$requestURI).'">click here</a> to export these search results to a table.</p>';
+                           
+                           /*
+                            echo '<form action="'.$host.'/createtab/export-table" method="post">
+                                    <input type="hidden" value="'.$host.$requestURI.'" name="setURI" />
+                                    <input type="submit" value="Export to table" />
+                                    </form>';
+                           */
+                        }
+                        elseif($numFound > 0 && $numFound > $tableMax && $displayName != false){
+                            echo "<br/>";
+                            //echo '<p class="tinyText">'.$displayName.', please filter your selection to '.$tableMax.' items or less in order to export data to a table.</p>';
+                        }
+                        elseif($numFound > 0 && $numFound <= $tableMax && !$displayName){
+                            echo "<br/>";
+                            //echo '<p class="tinyText">Please <a href="'.$host.'/auth/" title="User Account Options">login</a> to export this custom selection of data to a table.</p>';
+                        }
+                        
+                        ?>
+                        </div>
+                        <?php
+                        
+                    if($numFound >0){
+                        if($this->lastUpdate != false){
+                        ?>
+                        <p class="tinyText" style="text-align:right;">Last Updated: <em><?php echo date("F j, Y, g:i a", strtotime($this->lastUpdate)); ?></em></p>
+                        <?php
+                        }//end case with an updated time
+                        ?>
+                        <p class="tinyText" style="text-align:right;">
+                            <?php
+                            echo '<a href="http://maps.google.com/?q='.urlencode($this->facetURI_KML).'">View a map summary</a>';
+                            ?>
+                        </p>
+                    <?php
+                    }//end case of search results above zero ?>
+                    </div>
+                    
+                    
+                    <div style="width: 75%; padding:2%; " id="chart_container">
+                        <div id="chart">
+                        <svg></svg>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div id="item_list_outer">
+                        
+                        <div id="paging_outer">
+                            <div id="paging_tab">
+                                <div id="paging_row">
+                                    <div class="paging_cell">
+                                        <?php
+                                        
+                                        if($this->firstPage_XHTML && $this->firstPage_XHTML != $this->currentXHTML){
+                                            $linkClass = "pager_active";
+                                            $pageLink = "<a href=\"".$this->firstPage_XHTML."\" class=\"btn btn-small btn-primary\" title=\"Go to the first page of results\" >|&larr;</a>";
+                                        }
+                                        else{
+                                            $linkClass = "pager_inactive";
+                                            $pageLink = "|&larr;";
+                                            $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">|&larr;</a>";
+                                        }
+                                        
+                                        ?>
+                                        <div class="<?php echo $linkClass; ?>" >
+                                            <?php echo $pageLink; ?>
+                                        </div>
+                                    </div>
+                                    <div class="paging_cell">
+                                        <?php
+                                        
+                                        if($this->prevPage_XHTML){
+                                            $linkClass = "pager_active";
+                                            $pageLink = "<a href=\"".$this->prevPage_XHTML."\" class=\"btn btn-small btn-primary\" title=\"Go to the previous page of results\" >&larr;</a>";
+                                        }
+                                        else{
+                                            $linkClass = "pager_inactive";
+                                            $pageLink = "&larr;";
+                                            $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">&larr;</a>";
+                                        }
+                                        
+                                        ?>
+                                        <div class="<?php echo $linkClass; ?>" >
+                                            <?php echo $pageLink; ?>
+                                        </div>
+                                    </div>
+                                    <div id="paging_cell_center">
+                                        <div id="paging_ct_tab">
+                                            <div id="paging_ct_row">
+                                                <div id="paging_ct_cell_pageNum">
+                                                    <?php
+                                                        if(isset($requestParams["page"])){
+                                                            $page = $requestParams["page"];
+                                                        }
+                                                        else{
+                                                            $page = 1;
+                                                        }
+                                                        
+                                                        $numRecs = $this->number_recs;
+                                                        $lastPage = intval($this->numFound/$numRecs);
+                                                        if($lastPage * $numRecs < $numFound){
+                                                            $lastPage++;
+                                                        }
+                                                        echo "Page $page of $lastPage";
+                                                        echo ", sorted by ".$this->sorting;
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Add result sort options -->
+                                        <?php echo $SortOptionsObj->makeSortLinks(); ?>
+                                    </div>
+                                    <div class="paging_cell">
+                                        <?php
+                                        
+                                        if($this->nextPage_XHTML){
+                                            $linkClass = "pager_active";
+                                            $pageLink = "<a href=\"".$this->nextPage_XHTML."\" class=\"btn btn-small btn-primary\" title=\"Go to the next page of results\" >&rarr;</a>";
+                                        }
+                                        else{
+                                            $linkClass = "pager_inactive";
+                                            $pageLink = "&rarr;";
+                                            $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">&rarr;</a>";
+                                        }
+                                        
+                                        ?>
+                                        <div class="<?php echo $linkClass; ?>" >
+                                            <?php echo $pageLink; ?>
+                                        </div>
+                                    </div>
+                                    <div class="paging_cell">
+                                        <?php
+                                        
+                                        if($this->lastPage_XHTML && $this->lastPage_XHTML != $this->currentXHTML){
+                                            $linkClass = "pager_active";
+                                            $pageLink = "<a href=\"".$this->lastPage_XHTML."\" title=\"Go to the last page of results\" class=\"btn btn-small btn-primary\" >&rarr;|</a>";
+                                        }
+                                        else{
+                                            $linkClass = "pager_inactive";
+                                            $pageLink = "&rarr;|";
+                                            $pageLink = "<a href=\"\" class=\"btn btn-small btn-primary disabled\">&rarr;|</a>";
+                                        }
+                                        ?>
+                                        <div class="<?php echo $linkClass; ?>" >
+                                            <?php echo $pageLink; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+									 
+									 <div class="map-legend">
+										  <div id="map-legend-row"></div>
+									 </div>
+									 <div class="map-contr">
+										  <div id="map-contr-row"></div>
+									 </div>
+									 <div id="map"></div>
+					 
+                        </div>
+                        <div id="item_list_tab">
+                        <?php
+                        //echo $this->result_output;
+                        $spaceResults = $this->spaceResults;
+                        $il = 0;
+                        foreach($spaceResults["items"] as $resItem){
+                            
+                            if($il & 1){
+                                $rowClass = "item_row_shade";
+                            }
+                            else{
+                                $rowClass = "item_row";
+                            }
+                        
+                        
+                        ?>
+                            <div class="<?php echo $rowClass; ?>" id="item_row_<?php echo $il; ?>">
+                                <div class="item_cell_cl_icon">
+                                    <a href="<?php echo $resItem["uri"]; ?>">
+                                        <img src="<?php echo $resItem["catIcon"]; ?>" alt="<?php echo $resItem["category"]; ?>" />
+                                    </a>
+                                </div>
+                                <div class="item_cell_proj">
+                                    <?php echo $resItem["project"]; ?>
+                                </div>
+                                <div class="item_cell_name_context">
+                                    <span class="item_cat_label"><?php echo $resItem["category"]; ?></span>
+                                    <span class="item_label">
+                                        <a href="<?php echo $resItem["uri"]; ?>"><?php echo $resItem["label"]; ?></a>
+                                    </span>
+                                    <?php echo $resItem["context"]; ?>
+                                </div>
+                                <div class="item_cell_detail">
+                                    <?php if($resItem["thumbIcon"] !=  $resItem["catIcon"]){ ?>
+                                    <a href="<?php echo $resItem["uri"]; ?>">
+                                        <img src="<?php echo $resItem["thumbIcon"]; ?>" alt="Thumbnail for <?php echo $resItem["label"]; ?>" />
+                                    </a>
+                                    
+                                    <?php }//end case with a different thumbnails
+                                            elseif(is_array($resItem["var_vals"])){
+                                    ?> 
+                                            <div class="item_sample_data_tab">
+                                               
+                                                <?php
+                                                    $sd = 0;
+                                                    $maxSampleRecs = 3;
+                                                    $maxSampleChars = 140;
+                                                    $LinkedDataObj = new LinkedDataRef;
+                                                    foreach($resItem["var_vals"] as $varKey => $val){
+                                                        
+                                                        if($sd & 1){
+                                                            $sampleRowClass = "item_sample_row_shade";
+                                                        }
+                                                        else{
+                                                            $sampleRowClass = "item_sample_row";
+                                                        }
+                                                        
+                                                        $showVal = strip_tags($val);
+                                                        if(strlen($showVal)>$maxSampleChars){
+                                                            $showVal = substr($showVal, 0, $maxSampleChars)."...";
+                                                        }
+                                                        
+                                                        if((substr($showVal, 0, 7) == "http://") && mb_stristr($varKey, "http://")){
+                                                            $LinkedDataObj->lookup_refURI($showVal);
+                                                            $showVal = $LinkedDataObj->refLabel;
+                                                            $LinkedDataObj->lookup_refURI(str_replace("Rel: ", "", $varKey));
+                                                            $varKey = $LinkedDataObj->refLabel;
+                                                        }
+                                                        ?>
+                                                        
+                                                        <div class="<?php echo $sampleRowClass; ?>">
+                                                            <div class="item_sample_var">
+                                                                <span><?php echo $varKey; ?></span>
+                                                            </div>
+                                                            <div class="item_sample_val">
+                                                                <span><?php echo $showVal; ?></span>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                        
+                                                        $sd++;
+                                                        
+                                                        if($sd >= $maxSampleRecs){
+                                                            break;
+                                                        }
+                                                    }
+                                                ?>
+                                            </div>
+                                            
+                                    <?php           
+                                            }//end case where thumb and category icon are the same
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                        $il++;
+                        } //end loop
+                        
+                        //echo print_r($this->docs);
+                        ?>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+   
+        <!--
+        END of div container for placing main page content
+        -->
+        </div>
+    
+    </div>
+
+    <div id="bottomBuffer">
+    <!--
+    <a href="javascript:recolor();">Change</a>
+    <a href="javascript:resetcolor();">Return</a>
+    -->
+    </div>
+    <?php echo $this->render('footer.phtml'); //reader document footer ?>
+        
+		  
+		  <script >
+				
+				//var startColor = convertToRGB('#6D03B0');    /* The beginning of your gradient */
+				//var endColor   = convertToRGB('#FB1B09');    /* The end of your gradient */
+				
+				var startColor = convertToRGB('#FFC800');
+				var endColor   = convertToRGB('#FF0000');
+				var proportional = false; //boolean, if we are doing propotional data
+				var proportionLinkURL = "<?php echo $PropotionLinkURL; ?>";
+				var proportionLinkText = "<?php echo $PropotionLinkText; ?>";
+				var nominatorCurrentVal = "<?php echo $nominatorCurrentVal; ?>";
+            var satelliteView = <?php echo $satelliteView; ?>;
+				
+				var map = L.map('map').setView([0, 0], 2); //map the map
+				var bounds = new L.LatLngBounds();
+				var osmTiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            });
+            
+            var mapboxTiles = L.tileLayer('http://api.tiles.mapbox.com/v3/ekansa.map-tba42j14/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://MapBox.com">MapBox.com</a> '
+            });
+            
+            var ESRISatelliteTiles = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; <a href="http://services.arcgisonline.com/">ESRI.com</a> '
+            });
+            
+            var gmapRoad = new L.Google('ROADMAP');
+            var gmapSat = new L.Google('SATELLITE');
+            var gmapTer = new L.Google('TERRAIN');
+            
+            var baseMaps = {
+                "Google-Terrain": gmapTer,
+                "Google-Satellite": gmapSat,
+                "ESRI-Satellite": ESRISatelliteTiles,
+                "Google-Roads": gmapRoad,
+                "OpenStreetMap": osmTiles,
+                "MapBox": mapboxTiles,
+            };
+           
+            if(satelliteView){
+                map.addLayer(gmapSat);
+            }
+            else{
+                map.addLayer(gmapTer);
+            }
+            map._layersMaxZoom = 20;
+            L.control.layers(baseMaps).addTo(map);
+            
+            
+
+				var OCdataLayer;
+				$.getJSON($('link[rel="geotiles"]').attr("href"), function(tileData) {
+					 
+					 //loop through features to get the maximum count, needed for assigning colors
+					 for (var i = 0; i < tileData.features.length; i++) {
+						  if(maxValue < tileData.features[i].properties.count){
+								maxValue = tileData.features[i].properties.count;
+						  }
+						  if(minValue > tileData.features[i].properties.count){
+								minValue = tileData.features[i].properties.count;
+						  }
+						  if("denominator" in tileData.features[i].properties){
+								if( tileData.features[i].properties.denominator > 0){
+									 var tempProp = tileData.features[i].properties.count / tileData.features[i].properties.denominator;
+									 if(minValue > tempProp){
+										  minValue = tempProp;
+                                trueMinValue = tempProp;
+									 }
+                            if(trueMaxValue < tempProp){
+                               trueMaxValue = tempProp;
+                            }
+								}
+						  }
+                    else{
+                        trueMinValue = minValue;
+                        trueMaxValue = maxValue;
+                    }
+					 }
+					 
+					 if("denominator" in tileData.features[0].properties){
+						  proportional = true;
+						  maxValue = 1;
+						  minValue = .001;
+					 }
+					 if("propOf" in tileData.features[0].properties && !proportionLinkText){
+						  proportionLinkText = tileData.features[0].properties.propOf;
+					 }
+					 
+					 
+					 addInfoProportional();
+					 colorLegend(); //make the color legend;
+					 
+					 //loop through features to make points with the correct color icon
+					 var iconArray = new Array();
+					 for (i = 0; i < tileData.features.length; i++) {
+						  if(tileData.features[i].geometry.type == "Polygon"){
+								var pointCoords = getPolyCenter(tileData.features[i].geometry.coordinates);
+								var latlng = new L.LatLng(pointCoords[0], pointCoords[1]);
+						  }
+						  if(tileData.features[i].geometry.type == "Point"){
+								var latlng = new L.LatLng(tileData.features[i].geometry.coordinates[1], tileData.features[i].geometry.coordinates[0]);
+								bounds.extend(latlng);
+								
+								var actCount = tileData.features[i].properties.count;
+								var iconURL = createColorMapIconURL(actCount, maxValue);
+								iconArray[actCount] =  L.icon({
+														  iconUrl: iconURL,
+														  shadowUrl: "http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png",
+														  iconAnchor:  [10, 38],
+														  shadowAnchor: [12, 40]
+														  });
+								
+								var marker = L.marker(latlng, {icon: iconArray[actCount]}).addTo(map);
+								var pointContent = "<div> The context <em>'" + tileData.features[i].properties.name  + "'</em> has " + tileData.features[i].properties.count;
+								//pointContent += " items. <a href='../maps/test-map?geoJSON=" + tileData.features[i].properties.hrefGeoJSON + "'>Click here</a> to filter by this geographic region</div>";
+								pointContent += " items ";
+								if(proportional){
+									 pointContent += "(" + Math.round((tileData.features[i].properties.count / tileData.features[i].properties.denominator) * 100, 1) + "%)";
+								}
+								pointContent += ". ";
+								if(tileData.features[i].properties.href){
+									 pointContent += "<a href='" + tileData.features[i].properties.href + "'>Click here</a> to filter by this geographic region."
+								}
+								pointContent += "</div>";
+								marker.bindPopup(pointContent);
+						  }
+					 }
+					 
+					 
+					 //now display the geoJSON data, filter out points, since those are handled differently
+					 OCdataLayer = L.geoJson(tileData, {
+						  style: function(feature) {
+								if(feature.geometry.type == "Polygon"){
+									 var actCount = feature.properties.count;
+									 if("denominator" in feature.properties){
+										  if( feature.properties.denominator > 0){
+												actCount = actCount / feature.properties.denominator;
+										  }
+									 }
+									 var newColorRGB = assignColorByCount(actCount, maxValue);
+									 var newColorHex =  "#" + convertToHex(newColorRGB);
+									 return {color: newColorHex , icon: iconArray[actCount]};
+								}
+						  },
+						  onEachFeature: onEachFeaturePrep,
+						  filter: function(feature, layer) {
+								if(feature.geometry.type == "Point"){
+									 return false;
+								}
+								else{
+									 return true;
+								}
+						  }
+					 }
+					 
+					 ).addTo(map);
+                
+					 map.fitBounds(bounds);
+               
+				});
+				
+            
+		  </script> 
+  
+  
+  
+        <script>
+
+        
+        var chronoLinkURL = "<?php echo str_replace("?", ".chrono-json?", $requestURI); ?>";
+        
+        var areaChart = d3.json(chronoLinkURL, function(data) {
+            nv.addGraph(function() {
+            var chart = nv.models.stackedAreaChart()
+                          .x(function(d) { return d[0] })
+                          .y(function(d) { return d[1] })
+                          .clipEdge(true)
+                          .showControls(false)
+                          .showLegend(false);
+          
+            chart.xAxis
+                .showMaxMin(false)
+                .tickFormat(function(d) {
+                    var bce = Math.abs(d);
+                    if(Math.abs(d) >= Math.pow(10,6)){
+                        bce = Math.round((bce / Math.pow(10,6)), 2) + " M";
+                    }
+                    if(Math.abs(d) >= Math.pow(10,4) && Math.abs(d) < Math.pow(10,6)){
+                        bce = Math.round((bce / Math.pow(10,3)), 2) + " K";
+                    }
+                    if(d < 0){
+                       bce += " BCE";
+                    }
+                    else{
+                        bce += " CE";
+                    }
+                    return bce;
+                });
+          
+            chart.yAxis
+                .axisLabel('Number in time span')
+                .tickFormat(function(d) {
+                    //d = Math.round(d, 2);
+                    //return d + "%";
+                    var clearNumber = d;
+                    if(Math.abs(d) >= Math.pow(10,6)){
+                        clearNumber = Math.round((d / Math.pow(10,6)), 2) + " M";
+                    }
+                    if(Math.abs(d) >= Math.pow(10,4) && Math.abs(d) < Math.pow(10,6)){
+                       clearNumber = Math.round((d / Math.pow(10,3)), 1) + " K";
+                    }
+                    return clearNumber;
+                });
+          
+            d3.select('#chart svg')
+              .datum(data)
+                .transition().duration(500).call(chart);
+          
+            nv.utils.windowResize(chart.update);
+            return chart;
+          }
+          
+          , function(){
+                d3.selectAll(".nv-area").on('click',
+                    function(data){
+                        window.location.href = data.href;
+                        //alert(data.href);
+                 });
+            }
+          
+          
+          );
+        } );
+
+
+</script>
+	 </body>
+</html>    

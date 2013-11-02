@@ -82,37 +82,38 @@ class OpenContextItem {
     const taxonDelim = "::"; //deliminator for taxonomies
     const chronoDelim = " "; //deliminator for chronological spans
     const geoDelim = " "; //deliminator for geographic lat / lons
-    
+    const chronoPathRangePrefix = "10M-"; //prefix for the chronology path, 
+	 
     function initialize(){
-	$this->classes = false;
-	$this->defaultContextArray = false;
-	$this->defaultContextPath = false;
-	$this->linkedPersons = false;
-	$this->linkedPersonURIs = false;
-	$this->propHashArray = array();
-	$this->properties = false;
-	$this->taxonPaths = false;
-	$this->variables = false;
-	$this->mesUnits = false;
-	$this->alphaNotes = false;
-	$this->chrono = false;
-	$this->chronoSelf = false;
-	$this->geo = false;
-	$this->geoSelf = false;
-	$this->geoPoly = false;
-	$this->creators = false;
-	$this->contributors = false;
-	$this->coverages = false;
-	$this->subjects = false;
-	$this->license = false;
-	$this->docLinkNum = false;
-	$this->otherLinkNum = false;
-	$this->imageLinkNum = false;
-	$this->userTags = false;
-	$this->userTagCreators = false;
-	$this->socialUse = false;
-	$this->interestScore = false;
-	$this->labelSort = false;
+		  $this->classes = false;
+		  $this->defaultContextArray = false;
+		  $this->defaultContextPath = false;
+		  $this->linkedPersons = false;
+		  $this->linkedPersonURIs = false;
+		  $this->propHashArray = array();
+		  $this->properties = false;
+		  $this->taxonPaths = false;
+		  $this->variables = false;
+		  $this->mesUnits = false;
+		  $this->alphaNotes = false;
+		  $this->chrono = false;
+		  $this->chronoSelf = false;
+		  $this->geo = false;
+		  $this->geoSelf = false;
+		  $this->geoPoly = false;
+		  $this->creators = false;
+		  $this->contributors = false;
+		  $this->coverages = false;
+		  $this->subjects = false;
+		  $this->license = false;
+		  $this->docLinkNum = false;
+		  $this->otherLinkNum = false;
+		  $this->imageLinkNum = false;
+		  $this->userTags = false;
+		  $this->userTagCreators = false;
+		  $this->socialUse = false;
+		  $this->interestScore = false;
+		  $this->labelSort = false;
     }
     
     
@@ -122,116 +123,117 @@ class OpenContextItem {
      does some simple validation
     */
     function addSimpleArrayItem($item, $arrayType){
-	$item = trim($item);
-	
-	$okTypes = array("linkedPersons",
-			 "userTags",
-			 "userTagCreators",
-			 "creators",
-			 "contributors",
-			 "subjects",
-			 "coverages",
-			 "classes",
-			 "alphaNotes");
-	
-	if(in_array($arrayType, $okTypes)){
-	    $actArray = $this->$arrayType;
-	    if(!$actArray){
-		$actArray = array();
-	    }
-	    if(!in_array($item, $actArray)){
-		$actArray[] = $item;
-		$this->$arrayType = $actArray;
-	    }
-	    
-	}
+		  $item = trim($item);
+		  
+		  $okTypes = array("linkedPersons",
+					"userTags",
+					"userTagCreators",
+					"creators",
+					"contributors",
+					"subjects",
+					"coverages",
+					"classes",
+					"alphaNotes");
+		  
+		  if(in_array($arrayType, $okTypes)){
+				$actArray = $this->$arrayType;
+				if(!$actArray){
+			  $actArray = array();
+				}
+				if(!in_array($item, $actArray)){
+			  $actArray[] = $item;
+			  $this->$arrayType = $actArray;
+				}
+				
+		  }
     }
     
     
     function addGeo($lat, $lon){
-	$lat = $lat + 0;
-	$lon = $lon + 0;
+		  $lat = $lat + 0;
+		  $lon = $lon + 0;
+		  
+		  $geoObj = new GlobalMapTiles;
+		  $zoom = 20;
+		  $geoTilePath = $geoObj->LatLonToQuadTree($lat, $lon, $zoom);
+		  $i=0;
+		  $geoTilePathArray = array();
+		  while($i < $zoom){
+				$geoTilePathArray[] = substr($geoTilePath, $i, 1);
+				$i++;
+		  }
 	
-	$geoObj = new GlobalMapTiles;
-	$zoom = 20;
-	$geoTilePath = $geoObj->LatLonToQuadTree($lat, $lon, $zoom);
-	$i=0;
-	$geoTilePathArray = array();
-	while($i < $zoom){
-	    $geoTilePathArray[] = substr($geoTilePath, $i, 1);
-	    $i++;
-	}
-	
-	$geoTileArray = array();
-	$firstLoop = true;
-	$tilePath = "root";
-	foreach($geoTilePathArray as $tile){
-	    
-	    $actTile = array("field" => $tilePath, "value"=> $tile);
-	    
-	    if($firstLoop){
-		$tilePath = $tile;
-	    }
-	    else{
-		$geoTileArray[] =  $actTile ;
-		//$tilePath .= "_".$tile;
-		$tilePath .= $tile;//uses an underscore, so we don't have to worry about escaping solr
-	    }
-	    $firstLoop = false;
-	}
-	
-	$geoArray = array("lat" => $lat,
-			  "lon" => $lon,
-			  "geoTile" => array("path"=>$geoTilePath,
-					     "tiles"=>$geoTileArray)
-			  );
-	$this->geo = $geoArray;
+		  $geoTileArray = array();
+		  $firstLoop = true;
+		  $tilePath = "root";
+		  foreach($geoTilePathArray as $tile){
+				
+				$actTile = array("field" => $tilePath, "value"=> $tile);
+				
+				if($firstLoop){
+					 $tilePath = $tile;
+				}
+				else{
+					 $geoTileArray[] =  $actTile ;
+					 //$tilePath .= "_".$tile;
+					 $tilePath .= $tile;//uses an underscore, so we don't have to worry about escaping solr
+				}
+				$firstLoop = false;
+		  }
+		  
+		  $geoArray = array(	 "lat" => $lat,
+									 "lon" => $lon,
+									 "geoTile" => array("path"=>$geoTilePath,
+																"tiles"=>$geoTileArray)
+								);
+		  $this->geo = $geoArray;
     }
     
     
-    function addChrono($start, $end, $chronoTagger= false, $chronoSet = false){
+    function addChrono($lateDateBCE, $earlyDateBCE, $chronoTagger= false, $chronoSet = false){
 	
-	$start = $start + 0;
-	$end = $end + 0;
-	if($end < $start){ //insure that the start time is earlier than the end time
-	    $temp = $start;
-	    $start = $end;
-	    $end = $temp;
-	}
-	
-	$seperator = self::chronoDelim;
-	$timeSpan = $start.$seperator.$end;
-	$time = array("timeStart" => $start,
-		      "timeEnd" => $end,
-		      "timeSpan" => $timeSpan,
-		      "chronoTagger" => $chronoTagger,
-		      "chronoSet" => $chronoSet
-		      );
-	$this->chrono = $time;
+		  $earlyDateBCE = $earlyDateBCE + 0;
+		  $lateDateBCE = $lateDateBCE + 0;
+		  if($lateDateBCE < $earlyDateBCE){ //insure that the start time is earlier than the end time
+				$temp = $earlyDateBCE;
+				$earlyDateBCE = $lateDateBCE;
+				$lateDateBCE = $temp;
+		  }
+		  //chronoPathRangePrefix
+		  $chronoObj = new ChronoPath;
+		  $chronoPath = $chronoObj->createPathBCEdates($lateDateBCE, $earlyDateBCE, self::chronoPathRangePrefix);
+		  
+		  $time = array("timeStart" => $earlyDateBCE,
+					  "timeEnd" => $lateDateBCE,
+					  "chronoPath" =>  $chronoPath,
+					  "chronoTagger" => $chronoTagger,
+					  "chronoSet" => $chronoSet
+					  );
+		  $this->chrono = $time;
     }
     
     
     function addDefaultContext($contextArray){
 	
-	if(!is_array($contextArray)){
-	    $this->defaultContextPath = false;
-	    $this->defaultContextArray = false;
-	}
-	else{
-	    $j = 0; //used to generate 'def_context_*' fields in solr
-	    $default_context_path = "";
-	    $defaultContextArray = array();
-	    foreach($contextArray as $context){
-		$context = trim($context);
-		$dynamicDefaultContextField = "def_context_" . $j;
-		$default_context_path .= $context . "/";
-		$defaultContextArray[$j] = array("field"=>$dynamicDefaultContextField, "value"=>$context);
-	    $j++;
-	    }
-	    
-	    $this->defaultContextPath = $default_context_path;
-	    $this->defaultContextArray = $defaultContextArray;
-	}
+		  if(!is_array($contextArray)){
+				$this->defaultContextPath = false;
+				$this->defaultContextArray = false;
+		  }
+		  else{
+				$j = 0; //used to generate 'def_context_*' fields in solr
+				$default_context_path = "";
+				$defaultContextArray = array();
+				foreach($contextArray as $context){
+					 $context = trim($context);
+					 $dynamicDefaultContextField = "def_context_" . $j;
+					 $default_context_path .= $context . "/";
+					 $defaultContextArray[$j] = array("field"=>$dynamicDefaultContextField, "value"=>$context);
+					 $j++;
+				}
+				
+				$this->defaultContextPath = $default_context_path;
+				$this->defaultContextArray = $defaultContextArray;
+		  }
 	
     }
     
@@ -240,193 +242,193 @@ class OpenContextItem {
      so that they can be used for sorting
     */
     function explodeX($delimiters,$string){
-	$return_array = Array($string); // The array to return
-	$d_count = 0;
-	while (isset($delimiters[$d_count])) // Loop to loop through all delimiters
-	{
-	    $new_return_array = Array(); 
-	    foreach($return_array as $el_to_split) // Explode all returned elements by the next delimiter
-	    {
-		$put_in_new_return_array = explode($delimiters[$d_count],$el_to_split);
-		foreach($put_in_new_return_array as $substr) // Put all the exploded elements in array to return
-		{
-		    $new_return_array[] = $substr;
-		}
-	    }
-	    $return_array = $new_return_array; // Replace the previous return array by the next version
-	    $d_count++;
-	}
-	return $return_array; // Return the exploded elements
+		  $return_array = Array($string); // The array to return
+		  $d_count = 0;
+		  while (isset($delimiters[$d_count])) // Loop to loop through all delimiters
+		  {
+				$new_return_array = Array(); 
+				foreach($return_array as $el_to_split) // Explode all returned elements by the next delimiter
+				{
+					 $put_in_new_return_array = explode($delimiters[$d_count],$el_to_split);
+					 foreach($put_in_new_return_array as $substr) // Put all the exploded elements in array to return
+					 {
+						  $new_return_array[] = $substr;
+					 }
+				}
+				$return_array = $new_return_array; // Replace the previous return array by the next version
+				$d_count++;
+		  }
+		  return $return_array; // Return the exploded elements
     }
 
 
     //name sorting with MB functions
     function nameSorter($name){
 	
-	$delimiters = array(" ",
-				    ",",
-				    ":",
-				    "|",
-				    "-",
-				    "_",
-				    "/");
-	
-	
-	$doSingleDecimal = true;
-	if(mb_substr_count($name, ".")>1){
-	    $output = 0;
-	    $dotParts = explode(".", $name);
-	    $level = 0;
-	    $allParts = "";
-	    foreach($dotParts as $dotPart){
-		$partOutput = mb_ereg_replace("[^0-9]","",$dotPart);
-		if($partOutput != false){
-		    $doSingleDecimal = false;
-		    if($level == 0){
-			$output = $partOutput + 0;
-			$allParts = "";
-		    }
-		    else{
-			$allParts .= $partOutput;
-			$partLen = strlen($allParts);
-			$output = $output + ($partOutput / pow(10, $partLen));
-		    }
-		}
-	    $level++;
-	    }
-	}
+		  $delimiters = array(" ",
+							",",
+							":",
+							"|",
+							"-",
+							"_",
+							"/");
+		  
+		  
+		  $doSingleDecimal = true;
+		  if(mb_substr_count($name, ".")>1){
+				$output = 0;
+				$dotParts = explode(".", $name);
+				$level = 0;
+				$allParts = "";
+				foreach($dotParts as $dotPart){
+					 $partOutput = mb_ereg_replace("[^0-9]","",$dotPart);
+					 if($partOutput != false){
+						  $doSingleDecimal = false;
+						  if($level == 0){
+						 $output = $partOutput + 0;
+						 $allParts = "";
+						  }
+						  else{
+						 $allParts .= $partOutput;
+						 $partLen = strlen($allParts);
+						 $output = $output + ($partOutput / pow(10, $partLen));
+						  }
+					 }
+					  $level++;
+				}
+		  }
 		
-	if($doSingleDecimal){
-	    $outputAlpha = mb_ereg_replace("(?!^0*$)(?!^0*\.0*$)^\d{1,5}(\.\d{1,3})","",$name);
-	    $output = str_replace($outputAlpha, "", $name);
-	    if(strlen($output)>0){
-		if(mb_stristr($name, $output)){
-		    $output = $output +0;
-		    $singleDecimal = true;
-		}
-		else{
-		    $output = false;
-		}
-		//echo "existing output: ".$output;
-	    }
-	}
+		  if($doSingleDecimal){
+				$outputAlpha = mb_ereg_replace("(?!^0*$)(?!^0*\.0*$)^\d{1,5}(\.\d{1,3})","",$name);
+				$output = str_replace($outputAlpha, "", $name);
+				if(strlen($output)>0){
+					 if(mb_stristr($name, $output)){
+						  $output = $output +0;
+						  $singleDecimal = true;
+					 }
+					 else{
+						  $output = false;
+					 }
+					 //echo "existing output: ".$output;
+				}
+		  }
 	
-	if($output == false){
-	    $output = mb_ereg_replace("[^0-9]","",$name);
-	}
+		  if($output == false){
+				$output = mb_ereg_replace("[^0-9]","",$name);
+		  }
+		  
+		  if($output != false){
+				$output = "0000000000".$output;
+				$output = $output + 0;	
+				if($output == 0){
+					 $nameExp = $this->explodeX ($delimiters, $name);
+					 if(is_array($nameExp)){
+						  $i = 1;
+						  foreach($nameExp as $namePart){
+						 $output = $output + (ord($namePart) * $i);
+						 $i = $i * .1;
+						  }
+					 }
+					 else{
+						  $output = ord($name);
+					 }
+				}
+		  }
 	
-	if($output != false){
-	    $output = "0000000000".$output;
-	    $output = $output + 0;	
-	    if($output == 0){
-		$nameExp = $this->explodeX ($delimiters, $name);
-		if(is_array($nameExp)){
-		    $i = 1;
-		    foreach($nameExp as $namePart){
-			$output = $output + (ord($namePart) * $i);
-			$i = $i * .1;
-		    }
-		}
-		else{
-		    $output = ord($name);
-		}
-	    }
-	}
-	
-	return $output;
+		  return $output;
     }
 
 
 //name sorting with NO MB functions
     function nameSorter_noMB($name){
 	
-	$delimiters = array(" ",
-				    ",",
-				    ":",
-				    "|",
-				    "-",
-				    "_",
-				    "/");
-	
-	
-	$doSingleDecimal = true;
-	if(substr_count($name, ".")>1){
-	    $output = 0;
-	    $dotParts = explode(".", $name);
-	    $level = 0;
-	    $allParts = "";
-	    foreach($dotParts as $dotPart){
-		$partOutput = ereg_replace("[^0-9]","",$dotPart);
-		if($partOutput != false){
-		    $doSingleDecimal = false;
-		    if($level == 0){
-			$output = $partOutput + 0;
-			$allParts = "";
-		    }
-		    else{
-			$allParts .= $partOutput;
-			$partLen = strlen($allParts);
-			$output = $output + ($partOutput / pow(10, $partLen));
-		    }
-		}
-	    $level++;
-	    }
-	}
+		  $delimiters = array(" ",
+							",",
+							":",
+							"|",
+							"-",
+							"_",
+							"/");
+		  
+		  
+		  $doSingleDecimal = true;
+		  if(substr_count($name, ".")>1){
+				$output = 0;
+				$dotParts = explode(".", $name);
+				$level = 0;
+				$allParts = "";
+				foreach($dotParts as $dotPart){
+			  $partOutput = ereg_replace("[^0-9]","",$dotPart);
+			  if($partOutput != false){
+					$doSingleDecimal = false;
+					if($level == 0){
+				  $output = $partOutput + 0;
+				  $allParts = "";
+					}
+					else{
+				  $allParts .= $partOutput;
+				  $partLen = strlen($allParts);
+				  $output = $output + ($partOutput / pow(10, $partLen));
+					}
+			  }
+				$level++;
+				}
+		  }
 		
-	if($doSingleDecimal){
-	    @$outputAlpha = ereg_replace("(?!^0*$)(?!^0*\.0*$)^\d{1,5}(\.\d{1,3})","",$name);
-	    $output = str_replace($outputAlpha, "", $name);
-	    if(strlen($output)>0){
-		if(stristr($name, $output)){
-		    $output = $output +0;
-		    $singleDecimal = true;
-		}
-		else{
-		    $output = false;
-		}
-		//echo "existing output: ".$output;
-	    }
-	}
-	
-	if($output == false){
-	    $output = ereg_replace("[^0-9]","",$name);
-	}
-	
-	if($output != false){
-	    $output = "0000000000".$output;
-	    $output = $output + 0;	
-	    if($output == 0){
-		$nameExp = $this->explodeX ($delimiters, $name);
-		if(is_array($nameExp)){
-		    $i = 1;
-		    foreach($nameExp as $namePart){
-			$output = $output + (ord($namePart) * $i);
-			$i = $i * .1;
-		    }
-		}
-		else{
-		    $output = ord($name);
-		}
-	    }
-	}
-	
-	return $output;
+		  if($doSingleDecimal){
+				@$outputAlpha = ereg_replace("(?!^0*$)(?!^0*\.0*$)^\d{1,5}(\.\d{1,3})","",$name);
+				$output = str_replace($outputAlpha, "", $name);
+				if(strlen($output)>0){
+					 if(stristr($name, $output)){
+						  $output = $output +0;
+						  $singleDecimal = true;
+					 }
+					 else{
+						  $output = false;
+					 }
+					 //echo "existing output: ".$output;
+				}
+		  }
+		  
+		  if($output == false){
+				$output = ereg_replace("[^0-9]","",$name);
+		  }
+		  
+		  if($output != false){
+				$output = "0000000000".$output;
+				$output = $output + 0;	
+				if($output == 0){
+					 $nameExp = $this->explodeX ($delimiters, $name);
+					 if(is_array($nameExp)){
+						  $i = 1;
+						  foreach($nameExp as $namePart){
+						 $output = $output + (ord($namePart) * $i);
+						 $i = $i * .1;
+						  }
+					 }
+					 else{
+						  $output = ord($name);
+					 }
+				}
+		  }
+		  
+		  return $output;
     }
 
     
     //add alphanumeric variable / value
     function addAlphaVarVal($var, $value){
-	$var = trim($var);
-	$value = trim($value);
-	$variables = $this->variables;
-	if(!$variables){
-	    $variables = array();
-	}
-	$varValKey = sha1($var.self::taxonDelim.$value);
-	if(!array_key_exists($varValKey, $variables)){
-	    $variables[$varValKey] = array("var" => $var, "val" => $value);
-	}
-	$this->variables = $variables;
+		  $var = trim($var);
+		  $value = trim($value);
+		  $variables = $this->variables;
+		  if(!$variables){
+				$variables = array();
+		  }
+		  $varValKey = sha1($var.self::taxonDelim.$value);
+		  if(!array_key_exists($varValKey, $variables)){
+				$variables[$varValKey] = array("var" => $var, "val" => $value);
+		  }
+		  $this->variables = $variables;
     }
     
 
@@ -436,183 +438,183 @@ class OpenContextItem {
     
     //turn a taxonomy array into a full path
     function addfullPropertyPath($taxonomyArray){
-	$taxonPaths = $this->taxonPaths;
-	if(!is_array($taxonPaths)){
-	    $taxonPaths = array();
-	}
+		  $taxonPaths = $this->taxonPaths;
+		  if(!is_array($taxonPaths)){
+				$taxonPaths = array();
+		  }
+		  
+		  if(!is_array($taxonomyArray)){
+				$newArray = array();
+				$newArray[] = $taxonomyArray;
+				$taxonomyArray = $newArray;
+				unset($newArray);
+		  }
+		  
+		  $actPath = "";
+		  $i = 0;
+		  foreach($taxonomyArray as $taxon){
+				
+				$taxon = trim($taxon);
+				if(stristr($taxon, self::taxonDelim)){
+			  //$taxon = str_replace(self::taxonDelim, urlencode(self::taxonDelim), $taxon);
+				}
+				
+		  
+				if($i == 0){
+					 $actPath = $taxon;
+				}
+				else{
+					 $actPath .= (self::taxonDelim).$taxon;
+				}
+		  
+		  $i++;   
+		  }
 	
-	if(!is_array($taxonomyArray)){
-	    $newArray = array();
-	    $newArray[] = $taxonomyArray;
-	    $taxonomyArray = $newArray;
-	    unset($newArray);
-	}
-	
-	$actPath = "";
-	$i = 0;
-	foreach($taxonomyArray as $taxon){
-	    
-	    $taxon = trim($taxon);
-	    if(stristr($taxon, self::taxonDelim)){
-		//$taxon = str_replace(self::taxonDelim, urlencode(self::taxonDelim), $taxon);
-	    }
-	    
-	
-	    if($i == 0){
-		$actPath = $taxon;
-	    }
-	    else{
-		$actPath .= (self::taxonDelim).$taxon;
-	    }
-	
-	$i++;   
-	}
-	
-	$taxonPaths[] = $actPath;
-	$this->taxonPaths = $taxonPaths;
+		  $taxonPaths[] = $actPath;
+		  $this->taxonPaths = $taxonPaths;
     }//end function
     
     
     
     function addProperty($value, $parentArray = false, $setType = false, $addVars = true){
-		//$value is the value for this specific property
-		//$parent array is the value for parents of this value, up different levels in the hierarchy
-		
-		$value = trim($value);
-		$type = false;
-		
+		  //$value is the value for this specific property
+		  //$parent array is the value for parents of this value, up different levels in the hierarchy
+		  
+		  $value = trim($value);
+		  $type = false;
+		  
 		  if(stristr($setType, "calend")){
 				$setType = "calendric";
 		  }
-		
-		
-		//figure out if the value is integer, decimal, or calendar. if not, default to nominal
-		if(is_numeric($value)){
-			if(intval($value) === $value){
-				$int_ok = true;
-			}
-			elseif(round($value,0) == $value +0){
-				$int_ok = true;
-			}
-			else{
-				$int_ok = false;
-			}
-			if((is_int($value))||($int_ok)){
-				$type = "integer";
-			}
-			else{
-				$type = "decimal";
-			}
-		}
-			
-		if(!$type){
-			$cal_test_string = str_replace("/", "-", $value);
-			
-			if (($timestamp = strtotime($cal_test_string)) === false) {
-			$calendardTest = false;
-			}
-			else{
-			$calendardTest = true;
-			}
-			
-			if($calendardTest){
-				$type = "calendric";
-			}
-			else{
-				$type = "nominal"; 
-			}
-		}
-		
-		
-		
-		$properties = $this->properties;
-		if(!$properties){
-			$properties = array();
-		}
-		$variables = $this->variables;
-		if(!$variables){
-			$variables = array();
-		}
-		
-		if(!$parentArray || count($parentArray) == 0){
-			$parentArray = false;
-			$parentPath = "";
-			
-			if($setType != "standard" && $setType != "reconciled"){
-			    $hashPath = "top";
-			}
-			else{
-			    if($setType == "standard"){
-						  $hashPath = "standard"; //for standard units of measurement
-			    }
-			    elseif($setType =="reconciled"){
-						  $hashPath = "reconciled"; //for reconciled propeties to a 
-			    }
-			    $setType = "nominal";
-			}
-		}
-		else{
-			
-			if(!is_array($parentArray)){
-				$newArray = array();
-				$newArray[] = $parentArray;
-				$parentArray = $newArray;
-				unset($newArray);
-			}
-			
-			$parentPath = "";
-			foreach($parentArray as $parent){
-			
-				$parent = trim($parent);
-				
-				if(strlen($parentPath)<1){
-					$addString = $parent;
+		  
+		  
+		  //figure out if the value is integer, decimal, or calendar. if not, default to nominal
+		  if(is_numeric($value)){
+				if(intval($value) === $value){
+					$int_ok = true;
+				}
+				elseif(round($value,0) == $value +0){
+					$int_ok = true;
 				}
 				else{
-					$addString = (self::taxonDelim).$parent;
+					$int_ok = false;
 				}
+				if((is_int($value))||($int_ok)){
+					$type = "integer";
+				}
+				else{
+					$type = "decimal";
+				}
+		  }
+			
+		  if(!$type){
+				$cal_test_string = str_replace("/", "-", $value);
+			  
+				if (($timestamp = strtotime($cal_test_string)) === false) {
+					 $calendardTest = false;
+				}
+				else{
+					 $calendardTest = true;
+				}
+			  
+				if($calendardTest){
+					 $type = "calendric";
+				}
+				else{
+					 $type = "nominal"; 
+				}
+		  }
+		
+		
+		
+		  $properties = $this->properties;
+		  if(!$properties){
+				$properties = array();
+		  }
+		  $variables = $this->variables;
+		  if(!$variables){
+				$variables = array();
+		  }
+		
+		  if(!$parentArray || count($parentArray) == 0){
+				$parentArray = false;
+				$parentPath = "";
+			  
+				if($setType != "standard" && $setType != "reconciled"){
+					 $hashPath = "top";
+				}
+				else{
+					 if($setType == "standard"){
+							  $hashPath = "standard"; //for standard units of measurement
+					 }
+					 elseif($setType =="reconciled"){
+							  $hashPath = "reconciled"; //for reconciled propeties to a 
+					 }
+					 $setType = "nominal";
+				}
+		  }
+		  else{
+			  
+				if(!is_array($parentArray)){
+					$newArray = array();
+					$newArray[] = $parentArray;
+					$parentArray = $newArray;
+					unset($newArray);
+				}
+			  
+				$parentPath = "";
+				foreach($parentArray as $parent){
 				
-				$parentPath .= $addString;
-			}//end loop.
-			$hashPath = sha1($parentPath);
-		}
+					 $parent = trim($parent);
+					 
+					 if(strlen($parentPath)<1){
+						  $addString = $parent;
+					 }
+					 else{
+						  $addString = (self::taxonDelim).$parent;
+					 }
+					 
+					 $parentPath .= $addString;
+				}//end loop.
+				$hashPath = sha1($parentPath);
+		  }
 		
-		$actProp = array("value" => $value,
-			"type" => $type,
-			"path" => $parentPath,
-			"hashPath" => $hashPath,
-			"setType" => $setType,
-			"parentArray" => $parentArray
-			);
+		  $actProp = array("value" => $value,
+			  "type" => $type,
+			  "path" => $parentPath,
+			  "hashPath" => $hashPath,
+			  "setType" => $setType,
+			  "parentArray" => $parentArray
+			  );
 		
 		
-		if($addVars && strlen($parentPath)>0){
-			//sometimes you don't want to add variables, so this is optional
-			$addVars = true;
-			foreach($variables as $oldvar){
-			    if($oldvar["var"] == $parentPath && $oldvar["val"] == $value){
-				$addVars = false;
-			    }
-			}
-			if($addVars){
-			    $varValKey = sha1($parentPath.self::taxonDelim.$value);
-			    if(!array_key_exists($varValKey, $variables)){
-				$variables[$varValKey] = array("var" => $parentPath, "val" => $value);
-			    }
-			}
-			$this->variables = $variables;
-		}
+		  if($addVars && strlen($parentPath)>0){
+			  //sometimes you don't want to add variables, so this is optional
+				$addVars = true;
+				foreach($variables as $oldvar){
+					 if($oldvar["var"] == $parentPath && $oldvar["val"] == $value){
+						  $addVars = false;
+					 }
+				}
+				if($addVars){
+					 $varValKey = sha1($parentPath.self::taxonDelim.$value);
+					 if(!array_key_exists($varValKey, $variables)){
+						  $variables[$varValKey] = array("var" => $parentPath, "val" => $value);
+					 }
+				}
+				$this->variables = $variables;
+		  }
 		
-		$actPropHash = sha1(Zend_Json::encode($actProp));
-		$propHashArray = $this->propHashArray;
-		
-		//only add unique properties
-		if(!in_array($actPropHash, $propHashArray)){
-			$propHashArray[] = $actPropHash;
-			$properties[] = $actProp;
-			$this->properties = $properties;
-			$this->propHashArray = $propHashArray;
-		}
+		  $actPropHash = sha1(Zend_Json::encode($actProp));
+		  $propHashArray = $this->propHashArray;
+		  
+		  //only add unique properties
+		  if(!in_array($actPropHash, $propHashArray)){
+				$propHashArray[] = $actPropHash;
+				$properties[] = $actProp;
+				$this->properties = $properties;
+				$this->propHashArray = $propHashArray;
+		  }
 	
     }
 
@@ -757,7 +759,7 @@ class OpenContextItem {
 		  
 		  if(is_array($this->alphaNotes)){
 				foreach($this->alphaNotes as $note){
-			  $total_character_length_note += strlen($note);
+					 $total_character_length_note += strlen($note);
 				}
 		  }
 		  
@@ -1117,10 +1119,10 @@ class OpenContextItem {
 		  if($this->chrono != false){
 				$chrono = $this->chrono;
 				$solrDocument->setMultiValue("time_start", $chrono["timeStart"]);
-				$solrDocument->setMultiValue("time_start_hr", $chrono["timeStart"]);
+				//$solrDocument->setMultiValue("time_start_hr", $chrono["timeStart"]);
 				$solrDocument->setMultiValue("time_end", $chrono["timeEnd"]);
-				$solrDocument->setMultiValue("time_end_hr", $chrono["timeEnd"]);
-				$solrDocument->setMultiValue("time_span", $chrono["timeSpan"]);
+				//$solrDocument->setMultiValue("time_end_hr", $chrono["timeEnd"]);
+				$solrDocument->setMultiValue("time_path", $chrono["chronoPath"]); //chronology path
 				
 				if($chrono["chronoTagger"] != false){
 				  //$solrDocument->setMultiValue("chrono_creator_name", $chrono["chronoTagger"]); //chrono tag creator
