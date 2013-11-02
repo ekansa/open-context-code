@@ -353,6 +353,10 @@ class Media {
     
     function DOM_spatialAtomCreate($archaeML_string){
 		
+		if(strlen($archaeML_string)<10){
+		  return false;
+		}
+		
 		$host = OpenContext_OCConfig::get_host_config();
 		$baseURI = $host."/media/";
 		

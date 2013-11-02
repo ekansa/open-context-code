@@ -535,7 +535,14 @@
 																				</xsl:otherwise>
 																		  </xsl:choose>
 																	 </a>
-																	 Attribution Required: Citation, and hyperlinks for online uses.
+																	<xsl:choose>
+																			<xsl:when test="//oc:metadata/oc:copyright_lic/oc:lic_URI = 'http://creativecommons.org/publicdomain/zero/1.0/' ">
+																				Attribution and citation requested but not legally required.
+																			</xsl:when>
+																			<xsl:otherwise>
+																				Attribution Required: Citation, and hyperlinks for online uses.
+																			</xsl:otherwise>
+																	</xsl:choose>
 																	 <div style="display:none; width:0px; overflow:hidden;">
 																		 <abbr class="unapi-id"><xsl:attribute name="title"><xsl:value-of select="//oc:metadata/dc:identifier"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier"/></abbr>
 																		 <a xmlns:cc="http://creativecommons.org/ns#">
