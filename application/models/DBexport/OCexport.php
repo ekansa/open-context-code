@@ -20,6 +20,9 @@ class DBexport_OCexport  {
 	 const DBdirectory = "data";
 	 const testLimit = 5;
 	 
+	 const publicBaseURI = "http://opencontext.org/";
+	 const localBaseURI = "http://opencontext/";
+	 
 	 public $actFileHandle; //the active file handle;
 	 public $files = array(); //done files
 	 
@@ -27,6 +30,7 @@ class DBexport_OCexport  {
 		  $output = array();
 		  
 		  $output["space"] = $this->makeSaveSpace();
+		  $output["resource"] = $this->makeSaveResource();
 		  $output["big-values"] = $this->makeSaveBigValues();
 		  $output["links"] = $this->makeSaveLinks();
 		  $output["n-bindings"] = $this->makeSaveNBs();
@@ -438,7 +442,6 @@ class DBexport_OCexport  {
 		  
 		  $resultA = $db->fetchAll($sql);
 		  
-		  $data = "";
 		  if($resultA){
 				$prefix = false;
 				$this->startFileHandle(self::DBdirectory, "oc-space");
@@ -449,6 +452,53 @@ class DBexport_OCexport  {
 					 $result = $db->fetchAll($sql);
 					 if(!$prefix){
 						  $prefix = $this->makeInsertPrefix($result[0], "space");
+					 }
+					 $insertVals = $this->makeInsertValues($result[0]);
+					 $data = $prefix.$insertVals;
+					 $this->saveAppendSQL($data); //save the data to a file
+					 unset($data);
+					 unset($result);
+				}
+				$this->closeFileHandle();
+		  }
+		  
+		  return count($resultA);
+	 }
+	 
+	 
+	 function makeSaveResource(){
+		  
+		  $db = $this->startDB();
+		  
+		  $limit = $this->addTestingLimit();
+		  $projCondition = "1";
+		  if(is_array($this->limitingProjArray)){
+				$projCondition = $this->makeORcondition($this->limitingProjArray, "project_id", "resource");
+		  }
+		  
+		  
+		  
+		  $sql = "SELECT uuid
+		  FROM resource
+		  WHERE $projCondition
+		  $limit
+		  ;
+		  
+		  ";
+		  
+		  $resultA = $db->fetchAll($sql);
+		  
+		  $data = "";
+		  if($resultA){
+				$prefix = false;
+				$this->startFileHandle(self::DBdirectory, "oc-res");
+				foreach($resultA as $rowA){
+					 $uuid = $rowA["uuid"];
+					 $sql = "SELECT * FROM resource WHERE uuid = '$uuid' LIMIT 1; ";
+					 
+					 $result = $db->fetchAll($sql);
+					 if(!$prefix){
+						  $prefix = $this->makeInsertPrefix($result[0], "resource");
 					 }
 					 $insertVals = $this->makeInsertValues($result[0]);
 					 $data = $prefix.$insertVals;
@@ -652,6 +702,9 @@ class DBexport_OCexport  {
 		  
 		  $firstLoop = true;
 		  foreach($row as $fieldKey => $value){
+				
+				$value = str_replace(self::localBaseURI, self::publicBaseURI, $value); //make sure all the URIs are public
+				
 				$value= "'".addslashes($value)."'";
 				if($firstLoop){
 					 $output = "VALUES (".$value;
@@ -765,11 +818,11 @@ class DBexport_OCexport  {
 	 
 	 //now append the data
 	 function saveAppendSQL($data){
-		  
-		  $fh = $this->actFileHandle;
-		  fwrite($fh, $data);
-		  $this->actFileHandle = $fh;
-		  
+		  if(strlen($data)>0){
+				$fh = $this->actFileHandle;
+				fwrite($fh, $data);
+				$this->actFileHandle = $fh;
+		  }
 	 }
 	 
 	 // close the file handle

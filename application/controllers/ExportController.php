@@ -102,6 +102,7 @@ class exportController extends Zend_Controller_Action {
 								
 								);
 		*/
+		$projects = array('3F6DCD13-A476-488E-ED10-47D25513FCB2');
 		
 		$exportObj = new DBexport_OCexport;
 		$exportObj->limitingProjArray = $projects;
