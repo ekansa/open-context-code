@@ -111,7 +111,7 @@ class SolrSearch{
     const geoLevelDeep = 4; //how many levels in geo tiles down will we go?
 	 const maxGeoTileDepth = 20; //maximum depth / resolution of geotiles
     
-	 const timeLevelDeep = 4; //how many levels of a time path to do down?
+	 const timeLevelDeep = 14; //how many levels of a time path to do down?
 	 
     //initialize the search, set search document types to false
     function initialize(){
@@ -1169,7 +1169,7 @@ class SolrSearch{
 		  if(isset($solrFacets["facet_fields"])){
 			 
 				$chronoLevelDeep = strlen($this->timePath) + self::timeLevelDeep;
-				if($chronoLevelDeep<15){
+				if($chronoLevelDeep < 15){
 					 $chronoLevelDeep = 15;
 				}
 				foreach($solrFacets["facet_fields"] as $key => $valueArray){
@@ -1177,7 +1177,7 @@ class SolrSearch{
 						  $rawTilesCount = count($valueArray); //count of raw geo-tile facet data from solr, values of the geo_path field
 						  if($rawTilesCount>0){
 	 
-								if($rawTilesCount < 2){
+								if($rawTilesCount <= 6){
 									 $chronoLevelDeep = 50;
 									 $chronoTileFacets = $this->makeGeoTileArray($valueArray,  $chronoLevelDeep); //make the geo tile
 								}
