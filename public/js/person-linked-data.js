@@ -147,6 +147,22 @@ function orcidRecordDone(response){
         }
     }
 
+    if(orcidBio["biography"] !== null && orcidBio["biography"] !== undefined){
+        if(orcidBio["biography"]["value"].length > 0){
+            var biographyHeadDom = document.createElement("h6");
+            var biographyHead = "Biography";
+            biographyHeadDom.innerHTML = biographyHead ;
+            linkDataDiv.appendChild(biographyHeadDom);
+            
+            var biographyDom = document.createElement("p");
+            biographyDom.setAttribute("id", "orcid-bio");
+            biographyDom.setAttribute("style", "white-space:pre-line;");
+            var biography = orcidBio["biography"]["value"];
+            biography.replace(/\r\n|\r|\n/g, '<br />');
+            biographyDom.innerHTML = biography;
+            linkDataDiv.appendChild(biographyDom);
+        }
+    }
     
     if(orcidAct["orcid-works"] !== null){
         
