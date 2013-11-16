@@ -208,6 +208,7 @@ class setsController extends Zend_Controller_Action {
 
    public function facetsAction() {
     
+		  
 		$requestParams =  $this->_request->getParams();
 		if(OpenContext_UserMessages::isSolrDown()){
 			return $this->render('down');
@@ -288,30 +289,32 @@ class setsController extends Zend_Controller_Action {
     
 //jsonfacets
     public function jsonfacetsAction() {
-    
-		$requestParams =  $this->_request->getParams();
-		if(OpenContext_UserMessages::isSolrDown()){
-			return $this->render('down');
-		}
+		  ini_set('max_execution_time', 150); //300 seconds = 5 minutes
+		  
+		  $requestParams =  $this->_request->getParams();
+		  if(OpenContext_UserMessages::isSolrDown()){
+			  return $this->render('down');
+		  }
 		
-		$protect = new Floodprotection; //check to make sure service is not abused by too many requests
-		$protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
-		$protect->check_ip();
-		if($protect->lock){
-			sleep($protect->sleepTime);
-		}
-		unset($protect);
-		
-		if(isset($requestParams["callback"])){
-		 $callback = $requestParams["callback"];
-		}
-		else{
-		 $callback = false;
-		}
+		  $protect = new Floodprotection; //check to make sure service is not abused by too many requests
+		  $protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
+		  $protect->check_ip();
+		  if($protect->lock){
+			  sleep($protect->sleepTime);
+		  }
+		  unset($protect);
+		  
+		  if(isset($requestParams["callback"])){
+			$callback = $requestParams["callback"];
+		  }
+		  else{
+			$callback = false;
+		  }
 		
 		
 		$SolrSearch = new SolrSearch;
 		$SolrSearch->initialize();
+		  $SolrSearch->geoMany = true;
 		$SolrSearch->requestURI = $this->_request->getRequestUri();
 		$SolrSearch->requestParams = $requestParams;
 		$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
@@ -544,6 +547,7 @@ class setsController extends Zend_Controller_Action {
     //get results as json, with links to new facets
     public function jsonAction() {
     
+		  ini_set('max_execution_time', 150); //300 seconds = 5 minutes
 		  $requestParams =  $this->_request->getParams();
 		  if(OpenContext_UserMessages::isSolrDown()){
 				return $this->render('down');
@@ -567,6 +571,7 @@ class setsController extends Zend_Controller_Action {
 		  
 		  $SolrSearch = new SolrSearch;
 		  $SolrSearch->initialize();
+		  $SolrSearch->geoMany = true;
 		  $SolrSearch->requestURI = $this->_request->getRequestUri();
 		  $SolrSearch->requestParams = $requestParams;
 		  $SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
@@ -639,6 +644,7 @@ class setsController extends Zend_Controller_Action {
 				  "sorting" => $SolrSearch->sortType,
 				  "summary" => $summaryObj,
 				  "facets" => $FacetURLs->FacetURLs,
+				  "geoCount" => count($FacetURLs->geoTileFacetURLs),
 				  "geoTileFacets" => $FacetURLs->geoTileFacetURLs,
 				  "chronoTileFacets" => $FacetURLs->chronoTileFacetURLs,
 				  "paging" => $pagingArray,
@@ -678,7 +684,7 @@ class setsController extends Zend_Controller_Action {
 	
 	 //get results as GeoJSON, with links to new facets
     public function geojsonAction() {
-    
+		  ini_set('max_execution_time', 150); //300 seconds = 5 minutes
 		  $requestParams =  $this->_request->getParams();
 		  
 		  if(OpenContext_UserMessages::isSolrDown()){
@@ -705,6 +711,7 @@ class setsController extends Zend_Controller_Action {
 		  $SolrSearch->initialize();
 		  $SolrSearch->requestURI = $this->_request->getRequestUri();
 		  $SolrSearch->requestParams = $requestParams;
+		  $SolrSearch->geoMany = true;
 		  $SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
 		  $requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
 		  

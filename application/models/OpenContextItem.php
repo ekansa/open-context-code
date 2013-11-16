@@ -149,12 +149,16 @@ class OpenContextItem {
     }
     
     
-    function addGeo($lat, $lon){
+    function addGeo($lat, $lon, $geoSpecificity = false){
 		  $lat = $lat + 0;
 		  $lon = $lon + 0;
 		  
 		  $geoObj = new GlobalMapTiles;
 		  $zoom = 20;
+		  if($geoSpecificity != false){
+				$zoom = abs($geoSpecificity);
+		  }
+		  
 		  $geoTilePath = $geoObj->LatLonToQuadTree($lat, $lon, $zoom);
 		  $i=0;
 		  $geoTilePathArray = array();

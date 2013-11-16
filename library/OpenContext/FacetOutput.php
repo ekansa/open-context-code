@@ -166,6 +166,17 @@ class OpenContext_FacetOutput {
 						  "remLink" => $remLink);
 				$output[] = $facetRem;
 			}
+			elseif($key == 'trange') {
+				$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, false, $type);
+				$chronoObj = new ChronoPath;
+				$remValue = $chronoObj->convertPathToLabel($value);
+				$facetRem = array("parameter" => $key,
+						  "value" => $value,
+						  "title" => "Time range",
+						  "remValue_XHTML" => $remValue,
+						  "remLink" => $remLink);
+				$output[] = $facetRem;
+			}
 			elseif($key == 'prop') {
 				foreach ($value as $va_key => $va_value) {
 					//echo "vakey: ".$va_key;

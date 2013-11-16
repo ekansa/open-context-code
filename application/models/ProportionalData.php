@@ -41,7 +41,14 @@ class ProportionalData{
             $cache->clean(Zend_Cache::CLEANING_MODE_OLD); // clean old cache records
             $cacheID = "setJS_".md5($denominatorLink);
             if(!$cache_result = $cache->load($cacheID)) {
-                $JSON_string = file_get_contents($denominatorLink);
+					 $ctx = stream_context_create(array( 
+						  'http' => array( 
+								'timeout' => 60 
+								) 
+						  ) 
+					 ); 
+					 
+                $JSON_string = file_get_contents($denominatorLink, false, $ctx);
                 @$denominatorArray = Zend_Json::decode($JSON_string);
 					 if(is_array($denominatorArray)){
 						  $cache->save($denominatorArray, $cacheID ); //save result to the cache, only if valid JSON

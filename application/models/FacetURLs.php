@@ -480,6 +480,7 @@ class FacetURLs{
 	 
 	 function makeChronoData(){
 		  
+		  $chronoObj = new ChronoPath;
 		  if(is_array($this->chronoTileFacetURLs)){
 				$chronoTileFacetURLs = $this->chronoTileFacetURLs;
 				$preChronoData = array();
@@ -611,7 +612,7 @@ class FacetURLs{
 						  $spanAdvance = $spanAdvance - $spanLen;
 					 }
 					 //die;
-					 $chronoData[] = array("label" => $this->makeLabel($chronoTile),
+					 $chronoData[] = array("label" =>$chronoObj->convertDateArrayToLabel($chronoTile["timeBounding"]),
 												  "key"  => $chronoTile["timeBounding"]["endBP"]." to ".$chronoTile["timeBounding"]["startBP"]." BP",
 												  "href" => $chronoTile["href"],
 												  "count" => $chronoTile["count"],
@@ -624,46 +625,5 @@ class FacetURLs{
 				$this->chronoData = $chronoData;
 		  }
 	 }
-	 
-	 
-	 function makeLabel($chronoTile){
-		  
-		  if($chronoTile["timeBounding"]["startBCE"] >= 1950 && $chronoTile["timeBounding"]["endBP"] == 0 && $chronoTile["timeBounding"]["startBP"] == 0){
-				$output = "Recent times";
-		  }
-		  else{
-				$output = $this->dateScale($chronoTile["timeBounding"]["endBCE"]);
-				$output .= " to ".$this->dateScale($chronoTile["timeBounding"]["startBCE"]);
-				$output .= " (".$this->dateScale($chronoTile["timeBounding"]["endBP"], false);
-				$output .= " - ".$this->dateScale($chronoTile["timeBounding"]["startBP"], false);
-				$output .= " BP)";
-		  }
-		  return $output;
-	 }
-	 
-	 function dateScale($dateValue, $bce = true){
-		  
-		  $absDate = abs($dateValue);
-		  if($absDate >= pow(10, 6)){
-				$clearDate = (round(($absDate / pow(10, 6)), 2)) . " M";
-		  }
-		  elseif($absDate >= pow(10, 4) && $absDate < pow(10, 6)){
-				$clearDate = (round(($absDate / pow(10, 3)), 1)) . " K";
-		  }
-		  else{
-				$clearDate = $absDate;
-		  }
-		  
-		  if($dateValue < 0 && $bce){
-				$clearDate .= " BCE";
-		  }
-		  elseif($dateValue >= 0 && $bce){
-				$clearDate .= " CE";
-		  }
-		  
-		  return $clearDate;
-	 }
-	 
-	 
 	 
 }

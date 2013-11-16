@@ -401,6 +401,7 @@ BEGIN Container for main page content
                         <div id="chart">
                         <svg></svg>
                         </div>
+                        <p style="text-align:center;"><small>Click an area to look within a time-range</small></p>
                     </div>
                     
                     
@@ -782,7 +783,10 @@ BEGIN Container for main page content
 									 }
 									 var newColorRGB = assignColorByCount(actCount, maxValue);
 									 var newColorHex =  "#" + convertToHex(newColorRGB);
-									 return {color: newColorHex , icon: iconArray[actCount]};
+                            var fillOpacity = assignOpacityByCount(actCount, maxValue, .75);
+									 return {color: newColorHex ,
+                                fillOpacity: fillOpacity,
+                                icon: iconArray[actCount]};
 								}
 						  },
 						  onEachFeature: onEachFeaturePrep,

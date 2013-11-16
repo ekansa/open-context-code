@@ -172,4 +172,58 @@ class ChronoPath {
 		  }
 	 }
 	 
+	 
+	 //make an easily read label from a path
+	 function convertPathToLabel($rawPath){
+		  
+		  $this->pathConvertBeginEnd($rawPath);
+		  $dates = array(
+					 "startBP" => round($this->blockStart, 0),
+					 "endBP" => round($this->blockEnd, 0),
+					 "startBCE" => 1950 - round($this->blockStart,0),
+					 "endBCE" => 1950 - round($this->blockEnd));
+					 
+		  return $this->convertDateArrayToLabel($dates);
+	 }
+		  
+		  
+	 function convertDateArrayToLabel($dates){  
+		  if($dates["startBCE"] >= 1950 && $dates["endBP"] == 0 && $dates["startBP"] == 0){
+				$output = "Recent times";
+		  }
+		  else{
+				$output = $this->dateScale($dates["endBCE"]);
+				$output .= " to ".$this->dateScale($dates["startBCE"]);
+				$output .= " (".$this->dateScale($dates["endBP"], false);
+				$output .= " - ".$this->dateScale($dates["startBP"], false);
+				$output .= " BP)";
+		  }
+		  return $output;
+	 }
+	 
+	 
+	 //change a date into an easily read verion
+	 function dateScale($dateValue, $bce = true){
+		  
+		  $absDate = abs($dateValue);
+		  if($absDate >= pow(10, 6)){
+				$clearDate = (round(($absDate / pow(10, 6)), 2)) . " M";
+		  }
+		  elseif($absDate >= pow(10, 4) && $absDate < pow(10, 6)){
+				$clearDate = (round(($absDate / pow(10, 3)), 1)) . " K";
+		  }
+		  else{
+				$clearDate = $absDate;
+		  }
+		  
+		  if($dateValue < 0 && $bce){
+				$clearDate .= " BCE";
+		  }
+		  elseif($dateValue >= 0 && $bce){
+				$clearDate .= " CE";
+		  }
+		  
+		  return $clearDate;
+	 }
+	 
 }

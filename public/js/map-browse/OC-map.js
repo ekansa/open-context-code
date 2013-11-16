@@ -108,6 +108,26 @@ function assignColorByCount(actCount, maxValue, minValue){
 	return newColor;
 }
 
+
+//generate a color for a polygon by its count
+function assignOpacityByCount(actCount, maxValue, baseOpacity){	
+	
+	if(maxValue > 0 ){
+		actProp = actCount / (maxValue - minValue);
+	}
+	else{
+		actProp = 1;
+	} 
+	
+	var opacity =  Math.round(baseOpacity * Math.sqrt(actProp), 2);
+	
+	if(opacity > baseOpacity){
+		opacity = baseOpacity;
+	}
+	return opacity;
+}
+
+
 //get a map icon of the right color
 function createColorMapIconURL(actCount, maxValue){
 	

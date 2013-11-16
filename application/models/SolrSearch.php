@@ -72,7 +72,8 @@ class SolrSearch{
     public $geoPath; // path for geo tile
     public $geoParam; // query parameter for geoTile
     public $geoFacets; // facets to display for geotile
-   
+	 public $geoMany; //lots of geospatial facets, requiring sub-searches
+	
 	 public $timePath; // path for time-range tile
 	
 	 public $doPost; //long query, needs to get POSTed
@@ -142,6 +143,7 @@ class SolrSearch{
 		$this->geoFacets = false;
 		$this->geoParam = false;
 		$this->geoPath = false;
+		$this->geoMany = false;
 		$this->timePath = false;
 		
 		
@@ -849,7 +851,6 @@ class SolrSearch{
 				$param_array["facet.sort"] = "index";
 		  }
 		  
-		  
 		  //$query .= " item_type:site^10";
 		  $this->param_array = $param_array;
 		  $this->query = $query;
@@ -888,11 +889,13 @@ class SolrSearch{
 	
 	
     function execute_search(){
-		  /*
+		 
+		 /*
 		  echo "<br/>Query: ".$this->query;
 		  echo "<br/>".$this->number_recs;
 		  echo "<br/>".var_dump($this->param_array);
-		  */
+		  die;
+		 */ 
 		  
 		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
 		  //$solr->setDefaultTimeout(5.0);
@@ -1095,51 +1098,134 @@ class SolrSearch{
 					 $geoLevelDeep = self::maxGeoTileDepth;
 				}
 			 
+				$rawTilesCount = 0;
+				if(isset($solrFacets["facet_fields"]["geo_path"])){
+					 $pathArray = $solrFacets["facet_fields"]["geo_path"];
+					 $rawTilesCount = count($pathArray); //count of raw geo-tile facet data from solr, values of the geo_path field
+					 if($rawTilesCount >= 100 && $this->geoMany){
+						  $pathArray = $this->deepGeoTiles($pathArray);
+						  $rawTilesCount = count($pathArray);
+					 }
+				}
+				
 				
 				$geoTileFacets = array();
-				foreach($solrFacets["facet_fields"] as $key => $valueArray){
-					 if(stristr($key, "_geo_tile")){
-						  //if searching against facet fields, which is very memory intensive
-						  if(count($valueArray)>0){
-								 $geoKeyPrefix = str_replace("_geo_tile", "", $key);
-								 foreach($valueArray as $tileKey => $count){
-									 $geoKey = $geoKeyPrefix.$tileKey;
-									 $geoTileFacets[$geoKey] = $count;
-								 }
+				if($rawTilesCount>0){
+
+					 if($rawTilesCount < 2){
+						  if($geoLevelDeep < self::maxGeoTileDepth - 5){
+								$geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
 						  }
+						  $geoTileFacets = $this->makeGeoTileArray($pathArray,  $geoLevelDeep); //make the geo tile
 					 }
-					 elseif($key == "geo_path"){
-						  $rawTilesCount = count($valueArray); //count of raw geo-tile facet data from solr, values of the geo_path field
-						  if($rawTilesCount>0){
-	 
-								if($rawTilesCount < 2){
-									 if($geoLevelDeep < self::maxGeoTileDepth - 5){
-										  $geoLevelDeep = self::maxGeoTileDepth - 5; //go into a deep zoom level if only 1 tile path
-									 }
-									 $geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tile
-								}
-								else{
-									 $geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
+					 else{
+						  $geoTileFacets = $this->makeGeoTileArray($pathArray,  $geoLevelDeep); //make the geo tiles
+						  $foundGeoTiles = count($geoTileFacets);
+						  if($foundGeoTiles == 1){
+								while($foundGeoTiles < 2 && $geoLevelDeep <= self::maxGeoTileDepth){
+									 //go into a deeper zoom level while there's only one tile currently in the array
+									 $geoLevelDeep = $geoLevelDeep + 1;
+									 $geoTileFacets = $this->makeGeoTileArray($pathArray,  $geoLevelDeep); //make the geo tiles
 									 $foundGeoTiles = count($geoTileFacets);
-									 if($foundGeoTiles == 1){
-										  while($foundGeoTiles < 2 && $geoLevelDeep <= self::maxGeoTileDepth){
-												//go into a deeper zoom level while there's only one tile currently in the array
-												$geoLevelDeep = $geoLevelDeep + 1;
-												$geoTileFacets = $this->makeGeoTileArray($valueArray,  $geoLevelDeep); //make the geo tiles
-												$foundGeoTiles = count($geoTileFacets);
-										  }
-									 }
 								}
 						  }
 					 }
 				}
-				 
+				
 				if(count($geoTileFacets)>0){
 					$this->geoTileFacets = $geoTileFacets;
 				}
 		  }
     }//end funciton
     
+	 
+	 function deepGeoTiles($pathArray){
+		  $geoPathParamArray = $this->param_array;
+		  $currentQuery = $this->query;
+		  unset($geoPathParamArray["facet.field"]); 
+		  $geoPathParamArray["facet.field"][] =  "geo_path";
+		  $geoPathParamArray["facet.limit"] =  -1;
+		  $requestParams = $this->requestParams;
+		  if(isset($requestParams["geotile"])){
+				$subqueries = array();
+				$currentTile = $requestParams["geotile"];
+				
+				/*
+				$geoDive = $requestParams["geodive"];
+				if($geoDive >5){
+					 $geoDive = 5;
+				}
+				*/
+				
+				$geoDive = 0;
+				$notTerm = false;
+				foreach($pathArray as $key => $count){
+					 if(!$notTerm ){
+						  $notTerm = " && NOT(( geo_path:$key)";
+					 }
+					 else{
+						  $notTerm .= " OR (geo_path:$key) ";
+					 }
+				}
+				$notTerm .= ")";
+				
+				$subTiles = $this->makeSubTileArray($geoDive, $currentTile);
+				foreach($subTiles as $subTile){
+					 if($subTile != $currentTile ){
+						  $subqueries[] = $currentQuery." && (geo_path:".$subTile."*)".$notTerm;
+					 }
+					 else{
+						  $subqueries[] = $currentQuery;
+					 }
+				}
+				
+				//echo print_r($subqueries);
+				
+				foreach($subqueries as $subQuery){
+					 $solrResponse = $this->generalSearch($geoPathParamArray, $subQuery, 0, 1, false);
+					 //echo print_r($solrResponse);
+					 //die;
+					 if(is_array($solrResponse)){
+						  if(isset($solrResponse["facet_counts"]["facet_fields"]["geo_path"])){
+								foreach($solrResponse["facet_counts"]["facet_fields"]["geo_path"] as $key => $count){
+									 if(!array_key_exists($key, $pathArray)){
+										  $pathArray[$key] = $count;
+									 }
+								}
+						  }
+					 }
+				}
+				
+		  }
+		  return $pathArray;
+	 }
+	 
+	 
+	 function makeSubTileArray($deep, $currentTile){
+		  $subTiles = array(0 => $currentTile);
+		  if($deep >0){
+				$dLevel = 0;
+				while($dLevel < $deep){
+					 $newSubTiles = array();
+					 foreach($subTiles as $subTile){
+						  $i = 0;
+						  while($i <= 3){
+								$newSubTiles[] =  $subTile.$i;
+						  $i++;
+						  }
+					 }
+					 unset($subTiles);
+					 $subTiles = $newSubTiles;
+					 unset($newSubTiles);
+					 $dLevel++;
+				}
+		  }
+		  return $subTiles;
+	 }
+	 
+	 
+	 
+	 
 	 //makes facet array for geotiles
 	 function makeGeoTileArray($valueArray,  $geoLevelDeep){
 		  $geoTileFacets = array();
@@ -1356,41 +1442,41 @@ class SolrSearch{
     
     
     function geoTileDirections($currentTile, $direction){
-		$output = "up";
-		if($direction == "north"){
-			if($currentTile == 2){
-			$output = 0;
-			}
-			if($currentTile == 3){
-			$output = 1;
-			}
-		}
-		elseif($direction == "south"){
-			if($currentTile == 0){
-			$output = 2;
-			}
-			if($currentTile == 1){
-			$output = 3;
-			}
-		}
-		elseif($direction == "west"){
-			if($currentTile == 1){
-			$output = 0;
-			}
-			if($currentTile == 3){
-			$output = 2;
-			}
-		}
-		elseif($direction == "east"){
-			if($currentTile == 0){
-			$output = 1;
-			}
-			if($currentTile == 2){
-			$output = 3;
-			}
-		}
-		
-		return $output;
+		  $output = "up";
+		  if($direction == "north"){
+				if($currentTile == 2){
+					 $output = 0;
+				}
+				if($currentTile == 3){
+					 $output = 1;
+				}
+		  }
+		  elseif($direction == "south"){
+				if($currentTile == 0){
+					 $output = 2;
+				}
+				if($currentTile == 1){
+					 $output = 3;
+				}
+		  }
+		  elseif($direction == "west"){
+				if($currentTile == 1){
+					 $output = 0;
+				}
+				if($currentTile == 3){
+					 $output = 2;
+				}
+		  }
+		  elseif($direction == "east"){
+				if($currentTile == 0){
+					 $output = 1;
+				}
+				if($currentTile == 2){
+					 $output = 3;
+				}
+		  }
+		  
+		  return $output;
     }//end function
     
     
@@ -2185,21 +2271,46 @@ class SolrSearch{
 
 
     //general search, just get back a resposnse without processing
-    function generalSearch(){
+    function generalSearch($param_array = false, $query = false, $offset = false, $number_recs = false, $saveQuery = false){
         
+		  if(!$query){
+				$query = $this->query;
+		  }
+		  if(!$param_array){
+				$param_array = $this->param_array;
+		  }
+		  if(!$offset){
+				$offset = $this->offset;
+		  }
+		  if(!$number_recs){
+				$number_recs = $this->number_recs;
+		  }
+		  
         $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
         try {
-            $response = $solr->search($this->query,
-                                 $this->offset,
-                                 $this->number_recs,
-                                 $this->param_array);
-                      
-            $this->queryString = $solr->queryString;
+				if(!$this->doPost){
+					 $response = $solr->search($query,
+                                 $offset,
+                                 $number_recs,
+                                 $param_array);
+				}
+				else{
+					 $response = $solr->search($query,
+                                 $offset,
+                                 $number_recs,
+                                 $param_array,
+											"POST");
+				}
+				if($saveQuery){
+					 $this->queryString = $solr->queryString;
+				}
             $rawResponse = Zend_Json::decode($response->getRawResponse());
             return $rawResponse;
 				
 		  } catch (Exception $e) {
-            $this->queryString = $solr->queryString;
+            if($saveQuery){
+					 $this->queryString = $solr->queryString;
+				}
 				$this->solrDown = true;
             return false;
 		  }

@@ -570,7 +570,12 @@ class OpenContext_XMLtoOpenContextItem {
 				$geoLon = (string)$geo_long;
 			}
 			
-			$OpenContextItem->addGeo($geoLat, $geoLon);
+			$geoSpecificity = false;
+			foreach ($geo_reference->xpath("oc:metasource/@specificity") as $specificity) {
+				$geoSpecificity = (string)$specificity;
+			}
+			
+			$OpenContextItem->addGeo($geoLat, $geoLon, $geoSpecificity);
 		}
 		
 		// check for inherited geospatial data and for polygons 
