@@ -161,6 +161,7 @@ const licenseIRI = "xhv:license";
 				$ontologyAnnotations = array();
 				foreach($xml->xpath("/owl:Ontology/@ontologyIRI") as $xpathResult){
 					 $this->vocabURI = (string)$xpathResult;
+					 $owlArray["ontologyIRI"] = $this->vocabURI;
 				}
 				
 				foreach($xml->xpath("/owl:Ontology/owl:Annotation") as $assertion){
@@ -423,6 +424,11 @@ const licenseIRI = "xhv:license";
 					 }
 				}
 		  }
+		  
+		  if(!$output && $this->vocabURI){
+				$output =  $this->vocabURI.$actIRI; 
+		  }
+		 
 		  return $output;
 	 }
 	 
@@ -436,6 +442,7 @@ const licenseIRI = "xhv:license";
 								$outputURIs = array();
 						  }
 						  if(is_array($childIRIs)){
+								
 								foreach( $childIRIs as $childIRIkey => $subChildren){
 									 $actChildURI = $this->IRIgetDefinedBy($childIRIkey , $owlClasses);
 									 if($actChildURI != false){

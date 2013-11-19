@@ -106,7 +106,7 @@ class settingsController extends Zend_Controller_Action {
 		$time_start = $this->microtime_float();
 		$vocab = $_GET["vocab"];
 		$hierarchyObj = new Facets_Hierarchy ;
-		$data = $hierarchyObj->loadActiveHierarchySettings($vocab );
+		$data = $hierarchyObj->loadActiveHierarchySettings($vocab , true);
 		
 		$time_end = $this->microtime_float();
 		$time = $time_end - $time_start;

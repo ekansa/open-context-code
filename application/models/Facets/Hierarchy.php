@@ -17,20 +17,55 @@ class Facets_Hierarchy {
 	 public $activeOWLhash;
 	 public $activeVocabURI;
 	 
-	 public $relTypes = array("eol" => "http://purl.org/NET/biol/ns#term_hasTaxonomy"
+	 public $relTypes = array("eol" => "http://purl.org/NET/biol/ns#term_hasTaxonomy",
+									  "dinaaPer" => "http://opencontext.org/vocabularies/dinaa/00001"
 									  );
 	 
-	 public $vocabURIs = array("eol" => "http://eol.org/"
+	 public $vocabURIs = array("eol" => "http://eol.org/",
+										"dinaaPer" => "http://opencontext.org/vocabularies/dinaa"
 									  );
+	 
+	 public $limitChildren = array("eol" => false,
+											 "dinaaPer" => true
+									  ); //delete all facets that are not children of the requested parent
 	 
 	 const settingsDirectory = "facetSettings";
 	 
 	 
+	 function hierarchicConversion($requestParams){
+		  $relTypes = $this->relTypes;
+		  foreach($relTypes as $paramKey => $relPredicate){
+				if(isset($requestParams[$paramKey])){
+					 $actReq = $requestParams[$paramKey];
+					 $relReq = $this->generateRelSearchEquivalent($actReq , $paramKey);
+					 if($relReq != false){
+						  $requestParams["rel"][] = $relReq;
+						  $requestParams["rel"][] = $this->getVocabRelationType($paramKey);
+					 }
+				}
+		  }
+		  
+		  return $requestParams;
+	 }
+	 
+	 function consolidateRawHierachicFacetsAllTypes($rawFacets){
+		  foreach($this->relTypes as $typeKey => $relPredicate){
+				$rawFacets = $this->consolidateRawHierachicFacets($typeKey, $rawFacets);
+		  }
+		  return $rawFacets;
+	 }
+	 
+	 
 	 function consolidateRawHierachicFacets($typeKey, $rawFacets){
 		  $requestParams = $this->requestParams;
-		  $actHierarchyURIs = $this->getActiveHierarchyURIs($typeKey);
 		  $relType = $this->getVocabRelationType($typeKey);
 		  if(isset($requestParams[$typeKey]) && $relType != false){
+				$limitChildrenArray = $this->limitChildren;
+				$limitChildren = true;
+				if(isset($limitChildrenArray[$typeKey])){
+					 $limitChildren = $limitChildrenArray[$typeKey];
+				}
+				$actHierarchyURIs = $this->getActiveHierarchyURIs($typeKey);
 				
 				$solrRelField = sha1($relType)."_lent_taxon";
 				if(isset($rawFacets[$solrRelField])){
@@ -56,6 +91,7 @@ class Facets_Hierarchy {
 					 unset($rawRelFacets);
 					 $rawRelFacets = $newFacets;
 					 unset($newFacets);
+					 
 					 
 					 foreach($actHierarchyURIs as $actParentURI){
 						  $actChildrenURIs = $this->getLabeledListChildURIs($actParentURI); //get URIs for all the children of the parent URI
@@ -99,8 +135,9 @@ class Facets_Hierarchy {
 					 echo print_r($rawRelFacets);
 					 */
 					 
+					 
 					 foreach($rawRelFacets as $facetURIkey => $count){
-						  if($count>0){
+						  if($count>0 && !$limitChildren){
 								if(!isset($consolidatedVocabFacets[$facetURIkey])){
 									 $consolidatedVocabFacets[$facetURIkey] = $count;
 								}
@@ -200,7 +237,15 @@ class Facets_Hierarchy {
 				if($actRelType != false){
 					 $owlSettings = $this->loadActiveHierarchySettings($typeKey); //get the hierarchy settings for the current vocabulary
 					 if(is_array($owlSettings)){
+						  
+						  $ontologyIRI = "";
+						  if(isset($owlSettings["ontologyIRI"])){
+								$ontologyIRI = $owlSettings["ontologyIRI"];
+						  }
+						  
 						  $OWLobj = new OWL;
+						  $OWLobj->vocabURI = $ontologyIRI;
+						  
 						  if($rawParent != "root"){
 								if(strstr($rawParent, "||")){
 									 $requestParentURIs = explode("||", $rawParent);
@@ -217,12 +262,14 @@ class Facets_Hierarchy {
 								$this->requestParentURIs = $requestParentURIs; //array of URI(s) of the requested parrent node(s)
 								$OWLrootIRIs = array();
 								foreach($requestParentURIs as $actParentURI){
-									 $OWLactIRIs = $OWLobj->getIRIfromDefinedBy($actParentURI, $owlSettings["classes"]); 
+									 $OWLactIRIs = $OWLobj->getIRIfromDefinedBy($actParentURI, $owlSettings["classes"]);
+									 if(!$OWLactIRIs){
+										  $OWLactIRIs = array(0=> str_replace($ontologyIRI, "", $actParentURI));
+									 }
 									 if($OWLactIRIs != false){
 										  $OWLrootIRIs = array_merge($OWLrootIRIs, $OWLactIRIs);
 									 }
 								}
-								
 						  }
 						  else{
 								$OWLrootIRIs = $owlSettings["rootParents"]; //the default, is the first root of the owl setting
@@ -233,14 +280,14 @@ class Facets_Hierarchy {
 								$actURIs = $OWLobj->getDefinedByViaHierachy($OWLrootIRI, $owlSettings["classes"], $owlSettings["hierarchy"]);
 								if($actURIs != false){
 									 if(is_array($actHierarchyURIs)){
-										  $actHierarchyURI = array_merge($actHierarchyURIs, $actURIs);
+										  $actHierarchyURIs = array_merge($actHierarchyURIs, $actURIs);
 									 }
 									 else{
 										  $actHierarchyURIs = $actURIs;
 									 }
 								}
 						  }//end loop generateing $actHierarchyURIs
-						  
+		  
 					 }//end case with owlsettings converted to an array
 				}//end case with owlSettings
 		  }//end case with a request using the typeKey
@@ -636,7 +683,7 @@ class Facets_Hierarchy {
 	 }
 	 
 	 //finds the hiearchy settings for a given type, if it exists
-	 function loadActiveHierarchySettings($typeKey){
+	 function loadActiveHierarchySettings($typeKey, $dbHierarchies = false){
 		  
 		  $output = false;
 		  $db = $this->startDB();
@@ -657,6 +704,9 @@ class Facets_Hierarchy {
 					 if(array_key_exists($typeKey, $vocabURIs)){
 						  $this->activeVocabURI = $vocabURIs[$typeKey]; //the URI for the currently active hiearchic vocabulary
 					 }
+					 if($dbHierarchies){
+						  $this->owlHierarchyToDB($settings);
+					 }
 					 if($this->activeOWLhash != $priorHash){
 						  $this->updateOCtoSettings($typeKey, $settings);
 					 }
@@ -667,15 +717,62 @@ class Facets_Hierarchy {
 		  return $output;
 	 }
 	 
+	 function owlHierarchyToDB($settings){
+		  $db = $this->startDB();
+		  $OWLobj = new OWL;
+		  $OWLobj->owlArray = $settings;
+		  $ontologyIRI = "";
+		  if(isset($settings["ontologyIRI"])){
+				$ontologyIRI = $settings["ontologyIRI"];
+		  }
+		  $classes = false;
+		  if(isset($settings["classes"])){
+				$classes = $settings["classes"];
+				foreach($classes as $iriKey => $class){
+					 
+					 $childURI = $OWLobj->IRIgetDefinedBy($iriKey, $classes);
+					 if(!$childURI){
+						  $childURI = $ontologyIRI.$iriKey;
+					 }
+					 $parentIRIs =  $OWLobj->getClassParents($iriKey);
+					 if(is_array($parentIRIs)){
+						  $parentPath = $parentIRIs[0];
+						  $pathEx = explode(":::",$parentPath);
+						  $lastParentIRI = $pathEx[count($pathEx)-1];
+						  if(strlen($lastParentIRI)>1){
+								//echo "<br/>"."<br/>".$classURI." parent: ".$lastParentIRI;
+								$parentURI = $OWLobj->IRIgetDefinedBy($lastParentIRI, $classes);
+								if(!$parentURI){
+									 $parentURI = $ontologyIRI.$lastParentIRI;
+								}
+								
+								$this->addHierarchyFromParams($parentURI, $childURI, $ontologyIRI, "default");
+						  }
+					 }
+					
+					 
+				}
+		  }
+		  
+	 }
+	 
+	 
 	 function updateOCtoSettings($typeKey, $settings){
 		  $db = $this->startDB();
 		  if(isset($settings["classes"])){
+				$ontologyIRI = "";
+				if(isset($settings["ontologyIRI"])){
+					 $ontologyIRI = $settings["ontologyIRI"];
+				}
 				$classes = $settings["classes"];
 				unset($settings);
 				$OWLobj = new OWL;
 				foreach($classes as $iriKey => $class){
 					 $prefLabel = $OWLobj->IRIgetLabel($iriKey, $classes);
 					 $classURI = $OWLobj->IRIgetDefinedBy($iriKey, $classes);
+					 if(!$classURI){
+						  $classURI = $ontologyIRI.$iriKey;
+					 }
 					 $this->addUpdateURIlabel($prefLabel, $classURI);
 				}
 		  }

@@ -1,7 +1,28 @@
 <?php
 
 class OpenContext_FacetQuery {
-
+   
+	
+	public static function blockProjectIDsForTesting($requestParams){
+		
+		$skipProjects = array("64013C33-4039-46C9-609A-A758CE51CA49" => "dinaa",
+									 "81204AF8-127C-4686-E9B0-1202C3A47959" => "dinaa");
+		$skipTerm = "";
+		foreach($skipProjects as $projectID => $OKvalue){
+			
+			$actskip = " && NOT project_id:".$projectID;
+			if(isset($requestParams["test"])){
+				if($requestParams["test"] == $OKvalue){
+					$actskip = "";
+				}
+			}
+			
+			$skipTerm .= $actskip; 
+			
+		}
+		
+		return $skipTerm;
+	}
 
 	public static function timeClean($dateString) {
 	/*
@@ -374,9 +395,9 @@ class OpenContext_FacetQuery {
 		
                 //exclude project 0, open context
                 if ($param_array["fq"]) {
-                        $param_array["fq"] .= " && NOT project_id:0";
+                        $param_array["fq"] .= " && NOT project_id:0".OpenContext_FacetQuery::blockProjectIDsForTesting($requestParams);
                 } else {
-                        $param_array["fq"] = "NOT project_id:0";
+                        $param_array["fq"] = "NOT project_id:0".OpenContext_FacetQuery::blockProjectIDsForTesting($requestParams);
                 }
 		
         

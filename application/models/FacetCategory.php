@@ -110,6 +110,14 @@ class FacetCategory{
             $this->arrayParameter = false;
             $this->extendLastArrayParameter = false;
         }
+        elseif ($this->facet_cat == 'dinaaPer') {
+            $this->parameter = "dinaaPer";
+            $this->checkParameter = "dinaaPer";
+            $this->facet_category_label = "DINAA linked period";
+            $this->facet_category_feed = "dinaaPer";
+            $this->arrayParameter = false;
+            $this->extendLastArrayParameter = false;
+        }
         elseif ($this->facet_cat == 'image_media_count') {
             $this->parameter = "images";
             $this->checkParameter = "images";

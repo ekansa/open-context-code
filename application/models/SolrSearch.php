@@ -729,7 +729,7 @@ class SolrSearch{
 		  $slashCount = $this->slashCount;
 		  $context_depth = $this->context_depth;
 		  
-		  
+		  /*
 		  if(isset($requestParams["eol"])){
 				//this makes translates a taxon idenfied in the request to a set of || (OR) deliminated children taxon URIs for a "rel[]" parameter request
 				$eolReq = $requestParams["eol"];
@@ -744,9 +744,14 @@ class SolrSearch{
 				}
 				unset($hierarchyObj);
 		  }
+		  */
 		  
-		  
-		  
+		  $hierarchyObj = new Facets_Hierarchy ;
+		  $requestParams = $hierarchyObj->hierarchicConversion($requestParams);
+		  if($hierarchyObj->countReqChildren >= 5){
+				$this->doPost = true;
+		  }
+		  unset($hierarchyObj);
 		  
 		  $extendedFacets = OpenContext_FacetQuery::unfold_deep_parameters($requestParams, $slashCount);
 		  
