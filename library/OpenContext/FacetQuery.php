@@ -1369,70 +1369,76 @@ public static function trimLastDelim($string, $actDelim = "::"){
 
 
 
-        public static function parseSearchTerms($searchString) {
-                $searchTerms = array();
-                $offset = 0;
-                while (($startQuoteOffset = strpos($searchString, '"', $offset)) !== false) {
-                    // If the startQuoteOffset is > than offset, then fetch previous search terms
-                    if ($startQuoteOffset > $offset) {
-                        $tmpTerms = explode(' ', trim(substr($searchString, $offset, ($startQuoteOffset - $offset))));
-                        if (is_array($tmpTerms) && count($tmpTerms) > 0) {
-                            foreach ($tmpTerms AS $term) {
-                                if (trim($term) == '') continue;
-                                $searchTerms[] = $term;
-                            }
-                        }
-                    }
-            
-                    // Fetch the item(s) within the quotes
-                    if (($endQuoteOffset = strpos($searchString, '"', $startQuoteOffset+1)) !== false) {
-                        // We have an end quote
-                        $searchTerms[] = trim(substr($searchString, $startQuoteOffset+1, ($endQuoteOffset-$startQuoteOffset-1)));
-                        $offset = $endQuoteOffset + 1;
-                    } else {
-                        // There is no end quote... let's go to the end of the string
-                        $searchTerms[] = trim(substr($searchString, $startQuoteOffset+1));
-                        $offset = strlen($searchString);
-                    }
-                }
-            
-                if ($offset < strlen($searchString)) {
-                    // We still have keywords to include
-                    $tmpTerms = explode(' ', substr($searchString, $offset));
-                    foreach ($tmpTerms AS $term) {
-                        if (trim($term) == '') continue;
-                        $searchTerms[] = $term;
-                    }
-                }
-            
-                if (!empty($searchString) && count($searchTerms) == 0) {
-                    // No quotes were provided in the search string
-                    $searchTerms = explode(' ', trim($searchString));
-                }
-            
-                return $searchTerms;
+        public static function OLDparseSearchTerms($searchString) {
+					$searchTerms = array();
+					$offset = 0;
+					while (($startQuoteOffset = strpos($searchString, '"', $offset)) !== false) {
+						 // If the startQuoteOffset is > than offset, then fetch previous search terms
+						 if ($startQuoteOffset > $offset) {
+							  $tmpTerms = explode(' ', trim(substr($searchString, $offset, ($startQuoteOffset - $offset))));
+							  if (is_array($tmpTerms) && count($tmpTerms) > 0) {
+									foreach ($tmpTerms AS $term) {
+										 if (trim($term) == '') continue;
+										 $searchTerms[] = $term;
+									}
+							  }
+						 }
+			  
+						 // Fetch the item(s) within the quotes
+						 if (($endQuoteOffset = strpos($searchString, '"', $startQuoteOffset+1)) !== false) {
+							  // We have an end quote
+							  $searchTerms[] = trim(substr($searchString, $startQuoteOffset+1, ($endQuoteOffset-$startQuoteOffset-1)));
+							  $offset = $endQuoteOffset + 1;
+						 } else {
+							  // There is no end quote... let's go to the end of the string
+							  $searchTerms[] = trim(substr($searchString, $startQuoteOffset+1));
+							  $offset = strlen($searchString);
+						 }
+					}
+			  
+					if ($offset < strlen($searchString)) {
+						 // We still have keywords to include
+						 $tmpTerms = explode(' ', substr($searchString, $offset));
+						 foreach ($tmpTerms AS $term) {
+							  if (trim($term) == '') continue;
+							  $searchTerms[] = $term;
+						 }
+					}
+			  
+					if (!empty($searchString) && count($searchTerms) == 0) {
+						 // No quotes were provided in the search string
+						 $searchTerms = explode(' ', trim($searchString));
+					}
+			  
+					return $searchTerms;
         }//end function parse search terms
 
 
-
+			public static function parseSearchTerms($searchString) {
+				preg_match_all('~(?|"([^"]+)"|(\S+))~', $searchString, $matches);
+				$searchTerms = $matches[1];
+				//echo print_r($searchTerms);
+				//die;
+				return $searchTerms;
+        }//end function parse search terms
 
         public static function solr_fulltext_terms($textSearch, $solrField){
-                
-                $search_array = array();
-                $output = "";
-                $search_array = OpenContext_FacetQuery::parseSearchTerms($textSearch);
-                foreach($search_array AS $term){
-                        $term = OpenContext_FacetQuery::solrEscape($term);
-								if(strlen($term)>0){
-									$output .= $solrField.":\\\"".$term."\\\" + ";
-								}
-                }//end loop
-                
-                $output = substr($output,0,(strlen($output)-2));
-                
-                //$output .= $solrField.":".OpenContext_FacetQuery::solrEscape($textSearch);
-                
-                return $output;
+            $searchTerms = OpenContext_FacetQuery::parseSearchTerms($textSearch);    
+            $output = false;
+				foreach($searchTerms as $term){
+					$escapeTerm = OpenContext_FacetQuery::solrEscape($term);
+					if(strlen($escapeTerm)>3){
+						$actTerm = "(".$solrField.":\"".$escapeTerm."\")";
+						if(!$output){
+							$output = $actTerm;
+						}
+						else{
+							$output .= " AND ".$actTerm;
+						}
+					}
+				}
+				$output = "(".$output.")";
+				return $output;
         }//end function
 
 
