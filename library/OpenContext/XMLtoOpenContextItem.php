@@ -878,9 +878,20 @@ class OpenContext_XMLtoOpenContextItem {
 		
 		//notes need to be added to the OpenContext item
 		if ($xmlItem->xpath("//arch:notes/arch:note")) {
-			foreach ($xmlItem->xpath("//arch:notes/arch:note/arch:string") as $note) {
-				$OpenContextItem->addSimpleArrayItem($note."", "alphaNotes"); //add notes
-			} 
+			$stringNote = false;
+			$xmlItem->registerXPathNamespace("xhtml", OpenContext_OCConfig::get_namespace("xhtml"));
+			if($xmlItem->xpath("//arch:notes/arch:note/arch:string/xhtml:div")){
+				foreach ($xmlItem->xpath("//arch:notes/arch:note/arch:string/xhtml:div") as $divNote) {
+					$stringNote = $divNote->asXML();
+					$OpenContextItem->addSimpleArrayItem($stringNote, "alphaNotes"); //add notes
+				}
+			}
+			else{
+				foreach ($xmlItem->xpath("//arch:notes/arch:note/arch:string") as $note) {
+					$stringNote = (string)$note;
+					$OpenContextItem->addSimpleArrayItem($stringNote, "alphaNotes"); //add notes
+				}
+			}
 		}
 		
 		
