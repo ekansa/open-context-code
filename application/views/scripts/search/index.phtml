@@ -458,7 +458,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                                                     //$sitePages->deletePage("http://opencontext/about/services/");
                                                     $pageString =  $sitePages->pageXHTML($doc["uuid"]);
                                                     unset($sitePages);
-                                                    $xml = simplexml_load_string($pageString);
+                                                    @$xml = simplexml_load_string($pageString);
                                                     $string = "<a href='".$doc["uuid"]."'>Click here to see search result</a>";
                                                     if($xml){
                                                         $string = $pageString;
