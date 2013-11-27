@@ -9,7 +9,8 @@ class SitePageIndex{
    public $docsAdded; // count of added docs
    public $error; //error message
    
-   public $pageArray = array("/about/",
+   public $pageArray = array(
+					"/about/",
 			     "/about/uses",
 			     "/about/concepts",
 			     "/about/technology",
@@ -19,7 +20,8 @@ class SitePageIndex{
 			     "/about/bibliography",
 			     "/about/privacy",
 			     "/about/people",
-			     "/about/sponsors"
+			     "/about/sponsors",
+				  "/about/intellectual-property"
 			     );
 
     public $ocItems; //array of OC items
@@ -39,74 +41,78 @@ class SitePageIndex{
 			$pageString = file_get_contents($host.$page);
 			
 			@$xml = simplexml_load_string($pageString);
+			
 			if($xml){
 			
-			$xml->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
-			
-			$OpenContextItem = new OpenContextItem;
-			$OpenContextItem->initialize();
-			
-			$OpenContextItem->itemUUID = $host.$page; //page URL/URI is the ID
-			$OpenContextItem->documentType = "site";
-			$OpenContextItem->projectUUID = "Open Context";
-			$OpenContextItem->projectName = "Open Context";
-			
-			foreach ($xml->xpath("//xhtml:title") AS $xpathResult){
-				$title = (string)$xpathResult;
-				$OpenContextItem->itemLabel = $title;
+				$xml->registerXPathNamespace("xhtml", "http://www.w3.org/1999/xhtml");
+				
+				$OpenContextItem = new OpenContextItem;
+				$OpenContextItem->initialize();
+				
+				$OpenContextItem->itemUUID = $host.$page; //page URL/URI is the ID
+				$OpenContextItem->documentType = "site";
+				$OpenContextItem->projectUUID = "Open Context";
+				$OpenContextItem->projectName = "Open Context";
+				
+				foreach ($xml->xpath("//xhtml:title") AS $xpathResult){
+					$title = (string)$xpathResult;
+					$OpenContextItem->itemLabel = $title;
+				}
+				
+				foreach ($xml->xpath("//xhtml:meta[@name='DC.date']/@content") AS $xpathResult){
+					$update = (string)$xpathResult;
+					$OpenContextItem->update = date("Y-m-d\TH:i:s\Z", strtotime($update));
+				}
+				
+				foreach ($xml->xpath("//xhtml:meta[@name='DC.created']/@content") AS $xpathResult){
+					$pubDate = (string)$xpathResult;
+					$OpenContextItem->pubDate = date("Y-m-d\TH:i:s\Z", strtotime($pubDate));
+				}
+				
+				foreach ($xml->xpath("//xhtml:meta[@name='DC.creator']/@content") AS $xpathResult){
+					$creators = (string)$xpathResult;
+					$OpenContextItem->addSimpleArrayItem($creators, "creators");
+				}
+				
+				$OpenContextItem->addSimpleArrayItem("documentation", "subjects");
+				$OpenContextItem->addSimpleArrayItem("privacy", "subjects");
+				$OpenContextItem->addSimpleArrayItem("web services", "subjects");
+				$OpenContextItem->addSimpleArrayItem("technology", "subjects");
+				$OpenContextItem->addSimpleArrayItem("archiving", "subjects");
+				$OpenContextItem->addSimpleArrayItem("Site Documentation", "classes");
+				
+				foreach ($xml->xpath("//xhtml:body") AS $xpathResult){
+					$bodyXMLobj = $xpathResult;
+					$bodyXML = $bodyXMLobj->asXML();
+					$body = strip_tags($bodyXML);
+					$OpenContextItem->addSimpleArrayItem($body, "alphaNotes");
+				}
+				
+				$where = array();
+				$where[] = "uri = '".$host.$page."' ";
+				$db->delete("oc_pages", $where);
+				$data = array("uri" => ($host.$page),
+						 "created" => date("Y-m-d\TH:i:s\Z", strtotime($pubDate)),
+						 "xhtml" => $bodyXML
+						 );
+				$db->insert("oc_pages", $data);
+				
+				$OpenContextItem->interestCalc();
+				$OpenContextItem->labelSort = $i / 100;
+				$OpenContextItem->interestScore += 20000; 
+				$ocItems[] = $OpenContextItem; 
+				
+				$solrDocument = new Apache_Solr_Document();
+				$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
+				//echo "bost:". $solrDocument->getBoost();
+		
+				$solrDocument->setBoost(10);
+				//echo "bost:". $solrDocument->getBoost();
+				$solrDocs[] = $solrDocument;
+	 
 			}
-			
-			foreach ($xml->xpath("//xhtml:meta[@name='DC.date']/@content") AS $xpathResult){
-				$update = (string)$xpathResult;
-				$OpenContextItem->update = date("Y-m-d\TH:i:s\Z", strtotime($update));
-			}
-			
-			foreach ($xml->xpath("//xhtml:meta[@name='DC.created']/@content") AS $xpathResult){
-				$pubDate = (string)$xpathResult;
-				$OpenContextItem->pubDate = date("Y-m-d\TH:i:s\Z", strtotime($pubDate));
-			}
-			
-			foreach ($xml->xpath("//xhtml:meta[@name='DC.creator']/@content") AS $xpathResult){
-				$creators = (string)$xpathResult;
-				$OpenContextItem->addSimpleArrayItem($creators, "creators");
-			}
-			
-			$OpenContextItem->addSimpleArrayItem("documentation", "subjects");
-			$OpenContextItem->addSimpleArrayItem("privacy", "subjects");
-			$OpenContextItem->addSimpleArrayItem("web services", "subjects");
-			$OpenContextItem->addSimpleArrayItem("technology", "subjects");
-			$OpenContextItem->addSimpleArrayItem("archiving", "subjects");
-			$OpenContextItem->addSimpleArrayItem("Site Documentation", "classes");
-			
-			foreach ($xml->xpath("//xhtml:body") AS $xpathResult){
-				$bodyXMLobj = $xpathResult;
-				$bodyXML = $bodyXMLobj->asXML();
-				$body = strip_tags($bodyXML);
-				$OpenContextItem->addSimpleArrayItem($body, "alphaNotes");
-			}
-			
-			$where = array();
-			$where[] = "uri = '".$host.$page."' ";
-			$db->delete("oc_pages", $where);
-			$data = array("uri" => ($host.$page),
-					 "created" => date("Y-m-d\TH:i:s\Z", strtotime($pubDate)),
-					 "xhtml" => $bodyXML
-					 );
-			$db->insert("oc_pages", $data);
-			
-			$OpenContextItem->interestCalc();
-			$OpenContextItem->labelSort = $i / 100;
-			$OpenContextItem->interestScore += 20000; 
-			$ocItems[] = $OpenContextItem; 
-			
-			$solrDocument = new Apache_Solr_Document();
-			$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
-			//echo "bost:". $solrDocument->getBoost();
-	
-			$solrDocument->setBoost(10);
-			//echo "bost:". $solrDocument->getBoost();
-			$solrDocs[] = $solrDocument;
- 
+			else{
+				$this->error .= "::".$page;
 			}
 			
 		$i++;
