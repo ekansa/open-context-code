@@ -720,11 +720,13 @@ BEGIN Container for main page content
 								
 								var actCount = tileData.features[i].properties.count;
 								var iconURL = createColorMapIconURL(actCount, maxValue);
+                        var shadowURL = "http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png";
+                        shadowURL = scaledShadowCircleURL(actCount, maxValue);
 								iconArray[actCount] =  L.icon({
 														  iconUrl: iconURL,
-														  shadowUrl: "http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png",
-														  iconAnchor:  [10, 38],
-														  shadowAnchor: [12, 40]
+														  shadowUrl: shadowURL,
+                                            iconAnchor:  [10, 10],
+														  shadowAnchor: [9, 11]
 														  });
 								
 								var marker = L.marker(latlng, {icon: iconArray[actCount]}).addTo(map);

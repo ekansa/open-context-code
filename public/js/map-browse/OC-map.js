@@ -4,6 +4,10 @@ var maxValue = 0;
 var minValue = 1000000000000;
 var allFeatures = new Array;
 var info;
+var minIconSize = 15;
+var maxIconSize = 50;
+var alphaRange = [225,175];
+
 
 function colorLegend(){
 					 
@@ -128,21 +132,46 @@ function assignOpacityByCount(actCount, maxValue, baseOpacity){
 }
 
 
+function calculateIconSize(actCount, maxValue){
+	var size = Math.round(maxIconSize * actCount/maxValue,0);
+	if(size < minIconSize){
+		size= minIconSize;
+	}
+	return size;
+}
+
 //get a map icon of the right color
 function createColorMapIconURL(actCount, maxValue){
-	
+	/*
+	return "http://chart.apis.google.com/" + 
+        "chart?cht=it&chs=" + size + "x" + size + 
+        "&chco=" + color + ",00000001,ffffff01" +
+        "&chf=bg,s,00000000|a,s,000000" + alpha + "&ext=.png";
+   
 	var width = 20;
 	var height = 40;
-	var baseUrl = "http://chart.apis.google.com/chart?cht=mm";
+	*/
+	var width = calculateIconSize(actCount, maxValue);
+	var height =  width;
+	var baseUrl = "http://chart.apis.google.com/chart?cht=it";
 	var strokeColor = "000000";
 	var cornerColor = "FFFFFF";
 	var primaryColor = convertToHex(assignColorByCount(actCount, maxValue));
-	
+	/*
 	var iconUrl = baseUrl + "&chs=" + width + "x" + height + 
 		 "&chco=" + cornerColor + "," + 
 		 primaryColor + "," + 
-		 strokeColor + "&ext=.png";
+		 strokeColor + "&chf=bg,s,00000000|a,s,000000" + "&ext=.png";
+	*/
+	var alphaDif = (alphaRange[1] -  alphaRange[0]);
+	alphaDif  = alphaDif  * ( (maxValue - actCount) / maxValue);
 	
+	var alpha = Math.round((alphaRange[0] + alphaDif), 0);
+	alpha = alpha.toString(16); 
+	
+	var iconUrl = baseUrl + "&chs=" + width + "x" + height + 
+		 "&chco=" + primaryColor + ",00000001,ffffff01" + "&chf=bg,s,00000000|a,s,000000" + alpha + "&ext=.png";
+		 
 	return iconUrl;
 }
 
@@ -297,4 +326,20 @@ function addInfoProportional(){
 		info.setPosition('topleft');
 		info.addTo(map);
 	}
+}
+
+
+function RGBtoHex(c) {
+   var m = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(c);
+   return m ? (1 << 24 | m[1] << 16 | m[2] << 8 | m[3]).toString(16).substr(1) : c;
+}
+
+function scaledShadowCircleURL(actCount, maxValue){
+	var size = calculateIconSize(actCount, maxValue) + 2;
+   var alpha = (alphaRange[1]-75).toString(16); 
+   var color = "8A8A8A";
+   return "http://chart.apis.google.com/" + 
+        "chart?cht=it&chs=" + size + "x" + size + 
+        "&chco=" + color + ",00000001,ffffff01" +
+        "&chf=bg,s,00000000|a,s,000000" + alpha + "&ext=.png";
 }

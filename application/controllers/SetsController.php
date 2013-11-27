@@ -581,6 +581,8 @@ class setsController extends Zend_Controller_Action {
 		  $SolrSearch->buildSolrQuery();
 		  $SolrSearch->execute_search();
 		  $solrQuey = $SolrSearch->queryString;
+		  $solrSearchParams = $SolrSearch->param_array;
+		  $doPost = $SolrSearch->doPost;
 		  $SolrSearch->getLatestTime(); //get the last updated
 		  $SolrSearch->getLatestTime(false); //get the last published
 		  $atom_string = $SolrSearch->makeSpaceAtomFeed();
@@ -627,6 +629,8 @@ class setsController extends Zend_Controller_Action {
 						);
 		  
 		  $FacetURLs = new FacetURLs;
+		  $FacetURLs->solrSearchParams = $solrSearchParams;
+		  $FacetURLs->doPost = $doPost;
 		  $FacetURLs->setRequestParams($requestParams);
 		  $FacetURLs->setSolrFacets($SolrSearch->facets);
 		  $FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
@@ -718,6 +722,8 @@ class setsController extends Zend_Controller_Action {
 		  $SolrSearch->spatial = true; //do a search of spatial items in Open Context
 		  $SolrSearch->buildSolrQuery();
 		  $SolrSearch->execute_search();
+		  $solrSearchParams = $SolrSearch->param_array;
+		  $doPost = $SolrSearch->doPost;
 		  $solrQuey = $SolrSearch->queryString;
 		  $SolrSearch->getLatestTime(); //get the last updated
 		  $SolrSearch->getLatestTime(false); //get the last published
@@ -738,6 +744,8 @@ class setsController extends Zend_Controller_Action {
 						);
 		  
 		  $FacetURLs = new FacetURLs;
+		  $FacetURLs->solrSearchParams = $solrSearchParams;
+		  $FacetURLs->doPost = $doPost;
 		  $FacetURLs->setRequestParams($requestParams);
 		  $FacetURLs->setSolrFacets($SolrSearch->facets);
 		  $FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;

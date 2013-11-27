@@ -126,6 +126,22 @@ class GeoJSON {
 					 $latDif = $maxLat - $minLat;
 					 $lonDif = $maxLon - $minLon;
 					 
+					 $polyCount = 0;
+					 $pointCount = 0;
+					 foreach($facets["context"] as $context){
+						  if(isset($context["geoTime"]["geoPoly"])){
+								$polyCount++;
+						  }
+						  else{
+								$pointCount++;
+						  }
+					 }
+					 
+					 $allowPoly = false;
+					 if($polyCount > $pointCount * 4){
+						  $allowPoly = true;
+					 }
+					 
 					 $contextGeoJSONarray = array();
 					 foreach($facets["context"] as $context){
 					 
@@ -134,7 +150,7 @@ class GeoJSON {
 						  
 						  $coordinateArray = array();
 						  
-						  if(isset($context["geoTime"]["geoPoly"])){
+						  if(isset($context["geoTime"]["geoPoly"]) && $allowPoly){
 								$actGeoJSON["geometry"] = array("type" => "Polygon");
 								$polyArray =  $this->contextPolyGeoJSON($context["geoTime"]["geoPoly"]);
 								$coordinateArray[] = $polyArray;

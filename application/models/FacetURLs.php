@@ -8,7 +8,9 @@ class FacetURLs{
     
     public $requestURI; //request URI
     public $requestParams; // array of the request parameters and values
-    
+    public $solrSearchParams; //param array of the last solr search
+	 public $doPost; //do post, if solr search has lots of query terms
+	 
     public $facetFields; //facets from the SolrSearch object
     public $facetQueries; //facet queries from the SolrSearch object
     public $timeSpanFacets; //treated somewhat differently
@@ -230,9 +232,17 @@ class FacetURLs{
 		  
 		  $param_array = array();
 		  $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, array("spatial"));
+		  $param_array = OpenContext_FacetQuery::build_simple_parameters($requestParams, array("spatial"));
 		  $param_array["facet"] = "true";
 		  $param_array["facet.mincount"] = "1";
 		  $param_array["facet.field"] = array("time_path", "geo_point");
+		  
+		  if(is_array($this->solrSearchParams)){
+				$oldParams = $this->solrSearchParams;
+				if(isset($oldParams["fq"])){
+					 $param_array["fq"] = $oldParams["fq"];
+				}
+		  }
 		  
 		  //echo $default_context;
 		  if($this->original_default_context_path){
@@ -245,8 +255,12 @@ class FacetURLs{
 		  //echo $thirdQuery;
 		  
 		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
-		  $response = $solr->search($query, 0, 1, $param_array);
-				  
+		  if(!$this->doPost){
+				$response = $solr->search($query, 0, 1, $param_array);
+		  }
+		  else{
+				$response = $solr->search($query, 0, 1, $param_array, "POST");
+		  }
 		  //process response to get date range for this item
 		  $response = Zend_Json::decode($response->getRawResponse());
 		  
