@@ -216,7 +216,8 @@ class TermHighlight{
 		  if($xml){
 				unset($xml);
 				$doc = new DOMDocument("1.0", "utf-8");
-				$doc->loadXML($string);
+				$doc->strictErrorChecking = FALSE ;
+				@$doc->loadXML($string, LIBXML_NOWARNING);
 				
 				$xpath = new DOMXpath($doc);
 				$textnodes = $xpath->query('//text()');
@@ -227,6 +228,15 @@ class TermHighlight{
 		  }
 		  return $data; //returns empty array if xml isn't valid
     }//end function
+
+
+	 function purgeBadEntities($string){
+		  
+		  $badArray("&ldquo;", "&rdquo;");
+		  
+		  
+		  
+	 }
 
 
 }//end class
