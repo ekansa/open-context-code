@@ -909,6 +909,10 @@ class SolrSearch{
 				 try {
 					 $param_array = $this->param_array;
 					 
+					 if(strlen($this->query)>1000){
+						  $this->doPost = true;
+					 }
+					 
 					 if((count($param_array["facet.field"])<10) && !$this->doPost){	  
 						  $response = $solr->search(	$this->query,
 													  $this->offset,
@@ -2293,6 +2297,11 @@ class SolrSearch{
 		  
         $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
         try {
+				
+				if(strlen($query)>1000){
+					 $this->doPost = true;
+				}
+				
 				if(!$this->doPost){
 					 $response = $solr->search($query,
                                  $offset,
