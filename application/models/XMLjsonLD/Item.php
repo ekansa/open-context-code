@@ -46,7 +46,7 @@ class XMLjsonLD_Item  {
 				"uuid" => "dc-terms:identifier",
 				"bibo" => "http://purl.org/ontology/bibo/",
 				"label" => "http://www.w3.org/2000/01/rdf-schema#label",
-				"xsd" => "http://www.w3.org/2001/XMLSchema",
+				"xsd" => "http://www.w3.org/2001/XMLSchema#",
 				"oc-gen" => "http://opencontext.org/vocabularies/oc-general/",
 				);
 		  
@@ -59,7 +59,7 @@ class XMLjsonLD_Item  {
 				$contextTree = 1;
 				foreach($this->contexts as $treeKey => $contextList){
 					 
-					 $actTree = array(	"@id" => "#context-path-".$contextTree,
+					 $actTree = array(	"id" => "#context-path-".$contextTree,
 												"oc-gen:path-des" => $treeKey,
 												"oc-gen:has-path-items" => $contextList
 												);
@@ -87,7 +87,7 @@ class XMLjsonLD_Item  {
 				$vars = array();
 				foreach($this->observations as $obsNumKey => $observation){
 					 $obsNode = "#obs-".$obsNumKey;
-					 $actObsOutput = array("@id" => $obsNode,
+					 $actObsOutput = array("id" => $obsNode,
 												"oc-gen:sourceID" => $observation["sourceID"],
 												"oc-gen:obsStatus" => $observation["status"]);
 					 
