@@ -120,9 +120,20 @@ class OpenContext_XMLtoOpenContextItem {
 		//for documents / diaries
 		if ($mediaItem->xpath("//arch:internalDocument/arch:string")) {
 			$OpenContextItem->documentType = "document";
-			foreach ($mediaItem->xpath("//arch:internalDocument/arch:string") as $docContent) {
-				$docContent = (string)$docContent;
-				$OpenContextItem->addSimpleArrayItem($docContent, "alphaNotes"); //add notes
+			
+			$stringNote = false;
+			$mediaItem->registerXPathNamespace("xhtml", OpenContext_OCConfig::get_namespace("xhtml"));
+			if($mediaItem->xpath("//arch:internalDocument/arch:string/xhtml:div")){
+				foreach ($mediaItem->xpath("//arch:internalDocument/arch:string/xhtml:div") as $divNote) {
+					$stringNote = $divNote->asXML();
+					$OpenContextItem->addSimpleArrayItem($stringNote, "alphaNotes"); //add notes
+				}
+			}
+			else{
+				foreach ($mediaItem->xpath("//arch:internalDocument/arch:string") as $docContent) {
+					$docContent = (string)$docContent;
+					$OpenContextItem->addSimpleArrayItem($docContent, "alphaNotes"); //add notes
+				}
 			}
 		}
 	

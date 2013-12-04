@@ -278,28 +278,28 @@ class SolrDocsIndex {
     */
     public function spatialItemSolrDoc($itemXMLstring){
 	
-	$itemXML = simplexml_load_string($itemXMLstring);
-	$itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
-	$itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
-	$itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	$itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
-	$OpenContextItem = new OpenContextItem;
-	$OpenContextItem->initialize();
-        $OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLspatialItemBasics($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
-	$OpenContextItem->interestCalc();
-			
-	$solrDocument = new Apache_Solr_Document();
-	$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
-	return $solrDocument;
+		  $itemXML = simplexml_load_string($itemXMLstring);
+		  $itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "spatial"));
+		  $itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "spatial"));
+		  $itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		  $itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
+		  $OpenContextItem = new OpenContextItem;
+		  $OpenContextItem->initialize();
+				 $OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLspatialItemBasics($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
+		  $OpenContextItem->interestCalc();
+				  
+		  $solrDocument = new Apache_Solr_Document();
+		  $solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
+		  return $solrDocument;
     }//end function
     
     
@@ -349,40 +349,40 @@ class SolrDocsIndex {
     */
     public function docItemSolrDoc($itemXMLstring){
 	
-	$OpenContextItem = new OpenContextItem;
-	$OpenContextItem->initialize();
-	$OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
-
-	$itemXML = simplexml_load_string($itemXMLstring);
-	$itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "media"));
-	$itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "media"));
-	$itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	$itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
-	
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLmediaItemBasics($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSpatialClass($OpenContextItem, $itemXML);
-	
-	if(strtolower($OpenContextItem->documentType) == "image"){
-	    $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoImageSizeData($OpenContextItem, $itemXML);
-	}
-	
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
-	$OpenContextItem->interestCalc();
-	
-	if(!is_array($OpenContextItem->classes)){
-	    $OpenContextItem->addSimpleArrayItem("No Object", "classes");
-	}
-	
-	$solrDocument = new Apache_Solr_Document();
-	$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
-	return $solrDocument;
+		  $OpenContextItem = new OpenContextItem;
+		  $OpenContextItem->initialize();
+		  $OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
+	  
+		  $itemXML = simplexml_load_string($itemXMLstring);
+		  $itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "media"));
+		  $itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "media"));
+		  $itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		  $itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
+		  
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLmediaItemBasics($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSpatialClass($OpenContextItem, $itemXML);
+		  
+		  if(strtolower($OpenContextItem->documentType) == "image"){
+				$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoImageSizeData($OpenContextItem, $itemXML);
+		  }
+		  
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
+		  $OpenContextItem->interestCalc();
+		  
+		  if(!is_array($OpenContextItem->classes)){
+				$OpenContextItem->addSimpleArrayItem("No Object", "classes");
+		  }
+		  
+		  $solrDocument = new Apache_Solr_Document();
+		  $solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
+		  return $solrDocument;
     }//end function
     
     
@@ -391,32 +391,32 @@ class SolrDocsIndex {
     */
     public function projectItemSolrDoc($itemXMLstring){
 	
-	//echo htmlentities($itemXMLstring);
+		  //echo htmlentities($itemXMLstring);
 	
-	$OpenContextItem = new OpenContextItem;
-	$OpenContextItem->initialize();
-	$OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
-
-	$itemXML = simplexml_load_string($itemXMLstring);
-	$itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
-	$itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
-	$itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	$itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
-	
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLprojectItemBasics($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
-	$OpenContextItem->interestCalc();
-	
-	$solrDocument = new Apache_Solr_Document();
-	$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
-	return $solrDocument;
+		  $OpenContextItem = new OpenContextItem;
+		  $OpenContextItem->initialize();
+		  $OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
+	  
+		  $itemXML = simplexml_load_string($itemXMLstring);
+		  $itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
+		  $itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
+		  $itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		  $itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
+		  
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLprojectItemBasics($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoContextData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoGeoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoChronoData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
+		  $OpenContextItem->interestCalc();
+		  
+		  $solrDocument = new Apache_Solr_Document();
+		  $solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
+		  return $solrDocument;
     }//end function
     
     
@@ -425,28 +425,28 @@ class SolrDocsIndex {
     */
     public function personItemSolrDoc($itemXMLstring){
 	
-	$OpenContextItem = new OpenContextItem;
-	$OpenContextItem->initialize();
-	$OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
-
-	$itemXML = simplexml_load_string($itemXMLstring);
-	
-	$itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "person"));
-	$itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "person"));
-	$itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
-	$itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
-	
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLpersonItemBasics($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
-	$OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
-	$OpenContextItem->interestCalc();
-	
-	$solrDocument = new Apache_Solr_Document();
-	$solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
-	return $solrDocument;
+		  $OpenContextItem = new OpenContextItem;
+		  $OpenContextItem->initialize();
+		  $OpenContextItem->update = date("Y-m-d\TH:i:s\Z");
+	  
+		  $itemXML = simplexml_load_string($itemXMLstring);
+		  
+		  $itemXML->registerXPathNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "person"));
+		  $itemXML->registerXPathNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "person"));
+		  $itemXML->registerXPathNamespace("dc", OpenContext_OCConfig::get_namespace("dc"));
+		  $itemXML->registerXPathNamespace("gml", OpenContext_OCConfig::get_namespace("gml"));
+		  
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLpersonItemBasics($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMediaLinkData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoPersonLinksData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoSocialData($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoMetadata($OpenContextItem, $itemXML);
+		  $OpenContextItem = OpenContext_XMLtoOpenContextItem::XMLtoProperties($OpenContextItem, $itemXML);
+		  $OpenContextItem->interestCalc();
+		  
+		  $solrDocument = new Apache_Solr_Document();
+		  $solrDocument = $OpenContextItem->makeSolrDocument($solrDocument);
+		  return $solrDocument;
     }//end function
     
     
