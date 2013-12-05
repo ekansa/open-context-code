@@ -20,6 +20,7 @@
 		xmlns:gml="http://www.opengis.net/gml"
 		xmlns:atom="http://www.w3.org/2005/Atom"
 		xmlns:georss="http://www.georss.org/georss"
+		xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
 		xmlns:xhtml="http://www.w3.org/1999/xhtml"
 		xmlns:cc="http://creativecommons.org/ns#"
 		
@@ -570,23 +571,33 @@
 														<div id="citation">
 															 <xsl:value-of select="$citationView"/><xsl:if test="//oc:metadata/dc:identifier[@type ='doi']">DOI:<a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']"/></a></xsl:if>
 														</div>
-													 
+														
+														
+														<xsl:if test="//dc:subject = 'DINAA'">
+															<br/>
+															<br/>
+															<h5>Mapping Data</h5>
+															<div id="map" style="height:180px;">
+																
+															</div>
+														</xsl:if>
+														
 													 
 														<xsl:if test="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public']) != 0">
 														
-														<br/>
-														<br/>
-														<h5>Editorial Description (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public'])"/>)</h5>
-														<xsl:for-each select="arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag">
-														  <a>
-															  <xsl:if test="@type != 'chronological'"><xsl:attribute name="href">../sets/?tag[]=<xsl:value-of select="oc:name"/></xsl:attribute></xsl:if>
-															  <xsl:if test="@type = 'chronological'"><xsl:attribute name="href">../sets/?t-start=<xsl:value-of select="//oc:time_start"/>&amp;t-end=<xsl:value-of select="//oc:time_finish"/></xsl:attribute><xsl:attribute name="id">time-span</xsl:attribute><xsl:attribute name="title">Rough dates provided by editors to facilitate searching</xsl:attribute></xsl:if><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()"> , </xsl:if>
-													  </xsl:for-each>
-														
-														<xsl:if test="//oc:user_tags/oc:tag[@type = 'chronological']">
-																  <p class="tinyText"><strong>Editor's Note:</strong> Date ranges are approximate and do not necessarily reflect the opinion of data contributors. These dates are provided only to facilitate searches.</p>
-														  </xsl:if>
-													 </xsl:if>
+															<br/>
+															<br/>
+															<h5>Editorial Description (<xsl:value-of select="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public'])"/>)</h5>
+															<xsl:for-each select="arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag">
+																<a>
+																  <xsl:if test="@type != 'chronological'"><xsl:attribute name="href">../sets/?tag[]=<xsl:value-of select="oc:name"/></xsl:attribute></xsl:if>
+																  <xsl:if test="@type = 'chronological'"><xsl:attribute name="href">../sets/?t-start=<xsl:value-of select="//oc:time_start"/>&amp;t-end=<xsl:value-of select="//oc:time_finish"/></xsl:attribute><xsl:attribute name="id">time-span</xsl:attribute><xsl:attribute name="title">Rough dates provided by editors to facilitate searching</xsl:attribute></xsl:if><xsl:value-of select="oc:name"/></a><xsl:if test="position() != last()"> , </xsl:if>
+															</xsl:for-each>
+															
+															<xsl:if test="//oc:user_tags/oc:tag[@type = 'chronological']">
+																<p class="tinyText"><strong>Editor's Note:</strong> Date ranges are approximate and do not necessarily reflect the opinion of data contributors. These dates are provided only to facilitate searches.</p>
+															</xsl:if>
+														</xsl:if>
 													 
 														<xsl:if test="$num_linkedData != 0">
 																<br/>
@@ -855,24 +866,21 @@
 						<xsl:value-of select="."/></div>
 						</xsl:for-each>
 				
-				
+						<div id="geo-lat" property="geo:lat"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:geo_lat"/></div>
+						<div id="geo-lon" property="geo:lon"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:geo_long"/></div>
+						
 				</div>
 				
 				<div about="http://opencontext.org">
-						<div property="rdfs:label">Open Context</div>
+					<div property="rdfs:label">Open Context</div>
 				</div>
 				
+				<div id="#geo-data">
+					<div id="geo-note" about="" property="dcterms:description"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:metasource/oc:note"/></div>
+				</div>
+				
+				
 		</div>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		</div><!-- End div for main body -->
 </xsl:template>

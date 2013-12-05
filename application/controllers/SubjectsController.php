@@ -175,6 +175,7 @@ class subjectsController extends Zend_Controller_Action {
 				$this->view->label = $spaceItem->label;
 				$this->view->itemClass = $spaceItem->getClassName($spaceItem->archaeoML);
 				$this->view->itemUUID = $itemUUID;
+				$this->view->projectUUID = $spaceItem->projectUUID;
 			}
 			else{
 				$this->view->requestURI = $this->_request->getRequestUri(); 
