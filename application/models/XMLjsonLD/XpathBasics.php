@@ -9,6 +9,10 @@ class XMLjsonLD_XpathBasics  {
 	 public $db; //database connection object
 	 public $itemXML;
 	 
+	 public $projectUUID; //current project ID
+	 public $sourceID; //current sourceID
+	 
+	 
 	 const subjectBaseURI = "http://opencontext.org/subjects/";
 	 
 	 const predicateBaseURI = "http://opencontext.org/predicates/";
@@ -91,6 +95,23 @@ class XMLjsonLD_XpathBasics  {
 					 $LinkedDataItem->published = $published;
 				}
 		  }
+		  
+		  $contributors = array();
+		  foreach($itemXML->xpath("//oc:metadata/dc:contributor/@href") as $xRes) { 
+				$contributors[] = (string)$xRes;
+				$LinkedDataItem->contributors = $contributors;
+		  }
+		  
+		  $creators = array();
+		  foreach($itemXML->xpath("//oc:metadata/dc:creator/@href") as $xRes) { 
+				$creators[] = (string)$xRes;
+				$LinkedDataItem->creators = $creators;
+		  }
+		  
+		  foreach($itemXML->xpath("//oc:metadata/oc:copyright_lic/@href") as $xRes) { 
+				$LinkedDataItem->license = (string)$xRes;
+		  }
+		  
 		  return $LinkedDataItem;
 	 }
 	
@@ -113,6 +134,7 @@ class XMLjsonLD_XpathBasics  {
 		  foreach($spatialItem->xpath("//arch:spatialUnit/@ownedBy") as $projUUID) {
 			  $projUUID = (string)$projUUID;
 			  $LinkedDataItem->projectUUID  = $projUUID;
+			  $this->projectUUID =  $projUUID;
 		  }
 	  
 		  // get the item class
@@ -156,8 +178,9 @@ class XMLjsonLD_XpathBasics  {
 		  }//end loop for item labels
 	
 		  foreach($mediaItem->xpath("//arch:resource/@ownedBy") as $projUUID) {
-			  $projUUID = (string)$projUUID;
-			  $LinkedDataItem->projectUUID  = $projUUID;
+				$projUUID = (string)$projUUID;
+				$LinkedDataItem->projectUUID  = $projUUID;
+				$this->projectUUID =  $projUUID;
 		  }
 
 		  //for documents / diaries
@@ -201,6 +224,7 @@ class XMLjsonLD_XpathBasics  {
 		  foreach($itemXML->xpath("//arch:project/@ownedBy") as $projUUID) {
 			  $projUUID = (string)$projUUID;
 			  $LinkedDataItem->projectUUID  = $projUUID;
+			  $this->projectUUID =  $projUUID;
 		  }
 	
 		  foreach ($itemXML->xpath("//oc:manage_info/oc:projGeoPoint") as $projectGeo) {
@@ -259,6 +283,7 @@ class XMLjsonLD_XpathBasics  {
 		  foreach($itemXML->xpath("//arch:person/@ownedBy") as $projUUID) {
 			  $projUUID = (string)$projUUID;
 			  $LinkedDataItem->projectUUID  = $projUUID;
+			  $this->projectUUID =  $projUUID;
 		  }
 	
 		return 	$LinkedDataItem;
@@ -365,6 +390,7 @@ class XMLjsonLD_XpathBasics  {
 					 if($obsNode->xpath("oc:obs_metadata/oc:source")) {
 						  foreach($obsNode->xpath("oc:obs_metadata/oc:source") as $obsSourceNode){
 								$obsSource = (string)$obsSourceNode;
+								$this->sourceID = $obsSource;
 						  }
 					 }
 					 
@@ -377,6 +403,7 @@ class XMLjsonLD_XpathBasics  {
 					 $observations[$obsNumber]["sourceID"] = $obsSource;
 					 $observations[$obsNumber]["properties"] = $this->XMLtoObsProperties($obsNode);
 					 $observations[$obsNumber]["notes"] = $this->XMLtoObsNotes($obsNode);
+					 $observations[$obsNumber]["links"] = $this->XMLtoObsLinks($obsNode);
 					 $countedObsNumber++;
 				}
 		  }
@@ -384,6 +411,7 @@ class XMLjsonLD_XpathBasics  {
 				$observations[1]["sourceID"] = false;
 				$observations[1]["properties"] = $this->XMLtoObsProperties($itemXML, "//");
 				$observations[1]["notes"] = $this->XMLtoObsNotes($itemXML, "//");
+				$observations[1]["links"] = $this->XMLtoObsLinks($itemXML, "//");
 		  }
 		  
 		  $LinkedDataItem->observations = $observations;
@@ -391,7 +419,7 @@ class XMLjsonLD_XpathBasics  {
 	 }
 	 
 	 
-	 
+	 //get properties for a given observation node
 	 function XMLtoObsProperties($obsXMLnode, $xpathPrefix = ""){
 		  $properties = false;
 		  if($obsXMLnode->xpath($xpathPrefix."arch:properties/arch:property")) {
@@ -508,7 +536,7 @@ class XMLjsonLD_XpathBasics  {
 		  return $properties;
 	 }
 	 
-	 
+	 //get notes for a given observation node
 	 function XMLtoObsNotes($obsXMLnode, $xpathPrefix = ""){
 		  $notes = false;
 		  if($obsXMLnode->xpath($xpathPrefix."arch:notes/arch:note")) {
@@ -530,7 +558,66 @@ class XMLjsonLD_XpathBasics  {
 		  return $notes;
 	 }
 	 
+	 //get links for a given observation node
+	 function XMLtoObsLinks($obsXMLnode, $xpathPrefix = ""){
+		  $links = false;
+		  if($obsXMLnode->xpath($xpathPrefix."arch:links//oc:link")) {
+				$links = false;
+				foreach ($obsXMLnode->xpath($xpathPrefix."arch:links//oc:link") as $linkNode) {
+					 $href = false;
+					 if($linkNode->xpath("@href")){
+						  foreach($linkNode->xpath("@href") as $xRes){
+								$href = (string)$xRes;
+						  }
+					 }
+					 $relationLabel = false;
+					 if($linkNode->xpath("oc:relation")){
+						  foreach($linkNode->xpath("oc:relation") as $xRes){
+								$relationLabel = (string)$xRes;
+								$relationLabel = trim($relationLabel);
+						  }
+					 }
+					 
+					 $predicateURI = $this->makeGetLinkPredicateURI($relationLabel);
+					 $links[$predicateURI][] = $href;
+				}
+		  }
+		  return $links;
+	 }
 	 
+	 //get a URI equivalent for the current relationship
+	 function makeGetLinkPredicateURI($relationLabel){
+		  $uri = false;
+		  $project_ids = array("0", $this->projectUUID);
+		  
+		  $predicateObj = new Items_Predicate;
+		  $predData = $predicateObj->getByLabel($relationLabel, $project_ids, "link");
+		  if(is_array($predData)){
+				$uri = self::predicateBaseURI.$predicateObj->uuid;
+		  }
+		  else{
+				//gotta make it!
+				$genObj = new Items_General;
+				$newUUID = $genObj->generateUUID();
+				
+				$data = array("uuid" => $newUUID,
+								  "project_id" => $this->projectUUID,
+								  "source_id" => $this->sourceID,
+								  "archaeoMLtype" => "link",
+								  "dataType" => "uri",
+								  "label" => $relationLabel,
+								  "created" => date("Y-m-d")
+								  );
+				
+				$ok = $predicateObj->createItem($data);
+				if($ok){
+					 $uri = self::predicateBaseURI.$newUUID;
+				}
+		  }
+		  
+		  
+		  return $uri;
+	 }
 	 
 	 
 	 function startDB(){

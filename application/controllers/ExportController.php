@@ -122,12 +122,13 @@ class exportController extends Zend_Controller_Action {
 		$jsonLDObj = new XMLjsonLD_Item;
 		$xpathsObj = new XMLjsonLD_XpathBasics;
 		$uri = "http://opencontext/subjects/9E474B89-E36B-4B9D-2D38-7C7CCBDBB030";
-		//$uri = "http://opencontext/subjects/845F877B-3A3F-4810-E6F3-C8D6FEA3AECA";
+		//$uri = "http://opencontext/subjects/830DA747-2681-45ED-F768-EE0F350D56E7";
 		$jsonLDObj = $xpathsObj->URIconvert($uri , $jsonLDObj);
 		$jsonLDObj->uri = $uri;
 		$output = $jsonLDObj->makeJSON_LD();
 		header('Content-Type: application/json; charset=utf8');
-		echo Zend_Json::encode($output);
+		//echo Zend_Json::encode($output,  JSON_PRETTY_PRINT);
+		echo json_encode($output,  JSON_PRETTY_PRINT);
 	}
 	
 	

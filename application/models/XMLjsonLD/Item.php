@@ -15,7 +15,10 @@ class XMLjsonLD_Item  {
 	 public $projectUUID; //uuid of the item's project
 	 
 	 public $published; //dublin core publication date
+	 public $license; //copyright license
 	 
+	 public $contributors;
+	 public $creators;
 	 
 	 //class, usually used with subject items
 	 public $itemClass;  //any object of an RDF type predicate
@@ -42,8 +45,11 @@ class XMLjsonLD_Item  {
 				"type" => "@type",
 				"id" => "@id",
 				"dc-elements" => "http://purl.org/dc/elements/1.1/",
-				"dc-terms" => "http://purl.org/dc/terms/",
-				"uuid" => "dc-terms:identifier",
+				"dcterms" => "http://purl.org/dc/terms/",
+				"dcterms:contributor" => array("@type" => "@id"),
+				"dcterms:creator" => array("@type" => "@id"),
+				"dcterms:license" => array("@type" => "@id"),
+				"uuid" => "dcterms:identifier",
 				"bibo" => "http://purl.org/ontology/bibo/",
 				"label" => "http://www.w3.org/2000/01/rdf-schema#label",
 				"xsd" => "http://www.w3.org/2001/XMLSchema#",
@@ -85,6 +91,7 @@ class XMLjsonLD_Item  {
 		  if(is_array($this->observations)){
 				$propNum = 1;
 				$vars = array();
+				$links = array();
 				foreach($this->observations as $obsNumKey => $observation){
 					 $obsNode = "#obs-".$obsNumKey;
 					 $actObsOutput = array("id" => $obsNode,
@@ -104,19 +111,19 @@ class XMLjsonLD_Item  {
 										  }
 										  if(!array_key_exists($varURI, $vars)){
 												$actVarNumber = count($vars) + 1;
-												$vars[$varURI] = array("type" => $actType, "abrVar" => "var-".$actVarNumber);
+												$vars[$varURI] = array("type" => $actType, "abrev" => "var-".$actVarNumber);
 										  }
 									 }
 								}
 								
 								foreach($vars as $varURI => $varArray){
-									 $abrVar = $varArray["abrVar"];
-									 $JSON_LD["@context"][$abrVar] = array("@id" => $varURI,
+									 $abrev = $varArray["abrev"];
+									 $JSON_LD["@context"][$abrev] = array("@id" => $varURI,
 																						"@type" => $varArray["type"]);
 								}
 								
 								foreach($observation["properties"] as $varURI => $varValues){
-									 $abrVar = $vars[$varURI]["abrVar"];
+									 $abrev = $vars[$varURI]["abrev"];
 									 foreach($varValues as $values){
 										  
 										  if(isset($values["id"])){
@@ -127,7 +134,7 @@ class XMLjsonLD_Item  {
 												$outputValue = $values[$actType];
 										  }
 										  //$actObsOutput[$varURI][] =  $outputValue;
-										  $actObsOutput[$abrVar][] =  $outputValue;
+										  $actObsOutput[$abrev][] =  $outputValue;
 										  $propNum++;
 									 }
 								}
@@ -139,12 +146,44 @@ class XMLjsonLD_Item  {
 								$actObsOutput["oc-gen:has-note"] = $observation["notes"];
 						  }
 					 }
+					 if(isset($observation["links"])){
+						  if(is_array($observation["links"])){
+								foreach($observation["links"] as $predicateKey => $objectURIs){
+									 if(!array_key_exists($predicateKey, $links)){
+										  $actLinkNumber = count($links) + 1;
+										  $links[$predicateKey] = array("type" => "@id", "abrev" => "link-".$actLinkNumber);
+									 }
+								}
+								
+								foreach($links as $predicateKey => $linkArray){
+									 $abrev = $linkArray["abrev"];
+									 $JSON_LD["@context"][$abrev] = array("@id" => $predicateKey,
+																						"@type" => $linkArray["type"]);
+								}
+								
+								foreach($observation["links"] as $predicateKey => $objectURIs){
+									 $abrev = $links[$predicateKey]["abrev"];
+									 foreach($objectURIs as $objectURI){
+										  $actObsOutput[$abrev][] = $objectURI;
+									 }
+								}
+								
+						  }
+					 }
 					 $JSON_LD["oc-gen:has-obs"][] = $actObsOutput;
 				}
 		  }
 		 
 		  //$JSON_LD["rawobs"] = $this->observations;
-		  $JSON_LD["dc-terms:published"] = $this->published;
+		  $JSON_LD["dcterms:published"] = $this->published;
+		  $JSON_LD["dcterms:license"] = $this->license;
+		  if(is_array($this->creators)){
+				$JSON_LD["dcterms:creator"] = $this->creators;
+		  }
+		  if(is_array($this->contributors)){
+				$JSON_LD["dcterms:contributor"] = $this->contributors;
+		  }
+		  
 		  return $JSON_LD;
 	 }
 	 
