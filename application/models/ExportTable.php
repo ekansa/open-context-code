@@ -96,12 +96,24 @@ class ExportTable {
 		  $metadata = $this->metadata;
 		  $citation = "";
 		  $first = true;
-		  foreach($metadata["contributorList"] as $nArray){
-				if(!$first){
-					 $citation .= ", ";
+		  if(isset($metadata["contributorList"])){
+				foreach($metadata["contributorList"] as $nArray){
+					 if(!$first){
+						  $citation .= ", ";
+					 }
+					 $citation .= $nArray["contributor"]["name"];
+					 $first = false;
 				}
-				$citation .= $nArray["contributor"]["name"];
-				$first = false;
+		  }
+		  else{
+				$first = true;
+				foreach($metadata["editorList"] as $nArray){
+					 if(!$first){
+						  $citation .= ", ";
+					 }
+					 $citation .= $nArray["editor"]["name"];
+					 $first = false;
+				}
 		  }
 		  
 		  $citation .= " (".date("Y-m-d", strtotime($metadata["published"])).") ";
