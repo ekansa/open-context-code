@@ -21,6 +21,7 @@ class OpenContext_FacetQuery {
 			
 		}
 		
+		$skipTerm = "";
 		return $skipTerm;
 	}
 

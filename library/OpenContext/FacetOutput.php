@@ -389,7 +389,7 @@ class OpenContext_FacetOutput {
 				}
 				
 				foreach ($value as $value) {
-					$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false, $value, $type);
+					$remLink = OpenContext_FacetOutput::removeParameter($requestParams, $key, false,  false, $type);
 					if($value != "root"){
 						$remValue = OpenContext_FacetOutput::removals_path_parameter($requestParams, $key, $value, "::");
 						$remValue["display"] = $remValue["display"]."; includes more specific periods";
