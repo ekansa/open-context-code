@@ -93,7 +93,9 @@ class exportController extends Zend_Controller_Action {
 		$this->_helper->viewRenderer->setNoRender();
 		
 		$projects = array('64013C33-4039-46C9-609A-A758CE51CA49',
-								'81204AF8-127C-4686-E9B0-1202C3A47959'
+								'81204AF8-127C-4686-E9B0-1202C3A47959',
+								'3F6DCD13-A476-488E-ED10-47D25513FCB2',
+								'8F947319-3C69-4847-B7A2-09E00ED90B32'
 								);
 		/*
 		$projects = array('99BDB878-6411-44F8-2D7B-A99384A6CA21',
@@ -122,13 +124,21 @@ class exportController extends Zend_Controller_Action {
 		$jsonLDObj = new XMLjsonLD_Item;
 		$xpathsObj = new XMLjsonLD_XpathBasics;
 		$uri = "http://opencontext/subjects/9E474B89-E36B-4B9D-2D38-7C7CCBDBB030";
-		//$uri = "http://opencontext/subjects/830DA747-2681-45ED-F768-EE0F350D56E7";
+		$uri = "http://opencontext/subjects/FC96A49E-FE12-488B-4EFF-02D4E147B885";
 		$jsonLDObj = $xpathsObj->URIconvert($uri , $jsonLDObj);
 		$jsonLDObj->uri = $uri;
-		$output = $jsonLDObj->makeJSON_LD();
-		header('Content-Type: application/json; charset=utf8');
-		//echo Zend_Json::encode($output,  JSON_PRETTY_PRINT);
-		echo json_encode($output,  JSON_PRETTY_PRINT);
+		$JSONld = $jsonLDObj->makeJSON_LD();
+		if(!isset($_GET["xml"])){
+			header('Content-Type: application/json; charset=utf8');
+			//echo Zend_Json::encode($output,  JSON_PRETTY_PRINT);
+			echo json_encode($JSONld,  JSON_PRETTY_PRINT);
+		}
+		else{
+			$compactObj = new XMLjsonLD_CompactXML;
+			$doc = $compactObj->makeCompactXML($JSONld);
+			header('Content-Type: application/xml; charset=utf8');
+			echo $doc->saveXML();
+		}
 	}
 	
 	

@@ -8,6 +8,9 @@ public/database/oc_media/**/*
 public/cache/**/*
 public/comp_cache/**/*
 public/time_cache/**/*
+public/search_cache/**/*
+public/search_cache/*
+public/search_cache/
 
 public/exports/*
 public/cache/*

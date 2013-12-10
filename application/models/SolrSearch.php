@@ -82,6 +82,7 @@ class SolrSearch{
     public $queryString; //raw solr query string
     public $rawDocsArray; //expose full raw docs
    
+	 public $cachedQueryIDs; //ids of cachedQueries
     public $lastUpdate; //last update date
     public $lastPublished; //last published
     public $facets; //solr facet counts found in query
@@ -113,6 +114,13 @@ class SolrSearch{
 	 const maxGeoTileDepth = 20; //maximum depth / resolution of geotiles
     
 	 const timeLevelDeep = 14; //how many levels of a time path to do down?
+	 
+	 
+	 
+	 const cacheLife = 72000; // cache lifetime, measured in seconds, 7200 = 2 hours
+	 const searchCache = "./search_cache/"; // Directory where to put the cache files;
+	 
+	 
 	 
     //initialize the search, set search document types to false
     function initialize(){
@@ -905,14 +913,13 @@ class SolrSearch{
 		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
 		  //$solr->setDefaultTimeout(5.0);
 		  if ($this->pingSolr($solr)) {
-		  //if (true) {
-				 try {
+				try {
 					 $param_array = $this->param_array;
 					 
 					 if(strlen($this->query)>1000){
 						  $this->doPost = true;
 					 }
-					 
+				
 					 if((count($param_array["facet.field"])<10) && !$this->doPost){	  
 						  $response = $solr->search(	$this->query,
 													  $this->offset,
@@ -2298,27 +2305,33 @@ class SolrSearch{
         $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
         try {
 				
-				if(strlen($query)>1000){
-					 $this->doPost = true;
-				}
+				$cacheID = $this->solrParamCachedQueryID($query, $offset, $number_recs, $param_array);
+				$rawResponse = $this->cachedResult($cacheID);
+				if(!is_array($rawResponse)){
 				
-				if(!$this->doPost){
-					 $response = $solr->search($query,
-                                 $offset,
-                                 $number_recs,
-                                 $param_array);
+					 if(strlen($query)>1000){
+						  $this->doPost = true;
+					 }
+					 
+					 if(!$this->doPost){
+						  $response = $solr->search($query,
+												 $offset,
+												 $number_recs,
+												 $param_array);
+					 }
+					 else{
+						  $response = $solr->search($query,
+												 $offset,
+												 $number_recs,
+												 $param_array,
+												 "POST");
+					 }
+					 if($saveQuery){
+						  $this->queryString = $solr->queryString;
+					 }
+					 $rawResponse = Zend_Json::decode($response->getRawResponse());
+					 $this->cacheSaveData($rawResponse, $cacheID);
 				}
-				else{
-					 $response = $solr->search($query,
-                                 $offset,
-                                 $number_recs,
-                                 $param_array,
-											"POST");
-				}
-				if($saveQuery){
-					 $this->queryString = $solr->queryString;
-				}
-            $rawResponse = Zend_Json::decode($response->getRawResponse());
             return $rawResponse;
 				
 		  } catch (Exception $e) {
@@ -2330,4 +2343,107 @@ class SolrSearch{
 		  }
     }
 
+	 //generate a cache ID for a given set of solr parameters
+	 function solrParamCachedQueryID($query, $offset, $number_recs, $param_array){
+		  if(!is_array($this->cachedQueryIDs)){
+				$cachedQueryIDs = array();
+		  }
+		  else{
+				$cachedQueryIDs = $this->cachedQueryIDs;
+		  }
+		  
+		  $qTerms = array("query" => $query,
+								"offset" => $offset,
+								"number_recs" => $number_recs,
+								"param_array" => $param_array
+								);
+		  
+		  $qTermsString = var_export($qTerms, true);
+		  $cacheID = "sp_".sha1($qTermsString);
+		  $cachedQueryIDs[] = $cacheID;
+		  $this->cachedQueryIDs = $cachedQueryIDs;
+		  return $cacheID;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 //get a results from a previously cached request
+	 function cachedResult($cacheID = false){
+		  $output = false;
+		  if(!is_array($this->cachedQueryIDs)){
+				$cachedQueryIDs = array();
+		  }
+		  else{
+				$cachedQueryIDs = $this->cachedQueryIDs;
+		  }
+		  
+		  if(!$cacheID){
+				if($this->requestURI){
+					 $cacheID = "r_".sha1($this->requestURI);
+					 $cachedQueryIDs[] = $cacheID;
+					 $this->cachedQueryIDs = $cachedQueryIDs;
+				}
+		  }
+		  if($cacheID != false){
+				
+				$frontendOptions = $frontendOptions = array(
+				 'lifetime' => self::cacheLife,
+				 'automatic_serialization' => true
+				);
+			  
+				$backendOptions = array(
+					  'cache_dir' => self::searchCache // Directory where to put the cache files
+				 );
+			  
+				$cache = Zend_Cache::factory('Core',
+											'File',
+											$frontendOptions,
+											$backendOptions);
+				
+				if($cache_result = $cache->load($cacheID)) {
+					$output = Zend_Json::decode($cache_result);
+				}
+		  }
+		  
+		  return $output;
+	 }
+	 
+	 //saves an array to the cache
+	 function cacheSaveData($arrayToCache, $cacheID = false){
+		  
+		  if(!$cacheID){
+				if($this->requestURI){
+					 $cacheID = "r_".sha1($this->requestURI);
+					 $cachedQueryIDs[] = $cacheID;
+					 $this->cachedQueryIDs = $cachedQueryIDs;
+				}
+		  }
+		  
+		  if($cacheID != false){
+				$frontendOptions = $frontendOptions = array(
+					  'lifetime' => self::cacheLife,
+					  'automatic_serialization' => true
+				);
+			  
+				$backendOptions = array(
+					  'cache_dir' => self::searchCache // Directory where to put the cache files
+				);
+			  
+				$cache = Zend_Cache::factory('Core',
+											'File',
+											$frontendOptions,
+											$backendOptions);
+				
+				$cacheJSON = Zend_Json::encode($arrayToCache);
+				$cache->save($cacheJSON, $cacheID ); //save result to the cache
+				return true;
+		  }
+		  else{
+				return false;
+		  }
+	 }
+	 
+	 
 }//end class
