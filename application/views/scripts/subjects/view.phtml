@@ -60,9 +60,9 @@ if ($XML) {
     <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-tab.js" type="text/javascript"></script>
     <script src="<?php echo $host; ?>/js/bootstrap/bootstrap-dropdown.js" type="text/javascript"></script>
 	 <?php
-		  $dinaa = false;
-		  if($this->projectUUID == "64013C33-4039-46C9-609A-A758CE51CA49" || $this->projectUUID == "81204AF8-127C-4686-E9B0-1202C3A47959"){
-				$dinaa = true;
+		  $doMap = true;
+		  if($doMap || $this->projectUUID == "64013C33-4039-46C9-609A-A758CE51CA49" || $this->projectUUID == "81204AF8-127C-4686-E9B0-1202C3A47959"){
+				$doMap = true;
 	 ?>
 	 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
 	 <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
@@ -135,21 +135,23 @@ if ($XML) {
          -->
 		  </script>
 		  
-		  <?php if($dinaa){
+		  <?php if($doMap){
 		  ?>
 		  
 		  <script type="text/javascript">
 				var actLatDom = document.getElementById("geo-lat");
 				var actLonDom = document.getElementById("geo-lon");
 				var actGeoNoteDom = document.getElementById("geo-note");
+				var actGeoSourceDom = document.getElementById("geo-source");
 				var actLat = actLatDom.innerHTML;
 				var actLon = actLonDom.innerHTML;
 				var actGeoNote = actGeoNoteDom.innerHTML;
-				var popUpMessage = "<div>["+ actLat + ", " + actLon  +"]"+"<p class=\"tinyText\">" + actGeoNote +"<p></div>";
+				var actGeoSource = actGeoSourceDom.innerHTML;
+				var popUpMessage = "<div><p class=\"tinyText\">[Lat: "+ actLat + ", Lon: " + actLon  +"] " + actGeoNote + " " + actGeoSource + "</p></div>";
 		  
 		  
 				var satelliteView = 1;
-				var map = L.map('map').setView([actLat, actLon], 9);
+				var map = L.map('map').setView([actLat, actLon], 6);
 				var bounds = new L.LatLngBounds();
 				var osmTiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

@@ -177,13 +177,15 @@ $metadata = $exTableObj->metadata;
                             <td>
                                 <?php
                                 $first = true;
-                                foreach($metadata["contributorList"] as $nArray){
-                                    $output = "<a href=\"".$nArray["contributor"]["id"]."\">".$nArray["contributor"]["name"]."</a>";
-                                    if(!$first){
-                                        $output = ", ".$output;
+                                if(isset($metadata["contributorList"])){
+                                    foreach($metadata["contributorList"] as $nArray){
+                                        $output = "<a href=\"".$nArray["contributor"]["id"]."\">".$nArray["contributor"]["name"]."</a>";
+                                        if(!$first){
+                                            $output = ", ".$output;
+                                        }
+                                        echo $output;
+                                        $first = false;
                                     }
-                                    echo $output;
-                                    $first = false;
                                 }
                                 ?>
                             </td>
@@ -291,24 +293,38 @@ $metadata = $exTableObj->metadata;
                                             <?php
                                             
                                             if(isset($metadata["license"]["id"])){
-                                                $licURI = $metadata["license"]["id"];
-                                                $licPict = str_replace("http://creativecommons.org/licenses", "", $licURI);
-                                                $licPict = "http://i.creativecommons.org/l".$licPict."/88x31.png";
                                                 $licName = $metadata["license"]["name"];
+                                                $licURI = $metadata["license"]["id"];
+                                                if(!stristr($licURI, "publicdomain")){
+                                                    $licPict = str_replace("http://creativecommons.org/licenses", "", $licURI);
+                                                    $licPict = "http://i.creativecommons.org/l".$licPict."/88x31.png";
+                                                    $licenseMessage = "To the extent to which copyright applies, this content is licensed with:
+                                                    <a rel=\"license\" href=\"".$licURI."\" title=\"Click here to view licensing conditions\" >".$licName."</a>;
+                                                    Attribution Required: Citation, and hyperlinks for online uses.";
+                                                    
+                                                }
+                                                else{
+                                                    $licPict = "http://i.creativecommons.org/p/zero/1.0/88x31.png";
+                                                    $licenseMessage = "To the extent to which copyright applies, this content is licensed with:
+                                                    <a rel=\"license\" href=\"".$licURI."\" title=\"Click here to view public domain dedication\" >".$licName."</a>;
+                                                    Attribution Requested: Citation, and hyperlinks for online uses.";
+                                                }
+                                                
                                             }
                                             else{
                                                 $licURI = "http://creativecommons.org/licenses/by/3.0";
                                                 $licPict = "http://i.creativecommons.org/l/by/3.0/88x31.png";
                                                 $licName = "Creative Commons Attribution 3.0 License";
+                                                $licenseMessage = "To the extent to which copyright applies, this content is licensed with:
+                                                    <a rel=\"license\" href=\"".$licURI."\" title=\"Click here to view licensing conditions\" >".$licName."</a>;
+                                                    Attribution Required: Citation, and hyperlinks for online uses.";
                                             }
                                             
                                             ?>
                                             <img src="<?php echo $licPict; ?>" alt="<?php echo $licName; ?>" />
                                         </div>
                                         <div id="license-text">
-                                            To the extent to which copyright applies, this content is licensed with:
-                                            <a rel="license" href="<?php echo $licURI; ?>" title="Click here to view licensing conditions" ><?php echo $licName; ?></a>;
-                                            Attribution Required: Citation, and hyperlinks for online uses.
+                                            <?php echo $licenseMessage; ?>
                                         </div>
                                     </div>
                                 </div>
