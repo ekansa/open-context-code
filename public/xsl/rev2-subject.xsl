@@ -572,7 +572,7 @@
 															 <xsl:value-of select="$citationView"/><xsl:if test="//oc:metadata/dc:identifier[@type ='doi']">DOI:<a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/dc:identifier[@type ='doi']"/></a></xsl:if>
 														</div>
 														
-														
+														<!--
 														<xsl:if test="//dc:subject = 'DINAA'">
 															<br/>
 															<br/>
@@ -581,6 +581,14 @@
 																
 															</div>
 														</xsl:if>
+														-->
+														
+														<br/>
+														<br/>
+														<h5>Mapping Data</h5>
+														<div id="map" style="height:180px;">
+															
+														</div>
 														
 													 
 														<xsl:if test="count(descendant::arch:spatialUnit/oc:social_usage/oc:user_tags/oc:tag[@status='public']) != 0">
@@ -877,6 +885,14 @@
 				
 				<div id="#geo-data">
 					<div id="geo-note" about="" property="dcterms:description"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:metasource/oc:note"/></div>
+					<xsl:choose>
+						<xsl:when test="//oc:metadata/oc:geo_reference/oc:metasource/@ref_type = 'self'">
+							<div id="geo-source">Spatial reference specified for this item.</div>
+						</xsl:when>
+						<xsl:otherwise>
+							<div id="geo-source">Spatial reference inferred from containment in <a><xsl:attribute name="href"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:metasource/@href"/></xsl:attribute><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:metasource/oc:source_name"/></a>.</div>
+						</xsl:otherwise>
+					</xsl:choose>
 				</div>
 				
 				
