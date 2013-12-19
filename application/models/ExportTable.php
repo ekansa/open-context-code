@@ -6,6 +6,8 @@ class ExportTable {
     
 	 public $db;
 	 public $tableID;
+	 public $tableGroupID;
+	 public $page;
 	 public $title;
 	 public $updated;
 	 public $created;
@@ -32,6 +34,10 @@ class ExportTable {
 	 const defaultRecCountPerPage = 100;
 	 const fileDirectory = "./exports";
 	 const altFileDirectory = "../exports";
+	 
+	 
+	 
+	 
 	 
 	 //gets table metadata by id
 	 function getByID($tableID, $setPage = false){
@@ -259,7 +265,12 @@ class ExportTable {
 				$tableID = $this->tableID;
 
 				$updatedDB = date("Y-m-d H:i:s", time());
-				$createdDB = $updatedDB;
+				if($this->created){
+					 $createdDB = date("Y-m-d H:i:s", strtotime($this->created));
+				}
+				else{
+					 $createdDB = $updatedDB;
+				}
 				
 				$data = array("title" => $this->title,
 								  "recordCount" => $this->recordCount,
@@ -289,6 +300,16 @@ class ExportTable {
 					 $metadata["published"] = date("Y-m-d\TH:i:s\-07:00", strtotime($createdDB));
 					 $metadata["updated"] = date("Y-m-d\TH:i:s\-07:00", strtotime($updatedDB));
 					 $data["tableID"] = $tableID;
+					 if(strstr($tableID, "/")){
+						  $tableIDex = explode("/", $tableID);
+						  $data["tableGroupID"] = $tableIDex[0];
+						  $data["page"] = $tableIDex[1];
+					 }
+					 else{
+						  $data["tableGroupID"] = $tableID;
+						  $data["page"] = 0;
+					 }
+					 
 					 $data["created"] = $createdDB;
 					 $data["num_views"] = 0;
 					 $data["num_downloads"] = 0;
@@ -337,6 +358,12 @@ class ExportTable {
 					 $error = true;
 				}
 				
+				if(isset($metadata["published"])){
+					 $this->created = $metadata["published"];
+				}
+				else{
+					 $error = true;
+				}
 				
 				if(isset($metadata["recordCount"])){
 					 $this->recordCount = $metadata["recordCount"];

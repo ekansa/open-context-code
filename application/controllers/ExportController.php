@@ -117,6 +117,26 @@ class exportController extends Zend_Controller_Action {
 		echo Zend_Json::encode($output);
 	}
 	
+	//iterate through and export all of the projects, subjects, media, and diary items
+	public function dbDumpSpaceAction() {
+		mb_internal_encoding( 'UTF-8' );
+		$this->_helper->viewRenderer->setNoRender();
+		
+		$projects = false;
+		
+		$exportObj = new DBexport_OCexport;
+		$exportObj->limitingProjArray = $projects;
+		//$exportObj->testing = true;
+		$counts = $exportObj->makeSaveSpace();
+		$output = array("projects" => $projects,
+							 "files" => $exportObj->files,
+							 "counts" => $counts 
+							 );
+		
+		header('Content-Type: application/json; charset=utf8');
+		echo Zend_Json::encode($output);
+	}
+	
 	
 	public function subjectJsonAction(){
 		$this->_helper->viewRenderer->setNoRender();
