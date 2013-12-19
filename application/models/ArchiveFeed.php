@@ -430,7 +430,7 @@ class ArchiveFeed {
 		  $db = $this->db;
 		  
 		  if(!$this->itemType){
-				$whereCondition = true;
+				$whereCondition = "ItemUpdated >= '1969-01-01' ";
 		  }
 		  else{
 				$whereCondition = " itemType = '".$this->itemType."' ";
@@ -438,6 +438,7 @@ class ArchiveFeed {
 		  
 		  $sql = "SELECT *
 			  FROM noid_bindings
+			  FORCE INDEX ( updated ) 
 			  WHERE ".$whereCondition."
 			  ORDER BY ItemUpdated DESC
 			  LIMIT ".($this->recStart ).",".self::entriesPerPage."
