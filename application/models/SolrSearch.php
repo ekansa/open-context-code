@@ -117,7 +117,7 @@ class SolrSearch{
 	 
 	 
 	 
-	 const cacheLife = 72000; // cache lifetime, measured in seconds, 7200 = 2 hours
+	 const cacheLife = 7200; // cache lifetime, measured in seconds, 7200 = 2 hours
 	 const searchCache = "./search_cache/"; // Directory where to put the cache files;
 	 
 	 
