@@ -1,0 +1,1329 @@
+﻿{
+    "@context": {
+        "type": "@type",
+        "id": "@id",
+        "rdfs": "http:\/\/www.w3.org\/2000\/01\/rdf-schema#",
+        "dc-elems": "http:\/\/purl.org\/dc\/elements\/1.1\/",
+        "dc-terms": "http:\/\/purl.org\/dc\/terms\/",
+        "uuid": "dc-terms:identifier",
+        "bibo": "http:\/\/purl.org\/ontology\/bibo\/",
+        "label": "http:\/\/www.w3.org\/2000\/01\/rdf-schema#label",
+        "xsd": "http:\/\/www.w3.org\/2001\/XMLSchema#",
+        "oc-gen": "http:\/\/opencontext.org\/vocabularies\/oc-general\/",
+        "var-1": {
+            "@id": "http:\/\/opencontext.org\/predicates\/9589A976-A9C0-4651-9027-9735985BF9E7",
+            "@type": "@id"
+        },
+        "var-2": {
+            "@id": "http:\/\/opencontext.org\/predicates\/57291FD5-30AE-4D7D-EEAF-CB5836659464",
+            "@type": "@id"
+        },
+        "var-3": {
+            "@id": "http:\/\/opencontext.org\/predicates\/2B679404-2B95-4E0B-DB9D-A41E2FFE513D",
+            "@type": "xsd:string"
+        },
+        "var-4": {
+            "@id": "http:\/\/opencontext.org\/predicates\/399DFFB7-05F9-4895-F8CB-F05CD087C48D",
+            "@type": "xsd:string"
+        },
+        "var-5": {
+            "@id": "http:\/\/opencontext.org\/predicates\/663AC80E-13FC-48F1-6075-D7EF8A361800",
+            "@type": "xsd:string"
+        },
+        "var-6": {
+            "@id": "http:\/\/opencontext.org\/predicates\/E41D7B8D-BDEB-4607-9D37-2FCDB51BE900",
+            "@type": "xsd:string"
+        },
+        "var-7": {
+            "@id": "http:\/\/opencontext.org\/predicates\/43527CE5-F4F3-4415-6009-3154A070B351",
+            "@type": "xsd:string"
+        },
+        "var-8": {
+            "@id": "http:\/\/opencontext.org\/predicates\/781A0ABB-8B1A-42FE-BE49-A338F7F83EE7",
+            "@type": "xsd:string"
+        },
+        "var-9": {
+            "@id": "http:\/\/opencontext.org\/predicates\/354DCD23-980F-4BEC-FBE8-B511B089E661",
+            "@type": "xsd:decimal"
+        },
+        "var-10": {
+            "@id": "http:\/\/opencontext.org\/predicates\/C84B0B63-BB78-4619-4BCF-80CC9E2B72D2",
+            "@type": "xsd:decimal"
+        },
+        "var-11": {
+            "@id": "http:\/\/opencontext.org\/predicates\/A76F7E15-BA44-4383-7EA4-60F8F716FF3F",
+            "@type": "xsd:decimal"
+        },
+        "var-12": {
+            "@id": "http:\/\/opencontext.org\/predicates\/CDAA5BB3-2F4B-4D90-19AA-E3F500BE1B35",
+            "@type": "@id"
+        },
+        "var-13": {
+            "@id": "http:\/\/opencontext.org\/predicates\/0290095E-7489-45DD-F86C-96389E36280B",
+            "@type": "xsd:decimal"
+        },
+        "var-14": {
+            "@id": "http:\/\/opencontext.org\/predicates\/65F73F8C-7520-4116-514E-32F5C17AE7D5",
+            "@type": "xsd:decimal"
+        },
+        "var-15": {
+            "@id": "http:\/\/opencontext.org\/predicates\/0D8E47BC-66F3-412B-07E0-C39878E577FA",
+            "@type": "xsd:decimal"
+        },
+        "var-16": {
+            "@id": "http:\/\/opencontext.org\/predicates\/255542F8-77B3-4143-DFE4-DBF44CD6FBBC",
+            "@type": "xsd:decimal"
+        },
+        "var-17": {
+            "@id": "http:\/\/opencontext.org\/predicates\/667B68A9-7283-4DA5-86CB-2742586DB672",
+            "@type": "xsd:date"
+        },
+        "var-18": {
+            "@id": "http:\/\/opencontext.org\/predicates\/F63A8CB7-1F50-4F45-4D8D-E23462DA4755",
+            "@type": "xsd:date"
+        },
+        "var-19": {
+            "@id": "http:\/\/opencontext.org\/predicates\/A91ACEFC-AAB1-4C36-4567-CB172CB888CE",
+            "@type": "@id"
+        },
+        "var-20": {
+            "@id": "http:\/\/opencontext.org\/predicates\/9AEEEB14-4C24-4A35-3C07-C155AB212EFC",
+            "@type": "@id"
+        },
+        "var-21": {
+            "@id": "http:\/\/opencontext.org\/predicates\/4240BB4A-E688-494C-E936-AF96E0ED0CD0",
+            "@type": "xsd:string"
+        },
+        "var-22": {
+            "@id": "http:\/\/opencontext.org\/predicates\/58814AF5-C149-4142-6FB2-29C0DE551F01",
+            "@type": "xsd:string"
+        },
+        "var-23": {
+            "@id": "http:\/\/opencontext.org\/predicates\/CD39AC4B-27AE-4F10-69E1-4BD87412BE0C",
+            "@type": "@id"
+        },
+        "link-1": {
+            "@id": "http:\/\/opencontext.org\/predicates\/C5F98D3A-FD1F-4DE2-574D-2A84D5DEA2F2",
+            "@type": "@id"
+        },
+        "link-2": {
+            "@id": "http:\/\/opencontext.org\/predicates\/9B69792D-BB89-4773-AB5B-DDBE82E810FA",
+            "@type": "@id"
+        },
+        "link-3": {
+            "@id": "http:\/\/opencontext.org\/predicates\/0EF02277-6FF4-4636-2864-DC5A5AD3A43A",
+            "@type": "@id"
+        },
+        "link-4": {
+            "@id": "http:\/\/opencontext.org\/predicates\/A027BB7A-A5D3-413D-7484-08E23563A967",
+            "@type": "@id"
+        },
+        "link-5": {
+            "@id": "http:\/\/opencontext.org\/predicates\/E9470333-973A-4F69-B9E9-B2B7B36E982A",
+            "@type": "@id"
+        },
+        "link-6": {
+            "@id": "http:\/\/opencontext.org\/predicates\/3",
+            "@type": "@id"
+        },
+        "link-7": {
+            "@id": "http:\/\/opencontext.org\/predicates\/20",
+            "@type": "@id"
+        },
+        "link-8": {
+            "@id": "http:\/\/opencontext.org\/predicates\/F48F04C9-E844-413E-D728-37488CF5B100",
+            "@type": "@id"
+        },
+        "var-24": {
+            "@id": "http:\/\/opencontext.org\/predicates\/7DD2B84F-9000-4DD7-B476-29ABD219BC43",
+            "@type": "@id"
+        },
+        "var-25": {
+            "@id": "http:\/\/opencontext.org\/predicates\/5C2A2690-9C43-4D11-79F9-7C1A01BD7E8D",
+            "@type": "@id"
+        },
+        "var-26": {
+            "@id": "http:\/\/opencontext.org\/predicates\/6B4DA40D-C1DA-48A6-DC8E-7D62565A9DC3",
+            "@type": "@id"
+        },
+        "var-27": {
+            "@id": "http:\/\/opencontext.org\/predicates\/C77C33AE-66C8-4451-FD65-85966D915555",
+            "@type": "@id"
+        },
+        "var-28": {
+            "@id": "http:\/\/opencontext.org\/predicates\/78D62A73-F3D3-4F8F-21D5-98F0CA9DA597",
+            "@type": "@id"
+        },
+        "var-29": {
+            "@id": "http:\/\/opencontext.org\/predicates\/D3D783D0-9F12-4A44-3D0E-4DBD6A43EAC1",
+            "@type": "@id"
+        },
+        "var-30": {
+            "@id": "http:\/\/opencontext.org\/predicates\/48977214-745D-4086-36CD-BE680E929649",
+            "@type": "@id"
+        },
+        "var-31": {
+            "@id": "http:\/\/opencontext.org\/predicates\/3775BFEB-11BB-4C76-789F-711B7D42E712",
+            "@type": "@id"
+        },
+        "var-32": {
+            "@id": "http:\/\/opencontext.org\/predicates\/97449F9E-532E-48F1-3089-D0B3B55C3ED6",
+            "@type": "@id"
+        },
+        "var-33": {
+            "@id": "http:\/\/opencontext.org\/predicates\/555DD1D8-61EB-428A-FFFA-2F30F1DA22F3",
+            "@type": "xsd:string"
+        }
+    },
+    "id": "http:\/\/opencontext.org\/subjects\/EA4A4244-A2C2-4CAF-9B04-C59A16465C43",
+    "label": "Locus 6",
+    "uuid": "EA4A4244-A2C2-4CAF-9B04-C59A16465C43",
+    "rdfs:type": [
+        {
+            "id": "http:\/\/opencontext.org\/vocabularies\/oc-general\/cat-0027"
+        }
+    ],
+    "oc-gen:has-context-path": [
+        {
+            "id": "#context-path-1",
+            "oc-gen:path-des": "default",
+            "oc-gen:has-path-items": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/1_Global_Spatial"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/5D6B6454-017A-43C1-9F15-6DFE36C3558F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/64E926FA-087A-4873-DF43-FFEE0E1EBE61"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/E5B52F10-333F-4CB8-C397-7DFAD00A3719"
+                }
+            ]
+        }
+    ],
+    "oc-gen:has-contents": [
+        {
+            "id": "#contents-1",
+            "oc-gen:path-des": "default",
+            "oc-gen:contains": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9F9FFCBF-6BE8-46C8-E3E7-51F950EE6F0E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F30735BF-8DC3-409D-55F1-7432970826CE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/C0D102DC-690C-493A-0FC8-1F01736F5621"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/E11711E1-3759-435E-368E-F53C104647F8"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F5005F10-1A94-4C51-7E8A-BCB6C1C02DB3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0FF29E9F-3AB2-4704-327A-CE82DB165B0B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/AFF7EA29-8AF0-4F54-742F-97C40AF7D427"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/48FB4ED8-90A3-426D-0656-796A5F63B821"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/70D8E26A-5B0D-48FE-95CD-7E92ED49C902"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A965FBF3-AF8B-4272-BC54-5A516507A0F7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/EA73DBBB-7110-4E66-C29B-9B1841E011DC"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2CC2C721-B9FE-43C4-B175-39D1F7B26C87"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/CC5AAE30-6F19-4B02-A6A2-6FC76A8A5A7A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/18461E54-A4B2-4A05-415B-BC3889165669"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/D7892A31-60F5-4CFA-816E-7E38D730E1D1"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/1FFA3948-0FAA-4EBA-38F2-AD0DCC3FCA96"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/B7256E7D-C882-4622-273E-EA2546F9191B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/BAE44097-3DDC-45CD-7CEA-F09EEBC6F2DB"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/83E0C155-18CA-43AD-F99F-D71E5612E509"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/49E573BE-8385-4751-22E6-8ED264A44810"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/42ECE2CD-FFE8-4919-0559-1FADD7AF20E5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/941A030C-BC9F-45CE-A840-7E4DE8395D4A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/AF83087E-FACC-4119-489B-1231EF8E7F36"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A792030D-4925-4EE8-B32E-03C6704ED412"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/E5FEBEC9-1290-45EB-2A19-37B1AEF71C42"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/8BC10C80-93D7-49DA-1AD8-FA2F9C6FF39B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F4821849-593E-4550-9B40-F8454D6CC147"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/B5013396-E163-4409-300F-63706906FD7F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3C186B9C-C8C0-4B92-BD75-9C11FF939260"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/C8009850-4397-4DA1-9CA6-4A9734AF7E3C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3E526F3B-B5B9-45F0-0138-210BB9E4FEA2"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/AF2975A2-DF18-4847-8C8F-8D7BA3A8331C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3C3B861D-1C5E-438A-66E1-BAB9FB6D572F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/6E87C6DC-1F67-43A4-46A8-4D42FCF789CD"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/CB5669F2-9823-4582-DD48-8A09F179DBDD"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9377B34C-E40F-4C63-E58C-5219C544681F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3FC21EC6-19BB-46DD-11CC-F30E3DA7A1BF"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3B8D39BC-D254-4B32-2352-C09584B69866"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/596760C5-ECDA-49E5-7DAC-5CB33C2F549F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/50CBFB63-E72E-4F6D-09AC-729A6662CEC9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/BD47471E-741A-46B0-C64D-7407D3434D10"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/CD5CF96F-3015-4E25-8AD7-98F7B52AAFE3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/71A41FAB-6993-4FAD-18F1-1841D4506CD4"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0E16F2C3-D9FC-458B-51DB-7A2AAA45E51D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/AE5C240E-DF67-4145-4049-C4F8320C0AF7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/AA5D13F7-76A9-4CE8-ADD9-0898F455EA15"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/CE7EF45F-7751-4593-E281-B6D338C987D3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3508680B-1955-4369-FDC2-92E37F4BEE25"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4532A223-BE90-4EAE-0167-71F24B1505C6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/697BCA45-CAED-412B-DF98-EA68130B5961"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9927FDD6-C12A-4072-8754-8F281F4DE9B2"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A82DA362-7995-446F-3BF3-64A4AFE15A8A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/206812D1-E065-4FB3-57C0-9EDFCAEC7A80"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4F7282D2-7DB8-4672-50BA-93BB8C4BC883"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/35B560A8-2CB3-429F-0000-4A88AF77079B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/475B5737-B4B0-4193-DBFA-1039058A7644"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2A1CA0A4-6749-4931-1E66-C955B3B05211"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/7348A8D0-9C86-4BA3-7719-A0352CE01225"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/B250DF8E-F22C-409D-E537-6E91A1CD475F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A46930F8-3FFC-4CFE-4440-077102ABF55C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A1474DBA-CE0C-4610-EC26-C396DEDDAF99"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0F7D9356-7115-4C8B-4EF8-931EFB1D5D00"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F6CE7C19-2E58-4FE2-56A8-BE395E38F073"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/986916A7-3549-45AF-C99B-8C3A1968C0A2"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F462DBF6-FD08-4831-5A15-F50D979702C4"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9B242A46-503C-402A-DF05-9985253BE8D7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/BE77377C-1870-449D-2245-03F350E3F03C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/E7D2C76B-03D8-4284-5B08-1D92806D5178"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/8A5E3B0F-629F-4AC7-FD21-16C8B7525F42"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/6A7EE5A0-B27A-4F58-49A9-5FB4DD49B292"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F745F8B8-1A1C-4E28-1CC0-B36685A0E684"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/81C19E22-D895-4B0F-90E1-81B66CB3981C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/C0326D63-B89C-4231-D12A-B14C57D30849"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/795B28AB-6A7B-4B9D-A540-AE00C55E2AED"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4F84C682-9B36-448B-EA41-894C8BDA29B0"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9189124A-74C8-4A63-D4FF-17EA7FFF134A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0B16D2DB-564F-434E-01DE-21CB78A19C7A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4963C4BC-841B-4DF5-0D41-DB8147B6525E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/268EE373-8740-4416-D9F4-1A3CCD9802F7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F2F9594A-2C1A-490D-60DF-9457DDA22924"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/C306163B-9596-4598-D55C-B31BA604C95F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/BB459121-C47E-4B89-4D58-70A73724D788"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/CDAA0C1B-CE02-4D60-7712-393D9C1BD40B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/8DFAB6B8-3BA6-4C27-8BB1-70F5CD8E8613"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3E1245A8-7C79-41E2-17EB-26F30CDD44D7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/D6ACF405-6991-4750-AD23-6B4B42A6F66E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/AB3731D3-35E6-49BC-F60F-C95391E27E80"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/8519B952-2E9F-4DDB-8C13-34EF8500882F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/610541ED-E220-403D-F252-F8DDC8F70A5B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/680862FA-6E7C-4177-2F5D-B7E38F8B5E33"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3DB08063-FA50-4BB1-9979-D2969E5C9E36"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/D5F8F430-C1F7-49BE-74C6-5B7E0CAA848A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/18951AE7-929D-481E-B14F-BFDB0FC292FD"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/DA7A1AD2-6F98-4BC6-B183-73059EC9D228"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/5BE0160B-E056-468E-BFEF-DECE218796D9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/32798627-88A5-4EC6-FE48-4279CFB1AD30"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/14DFC6C6-6413-41BE-0124-5EA9103B051D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/8A98CCDA-4546-4768-3590-36EAC61BD616"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/342600AB-6FF3-4DD8-CBA0-A35FA2C6A87E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/EBD091A3-1708-461E-9967-F0C94C550FC5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/70767FDD-DDCD-4152-6A78-9B3774602941"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9A39B1C8-C818-4A2C-FF94-22ECE910338E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/09EFC0C7-72F7-41A5-6902-1B42856A69EE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2DB52662-556B-4901-2A0F-F0377045BACB"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/BC0C1FCA-FC84-4115-C0C3-7850603D4F34"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/EFB4FA0A-32FE-468D-D995-7289131E3941"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/5F02CBB8-9B30-436A-6B56-62891F8D0A9E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/9DB68DFA-8070-479F-B232-5CB19DBA9D5D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/1B6C48D9-CD98-4796-D03C-E80EB9102960"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/C039ACFA-ED3A-489E-1DF4-1D514D4E72AA"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/08AAE776-A3CA-424B-7E5F-CE7BB8D9CECE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/56F69C11-ACDD-4360-9039-3642BDC46A60"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3DCB948A-D9CD-4065-50CF-960DAC9E4E81"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/D32313D0-C5C9-4D04-38D4-511914E342B1"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/722BA62E-3850-4FED-C5BA-9DC8CB5E4FBC"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F660E46C-D5DB-4CFA-C101-8D99283AA0C5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A3432ABC-E9D4-4F2E-3FE0-972FB0ED20C5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/BDD3A0C5-C213-4BDA-CBE2-C6AAAAB59C75"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/94020062-2FFE-4318-230C-88B602D10EBC"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2AE156F5-56D0-45FB-5564-2100B5238533"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0C669B1C-6739-4C5E-67EE-0A5589F5C2C9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/92941489-780F-4317-6BC3-906F25D300E5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2DAC308D-2AB3-4967-46A5-EFC8404DA3F1"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4DF98E25-4367-4853-57E4-9B8008DE5C47"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/16F97149-10A9-4C63-5995-10498964C0C7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/86A25222-83ED-497B-DFC7-874764C10B2D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0AB48B32-572C-4D21-0088-1C20E04DCD9C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4586BAC4-8D14-4B3A-F2AB-2792D43DAF5F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/27A31498-3451-4637-35B7-D2978DACB73B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0BC3C44B-5491-41E1-72E9-9C0320C51CB0"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/8705A514-D679-472F-6361-9D80D5D54F63"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/D5D04D9B-6513-4B4B-931F-B099CFE40537"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2A2F0B88-80F1-44EC-550A-1710E219D68B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/73A434AE-C3E9-467D-756B-6FFA60AD6197"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/B28C5E6E-7AF4-4603-7000-3523AD4D766E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/E36FB6B7-0D39-4217-4172-6C5EB50301E7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/C4793CE1-446B-4FAC-966F-3CCC882CD859"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/3028F505-23A6-436C-D4C4-0409E43CC4A5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A2904FB4-4019-473A-CD5C-80FD6FCBC5EE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/0AC49870-C830-4D2D-0CEC-0EF66D2F51E9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/68E0B0EA-C110-48BC-DE49-51162FE4788F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A467720A-2F22-48B3-215C-D172033364B2"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/DE3AF856-5613-49E9-27F8-2A4EF5ADE222"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A87599F5-ABBB-4F27-B26A-5F003A8BEBDE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/ECDE354E-34AC-4C89-51EF-768E4B82367F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/7551887F-7326-4C02-E52F-C546D19A8758"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/D0C28D6D-9204-4CB4-7A62-A45BF61B1E6B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/F762134D-6DFC-45C2-CAE5-4CFCC43FC009"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A18C27C4-CA25-44D2-31DB-137D2D7D56DE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/97CD209B-4BAD-42CC-1704-9D6737232F28"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/90920A26-6FE4-4414-2512-D4684D7B805A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/6C3C8C5D-FCB9-4E85-F3F6-8234345B83E9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/4AF0CF23-0FD4-4548-04B5-AF550D025E58"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/EBD9C327-7F60-42DA-14EF-040D8918B77C"
+                }
+            ]
+        }
+    ],
+    "oc-gen:has-obs": [
+        {
+            "id": "#obs-1",
+            "oc-gen:sourceID": "manual",
+            "oc-gen:obsStatus": "active",
+            "var-1": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/D3DFD75D-2F34-4F43-629E-7E04CBDADF54"
+                }
+            ],
+            "var-2": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/1B98166D-4CA3-4179-F105-5CECC812D2DA"
+                }
+            ],
+            "var-3": [
+                "Upon excavation L6 became a mixed locus, divided into 2 parts. First was the mudbrick debri to the north of L20 which then fused into a hard baked wall (which forms part of the W bourdary of the pit L6 \/ l29).\r\nAs we were following the debri down we removed the contents of this pit as L6. Where possible we here noted  which part of L6 materials etc. come from.\r\n\r\nOrijinal Description :\r\nLocus 6 is a mud brick collapse and surrounding debri to the nourth and east(slightly) at oven locus 2. it has the some charecteristics as locus 2 cool we believe it might be collapse from L 2\/L20.on 7\/13 we noticed white `mortar` between the mud bricks.\r\nAfter removing debri we found ash to the S and  a moss of brittle yellow material that extends in L shape running N\/S.(A spur of this marerial abuts L20)."
+            ],
+            "var-4": [
+                "4"
+            ],
+            "var-5": [
+                "54, 55, 30, 50, 53, 52, 45"
+            ],
+            "var-6": [
+                "2, 3, 4, 5, 20"
+            ],
+            "var-7": [
+                "30, 31, 46"
+            ],
+            "var-8": [
+                "5"
+            ],
+            "var-9": [
+                591.01
+            ],
+            "var-10": [
+                590.84
+            ],
+            "var-11": [
+                591.07
+            ],
+            "var-12": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/5D1D237E-0920-499B-34DD-CC430436758B"
+                }
+            ],
+            "var-13": [
+                590.59
+            ],
+            "var-14": [
+                589.92
+            ],
+            "var-15": [
+                1.7
+            ],
+            "var-16": [
+                1.4
+            ],
+            "var-17": [
+                "2002-07-07"
+            ],
+            "var-18": [
+                "2002-08-20"
+            ],
+            "var-19": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/2F5B8F4E-3672-4204-7277-F75751B49147"
+                }
+            ],
+            "var-20": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/8969EDB8-FC3E-49B1-1A12-DDF77A0F79C0"
+                }
+            ],
+            "var-21": [
+                "many mud bricks pieces"
+            ],
+            "var-22": [
+                "hard brittle bricks and debri.oven parts,fill and slag.possibly from furnace L2\/L20."
+            ],
+            "var-23": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/8C0BDE6B-2A75-4257-F822-6FA7DB3F0CF0"
+                }
+            ],
+            "oc-gen:has-note": [
+                "Contexts excavated in trenches were recorded using the \"locus system.\" A locus is any discrete three-dimensional entity excavated in a trench. The key to the locus system is the recognition that a locus is any one thing. Differences in soil composition or texture are therefore as important as, for example, the difference between a pit and a wall. If two entities were distinct, they were considered separate loci and were therefore assigned separate locus numbers. It should also be noted that every context excavated in a trench was given a locus number and thus the trench itself is made up completely of excavated loci."
+            ],
+            "link-1": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/A6BF2465-DFA7-45F2-2C7D-A73283775D7F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/6C548D1A-4FF2-47D7-98F6-0F4631A73908"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/72F82B85-4658-4E35-374C-D50C6944B73B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/338406E7-A13A-4F53-072C-6AE92D84D999"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/FA43344C-BE77-442F-5C5B-FAE5F5893380"
+                }
+            ],
+            "link-2": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/72F82B85-4658-4E35-374C-D50C6944B73B"
+                }
+            ],
+            "link-3": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/338406E7-A13A-4F53-072C-6AE92D84D999"
+                }
+            ],
+            "link-4": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/B6E890D9-CCC7-4949-256B-7BD99748203C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/55C79419-6EE3-476B-7FE9-3F662F6AE73E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/20BA6D9C-5A50-4CCC-3AD5-33B2D6FBA93E"
+                }
+            ],
+            "link-5": [
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/B6E890D9-CCC7-4949-256B-7BD99748203C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/147C3A44-80EC-428B-00B0-4D9EAB94CB69"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/E54B9589-BACC-42C6-4CB4-6D649315A4FC"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/2D6D3C6B-47E7-464A-6EC4-800346106C5D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/424DA7DD-1D31-4A01-C14D-A66A29DB2D70"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/16B2FD42-E082-4C22-9AA0-A2DFE825603F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/subjects\/31E89C6D-9381-4C04-A385-CEA97F4323E8"
+                }
+            ],
+            "link-6": [
+                {
+                    "id": "http:\/\/opencontext.org\/media\/4753A5FE-E1E7-470B-5025-0C83B0D1FD92"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/99956413-3542-4C3F-0906-6E8EAB22D836"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/9D3E9C3D-2F06-41F9-BFC3-80CA72B36325"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5594A514-4B51-44E2-7343-C117CFB31D3E"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/A03D5F9B-CF50-4C60-5480-7A4ED6886738"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/10F68688-332E-43AA-FA37-8E3EC6569EB8"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/0E708F26-06C0-43B5-305A-D2C42FB677D7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/A9140417-FDC2-4073-76FF-81AC7CA30A2F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5EAA434C-159B-45CC-A907-69E7C6F7C63B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/1162D5B9-929D-44E3-D5D3-0CF22E6EFA26"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D57C2E69-8BA0-49AB-35C6-A92F52F56B33"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/AAAC01DA-8024-4812-0192-80EA229ACE55"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/A7973F17-05FC-45D0-BFBF-628BFC10A3E3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D7CC1694-3822-431E-129C-6606F7C79B8F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/74CB2409-3AF6-40E6-A4F4-AF466F2232FA"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D9EEF2A7-278B-4A16-1D5A-3E1C99CFCB53"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/F0C82C2D-526F-46FD-302D-D456036B3269"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/9E1EB175-AEF0-43D7-D516-E4F8E75A2C15"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/BB2446DD-2DA0-4B29-97A2-4334A24A49E6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/080C7828-4F4B-4F05-69E4-4B3F9EE70B91"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/8106EEDD-ADC6-4A2C-AB79-A14C685374F5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E33C5326-7042-4D1C-6F4F-7F513A110F21"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/1C89B589-8777-48E6-4C32-8C965613D106"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/069368AE-B35D-4868-C6E8-6753C0C94495"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5C7C55A4-391E-4D9A-B070-D21845D92418"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/B018B6A8-F574-44C6-D416-AF80F9EF8A1A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E30A1CF4-9088-437E-C43A-6FF0372E7889"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/83650B11-3B33-486F-282F-C7A65F4F5987"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/3BEDEA55-9C23-404C-7461-836C2CD38DBA"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5CB5C5C1-1BF5-4A77-5C1D-19C5A80ED3CB"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E4A316AB-4AEE-48AD-A2EF-6B84412FE1E4"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/87E60B00-AB09-47F3-E302-EFF732808739"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/1D50047E-1DCD-4A2D-D92D-2DE0E06826F3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/8F221049-84FD-4888-4760-11E2132AB51D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E300A7D1-2954-475A-3DFF-7E6F92704908"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/2A6CB0DC-042B-41A5-3273-99A1C2AF0D59"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/97CC783D-59E8-438E-6783-6229FA047D43"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/BE74AF5E-1FC9-4B3D-87F2-D0E5B274B892"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/16EE9F5E-CBEC-4472-0C15-3026B7D4EC95"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/9608D385-C489-4F5E-A5AE-A64916329B8D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/DDEEA615-2676-43E2-C9D8-CD438A80D950"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/2E2C0008-EDD8-4371-6135-A762AEE142B9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/19FABD50-A840-48F6-B2B3-769A27142A74"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5F5DA6A9-2CEC-4B74-CEDE-49B32A324ACE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/FFD167FE-DC7F-480D-8F52-A44A567BEFCD"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/1CDA178C-C465-441D-8DD2-33F9969DA6B6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/B9BBE697-9DDB-4F17-3A84-53D4665395F3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/C12E1CEC-616D-42F5-3757-7C15C3B24633"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/1008A5D9-94BE-4D0D-92C6-7ADFE4C9EA4B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5BFFE7BD-8D30-40A6-3698-691F3F3C6929"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/FF70CBD2-44CF-423A-C0E4-5E5121E34412"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/0BE6097A-F840-447A-3F40-353BA81514A3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/B7325518-397C-4878-87CB-408EFBD7F906"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/7FF7F513-5193-4F1C-2348-28BE339A742A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/56BDB955-6A57-4BE8-2C7D-43C395E15154"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E445C646-C551-4E5B-0FDB-B349AD309C54"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/8ACEFE0F-750C-4F4B-D7D1-832C5B886AD0"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/1221F300-E875-4264-D766-A9AEB43BFC86"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/072ABE25-D03F-4CB6-E6D4-5FC3164941C4"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/7525E202-D77C-414B-98E2-FF7AF116FC2B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E853022B-67EE-4403-7391-617F64B14344"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/9130D58C-187D-402B-2D31-D62C15F3C089"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/3E399256-ACE7-41B3-7C8A-56CE39DA8B48"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D4D2BE74-ADC1-4A21-C1E5-04B31CACD391"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D16E1087-3209-49D5-67FF-6347600BB301"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/EB8B66BA-C427-4AA7-3357-A47D61C788A7"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/811E7A3C-302C-4683-29EC-0B625A45A887"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/C9BF5579-D63B-4C32-009E-B11F64353172"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D76D4719-4392-4212-5086-52153060DA6D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/AF61138F-5081-4DBC-246A-29E7467B07F6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/94299F8A-D61B-441E-7503-7934286E7C90"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/3D2AD32B-580B-4D7E-F599-8898B7E11A0A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5CB16D96-EC75-4C1C-BF26-A442D17BBB8A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E9200D07-8165-4BC6-7644-223F34C7BA3D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/276D46DA-10E6-4F26-D807-6BE1575D8A1D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/08E49CCA-5BA7-4705-0594-29CFD6EB20A6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/EACF4BA6-5D0F-46B5-9F9B-A055312F5616"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/6AE56DC4-989E-47BC-C013-261AC53686E3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/4F9C0B72-7674-49D5-4749-1D104BE5AB11"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/E9F08967-8098-4E0B-D4A5-34CAFAD80B6D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/68B53DA6-485B-49F0-387A-114C0B401DA3"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/7495B760-4538-441C-F5C7-42A4896B2501"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/5CF45AA7-8E8E-4964-1628-7EA6456C4DF1"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/74A70BC1-D7EC-44BF-A234-402002769607"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/982C7D72-C26E-494C-BBDD-6FE0C46FDF4A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/D41F7764-0D52-4EF8-1F96-7A7CACA83581"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/7B78A63D-7024-4C50-343F-E837905428CE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/DFE162F7-3190-44B0-201D-D1D6BE673FC6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/FE38E84C-CFBA-4ED3-EDB8-0AA2DD4CE5C1"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/EBFE92FC-D891-4C69-956D-3AB9EAFA7143"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/205CA5A4-B5B0-4454-AE3C-2399757FDD3F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/6C055208-FCBF-4F14-8454-C7D3F4CBA4FB"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/3A895A02-45D9-429A-A77D-E2919EEEC347"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/2E2EAA5F-4D23-4051-3D47-75ED2F4329B6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/B4849330-91C9-4631-9827-95502ACD0F99"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/92232CD8-7BD3-4384-3C2E-F663C61F52DE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/media\/B75E53BC-C51E-441B-2897-836C978B97CA"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/C4D5F266-363A-4B17-51A3-C3265736081D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/7172CA43-222F-4C4C-8EB3-1416C06EED40"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/3CB2DDFB-0E8E-4C46-F865-C2799F9916A0"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/C9A36320-849C-48E7-B0C1-8AE77DBC9C07"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/AF21F1EA-189B-4622-878D-BD682DD01F4B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/3BCE7D8A-6712-44BF-2E1C-7355AF01FE4B"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/9F198597-56E3-480F-7297-32B3C502447A"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/DA2DA89B-F43E-4752-08F7-1709A0EDE76F"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/28C586E4-933E-481A-F80A-73744987E7FE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/28FDA766-AED7-4DCA-6935-662CD68222A4"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/B71A5B94-17BE-4DCB-FBA0-4B4D73486196"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/8720D198-9F6D-4394-C017-55267A18AED9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/499E90BD-EBFB-4492-C1B5-FBF85924D7BB"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/5997D106-4259-4123-CCAA-27A5F75BD960"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/12FD3C04-4038-4942-A1AD-98EF21B5BEE6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/48D353F7-337F-45B2-2412-D05D3CA9ACD0"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/0F65F1DA-5D75-42B6-3A06-E0AF8329B284"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/F22D3CEE-7B07-4A4C-CE6B-A7E20693FDBA"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/07AE0F0C-5F41-4C79-FCBE-BF268C04CEA5"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/2C81ADA5-4607-43FF-6FC4-E17FDFC685F9"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/2FD4A3A1-DB68-467D-63C9-F335D12CD457"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/C972D7E4-9350-47D6-4060-9FD0E51A14BC"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/4EC99372-EC7C-4E3F-32C8-FD7B6C7843D2"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/C03B2953-0B1A-4BFE-2893-31B894B41616"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/9906056A-5B2F-4326-0FE9-53469E593CDE"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/29028D5E-B86F-43FE-0B73-1667757131D2"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/B9D6DF08-3A38-4E32-17E7-B051DC2A72CD"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/7B66D2C7-3699-4D61-4690-505DCDE8AC6C"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/2AD93DF6-BB47-46A1-EA7D-91F5D66E8087"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/335BE84B-7D3D-4999-5DA5-90B5BBFD10AA"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/323F950B-8B55-48DE-523E-B04B8C055D8D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/59379B31-FA69-4C46-D034-DE4A3055C060"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/0BA68498-10FB-4A24-099E-036C46B3783D"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/238E00ED-036C-44F7-78CD-81BF41040DA6"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/95657D71-34CB-49C5-40FD-9312050D6F57"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/CF5920FE-B998-46BC-2ED2-4179E3278E50"
+                },
+                {
+                    "id": "http:\/\/opencontext.org\/documents\/B0F01627-7E6E-483E-C129-D2965852CBAF"
+                }
+            ],
+            "link-7": [
+                {
+                    "id": "http:\/\/opencontext.org\/persons\/AECA1347-0F4B-4AF7-40E4-70A663ED1FF7"
+                }
+            ],
+            "link-8": [
+                {
+                    "id": "http:\/\/opencontext.org\/persons\/4499C94B-8EB5-4E30-07CC-DD3A98561FB6"
+                }
+            ]
+        },
+        {
+            "id": "#obs-2",
+            "oc-gen:sourceID": "z_1_076ecfef6",
+            "oc-gen:obsStatus": "active",
+            "var-24": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/DEB513E8-9DF1-469F-EE05-8B81E0E6B53A"
+                }
+            ],
+            "var-25": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/73317DDD-68D5-442B-45AB-FEA9ECD6C80E"
+                }
+            ],
+            "var-26": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/3C49E904-BE80-4D10-A67C-945A1845BB46"
+                }
+            ],
+            "var-27": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/8BEC874F-9A31-41D3-236C-6AC826C9D248"
+                }
+            ],
+            "var-28": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/F5A28588-7113-4314-1AEB-54368335CE49"
+                }
+            ],
+            "var-29": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/FD0F9E71-908F-4693-4D81-D5726AE93582"
+                }
+            ],
+            "var-30": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/05558805-1410-4323-BF89-7C0E2353C004"
+                }
+            ],
+            "var-31": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/71D1B766-8A34-4611-3B39-83352B1992F2"
+                }
+            ],
+            "var-32": [
+                {
+                    "id": "http:\/\/opencontext.org\/properties\/AC8E9061-1A46-449D-D9B2-CA13A9EC7C17"
+                }
+            ],
+            "var-33": [
+                "possible collapse from L2 \/ L20"
+            ]
+        }
+    ],
+    "oc-gen:locationRef": [
+        {
+            "id": "http:\/\/opencontext.org\/subjects\/E5B52F10-333F-4CB8-C397-7DFAD00A3719"
+        }
+    ],
+    "oc-gen:chronoRef": [
+        {
+            "id": "http:\/\/opencontext.org\/subjects\/EA4A4244-A2C2-4CAF-9B04-C59A16465C43"
+        }
+    ],
+    "dc-terms:published": "2012-03-28",
+    "dc-terms:license": [
+        {
+            "id": "http:\/\/creativecommons.org\/licenses\/by\/3.0\/"
+        }
+    ],
+    "dc-terms:creator": [
+        {
+            "id": "http:\/\/opencontext.org\/persons\/21_DT_Person"
+        },
+        {
+            "id": "http:\/\/opencontext.org\/persons\/3BDBEC0E-8D0F-484F-DBD9-985F3D0915F6"
+        }
+    ],
+    "dc-terms:contributor": [
+        {
+            "id": "http:\/\/opencontext.org\/persons\/AECA1347-0F4B-4AF7-40E4-70A663ED1FF7"
+        }
+    ],
+    "dc-terms:isPartOf": [
+        {
+            "id": "http:\/\/opencontext.org\/projects\/3DE4CD9C-259E-4C14-9B03-8B10454BA66E"
+        }
+    ]
+}
