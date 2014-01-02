@@ -14,6 +14,7 @@ class ExportTable {
 	 public $recordCount; //number of records in the total set
 	 public $fieldCount; //number of field counts
 	 public $metadata; //array for expression as JSON-LD
+	 public $metadataVersion; //metadata version number;
 	 
 	 public $citation; //citation generated from metadata
 	 
@@ -35,7 +36,8 @@ class ExportTable {
 	 const fileDirectory = "./exports";
 	 const altFileDirectory = "../exports";
 	 
-	 
+	 const DOIbaseURI = "http://dx.doi.org/";
+	 const ARKbaseURI = "http://n2t.net/ark:/";
 	 
 	 
 	 
@@ -59,7 +61,12 @@ class ExportTable {
 				$metadataJSON = $result[0]["metadata"];
 				$metadata = Zend_Json::decode($metadataJSON);
 				$this->metadata = $metadata;
-				$this->generateCitation();
+				if($this->getMetadataVersion($metadata) >0){
+					 $this->generateCitation();
+				}
+				else{
+					 $this->generateOldCitation();
+				}
 				return true;
 		  }
 		  else{
@@ -94,10 +101,20 @@ class ExportTable {
 		  }
 	 }
 	 
-	 
+	 //get the version number for the metadata
+	 function  getMetadataVersion($metadata){
+		  if(isset($metadata["metadata-version"])){
+				$this->metadataVersion = $metadata["metadata-version"]; //check the metadata version number, if present
+				return 	$this->metadataVersion; 
+		  }
+		  else{				
+				return false;
+		  }
+
+	 }
 	 
 	 //generate citation from metadata
-	 function generateCitation(){
+	 function generateOldCitation(){
 		  
 		  $metadata = $this->metadata;
 		  $citation = "";
@@ -144,16 +161,81 @@ class ExportTable {
 		  $citation .= htmlentities("<".$metadata["id"]."> ");
 		  
 		  if(isset($metadata["doi"])){
-				$citation .= "DOI <a href=\"http://dx.doi.org/".$metadata["doi"]."\">".$metadata["doi"]."</a>";
+				$citation .= "DOI <a href=\"". self::DOIbaseURI .$metadata["doi"]."\">".$metadata["doi"]."</a>";
 		  }
 		  elseif(isset($metadata["ark"])){
-				$citation .= "ARK <a href=\"http://dx.doi.org/".$metadata["ark"]."\">".$metadata["ark"]."</a>";
+				$citation .= "ARK <a href=\"". $this->ARKgenerateURI($metadata["ark"])."\">".$metadata["ark"]."</a>";
 		  }
 		  
 		  $this->citation = $citation;
 		  return $citation;
 	 }
 	 
+	 
+	 function generateCitation(){
+		  
+		  $metadata = $this->metadata;
+		  $citation = "";
+		  $first = true;
+		  if(isset($metadata["contributorList"]["contributor"])){
+				foreach($metadata["contributorList"]["contributor"] as $nArray){
+					 if(!$first){
+						  $citation .= ", ";
+					 }
+					 $citation .= $nArray["name"];
+					 $first = false;
+				}
+		  }
+		  elseif(isset($metadata["editorList"]["editor"])){
+				$first = true;
+		  
+				foreach($metadata["editorList"]["editor"] as $nArray){
+					 if(!$first){
+						  $citation .= ", ";
+					 }
+					 $citation .= $nArray["name"];
+					 $first = false;
+				}
+		  }
+		  else{
+				$citation = "Unnamed Author";
+		  }
+		  
+		  $citation .= " (".date("Y-m-d", strtotime($metadata["published"])).") ";
+		  $citation .= "\"".$metadata["title"]."\" ";
+		  
+		  if(isset($metadata["editorList"]["editor"])){
+				$first = true;
+				foreach($metadata["editorList"]["editor"] as $nArray){
+					 if(!$first){
+						  $citation .= ", ";
+					 }
+					 $citation .= $nArray["name"];
+					 $first = false;
+				}
+				
+				if(count($metadata["editorList"]["editor"]>1)){
+					 $citation .= " (Eds). Open Context. ";
+				}
+				else{
+					 $citation .= " (Ed). Open Context. ";
+				}
+		  }
+		  
+		  
+		  
+		  $citation .= htmlentities("<".$metadata["id"]."> ");
+		  
+		   if(isset($metadata["doi"])){
+				$citation .= "DOI <a href=\"". self::DOIbaseURI .$metadata["doi"]."\">".$metadata["doi"]."</a>";
+		  }
+		  elseif(isset($metadata["ark"])){
+				$citation .= "ARK <a href=\"". $this->ARKgenerateURI($metadata["ark"])."\">".$metadata["ark"]."</a>";
+		  }
+		  
+		  $this->citation = $citation;
+		  return $citation;
+	 }
 	 
 	 function loadSampleRecords(){
 		  
@@ -340,6 +422,11 @@ class ExportTable {
 		  if(is_array($metadata)){
 				
 				$error = false;
+				if(isset($metadata["metadata-version"])){
+					 $this->metadataVersion = $metadata["metadata-version"]; //check the metadata version number, if present
+					 
+				}
+				
 				if(!isset($metadata["@context"])){
 					 $error = true; //check if this is JSON-LD data
 				}
@@ -391,6 +478,50 @@ class ExportTable {
 	 
 	 
 	 
+	 function retrieveFile($type){
+		  $output = false;
+		  $metadata = $this->metadata;
+		  if(is_array($metadata)){
+				if(isset($metadata["files"][$type])){
+					 $filename = $metadata["files"][$type]["filename"];
+					 $output = $this->checkFileExists($filename);
+				}
+		  }
+		  return $output;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 function checkFileExists($filename){
+
+		  $dirFilename = self::fileDirectory."/".$filename ;
+		  if(!file_exists($dirFilename)){
+				$dirFilename = self::altFileDirectory."/".$filename ;
+				if(!file_exists($dirFilename)){
+					 $dirFilename = false;
+					 return false;
+				}
+		  }
+		  if($dirFilename){
+				return $dirFilename;
+		  }
+		  
+	 }
+	 
+	 
+	 
+	 //make a web URI from an ARK id
+	 function ARKgenerateURI($ark){
+		  if(stristr($ark, "ark:/")){
+				$arkEx = explode("ark:/", $ark);
+				return self::ARKbaseURI.$arkEx[1];
+		  }
+		  else{
+				return self::ARKbaseURI.$ark;
+		  }
+	 }
 	 
 	 
 	 
