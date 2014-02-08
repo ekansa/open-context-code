@@ -1,4 +1,5 @@
-﻿{
+﻿
+{
     "@context": {
         "type": "@type",
         "id": "@id",
@@ -241,9 +242,7 @@
             "label": "Eleanor Moseman"
         }
     ],
-    "type": [
-        "FeatureCollection"
-    ],
+    "type": "FeatureCollection",
     "features": [
         {
             "id": "#geo-feature",
@@ -251,8 +250,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    "40.8155805",
-                    "37.8313785"
+                    40.8155805,
+                    37.8313785
                 ],
                 "id": "#geo-geometry"
             },
@@ -269,5 +268,5 @@
             "id": "http://opencontext.org/projects/3DE4CD9C-259E-4C14-9B03-8B10454BA66E"
         }
     ],
-    "elapsedTime": 0.059003114700317
+    "elapsedTime": 0.048002958297729
 }
