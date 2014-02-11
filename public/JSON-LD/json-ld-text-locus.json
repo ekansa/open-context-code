@@ -256,6 +256,7 @@
                 "id": "#geo-geometry"
             },
             "properties": {
+                "id": "#geoJSON-properties",
                 "oc-gen:geoReferenceType": "inferred",
                 "oc-gen:locationRefLabel": "Trench 5",
                 "oc-gen:locationRef": "http://opencontext.org/subjects/31A68EA4-9F8F-476F-242E-667D61605639"
