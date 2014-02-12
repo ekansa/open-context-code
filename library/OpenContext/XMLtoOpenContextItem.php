@@ -1244,6 +1244,11 @@ class OpenContext_XMLtoOpenContextItem {
 				foreach($linkedDataArray as $relationURI => $targArray){
 					$actTargArray = $targArray;
 					$vocabType = $hierObj->getVocabTypeFromRelation($relationURI);
+					if($relationURI == "http://opencontext.org/vocabularies/dinaa/00001"){
+						$vocabType = false;
+					}
+					
+					
 					if($vocabType  != false){
 						//if the relation URI is a property used for a hierarchic taxonomy,
 						//do this to remove target URIs to entities higher up in the hierarchy. We'll

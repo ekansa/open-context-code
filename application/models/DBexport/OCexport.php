@@ -430,15 +430,25 @@ class DBexport_OCexport  {
 				$projCondition = $this->makeORcondition($this->limitingProjArray, "project_id", "space");
 		  }
 		  
+		  $exportSkip = $this->checkForExportSkipTable();
 		  
-		  
-		  $sql = "SELECT uuid
-		  FROM space
-		  WHERE $projCondition
-		  $limit
-		  ;
-		  
-		  ";
+		  if(!$exportSkip){
+				$sql = "SELECT space.uuid
+				FROM space
+				WHERE $projCondition
+				$limit
+				;
+				";
+		  }
+		  else{
+				$sql = "SELECT space.uuid
+				FROM space
+				LEFT JOIN export_skip ON space.uuid = export_skip.uuid
+				WHERE ($projCondition) AND export_skip.uuid IS NULL
+				$limit
+				;
+				";
+		  }
 		  
 		  $resultA = $db->fetchAll($sql);
 		  
@@ -819,9 +829,11 @@ class DBexport_OCexport  {
 	 //now append the data
 	 function saveAppendSQL($data){
 		  if(strlen($data)>0){
-				$fh = $this->actFileHandle;
-				fwrite($fh, $data);
-				$this->actFileHandle = $fh;
+				if($this->actFileHandle){
+					 $fh = $this->actFileHandle;
+					 fwrite($fh, $data);
+					 $this->actFileHandle = $fh;
+				}
 		  }
 	 }
 	 
@@ -860,6 +872,21 @@ class DBexport_OCexport  {
 		  }
 		
 		  return $success;
+	 }
+	 
+	 
+	 function checkForExportSkipTable(){
+		  $db = $this->startDB();
+		  
+		  $sql = "SHOW TABLES LIKE 'export_skip' ";
+		  $result = $db->fetchAll($sql);
+
+		  if($result){
+				return true;
+		  }
+		  else{
+				return false;
+		  }
 	 }
 	 
 	 

@@ -97,11 +97,10 @@ class exportController extends Zend_Controller_Action {
 								'3F6DCD13-A476-488E-ED10-47D25513FCB2',
 								'8F947319-3C69-4847-B7A2-09E00ED90B32'
 								);
-		/*
-		$projects = array('99BDB878-6411-44F8-2D7B-A99384A6CA21',
-								
+	
+		$projects = array('0EE6A09E-62E5-45F0-1CB9-F5CDA44F4D9E'
 								);
-		*/
+		
 		
 		
 		$exportObj = new DBexport_OCexport;

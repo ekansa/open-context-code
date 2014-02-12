@@ -50,12 +50,14 @@ class OpenContext_ProjectReviewAnnotate {
 			@$itemXML->registerXPathNamespace($prefix, $uri);
 		}
 		
-		foreach($itemXML->xpath("//oc:metadata/oc:project_name") as $projMetadata){
-			$status = OpenContext_ProjectReviewAnnotate::getStatus($projectEditStatus);
-			$projMetadata->addAttribute("editStatus", $projectEditStatus);
-			$projMetadata->addAttribute("statusURI", $status["uri"]);
-			$projMetadata->addAttribute("statusDes", $status["statusDes"]);
-			$projMetadata->addAttribute("statusLabel", $status["label"]);
+		if(!$itemXML->xpath("//oc:metadata/oc:project_name/@editStatus")){
+			foreach($itemXML->xpath("//oc:metadata/oc:project_name") as $projMetadata){
+				$status = OpenContext_ProjectReviewAnnotate::getStatus($projectEditStatus);
+				$projMetadata->addAttribute("editStatus", $projectEditStatus);
+				$projMetadata->addAttribute("statusURI", $status["uri"]);
+				$projMetadata->addAttribute("statusDes", $status["statusDes"]);
+				$projMetadata->addAttribute("statusLabel", $status["label"]);
+			}
 		}
 		
 		return $itemXML;
