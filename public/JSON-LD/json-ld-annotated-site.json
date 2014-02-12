@@ -1,0 +1,405 @@
+{
+    "@context": {
+        "id": "@id",
+        "type": "@type",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "label": "rdfs:label",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "dc-elems": "http://purl.org/dc/elements/1.1/",
+        "dc-terms": "http://purl.org/dc/terms/",
+        "uuid": "dc-terms:identifier",
+        "bibo": "http://purl.org/ontology/bibo/",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "cidoc-crm": "http://www.cidoc-crm.org/cidoc-crm/",
+        "oc-gen": "http://opencontext.org/vocabularies/oc-general/",
+        "var-1": {
+            "@id": "http://opencontext.org/predicates/9AD6D837-C89F-4F6F-08C6-34ACB757EDC9",
+            "label": "Period",
+            "@type": "@id"
+        },
+        "var-2": {
+            "@id": "http://opencontext.org/predicates/B1AA6598-7E92-439F-3951-CA83A75A024D",
+            "label": "Significance",
+            "@type": "@id"
+        },
+        "var-3": {
+            "@id": "http://opencontext.org/predicates/8CC62390-215D-4B51-6294-08ACD56B4E1E",
+            "label": "Site Type",
+            "@type": "@id"
+        },
+        "var-4": {
+            "@id": "http://opencontext.org/predicates/7B1645A9-E11D-474D-E8E1-749FC076A84B",
+            "label": "Phase/Artifact",
+            "@type": "@id"
+        },
+        "var-5": {
+            "@id": "http://opencontext.org/predicates/3AC54C41-5BC7-4FD0-77F9-D3864CC46088",
+            "label": "Site name",
+            "@type": "xsd:string"
+        },
+        "var-6": {
+            "@id": "http://opencontext.org/predicates/6234913C-2081-4394-C83A-90C380E81500",
+            "label": "Field number",
+            "@type": "xsd:string"
+        },
+        "var-7": {
+            "@id": "http://opencontext.org/predicates/2B437D4E-83C1-481D-E4F7-26E950846E96",
+            "label": "Location accuracy",
+            "@type": "@id"
+        },
+        "var-8": {
+            "@id": "http://opencontext.org/predicates/FCA47F7A-585A-4791-BA4B-61F18D31D4B7",
+            "label": "Coordinate system",
+            "@type": "@id"
+        },
+        "var-9": {
+            "@id": "http://opencontext.org/predicates/78E125BE-6CD6-4BA0-6B83-A7DA7D1EDE72",
+            "label": "Deleted",
+            "@type": "@id"
+        },
+        "var-10": {
+            "@id": "http://opencontext.org/predicates/D7262A13-C821-4EFE-47E9-7AE6C911E97C",
+            "label": "Public Status",
+            "@type": "@id"
+        },
+        "var-11": {
+            "@id": "http://opencontext.org/predicates/72FD5BB5-DF07-4753-00B8-938A3A2ECCA2",
+            "label": "Register Status",
+            "@type": "@id"
+        },
+        "var-12": {
+            "@id": "http://opencontext.org/predicates/8AEC0EB1-4CA8-46CD-BCF0-327941B87EF3",
+            "label": "Investigation Date",
+            "@type": "xsd:date"
+        },
+        "var-13": {
+            "@id": "http://opencontext.org/predicates/EB5BFA11-F000-4977-443F-2CBC32558E75",
+            "label": "Gnahrgis id",
+            "@type": "xsd:integer"
+        },
+        "FeatureCollection": "http://geojson.org/geojson-spec.html#feature-collection-objects",
+        "Feature": "http://geovocab.org/spatial#Feature",
+        "features": "oc-gen:geojson-hasfeatures",
+        "properties": "oc-gen:geojson-hasproperties",
+        "geometry": "http://geovocab.org/geometry#geometry",
+        "Point": "http://geovocab.org/geometry#Point",
+        "Polygon": "http://geovocab.org/geometry#Polygon"
+    },
+    "id": "http://opencontext.org/subjects/B34E6D21-3168-4A6D-173E-BB17CE1DA837",
+    "label": "9CK26",
+    "uuid": "B34E6D21-3168-4A6D-173E-BB17CE1DA837",
+    "oc-gen:type": [
+        {
+            "@id": "http://opencontext.org/vocabularies/oc-general/cat-0022"
+        }
+    ],
+    "oc-gen:has-context-path": [
+        {
+            "id": "#context-path-1",
+            "oc-gen:path-des": "default",
+            "oc-gen:has-path-items": [
+                {
+                    "id": "http://opencontext.org/subjects/D2E98C2B-BD2F-48C9-CE23-E9F8F6ADF736"
+                },
+                {
+                    "id": "http://opencontext.org/subjects/9F5B43D9-F7D5-4C34-6A69-2F5D84F6C800",
+                    "label": "Cherokee"
+                }
+            ]
+        }
+    ],
+    "oc-gen:has-obs": [
+        {
+            "id": "#obs-1",
+            "oc-gen:sourceID": "z_1_a90afcea6",
+            "oc-gen:obsStatus": "active",
+            "var-1": [
+                {
+                    "id": "http://opencontext.org/types/B863CFDD-C4CC-4D40-92EA-7D5FD2C9F156",
+                    "label": "Middle Archaic"
+                },
+                {
+                    "id": "http://opencontext.org/types/15EFE289-8711-4A85-8127-2852A3B16B4A",
+                    "label": "Early Archaic"
+                },
+                {
+                    "id": "http://opencontext.org/types/C44C37CD-B609-4683-5FAD-018270CAF2AD",
+                    "label": "Historic Non-Indian"
+                },
+                {
+                    "id": "http://opencontext.org/types/275E6761-CAF0-436E-2119-20011CB7827E",
+                    "label": "Late Woodland"
+                },
+                {
+                    "id": "http://opencontext.org/types/D42D4DD3-7DBD-43ED-D197-EFC2093B71DC",
+                    "label": "Middle Mississippian"
+                },
+                {
+                    "id": "http://opencontext.org/types/62432CA4-632C-4B57-042B-DA08A1DB3099",
+                    "label": "Historic Indian"
+                },
+                {
+                    "id": "http://opencontext.org/types/F9226478-270C-48EF-C2B6-B8A392186D48",
+                    "label": "Middle Woodland"
+                }
+            ],
+            "var-2": [
+                {
+                    "id": "http://opencontext.org/types/7DB95D7C-FD45-4076-B824-6121FF4F1AB6",
+                    "label": "Unknown"
+                }
+            ],
+            "var-3": [
+                {
+                    "id": "http://opencontext.org/types/B9664C88-10CA-4272-D97A-F9BEBE4E08D1",
+                    "label": "House or Structure"
+                },
+                {
+                    "id": "http://opencontext.org/types/2CD01502-F005-4BC6-20E6-CF7A009F2E6C",
+                    "label": "Prehistoric Indian Artifact or Shell Scatter"
+                }
+            ],
+            "var-4": [
+                {
+                    "id": "http://opencontext.org/types/814145C5-D71E-4517-DDC7-0696376D3612",
+                    "label": "Savannah River PPK"
+                },
+                {
+                    "id": "http://opencontext.org/types/09C7578D-CFF9-45E1-17A7-3CC548E1DD79",
+                    "label": "Brewster"
+                },
+                {
+                    "id": "http://opencontext.org/types/4C438736-99B1-4B2B-8DCC-CDE5979F30EA",
+                    "label": "Swift Creek"
+                },
+                {
+                    "id": "http://opencontext.org/types/6B96E782-0A9A-4AEC-0B1C-EB94589BAC0C",
+                    "label": "Galt"
+                },
+                {
+                    "id": "http://opencontext.org/types/EABA4525-7870-48D5-D7DD-8CA8EDA85DF5",
+                    "label": "Nineteenth Century"
+                },
+                {
+                    "id": "http://opencontext.org/types/2D2CE730-01DC-491F-9CA0-FDB9398A6951",
+                    "label": "Savannah"
+                },
+                {
+                    "id": "http://opencontext.org/types/CA90EDF6-564D-49FB-FB27-CFADB8423F9F",
+                    "label": "Palmer PPK"
+                },
+                {
+                    "id": "http://opencontext.org/types/38C7FDBC-7E00-4B20-628A-C07F24624ABD",
+                    "label": "Morrow Mountain PPK"
+                },
+                {
+                    "id": "http://opencontext.org/types/03D11EBE-DDD0-4F1F-E1DA-38ACD70DB6F4",
+                    "label": "Kirk Corner Notched PPK"
+                },
+                {
+                    "id": "http://opencontext.org/types/C7A2CCBB-1227-49BB-E007-F9A5244DB70F",
+                    "label": "Woodstock"
+                }
+            ],
+            "var-5": [
+                {
+                    "id": "#string-DA8B273C-7D0E-43B9-5CF5-583D9C41E2D1",
+                    "xsd:string": "SIXES OLD TOWN"
+                }
+            ],
+            "var-6": [
+                {
+                    "id": "#string-CF419509-F5D5-4D5D-EBFC-088198EB888B",
+                    "xsd:string": "CK211"
+                }
+            ],
+            "var-7": [
+                {
+                    "id": "http://opencontext.org/types/E75235B5-AA72-475D-CCF4-ED16FC38E1B4",
+                    "label": "High"
+                }
+            ],
+            "var-8": [
+                {
+                    "id": "http://opencontext.org/types/EB57BB1B-BA9F-4EBE-5DDF-80CF06FF87F7",
+                    "label": "NAD 1927 Zone 16N"
+                }
+            ],
+            "var-9": [
+                {
+                    "id": "http://opencontext.org/types/B3CD0D6E-5F1D-41B2-AF6F-799E57C464B8",
+                    "label": "No"
+                }
+            ],
+            "var-10": [
+                {
+                    "id": "http://opencontext.org/types/A70D475F-64E5-474C-0F7A-92C0EB233917",
+                    "label": "Unknown"
+                }
+            ],
+            "var-11": [
+                {
+                    "id": "http://opencontext.org/types/36317E90-B2F5-4C07-8205-49D8A4B1F0DF",
+                    "label": "Unknown"
+                }
+            ],
+            "var-12": [
+                "1986-10-17 00:00:00"
+            ],
+            "var-13": [
+                25287
+            ]
+        }
+    ],
+    "oc-gen:locationRef": [
+        {
+            "id": "http://opencontext.org/subjects/B34E6D21-3168-4A6D-173E-BB17CE1DA837",
+            "label": "9CK26"
+        }
+    ],
+    "oc-gen:chronoRef": [
+        {
+            "id": "http://opencontext.org/subjects/B34E6D21-3168-4A6D-173E-BB17CE1DA837",
+            "label": "9CK26"
+        }
+    ],
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "id": "#geo-feature-1",
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "id": "#geo-geometry-1",
+                "coordinates": [
+                    [
+                        [
+                            -84.7265625,
+                            34.16181816123
+                        ],
+                        [
+                            -84.55078125,
+                            34.16181816123
+                        ],
+                        [
+                            -84.55078125,
+                            34.307143856288
+                        ],
+                        [
+                            -84.7265625,
+                            34.307143856288
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "id": "#geo-props-1",
+                "oc-gen:geoReferenceType": "self",
+                "rdfs:comment": "Item location available with intentionally reduced accuracy within this region",
+                "skos:note": "Location data approximated as a security precaution. Only accurate to within ~15km."
+            }
+        },
+        {
+            "id": "#geo-feature-2",
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "id": "#geo-geometry-2",
+                "coordinates": [
+                    -84.638671875,
+                    34.234481008759
+                ]
+            },
+            "properties": {
+                "id": "#geo-props-2",
+                "oc-gen:geoReferenceType": "self",
+                "rdfs:comment": "Item location provided with intentionally reduced accuracy",
+                "skos:note": "Location data approximated as a security precaution. Only accurate to within ~15km."
+            }
+        }
+    ],
+    "dc-terms:published": "2013-10-15 00:00:00",
+    "dc-terms:isPartOf": [
+        {
+            "id": "http://opencontext.org/projects/64013C33-4039-46C9-609A-A758CE51CA49"
+        }
+    ],
+    "@graph": [
+        {
+            "@id": "http://opencontext.org/predicates/9AD6D837-C89F-4F6F-08C6-34ACB757EDC9",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00001",
+                    "label": "Has period"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/B863CFDD-C4CC-4D40-92EA-7D5FD2C9F156",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00041",
+                    "label": "Middle Archaic"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/15EFE289-8711-4A85-8127-2852A3B16B4A",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00039",
+                    "label": "Early Archaic"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/C44C37CD-B609-4683-5FAD-018270CAF2AD",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00056",
+                    "label": "Historic Non-Indian"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/275E6761-CAF0-436E-2119-20011CB7827E",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00020",
+                    "label": "Late Woodland"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/D42D4DD3-7DBD-43ED-D197-EFC2093B71DC",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00029",
+                    "label": "Middle Mississippian"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/62432CA4-632C-4B57-042B-DA08A1DB3099",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00055",
+                    "label": "Historic Indian"
+                }
+            ]
+        },
+        {
+            "@id": "http://opencontext.org/types/F9226478-270C-48EF-C2B6-B8A392186D48",
+            "skos:closeMatch": [
+                {
+                    "@id": "http://opencontext.org/vocabularies/dinaa/00019",
+                    "label": "Middle Woodland"
+                }
+            ]
+        }
+    ],
+    "elapsedTime": 0.2966091632843
+}

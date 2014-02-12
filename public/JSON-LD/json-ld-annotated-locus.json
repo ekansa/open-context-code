@@ -1722,21 +1722,22 @@
     "type": "FeatureCollection",
     "features": [
         {
-            "id": "#geo-feature",
+            "id": "#geo-feature-1",
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "id": "#geo-geometry-1",
                 "coordinates": [
                     40.813647,
                     37.830535
-                ],
-                "id": "#geo-geometry"
+                ]
             },
             "properties": {
-                "id": "#geoJSON-properties",
+                "id": "#geo-props-1",
                 "oc-gen:geoReferenceType": "inferred",
                 "oc-gen:locationRefLabel": "Trench 6",
-                "oc-gen:locationRef": "http://opencontext.org/subjects/E5B52F10-333F-4CB8-C397-7DFAD00A3719"
+                "oc-gen:locationRef": "http://opencontext.org/subjects/E5B52F10-333F-4CB8-C397-7DFAD00A3719",
+                "rdfs:comment": "Item location provided to best current knowledge with no intentional reduction in accuracy"
             }
         }
     ],
@@ -1819,5 +1820,5 @@
             ]
         }
     ],
-    "elapsedTime": 0.2206859588623
+    "elapsedTime": 0.20550012588501
 }

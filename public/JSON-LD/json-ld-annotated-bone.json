@@ -1018,21 +1018,22 @@
     "type": "FeatureCollection",
     "features": [
         {
-            "id": "#geo-feature",
+            "id": "#geo-feature-1",
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "id": "#geo-geometry-1",
                 "coordinates": [
                     32.827191,
                     37.668196
-                ],
-                "id": "#geo-geometry"
+                ]
             },
             "properties": {
-                "id": "#geoJSON-properties",
+                "id": "#geo-props-1",
                 "oc-gen:geoReferenceType": "inferred",
                 "oc-gen:locationRefLabel": "Mound East",
-                "oc-gen:locationRef": "http://opencontext.org/subjects/A4D8DDA4-44C6-4EAE-4EF6-685BA2A3D7F6"
+                "oc-gen:locationRef": "http://opencontext.org/subjects/A4D8DDA4-44C6-4EAE-4EF6-685BA2A3D7F6",
+                "rdfs:comment": "Item location provided to best current knowledge with no intentional reduction in accuracy"
             }
         }
     ],
@@ -1234,5 +1235,5 @@
             ]
         }
     ],
-    "elapsedTime": 0.12245202064514
+    "elapsedTime": 0.12174296379089
 }
