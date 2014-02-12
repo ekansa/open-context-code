@@ -1750,66 +1750,82 @@
         {
             "@id": "http://opencontext.org/predicates/354DCD23-980F-4BEC-FBE8-B511B089E661",
             "label": "Top depth center",
-            "rdfs:range": {
-                "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-                "label": "altitude (WGS84)"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
+                    "label": "altitude (WGS84)"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/C84B0B63-BB78-4619-4BCF-80CC9E2B72D2",
             "label": "Top depth north-west",
-            "rdfs:range": {
-                "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-                "label": "altitude (WGS84)"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
+                    "label": "altitude (WGS84)"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/A76F7E15-BA44-4383-7EA4-60F8F716FF3F",
             "label": "Top depth north-east",
-            "rdfs:range": {
-                "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-                "label": "altitude (WGS84)"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
+                    "label": "altitude (WGS84)"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/CDAA5BB3-2F4B-4D90-19AA-E3F500BE1B35",
             "label": "Bottom depth north",
-            "rdfs:range": {
-                "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-                "label": "altitude (WGS84)"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
+                    "label": "altitude (WGS84)"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/0D8E47BC-66F3-412B-07E0-C39878E577FA",
             "label": "Dimension length",
-            "rdfs:range": {
-                "@id": "http://www.freebase.com/view/en/meter",
-                "label": "meter"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.freebase.com/view/en/meter",
+                    "label": "meter"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/255542F8-77B3-4143-DFE4-DBF44CD6FBBC",
             "label": "Dimension width",
-            "rdfs:range": {
-                "@id": "http://www.freebase.com/view/en/meter",
-                "label": "meter"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.freebase.com/view/en/meter",
+                    "label": "meter"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/5C2A2690-9C43-4D11-79F9-7C1A01BD7E8D",
             "label": "Stone brick size",
-            "rdfs:range": {
-                "@id": "http://www.freebase.com/view/en/centimeter",
-                "label": "centimeter"
-            }
+            "rdfs:range": [
+                {
+                    "@id": "http://www.freebase.com/view/en/centimeter",
+                    "label": "centimeter"
+                }
+            ]
         },
         {
             "@id": "http://opencontext.org/predicates/20",
             "label": "Recorded by",
-            "skos:closeMatch": {
-                "@id": "dc-terms:contributor"
-            }
+            "skos:closeMatch": [
+                {
+                    "@id": "dc-terms:contributor"
+                }
+            ]
         }
     ],
-    "elapsedTime": 0.20716500282288
+    "elapsedTime": 0.21056413650513
 }
