@@ -1,5 +1,4 @@
-﻿
-{
+﻿{
     "@context": {
         "id": "@id",
         "type": "@type",
@@ -1046,7 +1045,6 @@
     "@graph": [
         {
             "@id": "http://opencontext.org/predicates/56D8ADE0-1006-4177-866F-86644C1DC64F",
-            "label": "Element",
             "skos:closeMatch": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0079",
@@ -1056,7 +1054,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/7949DC4B-582C-40D5-EEF6-4C3D382D8241",
-            "label": "Taxon",
             "skos:closeMatch": [
                 {
                     "@id": "http://purl.org/NET/biol/ns#term_hasTaxonomy",
@@ -1066,7 +1063,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/D7200F30-3072-4C39-65A6-E13223BA55F1",
-            "label": "Number Of Pieces",
             "rdfs:range": [
                 {
                     "@id": "http://www.freebase.com/view/en/counting_measure",
@@ -1076,7 +1072,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/0B4D0518-7630-4A23-D609-060CCD6EDFC3",
-            "label": "Number Of  Elements",
             "rdfs:range": [
                 {
                     "@id": "http://www.freebase.com/view/en/counting_measure",
@@ -1086,7 +1081,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/9EFE6009-E424-413E-A75F-1D5A23FDADC7",
-            "label": "Number Of Diagnostic Zones",
             "rdfs:range": [
                 {
                     "@id": "http://www.freebase.com/view/en/counting_measure",
@@ -1096,7 +1090,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/A3F054B2-B406-4FCD-2829-572FCAC48F74",
-            "label": "Weight (g)",
             "rdfs:range": [
                 {
                     "@id": "http://www.freebase.com/view/en/gram",
@@ -1106,7 +1099,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/3C0F8201-02DF-4906-6808-0AF0A58DEB8F",
-            "label": "Length (cm)",
             "rdfs:range": [
                 {
                     "@id": "http://www.freebase.com/view/en/centimeter",
@@ -1116,7 +1108,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/B7C7E877-7C69-4E84-1069-29767A45A67F",
-            "label": "Fusion",
             "skos:closeMatch": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0077",
@@ -1126,7 +1117,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/BD6DACE2-5515-42A6-9030-9CCDA0DFE304",
-            "label": "Bd::Standard measurement",
             "skos:related": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0009",
@@ -1142,7 +1132,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/02CF1BEE-D874-4E4A-4C1E-82BBA1A9BB74",
-            "label": "True breadth of proximal end (Uerpmann 1978)::Standard measurement",
             "rdfs:range": [
                 {
                     "@id": "http://www.freebase.com/view/en/millimeter",
@@ -1152,7 +1141,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/9740BA27-8A7E-4FEF-3436-38A0CAB41F87",
-            "label": "SD::Standard measurement",
             "skos:related": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0050",
@@ -1168,7 +1156,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/2873E30A-CC1F-4CB5-DC31-ABBFA8C2B182",
-            "label": "LeP::Standard measurement",
             "skos:related": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0042",
@@ -1184,7 +1171,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/3DA9176F-6D6A-4F96-1FB0-954ADE35371B",
-            "label": "Ll::Standard measurement",
             "skos:related": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0043",
@@ -1200,7 +1186,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/E3606FB0-A333-4C1D-35F9-3601DD7131C6",
-            "label": "Dd::Standard measurement",
             "skos:related": [
                 {
                     "@id": "http://opencontext.org/vocabularies/open-context-zooarch/zoo-0017",
@@ -1216,7 +1201,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/28",
-            "label": "Principle Author / Analyst",
             "skos:closeMatch": [
                 {
                     "@id": "dc-terms:contributor"
@@ -1225,7 +1209,6 @@
         },
         {
             "@id": "http://opencontext.org/predicates/20",
-            "label": "Recorded by",
             "skos:closeMatch": [
                 {
                     "@id": "dc-terms:contributor"
@@ -1234,7 +1217,6 @@
         },
         {
             "@id": "http://opencontext.org/types/52749F46-93C3-4093-0BD9-B0563BF6E097",
-            "label": "Metatarsal III+IV",
             "skos:closeMatch": [
                 {
                     "@id": "http://purl.obolibrary.org/obo/UBERON_0013588",
@@ -1244,7 +1226,6 @@
         },
         {
             "@id": "http://opencontext.org/types/B049F856-C287-4299-F5B7-661F22CE915E",
-            "label": "Bos sp.",
             "skos:closeMatch": [
                 {
                     "@id": "http://eol.org/pages/34548",
@@ -1253,5 +1234,5 @@
             ]
         }
     ],
-    "elapsedTime": 0.12080097198486
+    "elapsedTime": 0.11012101173401
 }
