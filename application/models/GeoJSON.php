@@ -26,6 +26,22 @@ class GeoJSON {
 	 
 	 public $db; //database object
 	 
+	  public $standardNamespaces = array("rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+					 "rdfs" => "http://www.w3.org/2000/01/rdf-schema#",
+					 "label" => "rdfs:label",
+					 "xsd" => "http://www.w3.org/2001/XMLSchema#",
+					 "skos" => "http://www.w3.org/2004/02/skos/core#",
+					 "owl" => "http://www.w3.org/2002/07/owl#",
+					 "dc-elems" => "http://purl.org/dc/elements/1.1/",
+					 "dc-terms" => "http://purl.org/dc/terms/",
+					 "uuid" => "dc-terms:identifier",
+					 "bibo" => "http://purl.org/ontology/bibo/",
+					 "foaf" => "http://xmlns.com/foaf/0.1/",
+					 "cidoc-crm" => "http://www.cidoc-crm.org/cidoc-crm/",
+					 "oc-api" => "http://opencontext.org/about/services");
+	 
+	 
+	 
 	 function processGeoTileFacets(){
 		  
 		  $requestParams = $this->requestParams;
@@ -394,6 +410,85 @@ class GeoJSON {
 	 }
 	 
    
+	 //make a GeoJSON-LD service
+	 function jsonLD($facetsResults, $GeoJSON){
+		  
+		  if(is_array($facetsResults) && is_array($GeoJSON)){
+				$JSON_LD = array();
+				$JSON_LD["@context"] = array(
+					 "id" => "@id",
+					 "type" => "@type");
+				
+				//add standard namespaces
+				foreach($this->standardNamespaces as $abrevKey => $actURI){
+					 $JSON_LD["@context"][$abrevKey] =  $actURI;
+				}
+				$JSON_LD["@context"]["published"] = "dc-terms:created";
+				$JSON_LD["@context"]["updated"] = "oc-api:updated";
+				$JSON_LD["@context"]["count"] = "oc-api:facet-count";
+				
+				$JSON_LD = $this->arrayKeyCopy("numFound", $facetsResults, $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("offset", $facetsResults, $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("published", $facetsResults, $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("updated", $facetsResults, $JSON_LD);
+				if(array_key_exists("facets", $facetsResults)){
+					 $facetKeyIndex = 1;
+					 
+					 
+					 foreach($facetsResults["facets"] as $facetKey => $facetValues){
+						  $newFacetValues = false;
+						  if(is_array($facetValues)){
+								$newFacetValues = array();
+								foreach($facetValues as $fValue){
+									 $newFvalue = array();
+									 $newFvalue["id"] = $fValue["href"];
+									 $newFvalue["count"] = $fValue["count"];
+									 $newFvalue["oc-api:api-url"] = $this->jsonToGeoJSONldLink($fValue["result_href"]);
+									 $newFvalue["oc-api:facet-value"] = $fValue["name"];
+									 $newFvalue["oc-api:facet-display"] = $fValue["name"];
+									 $newFacetValues[] = $newFvalue;
+								}
+						  }
+						  $JSON_LD["oc-api:has-facets"][] = array("id" => "#facet-".$facetKeyIndex,
+																				"oc-api:key" => $facetKey,
+																				"oc-api:facet-values" => $newFacetValues
+																				);
+						  $facetKeyIndex++;
+					 }
+				}
+				
+				
+				$JSON_LD = array_merge_recursive($JSON_LD, $GeoJSON);
+		  }
+		  else{
+				$JSON_LD = false;
+		  }
+		  
+		  return $JSON_LD;
+	 }
+	
+	
+	 //copy an array element from an old array to a new, with an optional new key
+	 function arrayKeyCopy($oldKey, $arrayOld, $arrayNew, $newKey = false){
+		  if(array_key_exists($oldKey, $arrayOld)){
+				if(!$newKey){
+					 $newKey = $oldKey;
+				}
+				
+				$arrayNew[$newKey] = $arrayOld[$oldKey];
+		  }
+		  
+		  return $arrayNew;
+	 }
+	
+	 //turn a JSON link into a GeoJSON-LD link
+	 function jsonToGeoJSONldLink($url){
+		  if(strstr($url, ".json")){
+				$url = str_replace(".json", ".geojson-ld", $url);
+		  }
+		  
+		  return $url;
+	 }
 	
 	
 	 function startDB(){
