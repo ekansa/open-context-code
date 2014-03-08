@@ -156,10 +156,16 @@ class OpenContextItem {
 		  $geoObj = new GlobalMapTiles;
 		  $zoom = 20;
 		  if($geoSpecificity != false){
-				$zoom = abs($geoSpecificity);
+				$geoSpecificity = $geoSpecificity + 0;
+				if($geoSpecificity == -1){
+					 $zoom = 20;
+				}
+				else{
+					 $zoom = abs($geoSpecificity);
+				}
 		  }
 		  
-		  $geoTilePath = $geoObj->LatLonToQuadTree($lat, $lon, $zoom);
+		  $geoTilePath = $geoObj->LatLonToQuadTree($lat+0, $lon+0, $zoom);
 		  $i=0;
 		  $geoTilePathArray = array();
 		  while($i < $zoom){
