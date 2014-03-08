@@ -74,6 +74,9 @@ class publishController extends Zend_Controller_Action
         else{
 				$data = false;
 		  }
+		  
+		  header('Content-Type: application/json; charset=utf8');
+		  header('Access-Control-Allow-Origin: *');
         echo Zend_Json::encode($data);
         
     }
@@ -111,6 +114,7 @@ class publishController extends Zend_Controller_Action
 		  }
 		  
 		  header('Content-Type: application/json; charset=utf8');
+		  header('Access-Control-Allow-Origin: *');
         echo Zend_Json::encode($output) ;
 	 }
 	 
@@ -219,6 +223,7 @@ class publishController extends Zend_Controller_Action
 								}
 						  }
 					 }
+					 //$output["data"] = $data;
 				}
 				else{
 					 $output = array(
@@ -236,6 +241,7 @@ class publishController extends Zend_Controller_Action
 		  }
 		  
 		  header('Content-Type: application/json; charset=utf8');
+		  header('Access-Control-Allow-Origin: *');
         echo Zend_Json::encode($output) ;
         
 		  //echo $data->archaeoML;
@@ -266,6 +272,7 @@ class publishController extends Zend_Controller_Action
 		  }
 		  
 		  header('Content-Type: application/json; charset=utf8');
+		  header('Access-Control-Allow-Origin: *');
         echo Zend_Json::encode($output) ;
         
 		  //echo $data->archaeoML;

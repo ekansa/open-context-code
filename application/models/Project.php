@@ -374,7 +374,11 @@ class Project {
 			  $data["proj_atom"] = $this->atomFull;
 		  }
 	
-	
+		  foreach($data as $key => $value){
+				if($value == NULL){
+					 $data[$key] = false;
+ 				}
+		  }
 	 
 		 $success = false;
 		 try{

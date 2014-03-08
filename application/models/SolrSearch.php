@@ -371,7 +371,7 @@ class SolrSearch{
 					 }
 					 else{
 						  $okGeo = false;
-						  $this->geoPath = false;
+						  $this->geoPath = "";
 					 }
 				}
 		  }
@@ -1103,10 +1103,11 @@ class SolrSearch{
 		  if(isset($solrFacets["facet_fields"])){
 			 
 				$geoLevelDeep = strlen($this->geoPath) + self::geoLevelDeep;
-				if(isset($requestParams["geodeep"]) && $this->geoPath){
+				if(isset($requestParams["geodeep"]) && strlen($this->geoPath)>0){
 					 if(is_numeric($requestParams["geodeep"])){
 						  if($requestParams["geodeep"] > 0){
 								$geoLevelDeep = strlen($this->geoPath) + round($requestParams["geodeep"],0);
+								$this->geoMany = true; //allow lots of tiles, since geodeep parameter present
 						  }
 					 }
 				}
@@ -1117,13 +1118,13 @@ class SolrSearch{
 				$rawTilesCount = 0;
 				if(isset($solrFacets["facet_fields"]["geo_path"])){
 					 $pathArray = $solrFacets["facet_fields"]["geo_path"];
+					 
 					 $rawTilesCount = count($pathArray); //count of raw geo-tile facet data from solr, values of the geo_path field
 					 if($rawTilesCount >= 100 && $this->geoMany){
 						  $pathArray = $this->deepGeoTiles($pathArray);
 						  $rawTilesCount = count($pathArray);
 					 }
 				}
-				
 				
 				$geoTileFacets = array();
 				if($rawTilesCount>0){
@@ -1156,6 +1157,7 @@ class SolrSearch{
     
 	 
 	 function deepGeoTiles($pathArray){
+		  
 		  $geoPathParamArray = $this->param_array;
 		  $currentQuery = $this->query;
 		  unset($geoPathParamArray["facet.field"]); 
@@ -1199,8 +1201,7 @@ class SolrSearch{
 				
 				foreach($subqueries as $subQuery){
 					 $solrResponse = $this->generalSearch($geoPathParamArray, $subQuery, 0, 1, false);
-					 //echo print_r($solrResponse);
-					 //die;
+					 
 					 if(is_array($solrResponse)){
 						  if(isset($solrResponse["facet_counts"]["facet_fields"]["geo_path"])){
 								foreach($solrResponse["facet_counts"]["facet_fields"]["geo_path"] as $key => $count){
