@@ -67,7 +67,8 @@ class GeoJSON {
 					 $boundingBox = "Bounded by: ".$geoTile["geoBounding"][0]." Lat, ".$geoTile["geoBounding"][1]." Lon, and ".$geoTile["geoBounding"][2]." Lat, ".$geoTile["geoBounding"][3]." Lon";
 					 
 					 //$properties["name"] =  "Region ".$boundingBox." ";
-					 $properties["name"] =  "Title: ".$geoTile["linkQuery"]." ";
+					 $properties["name"] =  "Region: ".$geoTile["linkQuery"]." ";
+					 $properties["featureType"] =  "Regional aggregation of items for geo-spatial search";
 					 $properties["href"] =  $geoTile["href"];
 					 $properties["hrefGeoJSON"] =  str_replace(".json", ".geojson", $geoTile["result_href"]);
 					 $properties["count"] =  $geoTile["count"];
@@ -411,9 +412,9 @@ class GeoJSON {
 	 
    
 	 //make a GeoJSON-LD service
-	 function jsonLD($facetsResults, $GeoJSON){
+	 function jsonLD($generalFacetOutput, $resultItems, $geoJSONfeatures){
 		  
-		  if(is_array($facetsResults) && is_array($GeoJSON)){
+		  if(is_array($generalFacetOutput) && is_array($geoJSONfeatures)){
 				$JSON_LD = array();
 				$JSON_LD["@context"] = array(
 					 "id" => "@id",
@@ -427,15 +428,14 @@ class GeoJSON {
 				$JSON_LD["@context"]["updated"] = "oc-api:updated";
 				$JSON_LD["@context"]["count"] = "oc-api:facet-count";
 				
-				$JSON_LD = $this->arrayKeyCopy("numFound", $facetsResults, $JSON_LD);
-				$JSON_LD = $this->arrayKeyCopy("offset", $facetsResults, $JSON_LD);
-				$JSON_LD = $this->arrayKeyCopy("published", $facetsResults, $JSON_LD);
-				$JSON_LD = $this->arrayKeyCopy("updated", $facetsResults, $JSON_LD);
-				if(array_key_exists("facets", $facetsResults)){
+				$JSON_LD = $this->arrayKeyCopy("numFound", $generalFacetOutput, $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("offset", $generalFacetOutput, $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("published", $generalFacetOutput, $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("updated", $generalFacetOutput, $JSON_LD);
+				if(array_key_exists("facets", $generalFacetOutput)){
 					 $facetKeyIndex = 1;
-					 
-					 
-					 foreach($facetsResults["facets"] as $facetKey => $facetValues){
+					 $linkedData = new LinkedDataRef;
+					 foreach($generalFacetOutput["facets"] as $facetKey => $facetValues){
 						  $newFacetValues = false;
 						  if(is_array($facetValues)){
 								$newFacetValues = array();
@@ -445,20 +445,27 @@ class GeoJSON {
 									 $newFvalue["count"] = $fValue["count"];
 									 $newFvalue["oc-api:api-url"] = $this->jsonToGeoJSONldLink($fValue["result_href"]);
 									 $newFvalue["oc-api:facet-value"] = $fValue["name"];
-									 $newFvalue["oc-api:facet-display"] = $fValue["name"];
+									 $newFvalue["label"] = $fValue["name"];
+									 if(stristr($fValue["name"], "http://") || stristr($fValue["name"], "https://")){
+										  if($linkedData->lookup_refURI($fValue["name"])){
+												$newFvalue["label"] = $linkedData->refLabel;
+										  }
+									 }
 									 $newFacetValues[] = $newFvalue;
 								}
 						  }
 						  $JSON_LD["oc-api:has-facets"][] = array("id" => "#facet-".$facetKeyIndex,
-																				"oc-api:key" => $facetKey,
-																				"oc-api:facet-values" => $newFacetValues
+																				"oc-api:facet-key" => $facetKey,
+																				"oc-api:has-facet-values" => $newFacetValues
 																				);
 						  $facetKeyIndex++;
 					 }
 				}
 				
-				
-				$JSON_LD = array_merge_recursive($JSON_LD, $GeoJSON);
+				$geoJSONfeatures = $this->recursiveLinkUpdate($geoJSONfeatures);
+				$JSON_LD["type"] = "FeatureCollection";
+				$JSON_LD["features"] = $geoJSONfeatures;
+				$JSON_LD["features"] = $this->resultItemsToGeJSONfeatures($resultItems, $JSON_LD["features"], $JSON_LD["numFound"], $JSON_LD["offset"]);
 		  }
 		  else{
 				$JSON_LD = false;
@@ -486,9 +493,79 @@ class GeoJSON {
 		  if(strstr($url, ".json")){
 				$url = str_replace(".json", ".geojson-ld", $url);
 		  }
-		  
+		  elseif(strstr($url, ".geojson")){
+				$url = str_replace(".geojson", ".geojson-ld", $url);
+		  }
 		  return $url;
 	 }
+	
+	 //updates 
+	 function recursiveLinkUpdate($array){
+		  if(is_array($array)){
+				$newArray = array();
+				foreach($array as $key => $val){
+					 if(is_array($val)){
+						  $val = $this->recursiveLinkUpdate($val);
+					 }
+					 else{
+						  $val = $this->jsonToGeoJSONldLink($val);
+					 }
+					 $newArray[$key] = $val;
+				}
+				unset($array);
+				$array = $newArray;
+				unset($newArray);
+		  }
+		  else{
+				$array = $this->jsonToGeoJSONldLink($array);
+		  }
+		  
+		  return $array;
+	 }
+	 
+	 //changes JSON result items into geoJSON feautures
+	 function resultItemsToGeJSONfeatures($resultItems, $geoJsonFeatures, $numFound = false, $offset = false){
+		  if(is_array($resultItems)){
+				$i = 1;
+				foreach($resultItems as $item){
+					 
+					 if(isset($item["geoTime"]["geoLat"]) && isset($item["geoTime"]["geoLong"])){
+						  
+						  $feature = array("type" => "Feature",
+												 "geometry" => array("type" => "Point",
+																		  "coordinates" =>
+																				array($item["geoTime"]["geoLong"], $item["geoTime"]["geoLat"])
+																		  )
+												);
+						  $properties = array();
+						  $properties = $this->arrayKeyCopy("uri", $item, $properties, "id");
+						  $properties = $this->arrayKeyCopy("label", $item, $properties);
+						  if($numFound != false){
+								$properties["itemNumber"] = ($offset + $i)." of ".$numFound;
+						  }
+						  
+						  if(isset($item["var_vals"])){
+								if(is_array($item["var_vals"])){
+									 $jj = 0;
+									 foreach($item["var_vals"] as $key => $value){
+										  $properties[$key] = $value;
+										  $jj++;
+										  if($jj>= 6){
+												break;
+										  }
+									 }
+								}
+						  }
+						  $feature["properties"] =  $properties;
+						  $i++;
+						  $geoJsonFeatures[] = $feature;
+					 }
+				}
+		  }
+		  return $geoJsonFeatures;
+	 }
+	 
+	 
 	
 	
 	 function startDB(){

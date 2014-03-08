@@ -777,6 +777,121 @@ class setsController extends Zend_Controller_Action {
 
     }//end json-results viewer
 	
+	 //get results as GeoJSON, with links to new facets
+    public function geojsonldAction() {
+		  ini_set('max_execution_time', 150); //300 seconds = 5 minutes
+		  $requestParams =  $this->_request->getParams();
+		  
+		  if(OpenContext_UserMessages::isSolrDown()){
+			  return $this->render('down');
+		  }
+		  
+		  $protect = new Floodprotection; //check to make sure service is not abused by too many requests
+		  $protect->initialize(getenv('REMOTE_ADDR'), $this->_request->getRequestUri());
+		  $protect->check_ip();
+		  if($protect->lock){
+			  sleep($protect->sleepTime);
+		  }
+		  unset($protect);
+		  
+		  if(isset($requestParams["callback"])){
+				$callback = $requestParams["callback"];
+		  }
+		  else{
+				$callback = false;
+		  }
+		  
+		  
+		  $SolrSearch = new SolrSearch;
+		  $SolrSearch->initialize();
+		  $SolrSearch->requestURI = $this->_request->getRequestUri();
+		  $output = $SolrSearch->cachedResult();
+		  if(!is_array($output)){
+				$SolrSearch->requestParams = $requestParams;
+				$SolrSearch->geoMany = true;
+				$SolrSearch->PropToTaxaParameter(); // change depricated prop parameters to taxa parameters
+				$requestParams = $SolrSearch->requestParams; //make sure any changes to request parameters are there for the view page
+				
+				$SolrSearch->spatial = true; //do a search of spatial items in Open Context
+				$SolrSearch->buildSolrQuery();
+				$SolrSearch->execute_search();
+				$solrSearchParams = $SolrSearch->param_array;
+				$doPost = $SolrSearch->doPost;
+				$solrQuey = $SolrSearch->queryString;
+				$SolrSearch->getLatestTime(); //get the last updated
+				$SolrSearch->getLatestTime(false); //get the last published
+				$atom_string = $SolrSearch->makeSpaceAtomFeed();
+				$spaceResults = $SolrSearch->atom_to_object($atom_string);
+				unset($atom_string);
+				
+				$fixedParams = $requestParams;
+				$fixedParams["action"] = "index";
+				$host = OpenContext_OCConfig::get_host_config(); 
+				$summaryObj = OpenContext_FacetOutput::active_filter_object($fixedParams, $host);
+				
+				$pagingArray = array("self"=> $SolrSearch->currentJSON,
+							 "first" => $SolrSearch->firstPage_JSON,
+							 "prev" => $SolrSearch->prevPage_JSON,
+							 "next" => $SolrSearch->nextPage_JSON,
+							 "last" => $SolrSearch->lastPage_JSON,
+							 );
+				
+				$FacetURLs = new FacetURLs;
+				$FacetURLs->solrSearchParams = $solrSearchParams;
+				$FacetURLs->doPost = $doPost;
+				$FacetURLs->setRequestParams($requestParams);
+				$FacetURLs->setSolrFacets($SolrSearch->facets);
+				$FacetURLs->geoTileFacets = $SolrSearch->geoTileFacets;
+				$FacetURLs->doContextMetadata = true; //get date ranges for contexts
+				$FacetURLs->default_context_path = $SolrSearch->default_context_path;
+				$FacetURLs->original_default_context_path = $SolrSearch->original_default_context_path;
+				$FacetURLs->facetLinking();
+				
+				
+				$GeoJSON = new GeoJSON;
+				$GeoJSON->numFound = $SolrSearch->numFound;
+				$GeoJSON->requestParams = $requestParams;
+				if(isset($requestParams["geotile"])){
+					 $GeoJSON->geoTileFacetArray = $FacetURLs->geoTileFacetURLs;
+					 $geoJSONfeatures = $GeoJSON->processGeoTileFacets();
+				}
+				else{
+					 $GeoJSON->facetArray = $FacetURLs->FacetURLs;
+					 $geoJSONfeatures = $GeoJSON->processContextFacets();
+				}
+		  
+		  
+				$generalFacetOutput= array("numFound" => $SolrSearch->numFound,
+						"offset" => $SolrSearch->offset,
+						"published" => $SolrSearch->lastPublished,
+						"updated" => $SolrSearch->lastUpdate,
+						"sorting" => $SolrSearch->sortType,
+						"summary" => $summaryObj,
+						"facets" => $FacetURLs->FacetURLs,
+						"paging" => $pagingArray);
+		  
+				$output =  $GeoJSON->jsonLD($generalFacetOutput, $spaceResults["items"], $geoJSONfeatures);
+				if($SolrSearch->solrDown){
+					 $output["params"] = $SolrSearch->requestParams; //show errors in params
+				}
+				else{
+					 $SolrSearch->cacheSaveData($output); // solr in good shape, save to the cache
+				}
+		  }
+		  
+		  $this->_helper->viewRenderer->setNoRender();
+		  $JSONstring = json_encode($output, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+		  if($callback){
+			  header('Content-Type: application/javascript; charset=utf8');
+			  $JSONstring = $callback."(".$JSONstring.");";
+		  }
+		  else{
+			  header('Content-Type: application/json; charset=utf8');
+			  header("Access-Control-Allow-Origin: *");
+		  }
+		  echo $JSONstring;
+
+    }//end json-results viewer
 	
 	
 	

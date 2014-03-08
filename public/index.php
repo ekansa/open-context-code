@@ -401,6 +401,10 @@ $chronoJSONRoute = new Zend_Controller_Router_Route_Regex('sets/(.*)\.chrono-jso
 $router->addRoute('chronoJson', $chronoJSONRoute);
 
 
+// the test chrono data for visualization
+$geoJSONldRoute = new Zend_Controller_Router_Route_Regex('sets/(.*)\.geojson-ld', array('controller' => 'sets', 'action' => 'geojsonld'), array(1 => 'default_context_path'), 'sets/%s/');
+
+$router->addRoute('geoJSONld', $geoJSONldRoute);
 
 
 
