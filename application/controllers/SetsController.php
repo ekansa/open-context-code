@@ -836,6 +836,15 @@ class setsController extends Zend_Controller_Action {
 							 "last" => $SolrSearch->lastPage_JSON,
 							 );
 				
+				
+				//consolidate hiearchic facets
+				$hierarchyObj = new Facets_Hierarchy ;
+			     $hierarchyObj->requestParams = $requestParams;
+				$solrFacets = $SolrSearch->facets;
+			     $solrFacets["facet_fields"] = $hierarchyObj->consolidateRawHierachicFacetsAllTypes($solrFacets["facet_fields"]);
+				$SolrSearch->facets = $solrFacets;
+				unset($solrFacets);
+				
 				$FacetURLs = new FacetURLs;
 				$FacetURLs->solrSearchParams = $solrSearchParams;
 				$FacetURLs->doPost = $doPost;
@@ -868,7 +877,8 @@ class setsController extends Zend_Controller_Action {
 						"sorting" => $SolrSearch->sortType,
 						"summary" => $summaryObj,
 						"facets" => $FacetURLs->FacetURLs,
-						"paging" => $pagingArray);
+						"paging" => $pagingArray,
+						"raw" => $SolrSearch->facets);
 		  
 				$output =  $GeoJSON->jsonLD($generalFacetOutput, $spaceResults["items"], $geoJSONfeatures);
 				if($SolrSearch->solrDown){

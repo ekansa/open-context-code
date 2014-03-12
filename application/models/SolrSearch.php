@@ -880,6 +880,7 @@ class SolrSearch{
            return true;
         }
         else{
+		 
             sleep(.5);
             if ($solr->ping()) {
                 return true;
@@ -913,6 +914,7 @@ class SolrSearch{
 		  $solr = new Apache_Solr_Service('localhost', 8983, '/solr');
 		  //$solr->setDefaultTimeout(5.0);
 		  if ($this->pingSolr($solr)) {
+			 
 				try {
 					 $param_array = $this->param_array;
 					 
@@ -1768,14 +1770,16 @@ class SolrSearch{
 	   if ($docs_array) {
 	      $idArray = array();
 	      foreach ($docs_array as $docArray) {
-		 $idArray[] = $docArray["uuid"];
+		  $idArray[] = $docArray["uuid"];
 	      }
 	      
 	      
 	      
 	      $itemEntries = new SubjectsEntries;
 	      $idEntryArray = $itemEntries->getByIDArray($idArray);
-	    
+		 if(!is_array($idEntryArray)){
+		  $idEntryArray = array();
+		 } 
 	      foreach($idEntryArray as $itemUUID => $atomEntry){
 			
 			//$atomEntry = mb_convert_encoding($atomEntry, 'UTF-8');

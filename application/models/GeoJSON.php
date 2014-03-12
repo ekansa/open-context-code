@@ -463,6 +463,7 @@ class GeoJSON {
 				}
 				
 				$geoJSONfeatures = $this->recursiveLinkUpdate($geoJSONfeatures);
+				
 				$JSON_LD["type"] = "FeatureCollection";
 				$JSON_LD["features"] = $geoJSONfeatures;
 				$JSON_LD["features"] = $this->resultItemsToGeJSONfeatures($resultItems, $JSON_LD["features"], $JSON_LD["numFound"], $JSON_LD["offset"]);
@@ -473,7 +474,7 @@ class GeoJSON {
 		  
 		  return $JSON_LD;
 	 }
-	
+	 
 	
 	 //copy an array element from an old array to a new, with an optional new key
 	 function arrayKeyCopy($oldKey, $arrayOld, $arrayNew, $newKey = false){

@@ -635,7 +635,7 @@ class Apache_Solr_Service
 
 		$httpResponse = $httpTransport->performHeadRequest($this->_pingUrl, $timeout);
 		$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
-
+		
 		if ($solrResponse->getHttpStatus() == 200)
 		{
 			return microtime(true) - $start;

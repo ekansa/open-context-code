@@ -170,22 +170,36 @@ class OpenContext_UTF8 {
         $hexC = (241);
         $hexD = (377);
      */
+        
+        /*
 
         if (! preg_match("/[\200-\237]/", $string) and ! preg_match("/[\241-\377]/", $string))
             return $string;
     
         // decode three byte unicode characters
+        
         $string = preg_replace("/([\340-\357])([\200-\277])([\200-\277])/e",       
         "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'",   
         $string);
-    
-        // decode two byte unicode characters
+                // decode two byte unicode characters
         $string = preg_replace("/([\300-\337])([\200-\277])/e",
         "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'",
         $string);
     
+        */
+        
+        //$string = OpenContext_UTF8::mb_rawurlencode($string);
         return $string;
     }
+    
+    public static function mb_rawurlencode($url){
+        $encoded='';
+        $length=mb_strlen($url);
+        for($i=0;$i<$length;$i++){
+        $encoded.='%'.wordwrap(bin2hex(mb_substr($url,$i,1)),2,'%',true);
+        }
+        return $encoded;
+        }
 
     // useful for urlencoding Pınarbaşı -Fix
     public static function charset_encode_utf_8 ($string) {
