@@ -106,8 +106,15 @@ function initmap() {
 
 
 function getNewOClayer(url){
-     OCdataLayer.clearLayers();
-     getOClayer(url);
+	
+	if (!jQuery.isEmptyObject(OCdataLayer)) {
+		OCdataLayer.clearLayers();
+	}
+     if (!jQuery.isEmptyObject(OCheatMapLayer)) {
+		map.removeLayer(OCheatMapLayer);
+	}
+     
+	getOClayer(url);
 }
 
 
@@ -182,19 +189,6 @@ function getOClayer(rawUrl){
      
 	var url = rawUrl;
 	var data = new Object;
-	
-	/*
-	if(rawUrl.indexOf("?") > 0) {
-		var urlEx = rawUrl.split("?");
-		var url = urlEx[0]; 
-		var rawParamString = urlEx[1];
-		var data = new paramData(rawParamString);
-	}
-	else{
-		var data = new Object();
-	}
-	*/
-	
 	
           $.ajax({
               type: "GET",
@@ -284,6 +278,15 @@ function addOClayer(ocData) {
                var pointCoords = getPolyCenter(ocData.features[i].geometry.coordinates);
                var latlng = new L.LatLng(pointCoords[0], pointCoords[1]);
                bounds.extend(latlng);
+			if ("count" in ocData.features[i].properties) {
+				//var heatItem = new heatMapDataItem(pointCoords[0], pointCoords[1], ocData.features[i].properties.count);
+				var heatItem = new Array();
+				heatItem["lat"] = pointCoords[0];
+				heatItem["lon"] = pointCoords[1];
+				heatItem["value"] = ocData.features[i].properties.count;
+				
+				heatMapData.push(heatItem);
+			}
           }
           if(ocData.features[i].geometry.type == "Point"){
                var latlng = new L.LatLng(ocData.features[i].geometry.coordinates[1], ocData.features[i].geometry.coordinates[0]);
@@ -292,7 +295,27 @@ function addOClayer(ocData) {
           
      }
      
-   
+	
+	OCheatMapLayer =  L.TileLayer.heatMap({
+                    radius: 20,
+                    opacity: 0.8,
+				zIndex: 10,
+                    gradient: {
+                        0.45: "rgb(0,0,255)",
+                        0.55: "rgb(0,255,255)",
+                        0.65: "rgb(0,255,0)",
+                        0.95: "yellow",
+                        1.0: "rgb(255,0,0)"
+                    }
+                });
+ 
+	
+     OCheatMapLayer.addData(heatMapData);
+	console.log(heatMapData);
+	console.log(OCheatMapLayer);
+	map.addLayer(OCheatMapLayer);
+	
+   /*
      OCdataLayer = L.geoJson(ocData, {
 			style: function(feature) {
 				if(feature.geometry.type == "Polygon"){
@@ -312,11 +335,17 @@ function addOClayer(ocData) {
 			}
 		}
      ).addTo(map);
+	*/
+	
     map.fitBounds(bounds);
 }
 
-
-
+//data item for a heat map
+function heatMapDataItem(lat, lon, value){
+	this.lat = lat;
+	this.lon = lon;
+	this.value = value;
+}
 
 
 function colorLegend(){

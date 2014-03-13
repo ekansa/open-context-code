@@ -10,8 +10,9 @@
     <script src="http://opencontext/js/map-browse/OC-map-json-ld.js" type="text/javascript"></script>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="https://raw.github.com/pa7/heatmap.js/master/src/heatmap-leaflet.js"></script>
-    <script src="https://raw.github.com/pa7/heatmap.js/master/src/heatmap.js"></script>
+    <script src="http://opencontext/js/map-browse/heatmap-leaflet.js"></script>
+    <script src="http://opencontext/js/map-browse/heatmap.js"></script>
+    <script src="http://opencontext/js/map-browse/QuadTree.js"></script>
     <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
     
     <style type="text/css">
@@ -30,11 +31,11 @@
 
 <body>
 
-    <h1>Map Test</h1>
-    
-    <div id="oc-data"></div>
+    <div id="oc-data">
+        <h1>Map Test</h1>
+    </div>
     <script type="text/javascript">
-        var geoJSONurl = "http://opencontext.org/sets/United+States.geojson-ld?chrono=1&geotile=0&geodeep=6&dinaaPer=root";
+        var geoJSONurl = "http://opencontext.org/sets/United+States.geojson-ld?chrono=1&geotile=0&geodeep=9&dinaaPer=root";
         var startColor = convertToRGB('#FFC800');
 	   var endColor   = convertToRGB('#8B0000');
         var legendTextColor = "#FFFFFE";
