@@ -345,13 +345,35 @@ class SolrSearch{
     function makeGeoFromRequestParam(){
 		  $requestParams = $this->requestParams;
 		  if(isset($requestParams["geotile"])){
-				$geoPath = $requestParams["geotile"];
-				if(is_numeric($geoPath)){
-					$this->makeGeoTileParameters($geoPath);
+			 $geoPath = $requestParams["geotile"];
+			 if(isset($requestParams["bBox"])){
+				$bbox = $requestParams["bBox"];
+				if(substr_count($bbox,",") == 3){
+				    $geoObj = new GlobalMapTiles;
+				    $zoom = 20;
+				    $bboxEx = explode(",", $bbox);
+				    $swPath = $geoObj->LatLonToQuadTree($bboxEx[0]+0, $bboxEx[1]+0, $zoom);
+				    $nePath = $geoObj->LatLonToQuadTree($bboxEx[2]+0, $bboxEx[3]+0, $zoom);
+				    $pIndex = strlen($geoPath);
+				    if($pIndex < 15){
+					   $i = $pIndex;
+					   while($i < 15){
+						  $swSeg = substr($swPath, 0, $i);
+						  $neSeg = substr($nePath, 0, $i);
+						  if($swSeg === $neSeg){
+							$geoPath =  $neSeg;
+						  }
+						  $i++;
+					   }
+				    }
 				}
-				elseif(strlen($geoPath) == 0){
-					$this->makeGeoTileParameters($geoPath);
-				}
+			 }
+			 if(is_numeric($geoPath)){
+				 $this->makeGeoTileParameters($geoPath);
+			 }
+			 elseif(strlen($geoPath) == 0){
+				 $this->makeGeoTileParameters($geoPath);
+			 }
 		  }
     }
     
