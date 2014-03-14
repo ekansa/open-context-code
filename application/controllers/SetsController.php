@@ -858,6 +858,8 @@ class setsController extends Zend_Controller_Action {
 				
 				
 				$GeoJSON = new GeoJSON;
+				$GeoJSON->facetCatLabels = $FacetURLs->facetCatLabels;
+				$GeoJSON->facetFeedLabels = $FacetURLs->facetFeedLabels;
 				$GeoJSON->numFound = $SolrSearch->numFound;
 				$GeoJSON->requestParams = $requestParams;
 				if(isset($requestParams["geotile"])){

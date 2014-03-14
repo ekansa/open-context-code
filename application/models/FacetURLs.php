@@ -9,7 +9,7 @@ class FacetURLs{
     public $requestURI; //request URI
     public $requestParams; // array of the request parameters and values
     public $solrSearchParams; //param array of the last solr search
-	 public $doPost; //do post, if solr search has lots of query terms
+    public $doPost; //do post, if solr search has lots of query terms
 	 
     public $facetFields; //facets from the SolrSearch object
     public $facetQueries; //facet queries from the SolrSearch object
@@ -17,7 +17,7 @@ class FacetURLs{
     public $geoTileFacets; //geo tile facets
     public $geoTileFacetURLs; //array of URLs to geo-tile facets
 	 
-	 public $chronoTileFacets; //geo tile facets
+    public $chronoTileFacets; //geo tile facets
     public $chronoTileFacetURLs; //array of URLs to geo-tile facets
     public $chronoData; //array of chronotile data in a schema for visualization
 	 
@@ -31,7 +31,8 @@ class FacetURLs{
     public $facetURI_Atom;
     public $facetURI_JSON;
        
-       
+    public $facetCatLabels = array();
+    public $facetFeedLabels = array();
        
     //add raw solr facet results, set aside time spans for special treatment
     function setSolrFacets($solrFacets){
@@ -81,7 +82,11 @@ class FacetURLs{
 		  
 		  //combine facets from different fields if these came from an "OR" search
 		  
-		  if(is_array($facet_fields)){		
+		  if(is_array($facet_fields)){
+			 
+			 $facetCatLabels = array();
+			 $facetFeedLabels = array();
+			 
 			  foreach ($facet_fields as $facet_cat => $value_array) {
 			  
 				  $facet_category_label = "";
@@ -98,6 +103,12 @@ class FacetURLs{
 					  $facet_category_label = $facetCategory->facet_category_label;
 					  $checkParameter = $facetCategory->checkParameter;
 					  $skipUTF8 = false; //do some functions for more UTF8 processing
+					  
+					  $facetCatLabels[$facet_cat] = $facetCategory->facet_category_label;
+					  $this->facetCatLabels = $facetCatLabels; //saves an array of facet category labels, in case needed
+					  $facetFeedLabels[$facetCategory->facet_category_feed] = $facetCategory->facet_category_label;
+					  $this->facetFeedLabels = $facetFeedLabels;
+					  
 					  
 					  if(stristr($facet_category_label, "description")){
 						  if(isset($requestParams["taxa"])){

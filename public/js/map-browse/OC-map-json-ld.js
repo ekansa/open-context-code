@@ -2,6 +2,8 @@ var legendAndMapDomID = "oc-ml";
 var legendDomID = "oc-legend-tab";
 var legendDomRowID = "oc-legend-tr";
 var mapDomID = "oc-map";
+var ocNavFacDomID = "oc-nav-facets";
+var loadingDomID = "oc-loading";
 var facetsDomID = "oc-facets";
 var map;
 var geoJSONurl = "http://opencontext.org/sets/United+States.geojson-ld?chrono=1&geotile=0&geodeep=6&dinaaPer=root";
@@ -38,10 +40,22 @@ function OCinitialize(){
      OCdom.setAttribute("style", "font-family:sans-serif;");
      OCdom.setAttribute("class", "container");
      
-     var facetsDom = document.createElement("div");
+	var navFacDom = document.createElement("div");
+     navFacDom.setAttribute("id", ocNavFacDomID);
+     navFacDom.setAttribute("class", "col-sm-3");
+     OCdom.appendChild(navFacDom);
+	
+	var loadingDom = document.createElement("div");
+     loadingDom.setAttribute("id", loadingDomID);
+	loadingDom.setAttribute("style", "display:block;");
+	var loadingHTML = "<h5>Loading from Open Context...</h5>";
+	loadingHTML += "<img src=\"http://opencontext/js/map-browse/ajax-loader.gif\" alt=\"loading-icon\"/>";
+     loadingDom.innerHTML = loadingHTML;
+     navFacDom.appendChild(loadingDom);
+	
+	var facetsDom = document.createElement("div");
      facetsDom.setAttribute("id", facetsDomID);
-     facetsDom.setAttribute("class", "col-sm-3");
-     OCdom.appendChild(facetsDom);
+     navFacDom.appendChild(facetsDom);
      
      var mapAndLegendDom = document.createElement("div");
      mapAndLegendDom.setAttribute("id", legendAndMapDomID);
@@ -55,7 +69,7 @@ function OCinitialize(){
      
      var legendRowDom = document.createElement("div");
      legendRowDom.setAttribute("id", legendDomRowID);
-     legendRowDom.setAttribute("style", "display:table-row;");
+     legendRowDom.setAttribute("style", "display:table-row; display:none;");
      legendDom.appendChild(legendRowDom);
      
      var mapDom = document.createElement("div");
@@ -113,7 +127,8 @@ function getNewOClayer(url){
      if (!jQuery.isEmptyObject(OCheatMapLayer)) {
 		map.removeLayer(OCheatMapLayer);
 	}
-     
+	var loadingDom = document.getElementById(loadingDomID);
+     loadingDom.setAttribute("style", "display:block;");
 	getOClayer(url);
 }
 
@@ -209,11 +224,20 @@ function getOClayer(rawUrl){
 function processOCresults(ocData){
      //alert(ocData["oc-api:has-facets"].length + " facets found");
      searchTotalFound = ocData["numFound"];
+	var loadingDom = document.getElementById(loadingDomID);
+     loadingDom.setAttribute("style", "display:none;");
+	
+	
      var facetsDom = document.getElementById(facetsDomID);
      facetsDom.innerHTML = "";
      var totalDom = document.createElement("h4");
      totalDom.innerHTML = "Number Found: " + searchTotalFound;
      facetsDom.appendChild(totalDom);
+	
+	var filterDom = document.createElement("h5");
+	filterDom.setAttribute("style", "padding-top:5%;");
+     filterDom.innerHTML = "Filter By: ";
+     facetsDom.appendChild(filterDom);
      
      var facetAccordion = document.createElement("div");
      facetAccordion.setAttribute("class", "panel-group");
@@ -228,7 +252,7 @@ function processOCresults(ocData){
           facetAccordion.appendChild(aDom);
           var bDom = document.createElement("div");
           bDom.setAttribute("class", "panel-heading");
-          bDom.innerHTML = "<h4 class=\"panel-title\"><a data-toggle=\"collapse\" data-parent=\"#oc-fac-accordion\" href=\"#" + actFacID + "\">Filter Options</a></h4>";
+          bDom.innerHTML = "<h4 class=\"panel-title\"><a data-toggle=\"collapse\" data-parent=\"#oc-fac-accordion\" href=\"#" + actFacID + "\">" + actFacet.label + "</a></h4>";
           aDom.appendChild(bDom);
           var cDom = document.createElement("div");
           cDom.setAttribute("class", "panel-collapse collapse collapse");
@@ -315,7 +339,7 @@ function addOClayer(ocData) {
 	console.log(OCheatMapLayer);
 	map.addLayer(OCheatMapLayer);
 	
-   /*
+   
      OCdataLayer = L.geoJson(ocData, {
 			style: function(feature) {
 				if(feature.geometry.type == "Polygon"){
@@ -329,23 +353,21 @@ function addOClayer(ocData) {
 					var newColorHex =  "#" + convertToHex(newColorRGB);
                          var fillOpacity = assignOpacityByCount(actCount, maxValue, .75);
 					
-					return {color: newColorHex ,
-                              fillOpacity: fillOpacity};
+					return {
+						color: newColorHex,
+						zIndex: 8,
+						opacity: .01,
+                              fillOpacity: 0.01};
 				}
 			}
 		}
      ).addTo(map);
-	*/
+	
 	
     map.fitBounds(bounds);
 }
 
-//data item for a heat map
-function heatMapDataItem(lat, lon, value){
-	this.lat = lat;
-	this.lon = lon;
-	this.value = value;
-}
+
 
 
 function colorLegend(){

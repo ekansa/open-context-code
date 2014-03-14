@@ -26,7 +26,11 @@ class GeoJSON {
 	 
 	 public $db; //database object
 	 
-	  public $standardNamespaces = array("rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+	 
+	 public $facetCatLabels = array();
+	 public $facetFeedLabels = array();
+	 
+	 public $standardNamespaces = array("rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
 					 "rdfs" => "http://www.w3.org/2000/01/rdf-schema#",
 					 "label" => "rdfs:label",
 					 "xsd" => "http://www.w3.org/2001/XMLSchema#",
@@ -413,7 +417,8 @@ class GeoJSON {
    
 	 //make a GeoJSON-LD service
 	 function jsonLD($generalFacetOutput, $resultItems, $geoJSONfeatures){
-		  
+		  $facetCatLabels = $this->facetCatLabels; //array of facet category labels
+		  $facetFeedLabels = $this->facetFeedLabels; //array of facet category labels
 		  if(is_array($generalFacetOutput) && is_array($geoJSONfeatures)){
 				$JSON_LD = array();
 				$JSON_LD["@context"] = array(
@@ -433,6 +438,9 @@ class GeoJSON {
 				$JSON_LD = $this->arrayKeyCopy("published", $generalFacetOutput, $JSON_LD);
 				$JSON_LD = $this->arrayKeyCopy("updated", $generalFacetOutput, $JSON_LD);
 				if(array_key_exists("facets", $generalFacetOutput)){
+				    
+				    $facCat = new FacetCategory;
+				    
 					 $facetKeyIndex = 1;
 					 $linkedData = new LinkedDataRef;
 					 foreach($generalFacetOutput["facets"] as $facetKey => $facetValues){
@@ -445,19 +453,36 @@ class GeoJSON {
 									 $newFvalue["count"] = $fValue["count"];
 									 $newFvalue["oc-api:api-url"] = $this->jsonToGeoJSONldLink($fValue["result_href"]);
 									 $newFvalue["oc-api:facet-value"] = $fValue["name"];
-									 $newFvalue["label"] = $fValue["name"];
+								      $newFvalue["label"] = $fValue["name"]; //a default temporary label, gets changed if it's a link as below
 									 if(stristr($fValue["name"], "http://") || stristr($fValue["name"], "https://")){
 										  if($linkedData->lookup_refURI($fValue["name"])){
 												$newFvalue["label"] = $linkedData->refLabel;
 										  }
 									 }
+									 
 									 $newFacetValues[] = $newFvalue;
 								}
 						  }
+						  
+						  $facetLabel = $facetKey;
+						  //get the human readable label for the current facet.
+						  if(array_key_exists($facetKey, $facetFeedLabels)){
+							 $facetLabel = $facetFeedLabels[$facetKey];
+						  }
+						  elseif(array_key_exists($facetKey, $facetCatLabels)){
+							 $facetLabel = $facetCatLabels[$facetKey];
+						  }
+						  else{
+							 $facCat->facet_cat = $facetKey;
+							 $facCat->setParameter();
+							 $facetLabel = $facCat->facet_category_label;
+						  }
+						  
 						  $JSON_LD["oc-api:has-facets"][] = array("id" => "#facet-".$facetKeyIndex,
-																				"oc-api:facet-key" => $facetKey,
-																				"oc-api:has-facet-values" => $newFacetValues
-																				);
+														  "label" => $facetLabel,
+														  "oc-api:facet-key" => $facetKey,
+														  "oc-api:has-facet-values" => $newFacetValues
+														  );
 						  $facetKeyIndex++;
 					 }
 				}
