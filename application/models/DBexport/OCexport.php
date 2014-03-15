@@ -655,7 +655,7 @@ class DBexport_OCexport  {
 		  
 		  $sql = "SELECT *
 		  FROM noid_bindings
-		  WHERE 1
+		  WHERE RecordUpdated >= '2014-03-01'
 		  $limit
 		  ;
 		  ";
