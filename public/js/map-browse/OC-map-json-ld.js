@@ -5,6 +5,7 @@ var mapDomID = "oc-map";
 var ocNavFacDomID = "oc-nav-facets";
 var loadingDomID = "oc-loading";
 var facetsDomID = "oc-facets";
+var resultsDomID = "oc-items";
 var map;
 var geoJSONurl = "http://opencontext.org/sets/United+States.geojson-ld?chrono=1&geotile=0&geodeep=6&dinaaPer=root";
 
@@ -13,6 +14,7 @@ var OCdataLayer; //data layer with open context mapping data
 var heatMapData; //data for the heatmap
 var OCheatMapLayer; //heatmap data layer
 var OCsearchObj; //results of open context search request
+var OCsearchItems; //array of open context search items to display
 var searchTotalFound = 0;
 
 var hasFacetsPred = "oc-api:has-facets"; //has facets predicate
@@ -34,16 +36,22 @@ var maxIconSize = 50;
 var alphaRange = [225,175];
 var legendTextColor = "#FFFFFE";
 
-
+//set up the DOM to take mapping data
 function OCinitialize(){
-     var OCdom = document.getElementById("oc-data");
-     OCdom.setAttribute("style", "font-family:sans-serif;");
+	
+     var OCdom = document.getElementById("oc-data"); //the main container for the map
+     OCdom.setAttribute("style", "font-family:sans-serif; width:100%;");
      OCdom.setAttribute("class", "container");
      
+	var mainRowDom = document.createElement("div"); //the first row, containing search facets and the map
+	mainRowDom.setAttribute("id", "oc-facet-map");
+	mainRowDom.setAttribute("class", "row");
+	OCdom.appendChild(mainRowDom);
+	
 	var navFacDom = document.createElement("div");
      navFacDom.setAttribute("id", ocNavFacDomID);
-     navFacDom.setAttribute("class", "col-sm-3");
-     OCdom.appendChild(navFacDom);
+     navFacDom.setAttribute("class", "col-md-3");
+     mainRowDom.appendChild(navFacDom);
 	
 	var loadingDom = document.createElement("div");
      loadingDom.setAttribute("id", loadingDomID);
@@ -59,8 +67,8 @@ function OCinitialize(){
      
      var mapAndLegendDom = document.createElement("div");
      mapAndLegendDom.setAttribute("id", legendAndMapDomID);
-     mapAndLegendDom.setAttribute("class", "col-sm-9");
-     OCdom.appendChild(mapAndLegendDom);
+     mapAndLegendDom.setAttribute("class", "col-sm-7");
+     mainRowDom.appendChild(mapAndLegendDom);
      
      var legendDom = document.createElement("div");
      legendDom.setAttribute("id", legendDomID);
@@ -75,6 +83,11 @@ function OCinitialize(){
      var mapDom = document.createElement("div");
      mapDom.setAttribute("id", mapDomID);
      mapAndLegendDom.appendChild(mapDom);
+	
+	var itemsDom = document.createElement("div"); //the second row, with search result items
+	itemsDom.setAttribute("id", resultsDomID);
+	itemsDom.setAttribute("class", "row");
+	OCdom.appendChild(itemsDom);
      
      initmap();
 }
@@ -272,9 +285,133 @@ function processOCresults(ocData){
                listDom.appendChild(itemDom);
           }
      }
+	
+	displayResultItems(ocData);
 }
 
-    
+//displays a list of search item results
+function displayResultItems(ocData){
+	
+	var itemsDom = document.getElementById(resultsDomID);
+     itemsDom.innerHTML = "";
+	
+	var carouselDom = document.createElement("div");
+	carouselDom.setAttribute("id", "oc-items-carousel");
+	carouselDom.setAttribute("class", "carousel slide");
+	carouselDom.setAttribute("data-ride", "carousel");
+	itemsDom.appendChild(carouselDom);
+	
+	var cIndicators = document.createElement("ul");
+	cIndicators.setAttribute("class", "carousel-indicators");
+	carouselDom.appendChild(cIndicators);
+	
+	
+	var lcont = document.createElement("a");
+	lcont.setAttribute("class", "left carousel-control");
+	lcont.setAttribute("href", "#oc-items-carousel");
+	lcont.setAttribute("data-slide", "prev");
+	var lcontsp = document.createElement("span");
+	lcontsp.setAttribute("class", "glyphicon glyphicon-chevron-left");
+	lcont.appendChild(lcontsp);
+	carouselDom.appendChild(lcont);
+	
+	var rcont = document.createElement("a");
+	rcont.setAttribute("class", "right carousel-control");
+	rcont.setAttribute("href", "#oc-items-carousel");
+	rcont.setAttribute("data-slide", "next");
+	var rcontsp = document.createElement("span");
+	rcontsp.setAttribute("class", "glyphicon glyphicon-chevron-right");
+	rcont.appendChild(rcontsp);
+	carouselDom.appendChild(rcont);
+	
+	
+	
+	
+	var pointFeatures = new Array();
+	for (var i = 0; i < ocData.features.length; i++) {
+		var feature = ocData.features[i];
+		if (feature.type == "Point") {
+			pointFeatures.push(feature.properties);
+		}
+	}
+	
+	for (var i = 0; i < pointFeatures.length; i++) {
+		var props = pointFeatures[i];
+		var indItem = document.createElement("li");
+		// <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+		indItem.setAttribute("data-target", "oc-items-carousel");
+		var act = "active";
+		var itemAct = "item active";
+		if (i > 0) {
+			act = "";
+			itemAct = "item";
+		}
+		indItem.setAttribute("class", act);
+		indItem.setAttribute("data-slide-to", i);
+		cIndicators.appendChild(indItem);
+		
+		var cItem =  document.createElement("div");
+		citem.setAttribute("class", "carousel-inner");
+		
+		var ccItem = document.createElement("div");
+		ccitem.setAttribute("class", itemAct);
+		ccitem.setAttribute("id", "slide-" + props.itemNumber);
+		cItem.appendChild(ccItem);
+		
+		iPropTab = document.createElement("table");
+		iPropTab.setAttribute("class", "table table-condensed table-striped table-hover");
+		propertyTable(props, iPropTab); //add property rows to the table.
+		ccItem.appendChild(iPropTab);
+		
+		var cccItem = document.createElement("div");
+		cccitem.setAttribute("class", "carousel-caption");
+		cccitem.innerHTML = "Item: '" + props.label + " ( " + props.category + ")";
+		ccItem.appendChild(cccItem);
+		carouselDom.appendChild(cItem);
+	}
+	
+}
+
+
+function propertyTable(props, iPropTab){
+	
+	var tHead = document.createElement("thead");
+	tHead.innerHTML = "<tr><th>Property</th><th>Value</th></tr>";
+	iPropTab.appendChild(tHead);
+	
+	var tBody = document.createElement("tbody");
+	var keys = Object.keys(props);
+	var tBodyContent = "";
+	for (var i = 0; i < keys.length; i++) {
+		var actKey = keys[0];
+		var actVal = props.actKey;
+		if (actVal.length>0) {
+			if (actKey == "id") {
+				tBodyContent += "<tr><td>Link (URI)</td><td><a href=\"" + actVal + "\" target=\"_blank\">" + actVal + "</a></td></tr>";
+			}
+			else if (actKey == "label") {
+				tBodyContent += "<tr><td>Search Result</td><td>" + actVal + "</td></tr>";
+			}
+			else if (actKey == "category") {
+				
+			}
+			else if (actKey == "itemNumber") {
+				tBodyContent += "<tr><td>Search Result</td><td>" + actVal + " of " + searchTotalFound + "</td></tr>";
+			}
+			else{
+				tBodyContent += "<tr><td>" + actKey + "</td><td>" + actVal + "</td></tr>";
+			}
+		}
+		
+	}
+	tBody.innerHTML = tBodyContent;
+	iPropTab.appendChild(tBody);
+}
+
+
+
+
+//main function to display mapping data    
 function addOClayer(ocData) {
      
 	trueMaxValue = 0;
@@ -282,6 +419,8 @@ function addOClayer(ocData) {
 	maxValue = 0;
 	minValue = 1000000000000;
 	heatMapData = new Array();
+	allFeatures = new Array();
+	OCsearchItems = new Array();
 	
     //loop through features to get the maximum count, needed for assigning colors
      for (var i = 0; i < ocData.features.length; i++) {
@@ -357,14 +496,82 @@ function addOClayer(ocData) {
 						color: newColorHex,
 						zIndex: 8,
 						opacity: .01,
-                              fillOpacity: 0.01};
+                              fillOpacity: 0.01
+					}
 				}
+				else if(feature.geometry.type == "Point"){
+					return {
+						filter: false
+					}
+				}
+			},
+			onEachFeature: onEachFeature,
+			filter: function(feature, layer) {
+				   if(feature.geometry.type == "Point"){
+					    return false;
+				   }
+				   else{
+					    return true;
+				   }
 			}
 		}
      ).addTo(map);
 	
 	
     map.fitBounds(bounds);
+}
+
+
+//function for special processing of each feature in the map
+function onEachFeature(feature, layer) {
+	
+	feature.reColor = function(){
+		if(feature.geometry.type == "Polygon"){
+			var actCount = feature.properties.count;
+			if("denominator" in feature.properties){
+				if( feature.properties.denominator > 0){
+					actCount = actCount / feature.properties.denominator;
+				}
+			}
+			var newColorRGB = assignColorByCount(actCount, trueMaxValue, trueMinValue); //add a color with the true Max count as the highest color 
+			var newColorHex =  "#" + convertToHex(newColorRGB);
+		 
+			layer.setStyle({
+				color: newColorHex
+			});
+		}
+	}
+	feature.reVertColor = function(){
+		 OCdataLayer.resetStyle(layer);
+	}
+	
+	if(feature.geometry.type == "Polygon"){
+		var newbounds = layer.getBounds();
+		bounds.extend(newbounds.getSouthWest());
+		bounds.extend(newbounds.getNorthEast());
+		feature.pointID = function(){
+			this.pointID = false;
+		}
+		 
+	}
+	if(feature.geometry.type == "Point"){
+				
+		var newbounds = new Array();
+		newbounds[0] = feature.geometry.coordinates[1]; //annoyance of flipping point coordinates!
+		newbounds[1] = feature.geometry.coordinates[0];
+		bounds.extend(newbounds);
+		if (feature.properties) {
+			feature.pointID = function(){
+				this.pointID = feature.properties.itemNumber
+			}
+			var popupContent = "<div><h5>Item: '" + feature.properties.label  + "' (" + feature.properties.category +")</h5>";
+			popupContent += "<a href=\"javascript:showItemDetails("+feature.properties.itemNumber+");\">Show details</a>";
+			popupContent += "</div>";
+			layer.bindPopup(popupContent);
+		}
+	}
+	
+	allFeatures.push(feature);
 }
 
 
@@ -412,62 +619,7 @@ function colorLegend(){
 
 
 
-//function applied to each feature
-function onEachFeaturePrep(feature, layer) {
-	
-	feature.reColor = function(){
-          if(feature.geometry.type == "Polygon"){
-               var actCount = feature.properties.count;
-               if("denominator" in feature.properties){
-                       if( feature.properties.denominator > 0){
-                             actCount = actCount / feature.properties.denominator;
-                       }
-               }
-               var newColorRGB = assignColorByCount(actCount, trueMaxValue, trueMinValue); //add a color with the true Max count as the highest color 
-               var newColorHex =  "#" + convertToHex(newColorRGB);
-               layer.setStyle({
-                   color: newColorHex
-               });
-          }
-	}
-	feature.reVertColor = function(){
-		OCdataLayer.resetStyle(layer);
-	}
-	allFeatures.push(feature);
-	
-	if(feature.geometry.type == "Polygon"){
-		var newbounds = layer.getBounds();
-		bounds.extend(newbounds.getSouthWest());
-		bounds.extend(newbounds.getNorthEast());
-	}
-	if(feature.geometry.type == "Point"){
-		 var newbounds = new Array();
-		 newbounds[0] = feature.geometry.coordinates[1]; //annoyance of flipping point coordinates!
-		 newbounds[1] = feature.geometry.coordinates[0];
-		 bounds.extend(newbounds);
-	}
-	if (feature.properties) {
-		 var popupContent = "<div> The context <em>'" + feature.properties.name  + "'</em> has " + feature.properties.count;
-		 //popupContent += " items. "
-		 //popupContent += "<a href='" + feature.properties.href + "'>Click here</a> to filter by this geographic region</div>";
-		 
-		 
-		 popupContent += " '" + nominatorCurrentVal + "'";
-		 popupContent += " items";
-		 if(proportional){
-			  popupContent += " (" + Math.round((feature.properties.count / feature.properties.denominator) * 100, 1);
-			  popupContent += "% of all " + feature.properties.denominator + " '" + feature.properties.propOf + "' in this context). ";
-		 }
-		 popupContent += ". ";
-		 if(feature.properties.href){
-			  popupContent += "<a href='" + feature.properties.href + "'>Click here</a> to filter by this region / context."
-		 }
-		 popupContent += "</div>";
-		 
-		 layer.bindPopup(popupContent);
-		 
-	}
-}
+
 
 
 

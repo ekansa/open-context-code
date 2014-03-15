@@ -437,6 +437,13 @@ class GeoJSON {
 				$JSON_LD = $this->arrayKeyCopy("offset", $generalFacetOutput, $JSON_LD);
 				$JSON_LD = $this->arrayKeyCopy("published", $generalFacetOutput, $JSON_LD);
 				$JSON_LD = $this->arrayKeyCopy("updated", $generalFacetOutput, $JSON_LD);
+				
+				$JSON_LD = $this->arrayKeyCopy("self", $generalFacetOutput["paging"], $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("first", $generalFacetOutput["paging"], $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("prev", $generalFacetOutput["paging"], $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("next", $generalFacetOutput["paging"], $JSON_LD);
+				$JSON_LD = $this->arrayKeyCopy("last", $generalFacetOutput["paging"], $JSON_LD);
+				
 				if(array_key_exists("facets", $generalFacetOutput)){
 				    
 				    $facCat = new FacetCategory;
@@ -566,8 +573,9 @@ class GeoJSON {
 						  $properties = array();
 						  $properties = $this->arrayKeyCopy("uri", $item, $properties, "id");
 						  $properties = $this->arrayKeyCopy("label", $item, $properties);
+						  $properties = $this->arrayKeyCopy("category", $item, $properties);
 						  if($numFound != false){
-								$properties["itemNumber"] = ($offset + $i)." of ".$numFound;
+							 $properties["itemNumber"] = ($offset + $i);
 						  }
 						  
 						  if(isset($item["var_vals"])){
