@@ -5,6 +5,7 @@ var mapDomID = "oc-map";
 var ocNavFacDomID = "oc-nav-facets";
 var loadingDomID = "oc-loading";
 var facetsDomID = "oc-facets";
+var navDomID = "oc-items-nav";
 var resultsDomID = "oc-items";
 var map;
 var geoJSONurl = "http://opencontext.org/sets/United+States.geojson-ld?chrono=1&geotile=0&geodeep=6&dinaaPer=root";
@@ -14,7 +15,8 @@ var OCdataLayer; //data layer with open context mapping data
 var heatMapData; //data for the heatmap
 var OCheatMapLayer; //heatmap data layer
 var OCsearchObj; //results of open context search request
-var OCsearchItems; //array of open context search items to display
+var pointItems; //array of open context search items to display
+var pointFeatures; //array of map features of points
 var searchTotalFound = 0;
 
 var hasFacetsPred = "oc-api:has-facets"; //has facets predicate
@@ -67,7 +69,7 @@ function OCinitialize(){
      
      var mapAndLegendDom = document.createElement("div");
      mapAndLegendDom.setAttribute("id", legendAndMapDomID);
-     mapAndLegendDom.setAttribute("class", "col-sm-7");
+     mapAndLegendDom.setAttribute("class", "col-sm-9");
      mainRowDom.appendChild(mapAndLegendDom);
      
      var legendDom = document.createElement("div");
@@ -84,10 +86,21 @@ function OCinitialize(){
      mapDom.setAttribute("id", mapDomID);
      mapAndLegendDom.appendChild(mapDom);
 	
+	var itemsRowDom = document.createElement("div"); //the second row, with search result items
+	itemsRowDom.setAttribute("id", "oc-nav-items-row");
+	itemsRowDom.setAttribute("class", "row");
+	OCdom.appendChild(itemsRowDom);
+	
+	var itemsNavDom = document.createElement("div"); //the second row, with search result items
+	itemsNavDom.setAttribute("id", navDomID);
+	itemsNavDom.setAttribute("class", "col-md-3");
+	itemsRowDom.appendChild(itemsNavDom);
+	
 	var itemsDom = document.createElement("div"); //the second row, with search result items
 	itemsDom.setAttribute("id", resultsDomID);
-	itemsDom.setAttribute("class", "row");
-	OCdom.appendChild(itemsDom);
+	itemsDom.setAttribute("class", "col-md-9");
+	itemsRowDom.appendChild(itemsDom);
+	
      
      initmap();
 }
@@ -229,6 +242,7 @@ function getOClayer(rawUrl){
                   var ocData = data;
                   processOCresults(ocData);
                   addOClayer(ocData);
+			   displayResultItems(ocData);
               }
           });
      
@@ -286,7 +300,6 @@ function processOCresults(ocData){
           }
      }
 	
-	displayResultItems(ocData);
 }
 
 //displays a list of search item results
@@ -299,12 +312,58 @@ function displayResultItems(ocData){
 	carouselDom.setAttribute("id", "oc-items-carousel");
 	carouselDom.setAttribute("class", "carousel slide");
 	carouselDom.setAttribute("data-ride", "carousel");
+	carouselDom.setAttribute("data-interval", "false");
+	carouselDom.setAttribute("style", "padding-top:2%;");
 	itemsDom.appendChild(carouselDom);
 	
 	var cIndicators = document.createElement("ul");
 	cIndicators.setAttribute("class", "carousel-indicators");
 	carouselDom.appendChild(cIndicators);
 	
+	var cItem =  document.createElement("div");
+	cItem.setAttribute("class", "carousel-inner");
+	cItem.setAttribute("style", "width:75%; margin-left:auto; margin-right:auto;");
+	carouselDom.appendChild(cItem);
+	
+	pointItems = new Array();
+	for (var i = 0; i < ocData.features.length; i++) {
+		var feature = ocData.features[i];
+		if (feature.geometry.type == "Point") {
+			pointItems.push(feature.properties);
+		}
+	}
+	
+	addSlideIntroImage(cIndicators, cItem); //add intro slide, that will be active
+	for (var i = 0; i < pointItems.length; i++) {
+		var props = pointItems[i];
+		var indItem = document.createElement("li");
+		indItem.setAttribute("data-target", "oc-items-carousel");
+		var itemAct = "item";
+		if (i < 1) {
+			//indItem.setAttribute("class", "active");
+			//itemAct = "item active";
+		}
+		indItem.setAttribute("data-slide-to", i+1);
+		cIndicators.appendChild(indItem);
+		
+		var ccItem = document.createElement("div");
+		ccItem.setAttribute("class", itemAct);
+		ccItem.setAttribute("id", "slide-" + props.itemNumber);
+		ccItem.setAttribute("style", "font-size:75%;");
+		cItem.appendChild(ccItem);
+		
+		
+		iPropTab = document.createElement("table");
+		iPropTab.setAttribute("class", "table table-condensed table-striped table-hover");
+		propertyTable(props, iPropTab); //add property rows to the table.
+		ccItem.appendChild(iPropTab);
+		
+		var cccItem = document.createElement("div");
+		cccItem.setAttribute("class", "carousel-caption");
+		//cccItem.setAttribute("style", "margin-top:5%; padding-top: 20%;");
+		cccItem.innerHTML = "<h4>Item: '" + props.label + " (" + props.category + ")</h4>";
+		//ccItem.appendChild(cccItem);
+	}
 	
 	var lcont = document.createElement("a");
 	lcont.setAttribute("class", "left carousel-control");
@@ -324,51 +383,69 @@ function displayResultItems(ocData){
 	rcont.appendChild(rcontsp);
 	carouselDom.appendChild(rcont);
 	
-	
-	
-	
-	var pointFeatures = new Array();
-	for (var i = 0; i < ocData.features.length; i++) {
-		var feature = ocData.features[i];
-		if (feature.type == "Point") {
-			pointFeatures.push(feature.properties);
+	$('#oc-items-carousel').on('slid.bs.carousel', function () {
+		var slideDom = document.getElementById("slide-0");
+		if(slideDom.className.indexOf("active") > -1){
+			for (ii = 0; ii < pointFeatures.length; ii++) {
+				pointFeatures[ii].hide();
+			}
 		}
-	}
-	
-	for (var i = 0; i < pointFeatures.length; i++) {
-		var props = pointFeatures[i];
-		var indItem = document.createElement("li");
-		// <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-		indItem.setAttribute("data-target", "oc-items-carousel");
-		var act = "active";
-		var itemAct = "item active";
-		if (i > 0) {
-			act = "";
-			itemAct = "item";
+		else{
+			for (i = 0; i < pointItems.length; i++) {
+				var slideDom = document.getElementById("slide-" + pointItems[i].itemNumber);
+				if(slideDom.className.indexOf("active") > -1){
+					//pointFeatures
+					for (ii = 0; ii < pointFeatures.length; ii++) {
+						if (pointFeatures[ii].pointID == pointItems[i].itemNumber) {
+							pointFeatures[ii].show();
+						}
+						else{
+							pointFeatures[ii].hide();
+						}
+					}
+				}
+			}
 		}
-		indItem.setAttribute("class", act);
-		indItem.setAttribute("data-slide-to", i);
-		cIndicators.appendChild(indItem);
-		
-		var cItem =  document.createElement("div");
-		citem.setAttribute("class", "carousel-inner");
-		
-		var ccItem = document.createElement("div");
-		ccitem.setAttribute("class", itemAct);
-		ccitem.setAttribute("id", "slide-" + props.itemNumber);
-		cItem.appendChild(ccItem);
-		
-		iPropTab = document.createElement("table");
-		iPropTab.setAttribute("class", "table table-condensed table-striped table-hover");
-		propertyTable(props, iPropTab); //add property rows to the table.
-		ccItem.appendChild(iPropTab);
-		
-		var cccItem = document.createElement("div");
-		cccitem.setAttribute("class", "carousel-caption");
-		cccitem.innerHTML = "Item: '" + props.label + " ( " + props.category + ")";
-		ccItem.appendChild(cccItem);
-		carouselDom.appendChild(cItem);
+	});
+	
+}
+
+//initial introduction slide
+function addSlideIntroImage(cIndicators, cItem) {
+	var indItem = document.createElement("li");
+	indItem.setAttribute("data-target", "oc-items-carousel");
+	indItem.setAttribute("class", "active");
+	indItem.setAttribute("data-slide-to", 0);
+	cIndicators.appendChild(indItem);
+	
+	var ccItem = document.createElement("div");
+	ccItem.setAttribute("class", "item active");
+	ccItem.setAttribute("id", "slide-0");
+	ccItem.setAttribute("style", "text-align:center;");
+	var html = "";
+	if (geoJSONurl.indexOf("dinaa")) {
+		html = "<h5>Browse through DINAA compiled Site Records</h5>";
+		html += "<div style=\"display: block; text-align:center; width:75%; margin-left:auto; margin-right:auto;\">";
+		html += "<img src=\"http://opencontext.org/js/map-browse/DINAA-logo-small.png\" alt=\"DINAA logo\" />";
+		html += "</div>";
+		html += "<p><a target=\"_bank\" href=\"http://ux.opencontext.org/blog/archaeology-site-data/\">(Click for more about DINAA on Open Context)</a></p>";
 	}
+	else{
+		html = "<h4>Browse through items published by Open Context</h4>";
+		html += "<div style=\"display: block; text-align:center; width:75%; margin-left:auto; margin-right:auto;\">";
+		html += "<img src=\"http://opencontext.org/images/layout/open-context-gen-logo-med.png\" alt=\"Open COntext logo\" />";
+		html += "</div>";
+		html += "<p><a target=\"_bank\" href=\"http://opencontext.org/about/\">(Click for more about Open Context)</a></p>";
+	}
+	ccItem.innerHTML = html;
+	
+	//var cccItem = document.createElement("div");
+	//cccItem.setAttribute("class", "carousel-caption");
+	//cccItem.setAttribute("style", "margin-top:5%; padding-top: 20%;");
+	//cccItem.innerHTML = "<h4>Item: '" + props.label + " (" + props.category + ")</h4>";
+	//ccItem.appendChild(cccItem);
+	
+	cItem.appendChild(ccItem);
 	
 }
 
@@ -381,22 +458,24 @@ function propertyTable(props, iPropTab){
 	
 	var tBody = document.createElement("tbody");
 	var keys = Object.keys(props);
+	console.log(keys);
+	console.log(props);
 	var tBodyContent = "";
 	for (var i = 0; i < keys.length; i++) {
-		var actKey = keys[0];
-		var actVal = props.actKey;
+		var actKey = keys[i];
+		var actVal = props[actKey];
 		if (actVal.length>0) {
 			if (actKey == "id") {
 				tBodyContent += "<tr><td>Link (URI)</td><td><a href=\"" + actVal + "\" target=\"_blank\">" + actVal + "</a></td></tr>";
 			}
 			else if (actKey == "label") {
-				tBodyContent += "<tr><td>Search Result</td><td>" + actVal + "</td></tr>";
+				tBodyContent += "<tr><td>Label</td><td>" + actVal + " (" + props["itemNumber"] + " of "+ searchTotalFound+ " found)</td></tr>";
 			}
 			else if (actKey == "category") {
 				
 			}
 			else if (actKey == "itemNumber") {
-				tBodyContent += "<tr><td>Search Result</td><td>" + actVal + " of " + searchTotalFound + "</td></tr>";
+				//tBodyContent += "<tr><td>Search Result</td><td>" + actVal + " of " + searchTotalFound + "</td></tr>";
 			}
 			else{
 				tBodyContent += "<tr><td>" + actKey + "</td><td>" + actVal + "</td></tr>";
@@ -420,7 +499,7 @@ function addOClayer(ocData) {
 	minValue = 1000000000000;
 	heatMapData = new Array();
 	allFeatures = new Array();
-	OCsearchItems = new Array();
+	pointFeatures = new Array();
 	
     //loop through features to get the maximum count, needed for assigning colors
      for (var i = 0; i < ocData.features.length; i++) {
@@ -474,8 +553,8 @@ function addOClayer(ocData) {
  
 	
      OCheatMapLayer.addData(heatMapData);
-	console.log(heatMapData);
-	console.log(OCheatMapLayer);
+	//console.log(heatMapData);
+	//console.log(OCheatMapLayer);
 	map.addLayer(OCheatMapLayer);
 	
    
@@ -500,20 +579,16 @@ function addOClayer(ocData) {
 					}
 				}
 				else if(feature.geometry.type == "Point"){
+					/*
 					return {
 						filter: false
 					}
+					*/
 				}
 			},
-			onEachFeature: onEachFeature,
-			filter: function(feature, layer) {
-				   if(feature.geometry.type == "Point"){
-					    return false;
-				   }
-				   else{
-					    return true;
-				   }
-			}
+			onEachFeature: onEachFeature
+			
+			
 		}
      ).addTo(map);
 	
@@ -544,36 +619,40 @@ function onEachFeature(feature, layer) {
 	feature.reVertColor = function(){
 		 OCdataLayer.resetStyle(layer);
 	}
+	feature.show = function(){
+		layer.setOpacity(1);
+		layer.openPopup();
+	}
+	feature.hide = function(){
+		layer.setOpacity(0);
+		layer.closePopup();
+	}
 	
 	if(feature.geometry.type == "Polygon"){
 		var newbounds = layer.getBounds();
 		bounds.extend(newbounds.getSouthWest());
 		bounds.extend(newbounds.getNorthEast());
-		feature.pointID = function(){
-			this.pointID = false;
-		}
+		feature.pointID = false;
 		 
 	}
 	if(feature.geometry.type == "Point"){
-				
+		feature.hide();	
 		var newbounds = new Array();
 		newbounds[0] = feature.geometry.coordinates[1]; //annoyance of flipping point coordinates!
 		newbounds[1] = feature.geometry.coordinates[0];
 		bounds.extend(newbounds);
 		if (feature.properties) {
-			feature.pointID = function(){
-				this.pointID = feature.properties.itemNumber
-			}
+			feature.pointID = feature.properties.itemNumber;
 			var popupContent = "<div><h5>Item: '" + feature.properties.label  + "' (" + feature.properties.category +")</h5>";
-			popupContent += "<a href=\"javascript:showItemDetails("+feature.properties.itemNumber+");\">Show details</a>";
+			popupContent += "<a href=\"#slide-"+feature.properties.itemNumber+"\">View details below</a>";
 			popupContent += "</div>";
 			layer.bindPopup(popupContent);
+			pointFeatures.push(feature);
 		}
 	}
 	
 	allFeatures.push(feature);
 }
-
 
 
 
