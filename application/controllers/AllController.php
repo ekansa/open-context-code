@@ -127,5 +127,14 @@ class allController extends Zend_Controller_Action
     header('Content-Type: application/xml; charset=utf-8');
     echo $siteMapObj->get_make_sitemap();
   }
-   
+  
+  public function solrAction(){
+		  $this->_helper->viewRenderer->setNoRender();
+		  $solrQuery = "http://localhost:8983/solr/select?facet=true&facet.mincount=1&fq=%7B%21cache%3Dfalse%7Ditem_class%3A*++%26%26+NOT+project_id%3A0+%26%26+%28+%28item_type%3Aspatial%29+%29&facet.field=def_context_0&facet.field=project_name&facet.field=item_class&facet.field=time_path&facet.field=geo_point&facet.field=top_taxon&facet.field=geo_path&facet.query=image_media_count%3A%5B1+TO+%2A%5D&facet.query=other_binary_media_count%3A%5B1+TO+%2A%5D&facet.query=diary_count%3A%5B1+TO+%2A%5D&sort=interest_score+desc&wt=json&json.nl=map&q=%28%2A%3A%2A%29+%26%26+%28geo_path%3A0%2A%29-def_context_0%3A%5B%22%22+TO+*%5D&start=0&rows=1500";
+		  
+		  header('Content-Type: application/json; charset=utf8');
+		  echo file_get_contents($solrQuery);
+	 }
+  
+  
 }//end of class
