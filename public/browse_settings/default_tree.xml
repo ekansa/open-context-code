@@ -24,15 +24,59 @@
             <collapse>false</collapse>
             <showNum>10</showNum>
             <itemSort type="organize"> 
-                <subField view="New Projects" collapse="true" showType="list" sort="1">
-                    <item view="Murlo" solrName="Murlo" sort="1" />
-                    <item view="Kenan Tepe" solrName="Kenan Tepe" sort="2" />
-                    <item view="Rough Cilicia" solrName="Rough Cilicia" sort="3" />
-                </subField>
-                <subField view="Featured Projects" collapse="true" showType="list" sort="2">
+                <subField view="Excavation Projects" collapse="true" showType="list" sort="1">
                     <item view="Petra Great Temple Excavations" solrName="Petra Great Temple Excavations" sort="1" />
-                    <item view="Domuztepe Excavations" solrName="Domuztepe Excavations" sort="2" />
+                    <item view="Kenan Tepe" solrName="Kenan Tepe" sort="2" />
+                    <item view="Murlo" solrName="Murlo" sort="3" />
+                    <item view="Mikt’sqaq Angayuk Finds" solrName="Mikt’sqaq Angayuk Finds" sort="4" />
+                </subField>
+                <subField view="DINAA Projects" collapse="true" showType="list" sort="2">
+                    <item view="Georgia Archaeological Site File (GASF)" solrName="Georgia Archaeological Site File (GASF)" sort="1" />
+                    <item view="Florida Site Files" solrName="Florida Site Files" sort="2" />
+                    <item view="Kentucky Site Files" solrName="Kentucky Site Files" sort="3" />
+                    <item view="Illinois Site Files" solrName="Illinois Site Files" sort="4" />
+                    <item view="Indiana Site Files" solrName="Indiana Site Files" sort="5" />
+                    <item view="Iowa Site Files" solrName="Iowa Site Files" sort="6" />
+                    <item view="Missouri Site Files" solrName="Missouri Site Files" sort="7" />
+                    <item view="South Carolina SHPO" solrName="South Carolina SHPO" sort="8" />
+                </subField>
+                <subField view="Domestication Dispersals in Anatolia" collapse="true" showType="list" sort="3">
+                    <item view="Çatalhöyük Zooarchaeology" solrName="Çatalhöyük Zooarchaeology" sort="1" />
+                    <item view="Çatalhöyük Area TP Zooarchaeology" solrName="Çatalhöyük Area TP Zooarchaeology" sort="2" />
+                    <item view="Ilıpınar Zooarchaeology" solrName="Ilıpınar Zooarchaeology" sort="3" />
+                    <item view="Zooarchaeology of Neolithic Ulucak" solrName="Zooarchaeology of Neolithic Ulucak" sort="4" />
+                    <item view="Erbaba Höyük and Suberde Zooarchaeology" solrName="Erbaba Höyük and Suberde Zooarchaeology" sort="5" />
+                    <item view="Köşk Höyük Faunal Data" solrName="Köşk Höyük Faunal Data" sort="6" />
+                    <item view="Zooarchaeology of Öküzini Cave" solrName="Zooarchaeology of Öküzini Cave" sort="7" />
+                    <item view="Zooarchaeology of Karain Cave B" solrName="Zooarchaeology of Karain Cave B" sort="8" />
+                    <item view="Barçın Höyük Zooarchaeology" solrName="Barçın Höyük Zooarchaeology" sort="9" />
+                    <item view="Pınarbaşı 1994: Animal Bones" solrName="Pınarbaşı 1994: Animal Bones" sort="10" />
+                    <item view="Çukuriçi Höyük Zooarchaeology" solrName="Çukuriçi Höyük Zooarchaeology" sort="11" />
+                    <item view="Domuztepe Excavations" solrName="Domuztepe Excavations" sort="12" />
+                </subField>
+                <subField view="Other Zooarchaeology" collapse="true" showType="list" sort="3">
+                    <item view="Zooarchaeology of Medieval Emden" solrName="Zooarchaeology of Medieval Emden" sort="1" />
+                    <item view="Chogha Mish Fauna" solrName="Chogha Mish Fauna" sort="2" />
+                    <item view="Tal-e Malyan Zooarchaeology" solrName="Tal-e Malyan Zooarchaeology" sort="3" />
+                    <item view="Hazor: Zooarchaeology" solrName="Hazor: Zooarchaeology" sort="4" />
+                    <item view="West Stow West Zooarchaeology" solrName="West Stow West Zooarchaeology" sort="5" />
+                    <item view="Köşk Höyük Faunal Data" solrName="Köşk Höyük Faunal Data" sort="6" />
+                    <item view="Harvard Peabody Mus. Zooarchaeology" solrName="Harvard Peabody Mus. Zooarchaeology" sort="7" />
+                    <item view="Presidio of San Francisco" solrName="Presidio of San Francisco" sort="8" />
+                </subField>
+                <subField view="Surveys" collapse="true" showType="list" sort="4">
+                    <item view="Pyla-Koutsopetria Archaeological Project" solrName="Pyla-Koutsopetria Archaeological Project" sort="1" />
+                    <item view="Rough Cilicia" solrName="Rough Cilicia" sort="2" />
+                </subField>
+                <subField view="Archaeometry" collapse="true" showType="list" sort="5">
+                    <item view="Asian Stoneware Jars" solrName="Asian Stoneware Jars" sort="1" />
+                    <item view="Aegean Archaeomalacology" solrName="Aegean Archaeomalacology" sort="2" />
+                </subField>
+                <subField view="Specialized Collections" collapse="true" showType="list" sort="6">
+                    <item view="Balance Pan Weights from Nippur" solrName="Balance Pan Weights from Nippur" sort="1" />
+                    <item view="San Diego Archaeological Center" solrName="San Diego Archaeological Center" sort="2" />
                     <item view="Bade Museum" solrName="Bade Museum" sort="3" />
+                    <item view="Dove Mountain Groundstone" solrName="Dove Mountain Groundstone" sort="4" />
                 </subField>
                 <subField view="Other Projects" collapse="true" showType="remainder" showNum="100" sort="3" />
             </itemSort>
