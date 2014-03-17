@@ -306,8 +306,14 @@
 																																		</td>
 																																		<td>
 																																		  <xsl:choose>
-																																				<xsl:when test="oc:var_label[@type = 'nominal' or @type = 'integer' or @type = 'decimal' or @type = 'calendar' or @type = 'calendric']">
-																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute><xsl:value-of select="oc:show_val"/></a>
+																																				
+																																				
+																																				<xsl:when test="oc:var_label[@type = 'multivalue']">
+																																					<ul>
+																																						<xsl:for-each select="oc:show_values/oc:show_val">
+																																							<li><xsl:value-of select="."/></li>
+																																						</xsl:for-each>
+																																					</ul>
 																																				</xsl:when>
 																																				<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'true')">
 																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>True</a>
@@ -316,6 +322,7 @@
 																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>False</a>
 																																				</xsl:when>
 																																				<xsl:when test="oc:var_label[@type = 'alphanumeric'] and oc:show_val[@type = 'xhtml']">
+																																					
 																																					 <xsl:for-each select="oc:show_val/*">
 																																						  <xsl:call-template  name="node-output" >
 																																								<xsl:with-param name="root" select="."/>
@@ -558,7 +565,7 @@
 																								&#9679;&#9679;&#9679;&#9679;&#9679;
 																						</xsl:when>
 																						<xsl:otherwise>
-																								Forthcoming
+																								Forthcoming/DRAFT
 																						</xsl:otherwise>
 																				</xsl:choose>
 																		  </a>

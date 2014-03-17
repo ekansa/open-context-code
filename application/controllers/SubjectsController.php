@@ -159,6 +159,7 @@ class subjectsController extends Zend_Controller_Action {
 		
 		if($itemFound){
 			$spaceItem->getTableAssociations(); //find tables for download associated with the item
+			$spaceItem->consolidateMultiValueVars();
 			@$XML = simplexml_load_string($spaceItem->archaeoML);
 			if($XML){
 				$crawler = OpenContext_SocialTracking::crawlerDetect(@$_SERVER['HTTP_USER_AGENT']);
