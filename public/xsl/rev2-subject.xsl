@@ -310,11 +310,16 @@
 																																				
 																																				<xsl:when test="oc:var_label[@type = 'multivalue']">
 																																					<ul>
-																																						<xsl:for-each select="oc:show_values/oc:show_val">
+																																						<xsl:for-each select="oc:show_values[@showLink = '0']/oc:show_val">
 																																							<li><xsl:value-of select="."/></li>
+																																						</xsl:for-each>
+																																						<xsl:for-each select="oc:show_values[@showLink = '1']/oc:show_val">
+																																							<li><a><xsl:attribute name="href">../properties/<xsl:value-of select="@propUUID"/></xsl:attribute><xsl:value-of select="."/></a>																													</li>
 																																						</xsl:for-each>
 																																					</ul>
 																																				</xsl:when>
+																											
+																																		
 																																				<xsl:when test="(oc:var_label[@type = 'boolean']) and (oc:show_val = 'true')">
 																																					 <a><xsl:attribute name="href">../properties/<xsl:value-of select="oc:propid"/></xsl:attribute>True</a>
 																																				</xsl:when>

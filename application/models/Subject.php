@@ -1760,6 +1760,7 @@ class Subject {
 					 if(count($varArray)>0){
 						  foreach($varArray as $varID => $varCount){
 								if($varCount > 1){
+									   $showLink = false;
 									 $query = "arch:properties/arch:property[arch:variableID = '$varID']";
 									 $propList = $xpath->query($query, $obsNode);
 									 if(!is_null($propList)){
@@ -1788,6 +1789,15 @@ class Subject {
 												if($i == 0){
 													 $query = "oc:var_label";
 													 $varNodes = $xpath->query($query, $propNode);
+													 $queryType = "oc:var_label/@type";
+													 $varTypeNodes = $xpath->query($queryType, $propNode);
+													 if(!is_null($valNodes)){
+														  $varType = $varTypeNodes->item(0)->nodeValue;
+														  if(!stristr( $varType, "alpha")){
+															   $showLink = true;
+														  }
+													 }
+													 
 													 //$varNodes->item(0)->setAttribute("type", "alphanumeric");
 													 $varNodes->item(0)->setAttribute("type", "multivalue");
 												}
@@ -1816,9 +1826,10 @@ class Subject {
 												*/
 												
 												$multiValueNode = $dom->createElement("oc:show_values");
+												$multiValueNode->setAttribute("showLink", $showLink);
 												foreach($propVals as $propUUID => $value){
 													 $itemNode = $dom->createElement("oc:show_val");
-													 $itemNode->setAttribute("id", $propUUID);
+													 $itemNode->setAttribute("propUUID", $propUUID);
 													 $itemText = $dom->createTextNode($value);
 													 $itemNode->appendChild($itemText);
 													 $multiValueNode->appendChild($itemNode);
