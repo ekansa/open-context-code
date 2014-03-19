@@ -444,6 +444,19 @@ class GeoJSON {
 				$JSON_LD = $this->arrayKeyCopy("next", $generalFacetOutput["paging"], $JSON_LD);
 				$JSON_LD = $this->arrayKeyCopy("last", $generalFacetOutput["paging"], $JSON_LD);
 				
+				if(array_key_exists("summary", $generalFacetOutput)){
+				    $filterNum = 1;
+				    foreach($generalFacetOutput["summary"] as $filterArray){
+						$actFilter = array("id" => "#filter-".$filterNum,
+									    "label" => $filterArray["filter"],
+									    "oc-api:filterValue" => strip_tags($filterArray["value"]),
+									    "oc-api:removeURL" => $this->htmlToGeoJSONldLink($filterArray["remLink"])
+									    );
+						$JSON_LD["oc-api:hasFilters"][] = $actFilter; 
+						$filterNum++;	
+				    }
+				}
+				
 				if(array_key_exists("facets", $generalFacetOutput)){
 				    
 				    $facCat = new FacetCategory;
@@ -458,8 +471,8 @@ class GeoJSON {
 									 $newFvalue = array();
 									 $newFvalue["id"] = $fValue["href"];
 									 $newFvalue["count"] = $fValue["count"];
-									 $newFvalue["oc-api:api-url"] = $this->jsonToGeoJSONldLink($fValue["result_href"]);
-									 $newFvalue["oc-api:facet-value"] = $fValue["name"];
+									 $newFvalue["oc-api:apiUrl"] = $this->jsonToGeoJSONldLink($fValue["result_href"]);
+									 $newFvalue["oc-api:facetValue"] = $fValue["name"];
 								      $newFvalue["label"] = $fValue["name"]; //a default temporary label, gets changed if it's a link as below
 									 if(stristr($fValue["name"], "http://") || stristr($fValue["name"], "https://")){
 										  if($linkedData->lookup_refURI($fValue["name"])){
@@ -485,10 +498,10 @@ class GeoJSON {
 							 $facetLabel = $facCat->facet_category_label;
 						  }
 						  
-						  $JSON_LD["oc-api:has-facets"][] = array("id" => "#facet-".$facetKeyIndex,
+						  $JSON_LD["oc-api:hasFacets"][] = array("id" => "#facet-".$facetKeyIndex,
 														  "label" => $facetLabel,
-														  "oc-api:facet-key" => $facetKey,
-														  "oc-api:has-facet-values" => $newFacetValues
+														  "oc-api:facetKey" => $facetKey,
+														  "oc-api:hasFacetValues" => $newFacetValues
 														  );
 						  $facetKeyIndex++;
 					 }
@@ -524,33 +537,46 @@ class GeoJSON {
 	 //turn a JSON link into a GeoJSON-LD link
 	 function jsonToGeoJSONldLink($url){
 		  if(strstr($url, ".json")){
-				$url = str_replace(".json", ".geojson-ld", $url);
+			   $url = str_replace(".json", ".geojson-ld", $url);
 		  }
 		  elseif(strstr($url, ".geojson")){
-				$url = str_replace(".geojson", ".geojson-ld", $url);
+			   $url = str_replace(".geojson", ".geojson-ld", $url);
 		  }
 		  return $url;
 	 }
-	
-	 //updates 
-	 function recursiveLinkUpdate($array){
-		  if(is_array($array)){
-				$newArray = array();
-				foreach($array as $key => $val){
-					 if(is_array($val)){
-						  $val = $this->recursiveLinkUpdate($val);
-					 }
-					 else{
-						  $val = $this->jsonToGeoJSONldLink($val);
-					 }
-					 $newArray[$key] = $val;
-				}
-				unset($array);
-				$array = $newArray;
-				unset($newArray);
+
+	 //turn an HTML link into a GeoJSON link
+	 function htmlToGeoJSONldLink($url){
+		  if(strstr($url, "?")){
+			   $url = str_replace("?", ".geojson-ld?", $url);
 		  }
 		  else{
-				$array = $this->jsonToGeoJSONldLink($array);
+			   $url .= ".geojson-ld";
+		  }
+		  return $url;
+	 }
+	 
+	 
+	
+	 //updates links
+	 function recursiveLinkUpdate($array){
+		  if(is_array($array)){
+			   $newArray = array();
+			   foreach($array as $key => $val){
+				    if(is_array($val)){
+						$val = $this->recursiveLinkUpdate($val);
+				    }
+				    else{
+						$val = $this->jsonToGeoJSONldLink($val);
+				    }
+				    $newArray[$key] = $val;
+			   }
+			   unset($array);
+			   $array = $newArray;
+			   unset($newArray);
+		  }
+		  else{
+			   $array = $this->jsonToGeoJSONldLink($array);
 		  }
 		  
 		  return $array;

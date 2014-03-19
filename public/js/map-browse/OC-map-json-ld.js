@@ -9,6 +9,16 @@ var navDomID = "oc-items-nav";
 var resultsDomID = "oc-items";
 var map;
 var geoJSONurl = "http://opencontext.org/sets/United+States.geojson-ld?chrono=1&geotile=0&geodeep=6&dinaaPer=root";
+var historyURLs = new Array(); 
+
+function filterPresets(){
+	this.contained = "United States";
+	this.geotile = true;
+	this.dinaaPer = "Items with DINAA time period";
+}
+
+
+
 
 var bounds; //current bounds of the mapping layer
 var OCdataLayer; //data layer with open context mapping data
@@ -19,10 +29,12 @@ var pointItems; //array of open context search items to display
 var pointFeatures; //array of map features of points
 var searchTotalFound = 0;
 
-var hasFacetsPred = "oc-api:has-facets"; //has facets predicate
-var hasFacetValsPred = "oc-api:has-facet-values"; //has facet values predicate
-var ocApiPred = "oc-api:api-url";
-var facetValuePred = "oc-api:facet-value";
+var hasFacetsPred = "oc-api:hasFacets"; //has facets predicate
+var hasFacetValsPred = "oc-api:hasFacetValues"; //has facet values predicate
+var ocApiPred = "oc-api:apiUrl";
+var facetValuePred = "oc-api:facetValue"; //value of the facet
+var hasFiltersPred = "oc-api:hasFilters"; //has filters predicate
+var filterValuePred = "oc-api:filterValue"; //value of the filter
 
 //color settings for tiles
 var startColor = convertToRGB('#FFC800');
@@ -101,13 +113,11 @@ function OCinitialize(){
 	itemsDom.setAttribute("class", "col-md-9");
 	itemsRowDom.appendChild(itemsDom);
 	
-     
-     initmap();
+     initmap(); //now initialize the map
 }
 
-
+//initial set up for the map
 function initmap() {
-     // set up the map
      
      map = L.map(mapDomID).setView([0, 0], 2); //map the map
      bounds = new L.LatLngBounds();
@@ -140,89 +150,48 @@ function initmap() {
      map.addLayer(gmapSat);
      map._layersMaxZoom = 20;
      L.control.layers(baseMaps).addTo(map);
-     //getOClayer(false, map);
      getOClayer(false, "");
 }
 
 
+//clear old data layers and get new layers
 function getNewOClayer(url){
 	
 	if (!jQuery.isEmptyObject(OCdataLayer)) {
-		OCdataLayer.clearLayers();
+		OCdataLayer.clearLayers(); //clear the polygons and points
 	}
      if (!jQuery.isEmptyObject(OCheatMapLayer)) {
-		map.removeLayer(OCheatMapLayer);
+		map.removeLayer(OCheatMapLayer); //clear the heat map
 	}
 	var loadingDom = document.getElementById(loadingDomID);
-     loadingDom.setAttribute("style", "display:block;");
-	getOClayer(url);
+     loadingDom.setAttribute("style", "display:block;"); //turn on the loading indicator
+	getOClayer(url); //go to AJAX call for new data
 }
 
-
-function splitUrlParams(rawParamString){
-	if (rawParamString.indexOf("&") > -1) {
-		var paramsEx = rawParamString.split("&");
-	}
-	else{
-		var paramsEx = Array();
-		paramsEx.push(rawParamString);
-	}
-	return paramsEx;
-}
-
-function replaceAll(find, replace, str) {
-	var output = str;
-	if(str != null){
-		if (str.length > 0) {	
-			while( str.indexOf(find) > -1){
-			  str = str.replace(find, replace);
-			}
-			output = str;
-		}
-      
-	}
-	return output;
-}
-
-
-
-//open context makes query parameters that are arrays
-//want to treat them as such for ajax queries
-function paramData(rawParamString){
-	var paramsEx = splitUrlParams(rawParamString);
-	var tempData = Array();
-	for (var i = 0; i < paramsEx.length; i++) {
-		var keyValEx = paramsEx[i].split("=");
-		var paramKey = keyValEx[0];
-		var paramValue = keyValEx[1];
-		paramValue = replaceAll("+", " ", paramValue);
-		if (paramKey in tempData) {
-			tempData[paramKey].push(paramValue);
-		}
-		else{
-			tempData[paramKey] = new Array();
-			tempData[paramKey].push(paramValue);	
-		}
-	}
-	for (var i = 0; i < paramsEx.length; i++) {
-		var keyValEx = paramsEx[i].split("=");
-		var paramKey = keyValEx[0];
-		var paramValue = keyValEx[1];
-		if(tempData[paramKey].length > 1){
-			for (var ii = 0; ii < tempData[paramKey].length; ii++) {
-				this[paramKey][ii] = tempData[paramKey][ii];
-			}
-		}
-		else{
-			this[paramKey] = tempData[paramKey][0];
-		}
-	}
+//function go back in history
+function goBack(){
 	
+	if (historyURLs.length >= 2) {
+		var url = historyURLs[historyURLs.length - 2];
+		if (historyURLs.length >= 3) {
+			//remove last 2 items from the history
+			var newHistoryURLs = new Array();
+			for (var i = 0; i < historyURLs.length - 2; i++) {
+				newHistoryURLs.push(historyURLs[i]);
+			}
+			historyURLs = new Array();
+			historyURLs = newHistoryURLs;
+		}
+		else{
+			historyURLs = new Array(); //reset history
+		}
+		
+		getNewOClayer(url); //clear existing maps, load new data
+	}
 }
 
 
-
-
+//ajax call to get new map layer data from Open Contex GeoJSON-LD service
 function getOClayer(rawUrl){
      if (!rawUrl) {
         rawUrl = geoJSONurl;
@@ -237,17 +206,19 @@ function getOClayer(rawUrl){
 		    data: data,
               dataType: 'json',
               success: function(data){
-                  OCsearchObj = data;
-                  //console.log(OCsearchObj);
-                  var ocData = data;
-                  processOCresults(ocData);
-                  addOClayer(ocData);
-			   displayResultItems(ocData);
+				historyURLs.push(url);
+				OCsearchObj = data;
+				//console.log(OCsearchObj);
+				var ocData = data;
+				processOCresults(ocData);
+				addOClayer(ocData);
+				displayResultItems(ocData);
               }
           });
      
 }
 
+//show facet links
 function processOCresults(ocData){
      //alert(ocData["oc-api:has-facets"].length + " facets found");
      searchTotalFound = ocData["numFound"];
@@ -260,6 +231,18 @@ function processOCresults(ocData){
      var totalDom = document.createElement("h4");
      totalDom.innerHTML = "Number Found: " + searchTotalFound;
      facetsDom.appendChild(totalDom);
+	if (historyURLs.length == 2) {
+		var goBackDom = document.createElement("p");
+		goBackDom.innerHTML = "<a href=\"javascript:goBack();\">Back to start</a>";
+		facetsDom.appendChild(goBackDom);
+	}
+	else if (historyURLs.length > 2) {
+		var goBackDom = document.createElement("p");
+		goBackDom.innerHTML = "<a href=\"javascript:goBack();\">Back to previous search</a>";
+		facetsDom.appendChild(goBackDom);
+	}
+	
+	displayActiveFilters(ocData);
 	
 	var filterDom = document.createElement("h5");
 	filterDom.setAttribute("style", "padding-top:5%;");
@@ -301,6 +284,48 @@ function processOCresults(ocData){
      }
 	
 }
+
+
+//display activeSearchFilters
+function displayActiveFilters(ocData){
+	var presets = new filterPresets();
+	if(ocData[hasFiltersPred] !== null && ocData[hasFiltersPred] !== undefined){
+		var displayFilters = new Array();
+		for (var i = 0; i < ocData[hasFiltersPred].length; i++) {
+			var showFilter = true;
+			var actFilter = ocData[hasFiltersPred][i];
+			if (actFilter.label == "Contained in" && presets.contained == actFilter[filterValuePred]) {
+				showFilter = false;
+			}
+			else if (actFilter.label == "Geo-spatial Tile" && presets.geotile) {
+				showFilter = false;
+			}
+			else if (actFilter.label.indexOf("DINAA") > -1 && presets.dinaaPer == actFilter[filterValuePred]) {
+				showFilter = false;
+			}
+			if (showFilter) {
+				displayFilters.push(actFilter);
+			}
+		}
+		
+		if (displayFilters.length > 0) {
+			var facetsDom = document.getElementById(facetsDomID);
+			var hDom = document.createElement("h5");
+			hDom.innerHTML = "Content Filtered By (" + displayFilters.length + ")";
+			facetsDom.appendChild(hDom);
+			
+			var listDom = document.createElement("ul");
+			for (var i = 0; i < displayFilters.length; i++) {
+				var actFilter =displayFilters[i];
+				var itemDom = document.createElement("li");
+				itemDom.innerHTML = "<strong>" + actFilter.label + ": </strong>" + actFilter[filterValuePred];
+				listDom.appendChild(itemDom);
+			}
+			facetsDom.appendChild(listDom);
+		}
+	}
+}
+
 
 //displays a list of search item results
 function displayResultItems(ocData){
@@ -794,4 +819,66 @@ function assignOpacityByCount(actCount, maxValue, baseOpacity){
 		opacity = baseOpacity;
 	}
 	return opacity;
+}
+
+//function to parse a URL
+function splitUrlParams(rawParamString){
+	if (rawParamString.indexOf("&") > -1) {
+		var paramsEx = rawParamString.split("&");
+	}
+	else{
+		var paramsEx = Array();
+		paramsEx.push(rawParamString);
+	}
+	return paramsEx;
+}
+
+//function to replace all instances of a string in a string
+function replaceAll(find, replace, str) {
+	var output = str;
+	if(str != null){
+		if (str.length > 0) {	
+			while( str.indexOf(find) > -1){
+			  str = str.replace(find, replace);
+			}
+			output = str;
+		}
+      
+	}
+	return output;
+}
+
+
+//open context makes query parameters that are arrays
+//want to treat them as such for ajax queries
+function paramData(rawParamString){
+	var paramsEx = splitUrlParams(rawParamString);
+	var tempData = Array();
+	for (var i = 0; i < paramsEx.length; i++) {
+		var keyValEx = paramsEx[i].split("=");
+		var paramKey = keyValEx[0];
+		var paramValue = keyValEx[1];
+		paramValue = replaceAll("+", " ", paramValue);
+		if (paramKey in tempData) {
+			tempData[paramKey].push(paramValue);
+		}
+		else{
+			tempData[paramKey] = new Array();
+			tempData[paramKey].push(paramValue);	
+		}
+	}
+	for (var i = 0; i < paramsEx.length; i++) {
+		var keyValEx = paramsEx[i].split("=");
+		var paramKey = keyValEx[0];
+		var paramValue = keyValEx[1];
+		if(tempData[paramKey].length > 1){
+			for (var ii = 0; ii < tempData[paramKey].length; ii++) {
+				this[paramKey][ii] = tempData[paramKey][ii];
+			}
+		}
+		else{
+			this[paramKey] = tempData[paramKey][0];
+		}
+	}
+	
 }
