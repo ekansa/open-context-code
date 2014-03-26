@@ -278,39 +278,39 @@ class FacetURLs{
 		  //return $response;
 		  $facet_counts = $response['facet_counts'];
 		  $facet_fields = $facet_counts['facet_fields'];
-		  $minDate = null;
-		  $maxDate = null;
+		  $minDate = 14000000000;
+		  $maxDate = -14000000000;
 		  $firstLoop = true;
 		  $chronoObj = new ChronoPath;
 		
 		  foreach($facet_fields['time_path'] as $timeKey => $count){
 				
 				if(strlen($timeKey)>1){
-					 $chronoObj-> pathConvertBeginEnd($timeKey);
-					 $actStart = 1950 -round($chronoObj->blockStart, 0);
-					 $actEnd = 1950 -round($chronoObj->blockEnd, 0);
+					 $chronoObj->pathConvertBeginEnd($timeKey);
+					 $actEarly = 1950 -round($chronoObj->blockEnd, 0);
+					 $actLate = 1950 -round($chronoObj->blockStart, 0);
 				}
 				else{
-					 $actStart = 1950;
-					 $actEnd = date("Y")+0;
+					 $actEarly = 1950;
+					 $actLate = date("Y")+0;
 				}
 				
-				if($firstLoop){
-					 $minDate = $actStart ;
-					 $maxDate = $actEnd ;
+				if($actEarly < $minDate){
+					 $minDate = $actEarly;
 				}
-				else{
-			  
-					 if($actStart < $minDate){
-						  $minDate = $actStart;
-					 }
-					 if($actEnd > $maxDate ){
-						  $maxDate = $actEnd;
-					 }
-			  
+				if($actLate  > $maxDate ){
+					 $maxDate = $actLate ;
 				}
 		  
 		  $firstLoop = false;    
+		  }
+		  
+		  
+		  if($minDate >  $maxDate){
+				$tDate =  $maxDate;
+				$maxDate = $minDate;
+				$minDate = $tDate;
+				unset($tDate);
 		  }
 		  
 		  $output = array("timeBegin" => $minDate + 0 , "timeEnd" => $maxDate + 0 );
