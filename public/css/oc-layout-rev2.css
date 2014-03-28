@@ -101,7 +101,8 @@ body {
     margin: 0;
     padding: 0;
     border: 0;
-    background: url(../images/layout/searchButtonSmall.png) no-repeat center top;
+    background-color:rgba(0,0,0,0);
+    /* background: url(../images/layout/searchButtonSmall.png) no-repeat center top; */
     cursor: pointer; /* hand-shaped cursor */
 }
 

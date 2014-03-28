@@ -71,7 +71,7 @@ function OCinitialize(){
      loadingDom.setAttribute("id", loadingDomID);
 	loadingDom.setAttribute("style", "display:block;");
 	var loadingHTML = "<h5>Loading from Open Context...</h5>";
-	loadingHTML += "<img src=\"http://opencontext/js/map-browse/ajax-loader.gif\" alt=\"loading-icon\"/>";
+	loadingHTML += "<img src=\"http://opencontext.org/js/map-browse/ajax-loader.gif\" alt=\"loading-icon\"/>";
      loadingDom.innerHTML = loadingHTML;
      navFacDom.appendChild(loadingDom);
 	

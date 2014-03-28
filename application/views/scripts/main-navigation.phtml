@@ -151,8 +151,9 @@ if(!$activeTab){
             <div>
                 <form method="get" action="<?php echo $host;?>/search/" class="navbar-search pull-right" >
                     <div>
-                    <input type="text" class="search-query span2" name="q" value="Search" onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
-                    <input id="headerSearchSubmit" type="submit" value="" />
+                    <label style="display:none;" for="textSearchValue">Fulltext Search</label>
+                    <input id="textSearchValue" type="text" class="search-query span2" name="q" value="Search" onfocus="if(this.value=='Search')this.value='';" onblur="if(this.value=='')this.value='Search';" />
+                    <button title="Full text search" id="headerSearchSubmit" type="submit" value="Search"><span style="display:none;">Search</span><img alt="Search submit icon" src="../images/layout/searchButtonSmall.png" /></button>
                     </div>
                 </form>
             </div>
