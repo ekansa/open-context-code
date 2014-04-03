@@ -105,9 +105,20 @@ function assignColorByCount(actCount, maxValue, minValue){
 	} 
 	
 	var newColor = new Array();
-	newColor[0] =  startColor[0] + Math.round((endColor[0] - startColor[0]) * actProp);
-	newColor[1] =  startColor[1] + Math.round((endColor[1] - startColor[1]) * actProp);
-	newColor[2] =  startColor[2] + Math.round((endColor[2] - startColor[2]) * actProp);
+	if(actProp >= .5){
+		var activeStartColor = midColor;
+		var activeEndColor = endColor;
+		var midProp = 1 - ((1 - actProp) * 2);
+	}
+	else{
+		var activeStartColor = startColor;
+		var activeEndColor = midColor;
+		var midProp = 1 - ((.5 - actProp) * 2);
+	}
+	
+	newColor[0] =  activeStartColor[0] + Math.round((activeEndColor[0] - activeStartColor[0]) * midProp);
+	newColor[1] =  activeStartColor[1] + Math.round((activeEndColor[1] - activeStartColor[1]) * midProp);
+	newColor[2] =  activeStartColor[2] + Math.round((activeEndColor[2] - activeStartColor[2]) * midProp);
 	
 	return newColor;
 }
@@ -123,7 +134,9 @@ function assignOpacityByCount(actCount, maxValue, baseOpacity){
 		actProp = 1;
 	} 
 	
-	var opacity =  Math.round(baseOpacity * Math.sqrt(actProp), 2);
+	var opacity =  Math.round(baseOpacity * Math.sqrt(actProp)+ (baseOpacity * .5 * Math.sqrt(actProp *.3)), 2);
+	//var opacity =  Math.round(baseOpacity * actProp, 2);
+	opacity += .2;
 	
 	if(opacity > baseOpacity){
 		opacity = baseOpacity;
@@ -262,9 +275,10 @@ function onEachFeaturePrep(feature, layer) {
 			  }
 			  var newColorRGB = assignColorByCount(actCount, trueMaxValue, trueMinValue); //add a color with the true Max count as the highest color 
 			  var newColorHex =  "#" + convertToHex(newColorRGB);
-		 
+			  var newOpacity = assignOpacityByCount(actCount, trueMaxValue, .75);
+			
 			  layer.setStyle({
-					
+					fillOpacity: newOpacity,
 					color: newColorHex
 			  });
 		 }

@@ -617,11 +617,10 @@ BEGIN Container for main page content
 		  
 		  <script >
 				
-				//var startColor = convertToRGB('#6D03B0');    /* The beginning of your gradient */
-				//var endColor   = convertToRGB('#FB1B09');    /* The end of your gradient */
-				
-				var startColor = convertToRGB('#FFFF66');
-				var endColor   = convertToRGB('#FF0000');
+            var startColor = convertToRGB('#FFFF66'); /* The beginning of your gradient */
+            var midColor = convertToRGB('#FF3300');
+				var endColor   = convertToRGB('#5A0000'); /* The end of your gradient */
+            
 				var proportional = false; //boolean, if we are doing propotional data
 				var proportionLinkURL = "<?php echo $PropotionLinkURL; ?>";
 				var proportionLinkText = "<?php echo $PropotionLinkText; ?>";
@@ -758,8 +757,12 @@ BEGIN Container for main page content
 										  }
 									 }
 									 var newColorRGB = assignColorByCount(actCount, maxValue);
+                            var fillOpacity = assignOpacityByCount(actCount, maxValue, .75);
 									 var newColorHex =  "#" + convertToHex(newColorRGB);
-									 return {color: newColorHex , icon: iconArray[actCount]};
+									 return {color: newColorHex ,
+                                    fillOpacity: fillOpacity,
+                                    weight: 2,
+                                    icon: iconArray[actCount]};
 								}
 						  },
 						  onEachFeature: onEachFeaturePrep,
