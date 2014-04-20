@@ -69,6 +69,7 @@ class SolrSearch{
     public $showPeopleFacets; //boolean show people facets
    
    
+	public $rootGeoPath; //search is for the root geospatial path
     public $geoPath; // path for geo tile
     public $geoParam; // query parameter for geoTile
     public $geoFacets; // facets to display for geotile
@@ -343,73 +344,88 @@ class SolrSearch{
     
     //geo tile facets from the request parameter
     function makeGeoFromRequestParam(){
-		  $requestParams = $this->requestParams;
-		  if(isset($requestParams["geotile"])){
-			 $geoPath = $requestParams["geotile"];
-			 if(isset($requestParams["bBox"])){
-				$bbox = $requestParams["bBox"];
-				if(substr_count($bbox,",") == 3){
-				    $geoObj = new GlobalMapTiles;
-				    $zoom = 20;
-				    $bboxEx = explode(",", $bbox);
-				    $swPath = $geoObj->LatLonToQuadTree($bboxEx[0]+0, $bboxEx[1]+0, $zoom);
-				    $nePath = $geoObj->LatLonToQuadTree($bboxEx[2]+0, $bboxEx[3]+0, $zoom);
-				    $pIndex = strlen($geoPath);
-				    if($pIndex < 15){
-					   $i = $pIndex;
-					   while($i < 15){
-						  $swSeg = substr($swPath, 0, $i);
-						  $neSeg = substr($nePath, 0, $i);
-						  if($swSeg === $neSeg){
-							$geoPath =  $neSeg;
-						  }
-						  $i++;
-					   }
-				    }
-				}
-			 }
-			 if(is_numeric($geoPath)){
-				 $this->makeGeoTileParameters($geoPath);
-			 }
-			 elseif(strlen($geoPath) == 0){
-				 $this->makeGeoTileParameters($geoPath);
-			 }
-		  }
+		$requestParams = $this->requestParams;
+		$this->rootGeoPath = false;
+		if(isset($requestParams["geotile"])){
+			$geoPath = $requestParams["geotile"];
+			if(isset($requestParams["bBox"])){
+			   $bbox = $requestParams["bBox"];
+			   if(substr_count($bbox,",") == 3){
+				   $geoObj = new GlobalMapTiles;
+				   $zoom = 20;
+				   $bboxEx = explode(",", $bbox);
+				   $swPath = $geoObj->LatLonToQuadTree($bboxEx[0]+0, $bboxEx[1]+0, $zoom);
+				   $nePath = $geoObj->LatLonToQuadTree($bboxEx[2]+0, $bboxEx[3]+0, $zoom);
+				   $pIndex = strlen($geoPath);
+				   if($pIndex < 15){
+					  $i = $pIndex;
+					  while($i < 15){
+						 $swSeg = substr($swPath, 0, $i);
+						 $neSeg = substr($nePath, 0, $i);
+						 if($swSeg === $neSeg){
+						   $geoPath =  $neSeg;
+						 }
+						 $i++;
+					  }
+				   }
+			   }
+			}
+			if(is_numeric($geoPath)){
+				$this->makeGeoTileParameters($geoPath);
+			}
+			elseif(strlen($geoPath) == 0){
+				$this->makeGeoTileParameters($geoPath);
+			}
+			elseif($geoPath == "*"){
+				$this->rootGeoPath = true;
+				$this->makeGeoTileParameters($geoPath);
+			}
+		}
     }
     
     //make geo tile facet from a geopath
     function makeGeoTileParameters($geoPath){
 	
-		  $okGeo = true;
-		  if(strlen($geoPath)>0){
-				$geoPathSplit = str_split($geoPath);
-				//validate numbers, make sure they are less than or = 3
-				foreach($geoPathSplit as $geoItem){
-					 if(is_numeric($geoItem)){
-						  if($geoItem < 0 || $geoItem > 3){
-							  $okGeo = false;
-							  $this->geoPath = false;
-						  }
-					 }
-					 else{
+		$okGeo = true;
+		if($geoPath == "*"){
+			$okGeo = false;
+			$this->rootGeoPath = true;
+		}
+		elseif(strlen($geoPath)>0){
+			$geoPathSplit = str_split($geoPath);
+			//validate numbers, make sure they are less than or = 3
+			foreach($geoPathSplit as $geoItem){
+				 if(is_numeric($geoItem)){
+					  if($geoItem < 0 || $geoItem > 3){
 						  $okGeo = false;
-						  $this->geoPath = "";
-					 }
-				}
-		  }
-		  else{
-				$this->geoPath = "";
-		  }
+						  $this->geoPath = false;
+					  }
+				 }
+				 else{
+					  $okGeo = false;
+					  $this->geoPath = "";
+				 }
+			}
+		}
+		else{
+			$this->geoPath = "";
+		}
 		  
-		  if($okGeo){
-				$requestParams = $this->requestParams;
-				
-				$this->geoPath = $geoPath;
-				$this->geoParam = "geo_path:" . $geoPath . "*";
-				$geoFacetFields = array('geo_path');
-				
-				$this->geoFacets = $geoFacetFields;
-		  }//end case with valid numeric path
+		if($okGeo){
+			$requestParams = $this->requestParams;
+			
+			$this->geoPath = $geoPath;
+			$this->geoParam = "geo_path:" . $geoPath . "*";
+			$geoFacetFields = array('geo_path');
+			
+			$this->geoFacets = $geoFacetFields;
+		}//end case with valid numeric path
+		elseif($this->rootGeoPath){
+			$this->geoPath = "";
+			$this->geoParam = "geo_path:*";
+			$geoFacetFields = array('geo_path');
+			$this->geoFacets = $geoFacetFields;
+		}
     }//end function
 	 
 	 
@@ -1127,13 +1143,14 @@ class SolrSearch{
 		  if(isset($solrFacets["facet_fields"])){
 			 
 				$geoLevelDeep = strlen($this->geoPath) + self::geoLevelDeep;
-				if(isset($requestParams["geodeep"]) && strlen($this->geoPath)>0){
-					 if(is_numeric($requestParams["geodeep"])){
-						  if($requestParams["geodeep"] > 0){
-								$geoLevelDeep = strlen($this->geoPath) + round($requestParams["geodeep"],0);
-								$this->geoMany = true; //allow lots of tiles, since geodeep parameter present
-						  }
-					 }
+				if(isset($requestParams["geodeep"]) && ((strlen($this->geoPath)>0) || $this->rootGeoPath )){
+					
+					if(is_numeric($requestParams["geodeep"])){
+						 if($requestParams["geodeep"] > 0){
+							   $geoLevelDeep = strlen($this->geoPath) + round($requestParams["geodeep"],0);
+							   $this->geoMany = true; //allow lots of tiles, since geodeep parameter present
+						 }
+					}
 				}
 				if($geoLevelDeep > self::maxGeoTileDepth){
 					 $geoLevelDeep = self::maxGeoTileDepth;

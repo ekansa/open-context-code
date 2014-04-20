@@ -373,7 +373,18 @@ BEGIN Container for main page content
                         ?>
                         <p class="tinyText" style="text-align:right;">
                             <?php
-                            echo '<a href="http://maps.google.com/?q='.urlencode($this->facetURI_KML).'">View a map summary</a>';
+                            $mapParams = $requestParams;
+                            $mapParams["map"] = 1;
+                            unset($mapParams["geotile"]);
+                            unset($mapParams["geodeep"]);
+                            $tileParams = $mapParams;
+                            $tileParams["geotile"] = "*";
+                            $tileParams["geodeep"] = 6;
+                            $dinaaLink = $host."/sets/United+States?map=1&geotile=0&geodeep=10&dinaaPer=root";
+                            echo '<a title="Browse State Site Files published through DINAA" href="'.$dinaaLink .'">US-state site files</a>, ';
+                            echo '<a title="Experimental browsing via point icons of mapped contexts" href="'.OpenContext_FacetOutput::generateFacetURL($mapParams, false, false, false, false).'">Map with point icons</a>, ';
+                            echo '<a title="Experimental spatial browsing via tile regions" href="'.OpenContext_FacetOutput::generateFacetURL($tileParams, false, false, false, false).'">Map of tile regions</a>, ';
+                            echo '<a title="KML output on Google Maps" href="http://maps.google.com/?q='.urlencode($this->facetURI_KML).'" target="_blank">Summary on Google maps</a>';
                             ?>
                         </p>
                     <?php

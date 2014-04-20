@@ -62,20 +62,20 @@ function OCinitialize(){
 	mainRowDom.setAttribute("class", "row");
 	OCdom.appendChild(mainRowDom);
 	
-	var navFacDom = document.createElement("div");
+     var navFacDom = document.createElement("div");
      navFacDom.setAttribute("id", ocNavFacDomID);
      navFacDom.setAttribute("class", "col-md-3");
      mainRowDom.appendChild(navFacDom);
 	
-	var loadingDom = document.createElement("div");
+     var loadingDom = document.createElement("div");
      loadingDom.setAttribute("id", loadingDomID);
-	loadingDom.setAttribute("style", "display:block;");
-	var loadingHTML = "<h5>Loading from Open Context...</h5>";
-	loadingHTML += "<img src=\"http://opencontext.org/js/map-browse/ajax-loader.gif\" alt=\"loading-icon\"/>";
+     loadingDom.setAttribute("style", "display:block;");
+     var loadingHTML = "<h5>Loading from Open Context...</h5>";
+     loadingHTML += "<img src=\"http://opencontext.org/js/map-browse/ajax-loader.gif\" alt=\"loading-icon\"/>";
      loadingDom.innerHTML = loadingHTML;
      navFacDom.appendChild(loadingDom);
 	
-	var facetsDom = document.createElement("div");
+     var facetsDom = document.createElement("div");
      facetsDom.setAttribute("id", facetsDomID);
      navFacDom.appendChild(facetsDom);
      
@@ -96,6 +96,7 @@ function OCinitialize(){
      
      var mapDom = document.createElement("div");
      mapDom.setAttribute("id", mapDomID);
+     mapDom.setAttribute("style", "resize:both;");
      mapAndLegendDom.appendChild(mapDom);
 	
 	var itemsRowDom = document.createElement("div"); //the second row, with search result items
@@ -157,15 +158,15 @@ function initmap() {
 //clear old data layers and get new layers
 function getNewOClayer(url){
 	
-	if (!jQuery.isEmptyObject(OCdataLayer)) {
+     if (!jQuery.isEmptyObject(OCdataLayer)) {
 		OCdataLayer.clearLayers(); //clear the polygons and points
-	}
+     }
      if (!jQuery.isEmptyObject(OCheatMapLayer)) {
 		map.removeLayer(OCheatMapLayer); //clear the heat map
-	}
-	var loadingDom = document.getElementById(loadingDomID);
-     loadingDom.setAttribute("style", "display:block;"); //turn on the loading indicator
-	getOClayer(url); //go to AJAX call for new data
+     }
+     var loadingDom = document.getElementById(loadingDomID);
+          loadingDom.setAttribute("style", "display:block;"); //turn on the loading indicator
+     getOClayer(url); //go to AJAX call for new data
 }
 
 //function go back in history

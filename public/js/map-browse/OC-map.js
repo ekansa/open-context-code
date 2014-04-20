@@ -189,6 +189,9 @@ function createColorMapIconURL(actCount, maxValue){
 }
 
 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 //return the center of a polygon
 function getPolyCenter(coordinates){

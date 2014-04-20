@@ -38,7 +38,11 @@ class mediaController extends Zend_Controller_Action
 				if(!$crawler){
 					 $mediaItem->addViewCount();
 				}
-				$XML = simplexml_load_string($mediaItem->archaeoML);
+				@$XML = simplexml_load_string($mediaItem->archaeoML);
+				if(!$XML){
+					$mediaItem->archaeoML  = iconv('UTF-8', 'UTF-8//IGNORE', $mediaItem->archaeoML );
+					$XML = simplexml_load_string($mediaItem->archaeoML);
+				}
 				$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($mediaItem->projectUUID, $XML, $mediaItem->nameSpaces());
 				$mediaItem->archaeoML = $XML->asXML();
 				
@@ -72,6 +76,11 @@ class mediaController extends Zend_Controller_Action
 				$crawler = OpenContext_SocialTracking::crawlerDetect(@$_SERVER['HTTP_USER_AGENT']);
 				if(!$crawler){
 					 $mediaItem->addViewCount();
+				}
+				
+				@$XML = simplexml_load_string($mediaItem->archaeoML);
+				if(!$XML){
+					$mediaItem->archaeoML  = iconv('UTF-8', 'UTF-8//IGNORE', $mediaItem->archaeoML );
 				}
 				
 				$media_dom = new DOMDocument("1.0", "utf-8");
@@ -163,7 +172,11 @@ class mediaController extends Zend_Controller_Action
 		  $mediaItem = New Media;
 		  $itemFound = $mediaItem->getByID($itemUUID);
 		  if($itemFound){
-				$XML = simplexml_load_string($mediaItem->archaeoML);
+				@$XML = simplexml_load_string($mediaItem->archaeoML);
+				if(!$XML){
+					$mediaItem->archaeoML  = iconv('UTF-8', 'UTF-8//IGNORE', $mediaItem->archaeoML );
+					$XML = simplexml_load_string($mediaItem->archaeoML);
+				}
 				$XML = OpenContext_ProjectReviewAnnotate::addProjectReviewStatus($mediaItem->projectUUID, $XML, $mediaItem->nameSpaces());
 				$mediaItem->archaeoML = $XML->asXML();
 				$this->view->xml_string = $mediaItem->archaeoML;
