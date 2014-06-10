@@ -160,17 +160,17 @@ $openSearchURI = "";
         <link rel="alternate" type="application/atom+xml" title="Atom facet feed" href="<?php echo URIescape($this->facetURI_Atom); ?>" />
         <link rel="alternate" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->currentAtom); ?>" />
         
-        <link rel="first" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->firstPage_XHTML); ?>" />
+        <link rel="first" type="text/html" title="First page of results" href="<?php echo URIescape($this->firstPage_XHTML); ?>" />
         <?php
             if($this->prevPage_XHTML != false){
-                echo '<link rel="prev" type="application/atom+xml" title="Atom feed of results" href="'.URIescape($this->prevPage_XHTML).'" />'.chr(13);
+                echo '<link rel="prev" type="text/html" title="Previous page of results" href="'.URIescape($this->prevPage_XHTML).'" />'.chr(13);
             }
             if($this->nextPage_XHTML != false){
-                echo '<link rel="next" type="application/atom+xml" title="Atom feed of results" href="'.URIescape($this->nextPage_XHTML).'" />'.chr(13);
+                echo '<link rel="next" type="text/html" title="Next page of results" href="'.URIescape($this->nextPage_XHTML).'" />'.chr(13);
             }
         ?>
         
-        <link rel="last" type="application/atom+xml" title="Atom feed of results" href="<?php echo URIescape($this->lastPage_XHTML); ?>" />
+        <link rel="last" type="text/html" title="Last page of results" href="<?php echo URIescape($this->lastPage_XHTML); ?>" />
         <link rel="search" type="application/opensearchdescription+xml" href="<?php echo $openSearchURI; ?>" title="Open Context Web Search" />
         <script src="<?php echo $host; ?>/components/js/browse" type="text/javascript"></script>
         
