@@ -3,13 +3,18 @@ $host = OpenContext_OCConfig::get_host_config();
 
 //echo htmlentities($this->solr_out);
 $XML = false;
-
 $XML = $this->XML;
 
 if ($XML) {
 
-    $doc = new DOMDocument();
+    //temporary hack to display polygon for
+    //reduced precision geospatial data
+    $geoJSON = false;
+    if($this->geoJSON != false){
+	   $geoJSON = json_encode($this->geoJSON);
+    }
 
+    $doc = new DOMDocument();
     $useragent = @$_SERVER['HTTP_USER_AGENT'];
 
     /*
@@ -147,11 +152,18 @@ if ($XML) {
 				var actLon = actLonDom.innerHTML;
 				var actGeoNote = actGeoNoteDom.innerHTML;
 				var actGeoSource = actGeoSourceDom.innerHTML;
+				var geoJSON = <?php echo $geoJSON; ?>;
 				var popUpMessage = "<div><p class=\"tinyText\">[Lat: "+ actLat + ", Lon: " + actLon  +"] " + actGeoNote + " " + actGeoSource + "</p></div>";
 		  
 		  
 				var satelliteView = 1;
-				var map = L.map('map').setView([actLat, actLon], 6);
+				if (!geoJSON) {
+				    var mapZoom = 6;
+				}
+				else{
+				    var mapZoom = 7;
+				}
+				var map = L.map('map').setView([actLat, actLon], mapZoom);
 				var bounds = new L.LatLngBounds();
 				var osmTiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -190,8 +202,20 @@ if ($XML) {
 				
 				var popup = L.popup()
 					 .setContent(popUpMessage);
+				// geoJSON = false;
+				if (!geoJSON) {
+				    var marker = L.marker([actLat, actLon]).addTo(map).bindPopup(popup);
+				}
+				else{
+				    var polyStyle = {
+					   "color": "#ff7800",
+					   "weight": 2,
+					   "opacity": 0.85,
+					   "fillOpacity": 0.5
+				    };			    
+				    L.geoJson(geoJSON, {style: polyStyle}).addTo(map).bindPopup(popup);
+				}
 				
-				var marker = L.marker([actLat, actLon]).addTo(map).bindPopup(popup);
 
 				
 		  </script>

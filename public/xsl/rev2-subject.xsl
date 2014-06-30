@@ -888,6 +888,7 @@
 				
 						<div id="geo-lat" property="geo:lat"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:geo_lat"/></div>
 						<div id="geo-lon" property="geo:lon"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:geo_long"/></div>
+						<div id="geo-spec"><xsl:value-of select="//oc:metadata/oc:geo_reference/oc:metasource/@specificity"/></div>
 						
 				</div>
 				

@@ -177,6 +177,7 @@ class subjectsController extends Zend_Controller_Action {
 				$this->view->itemClass = $spaceItem->getClassName($spaceItem->archaeoML);
 				$this->view->itemUUID = $itemUUID;
 				$this->view->projectUUID = $spaceItem->projectUUID;
+				$this->view->geoJSON = $spaceItem->makeLowPrecisionPolygon($XML);
 			}
 			else{
 				$this->view->requestURI = $this->_request->getRequestUri(); 

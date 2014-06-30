@@ -1849,7 +1849,43 @@ class Subject {
 	 }
 	 
 	 
-	 
+	 function makeLowPrecisionPolygon($simpleXML){
+		  $actGeoJSON = false;	
+		  $NSarray = $this->nameSpaces();
+		  foreach($NSarray as $prefix => $uri){
+			   $simpleXML->registerXPathNamespace($prefix, $uri);
+		  }
+		  $specificity = 0;
+		  foreach($simpleXML->xpath("//oc:metadata/oc:geo_reference/oc:metasource/@specificity") as $spec){
+			   $specificity = $spec + 0;
+		  }
+		  if($specificity < 0){
+			   $lat = 0;
+			   $lon = 0;
+			   foreach($simpleXML->xpath("//oc:metadata/oc:geo_reference/oc:geo_lat") as $xres){
+				    $lat = (string)$xres;
+			   }   
+			   foreach($simpleXML->xpath("//oc:metadata/oc:geo_reference/oc:geo_long") as $xres){
+				    $lon = (string)$xres;
+			   }
+			   $actGeoJSON = array("type" => "Feature",
+							 "geometry" => array("type" => "Polygon")
+						   );
+			   $coordinateArray = array();
+			   $polyArray = array();
+			   $geoObj = new GlobalMapTiles;
+			   $geoTile = $geoObj->LatLonToQuadTree($lat+0, $lon+0, 11);
+			   $geoArray = $geoObj->QuadTreeToLatLon($geoTile);
+			   $polyArray[] = array( $geoArray[1], $geoArray[0]);
+			   $polyArray[] = array( $geoArray[3], $geoArray[0]);
+			   $polyArray[] = array( $geoArray[3], $geoArray[2]);
+			   $polyArray[] = array( $geoArray[1], $geoArray[2]);
+			   $polyArray[] = array( $geoArray[1], $geoArray[0]);
+			   $coordinateArray[] = $polyArray;
+			   $actGeoJSON["geometry"]["coordinates"] = $coordinateArray;
+		  }
+		  return $actGeoJSON;  
+	 }
     
     
     function find_personID($spatialItem, $personName){
