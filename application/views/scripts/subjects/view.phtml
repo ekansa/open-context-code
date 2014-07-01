@@ -153,15 +153,16 @@ if ($XML) {
 				var actGeoNote = actGeoNoteDom.innerHTML;
 				var actGeoSource = actGeoSourceDom.innerHTML;
 				var geoJSON = <?php echo $geoJSON; ?>;
-				var popUpMessage = "<div><p class=\"tinyText\">[Lat: "+ actLat + ", Lon: " + actLon  +"] " + actGeoNote + " " + actGeoSource + "</p></div>";
-		  
 		  
 				var satelliteView = 1;
 				if (!geoJSON) {
 				    var mapZoom = 6;
+				    var popUpMessage = "<div><p class=\"tinyText\">[Lat: "+ actLat + ", Lon: " + actLon  +"] " + actGeoNote + " " + actGeoSource + "</p></div>";
 				}
 				else{
 				    var mapZoom = 7;
+				    var popUpMessage = "<div><p class=\"tinyText\">Nearby [Lat: "+ Math.round(actLat*100)/100 + ", Lon: " + Math.round(actLon*100)/100  +"] " + actGeoNote + " " + actGeoSource + "</p></div>";
+		  
 				}
 				var map = L.map('map').setView([actLat, actLon], mapZoom);
 				var bounds = new L.LatLngBounds();
