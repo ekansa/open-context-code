@@ -162,11 +162,13 @@ class publishController extends Zend_Controller_Action
 		  else{
 				$doUpdate = $_REQUEST["doUpdate"];
 		  }
-				 
+		
 		  //$xmlString .= "garbage";
 		  @$xml = simplexml_load_string($xmlString);
 	 
 		  $output = array();
+		
+		  
 		  if(!$xml){
 				$output["itemType"] = $itemType;
 				$output["itemUUID"] = $itemUUID;
@@ -175,7 +177,9 @@ class publishController extends Zend_Controller_Action
 				$output["errors"][] = "XML invalid";
 		  }
 		  else{
+			
 				if($itemType == "space"){
+					
 					 $data = OpenContext_NewDocs::spaceAdd($xmlString, true, $doUpdate);
 					 if(isset($data->errors)){
 						  if(is_array($data->errors)){
@@ -204,7 +208,6 @@ class publishController extends Zend_Controller_Action
 				}
 				
 				if($data->itemUUID){
-					 
 					 $output = array(
 							  "label" => $data->label,
 							  "project_id" => $data->projectUUID,
@@ -212,6 +215,9 @@ class publishController extends Zend_Controller_Action
 							  "item_type" => $itemType,
 							  "pubOK" => true,
 						     "errors" => false);
+					 
+					 
+					 
 
 					 if(isset($data->errors)){
 						  if(is_array($data->errors)){
@@ -239,9 +245,12 @@ class publishController extends Zend_Controller_Action
 					 }
 				}
 		  }
+		
+		if(isset($_REQUEST["test"])){
+			$output["request"] = $_REQUEST;
+		}
 		  
-		  header('Content-Type: application/json; charset=utf8');
-		  header('Access-Control-Allow-Origin: *');
+		header('Content-Type: application/json; charset=utf8');
         echo Zend_Json::encode($output) ;
         
 		  //echo $data->archaeoML;

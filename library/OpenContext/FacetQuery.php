@@ -172,7 +172,12 @@ class OpenContext_FacetQuery {
 		// get the project parameter
 		$proj = OpenContext_FacetQuery::test_param_key("proj", $requestParams);
 		if ($proj) {
-			$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_name", $proj, false, true, true, true);
+			//$proj = OpenContext_FacetQuery::solrEscape($proj);
+			//echo $proj;
+			//die;
+			$param_array["fq"] = OpenContext_FacetQuery::ORparser("project_name", $proj, false, true, true, false);
+			//echo $param_array["fq"];
+			//die;
 		}
 
 		// get the category parameter. (note: "cat" maps to "item_class" in our solr schema)

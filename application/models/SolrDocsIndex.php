@@ -42,13 +42,14 @@ class SolrDocsIndex {
 		  $this->getToDoList();
 		  $output = array();
 		  if($only_full_list){
+			
 				if(($this->toDoCount >= self::indexDoSize) || $this->forceIndexing){
 					$output = $this->toDoList;
 					$this->makeSolrDocArray();
 					$this->indexSolrDocs();
 					$this->updateToDoList();
 				}
-				else{
+			else{
 					$errors = $this->errors;
 					$errors["Small-to-do"] = "INDEX: ".$this->toDoCount." is less than min-batch size: ".self::indexDoSize;
 					$this->errors = $errors;
@@ -190,6 +191,7 @@ class SolrDocsIndex {
 					 $itemUUID = $item['itemUUID'];
 					 $solrDoc = false;
 					 //echo "Item: ".$itemUUID." .<br/>";
+					 //die;
 					 if($item['itemType'] == 'spatial'){
 						  $itemObj = New Subject;
 						  $itemXMLstring = $itemObj->getItemXML($itemUUID);

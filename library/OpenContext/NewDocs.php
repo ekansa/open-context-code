@@ -66,10 +66,10 @@ class OpenContext_NewDocs {
 			$updateInsertSuccess = $itemObj->createUpdate($versionUpdate);
 		}
 		
-		
 		if($updateInsertSuccess){
 			//insert links, properties, children items. modify parent if link to child is not found
 			$OKlinks = OpenContext_XMLtoItems::linksRetrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "spatial", $itemXML, $db);
+		
 			
 			//Turn this on if adding properties via XML docs, works faster if you're not
 			$OKprops = OpenContext_XMLtoItems::obs_props_Retrieve($itemObj->projectUUID, $itemObj->sourceID, $itemObj->itemUUID, "spatial", $itemXML, $db);
@@ -81,6 +81,7 @@ class OpenContext_NewDocs {
 			 Now do the solr indexing (if batch size is more than the minimum)
 			*/
 			$toDoAdd = OpenContext_NewDocs::regItemForIndexing($itemObj->itemUUID, "spatial", $itemObj->createdTime, $db);
+			
 			$SolrDocsIndexer = new SolrDocsIndex;
 			$SolrDocsIndexer->checkRunIndex();
 			$itemObj->errors = $SolrDocsIndexer->errors;
@@ -90,6 +91,7 @@ class OpenContext_NewDocs {
 			$itemObj->errors = $errors;
 			OpenContext_NewDocs::regImportError($itemObj->itemUUID, "spatial", $db); //note the error
 		}
+		
 		
 		return $itemObj;
 		

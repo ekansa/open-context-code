@@ -92,16 +92,10 @@ class exportController extends Zend_Controller_Action {
 		mb_internal_encoding( 'UTF-8' );
 		$this->_helper->viewRenderer->setNoRender();
 		
-		$projects = array('64013C33-4039-46C9-609A-A758CE51CA49',
-								'81204AF8-127C-4686-E9B0-1202C3A47959',
-								'3F6DCD13-A476-488E-ED10-47D25513FCB2',
-								'8F947319-3C69-4847-B7A2-09E00ED90B32'
+		$projects = array('AF0D2F67-2EAB-4C28-9C61-0F019CBF628E',
+								'F905BD53-C843-4349-0A46-48FF32B5F1BE'
 								);
 	
-		$projects = array('D42FC0EB-61B0-4937-700E-4EFEAB008677'
-								);
-		
-		 
 		
 		$exportObj = new DBexport_OCexport;
 		$exportObj->limitingProjArray = $projects;
