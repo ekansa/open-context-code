@@ -895,6 +895,7 @@ class setsController extends Zend_Controller_Action {
 		  $JSONstring = json_encode($output, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 		  if($callback){
 			  header('Content-Type: application/javascript; charset=utf8');
+			  header("Access-Control-Allow-Origin: *");
 			  $JSONstring = $callback."(".$JSONstring.");";
 		  }
 		  else{
