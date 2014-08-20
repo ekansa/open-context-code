@@ -31,14 +31,16 @@
                     <item view="Mikt’sqaq Angayuk Finds" solrName="Mikt’sqaq Angayuk Finds" sort="4" />
                 </subField>
                 <subField view="DINAA Projects" collapse="true" showType="list" sort="2">
-                    <item view="Georgia Archaeological Site File (GASF)" solrName="Georgia Archaeological Site File (GASF)" sort="1" />
-                    <item view="Florida Site Files" solrName="Florida Site Files" sort="2" />
-                    <item view="Kentucky Site Files" solrName="Kentucky Site Files" sort="3" />
-                    <item view="Illinois Site Files" solrName="Illinois Site Files" sort="4" />
-                    <item view="Indiana Site Files" solrName="Indiana Site Files" sort="5" />
-                    <item view="Iowa Site Files" solrName="Iowa Site Files" sort="6" />
-                    <item view="Missouri Site Files" solrName="Missouri Site Files" sort="7" />
-                    <item view="South Carolina SHPO" solrName="South Carolina SHPO" sort="8" />
+                    <item view="Alabama Site Files" solrName="Alabama Site Files" sort="1" />
+                    <item view="Georgia Archaeological Site File (GASF)" solrName="Georgia Archaeological Site File (GASF)" sort="2" />
+                    <item view="Florida Site Files" solrName="Florida Site Files" sort="3" />
+                    <item view="Kentucky Site Files" solrName="Kentucky Site Files" sort="4" />
+                    <item view="Illinois Site Files" solrName="Illinois Site Files" sort="5" />
+                    <item view="Indiana Site Files" solrName="Indiana Site Files" sort="6" />
+                    <item view="Iowa Site Files" solrName="Iowa Site Files" sort="7" />
+                    <item view="Missouri Site Files" solrName="Missouri Site Files" sort="8" />
+                    <item view="South Carolina SHPO" solrName="South Carolina SHPO" sort="9" />
+                    <item view="Virginia Site Files" solrName="Virginia Site Files" sort="10" />
                 </subField>
                 <subField view="Domestication Dispersals in Anatolia" collapse="true" showType="list" sort="3">
                     <item view="Çatalhöyük Zooarchaeology" solrName="Çatalhöyük Zooarchaeology" sort="1" />
@@ -51,8 +53,9 @@
                     <item view="Zooarchaeology of Karain Cave B" solrName="Zooarchaeology of Karain Cave B" sort="8" />
                     <item view="Barçın Höyük Zooarchaeology" solrName="Barçın Höyük Zooarchaeology" sort="9" />
                     <item view="Pınarbaşı 1994: Animal Bones" solrName="Pınarbaşı 1994: Animal Bones" sort="10" />
-                    <item view="Çukuriçi Höyük Zooarchaeology" solrName="Çukuriçi Höyük Zooarchaeology" sort="11" />
-                    <item view="Domuztepe Excavations" solrName="Domuztepe Excavations" sort="12" />
+                    <item view="Faunal Data from Neolithic Menteşe" solrName="Faunal Data from Neolithic Menteşe" sort="11" />
+                    <item view="Çukuriçi Höyük Zooarchaeology" solrName="Çukuriçi Höyük Zooarchaeology" sort="12" />
+                    <item view="Domuztepe Excavations" solrName="Domuztepe Excavations" sort="13" />
                 </subField>
                 <subField view="Other Zooarchaeology" collapse="true" showType="list" sort="3">
                     <item view="Zooarchaeology of Medieval Emden" solrName="Zooarchaeology of Medieval Emden" sort="1" />
