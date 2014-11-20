@@ -407,20 +407,46 @@ class Project {
 		  
 		  @$itemXML = simplexml_load_string($archaeML_string);
 		  if($itemXML != false){
-				$nameSpaceArray = $this->nameSpaces();
-				foreach($nameSpaceArray as $prefix => $uri){
-					 @$itemXML->registerXPathNamespace($prefix, $uri);
-				}
+			   $proj_dom = new DOMDocument("1.0", "utf-8");
+			   $proj_dom->loadXML($archaeML_string);
+			   
+			   $xpath = new DOMXpath($proj_dom);
+				   
+			   // Register OpenContext's namespace
+			   $nameSpaceArray = $this->nameSpaces();
+			   foreach($nameSpaceArray as $prefix => $uri){
+					//$xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace($prefix, $uri));
+			   }
+			   $xpath->registerNamespace("arch", OpenContext_OCConfig::get_namespace("arch", "project"));
+			   $xpath->registerNamespace("oc", OpenContext_OCConfig::get_namespace("oc", "project"));
+			   $xpath->registerNamespace("dc", OpenContext_OCConfig::get_namespace("dc", "project"));
+			   $query = "//arch:notes/arch:note[@type='short_des']/arch:string";
+			   $result_des = $xpath->query($query, $proj_dom);   
+			   if($result_des != null){
+					$this->shortDes = $result_des->item(0)->nodeValue;
+			   }
+			   if(strlen($this->shortDes)< 5){
+					$query = "//arch:notes/arch:note[@type='short_des']/arch:string[@type='xhtml']";
+					$result_des = $xpath->query($query, $proj_dom);
+						
+					if($result_des != null){
+						 $this->shortDes = $proj_dom->saveXML($result_des->item(0)->firstChild);
+					}
+			   }
+			   $query = "//arch:notes/arch:note[@type='long_des']/arch:string";
+			   $result_des = $xpath->query($query, $proj_dom);   
+			   if($result_des != null){
+					$this->longDes = $result_des->item(0)->nodeValue;
+			   }
+			   if(strlen($this->longDes)< 5){
+					$query = "//arch:notes/arch:note[@type='long_des']/arch:string[@type='xhtml']";
+					$result_des = $xpath->query($query, $proj_dom);
+					if($result_des != null){
+						 $this->longDes = $proj_dom->saveXML($result_des->item(0)->firstChild);
+					}
+			   }
 				
-				// get project short description
-				foreach($itemXML->xpath("//arch:notes/arch:note[@type='short_des']/arch:string") as $xpathResult){
-					$this->shortDes = (string)$xpathResult;
-				}
-				// get project long description
-				foreach($itemXML->xpath("//arch:notes/arch:note[@type='long_des']/arch:string") as $xpathResult){
-					$this->longDes = (string)$xpathResult;
-				}
-				return array("short" => strip_tags($this->shortDes), "long" => strip_tags($this->longDes));
+			   return array("short" => strip_tags($this->shortDes), "long" => strip_tags($this->longDes));
 		  }
 		  else{
 				return false;

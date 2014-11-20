@@ -270,6 +270,7 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
         $all_Itentifiers->get_projects_categories("", "", "", $itemId);
         $all_items = $all_Itentifiers->Records;
         $item = $all_items[0];
+        //echo var_dump($item);
 
         if(!$item) {
             $this->throwError(self::OAI_ERR_ID_DOES_NOT_EXIST);
@@ -280,6 +281,14 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
             $this->document->documentElement->appendChild($getRecord);
             $record = new $this->metadataFormats[$metadataPrefix]($item, $getRecord);
             $record->appendRecord();
+            $oai_doms = $this->document->getElementsByTagName('dc');
+            foreach ($oai_doms as $oai_dom) {
+                $rtype = $this->document->createElement('dc:resourceType');
+                $rtype->setAttribute('resourceTypeGeneral', 'Dataset');
+                $text = $this->document->createTextNode('Dataset');
+                $rtype->appendChild($text);
+                $oai_dom->appendChild($rtype);
+            }
         }
     }
     

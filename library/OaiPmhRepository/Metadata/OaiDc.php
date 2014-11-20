@@ -68,7 +68,7 @@ class OaiPmhRepository_Metadata_OaiDc extends OaiPmhRepository_Metadata_Abstract
          * compliant per-node declarations.
          */
         foreach($dcElementNames as $elementName)
-        {   
+        {
             $upperName = Inflector::camelize($elementName);
             $dcElements = $this->item->getElementTextsByElementNameAndSetName(
                 $upperName, 'Dublin Core');
