@@ -545,7 +545,14 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
                 }
             }
         }
-        
+        /*
+        if(!isset($metadataFormats['oai_datacite'])){
+            require_once('Metadata/OaiDatacite.php');
+            $class = "OaiPmhRepository_Metadata_OaiDatacite";
+            $object = new $class(null, null);
+            $metadataFormats[$object->getMetadataPrefix()] = $class;
+        }
+        */
         return $metadataFormats;
     }
     
