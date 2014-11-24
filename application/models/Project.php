@@ -445,8 +445,21 @@ class Project {
 						 $this->longDes = $proj_dom->saveXML($result_des->item(0)->firstChild);
 					}
 			   }
-				
-			   return array("short" => strip_tags($this->shortDes), "long" => strip_tags($this->longDes));
+			   
+			   $query = "//arch:notes/arch:note[@type='long_des']/arch:string";
+			   $result_des = $xpath->query($query, $proj_dom);   
+			   if($result_des != null){
+					$this->longDes = $result_des->item(0)->nodeValue;
+			   }
+			   
+			   $this->doi = false;
+			   $query = "//dc:identifier[@type='doi']";
+			   $result_des = $xpath->query($query, $proj_dom);   
+			   if($result_des != null){
+					$this->doi = $result_des->item(0)->nodeValue;
+			   }
+			   
+			   return array("short" => strip_tags($this->shortDes), "long" => strip_tags($this->longDes), "doi" => $this->doi);
 		  }
 		  else{
 				return false;

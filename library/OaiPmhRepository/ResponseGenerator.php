@@ -279,15 +279,18 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
         if(!$this->error) {
             $getRecord = $this->document->createElement('GetRecord');
             $this->document->documentElement->appendChild($getRecord);
-            $record = new $this->metadataFormats[$metadataPrefix]($item, $getRecord);
-            $record->appendRecord();
-            $oai_doms = $this->document->getElementsByTagName('dc');
-            foreach ($oai_doms as $oai_dom) {
-                $rtype = $this->document->createElement('dc:resourceType');
-                $rtype->setAttribute('resourceTypeGeneral', 'Dataset');
-                $text = $this->document->createTextNode('Dataset');
-                $rtype->appendChild($text);
-                $oai_dom->appendChild($rtype);
+            //if($metadataPrefix != 'oai_datacite'){
+            if(true){
+                $record = new $this->metadataFormats[$metadataPrefix]($item, $getRecord);
+                $record->appendRecord();
+                $oai_doms = $this->document->getElementsByTagName('dc');
+                foreach ($oai_doms as $oai_dom) {
+                    $rtype = $this->document->createElement('dc:resourceType');
+                    $rtype->setAttribute('resourceTypeGeneral', 'Dataset');
+                    $text = $this->document->createTextNode('Dataset');
+                    $rtype->appendChild($text);
+                    //$oai_dom->appendChild($rtype);
+                }
             }
         }
     }
@@ -470,6 +473,48 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
                 }
             }
         }
+        elseif($metadataPrefix == "oai_datacite"){ 
+            $all_itentifiers = new AllIdentifiers();
+            $all_itentifiers->get_projects_categories($set, $from, $until);
+            $items = $all_itentifiers->Records;
+            $rows = count($items);
+            
+            if(count($items) == 0)
+                $this->throwError(self::OAI_ERR_NO_RECORDS_MATCH, 'No records match the given criteria');
+    
+            else {
+                if($verb == 'ListIdentifiers')
+                    $method = 'appendHeader';
+                else if($verb == 'ListRecords')
+                    $method = 'appendRecord';
+                
+                $verbElement = $this->document->createElement($verb);
+                $this->document->documentElement->appendChild($verbElement);
+                foreach($items as $item) {
+                    $record = new $this->metadataFormats[$metadataPrefix]($item, $verbElement);
+                    $record->$method();
+                }
+                if($rows > ($cursor + $listLimit)) {
+                    $token = $this->createResumptionToken($verb,
+                                                          $metadataPrefix,
+                                                          $cursor + $listLimit,
+                                                          $from,
+                                                          $until,
+                                                          $set);
+    
+                    $tokenElement = $this->document->createElement('resumptionToken', $token->id);
+                    $tokenElement->setAttribute('expirationDate',
+                        self::dbToUtc($token->expiration));
+                    $tokenElement->setAttribute('completeListSize', $rows);
+                    $tokenElement->setAttribute('cursor', $cursor);
+                    $verbElement->appendChild($tokenElement);
+                }
+                else if($cursor != 0) {
+                    $tokenElement = $this->document->createElement('resumptionToken');
+                    $verbElement->appendChild($tokenElement);
+                }
+            }
+        }
         else{
             $this->throwError(self::OAI_ERR_CANNOT_DISSEMINATE_FORMAT);
         }
@@ -545,14 +590,14 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
                 }
             }
         }
-        /*
+        
         if(!isset($metadataFormats['oai_datacite'])){
             require_once('Metadata/OaiDatacite.php');
             $class = "OaiPmhRepository_Metadata_OaiDatacite";
             $object = new $class(null, null);
             $metadataFormats[$object->getMetadataPrefix()] = $class;
         }
-        */
+     
         return $metadataFormats;
     }
     

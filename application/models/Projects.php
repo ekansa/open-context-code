@@ -372,23 +372,8 @@ class Projects {
                              $this->backendOptions);
 				
 				foreach($this->projectList as $record){
-					 $projJSON = false;
 					 $projectUUID = $record["project_id"];
-					 $cacheID = "pTM_".md5($projectUUID);
-					 if(!$cache_result = $cache->load($cacheID)) {
-						  @$projJSON_string = file_get_contents($host."/projects/".$projectUUID.".json");
-						  
-						  if($projJSON_string != false){
-								@$projJSON = Zend_Json::decode($projJSON_string);
-								if(is_array($projJSON)){
-									 $cache->save($projJSON, $cacheID ); //save result to the cache, only if valid JSON
-								}
-						  }
-					 }
-					 else{
-						  $projJSON = $cache_result;
-					 }
-					 
+					 $projJSON = $this->get_cache_json($projectUUID);
 					 if($projJSON != false){
 						  $projectsJSON[] = $projJSON;
 					 }
@@ -397,6 +382,30 @@ class Projects {
 	 
 		  $this->projectsJSON = $projectsJSON;
 		  return $projectsJSON;
+	 }
+	 
+	 
+	 function get_cache_json($projectUUID){
+		  $projJSON = false;
+		  $host = OpenContext_OCConfig::get_host_config();
+		  $cache = Zend_Cache::factory('Core',
+					   'File',
+					   $this->frontendOptions,
+					   $this->backendOptions);
+		  $cacheID = "pTM_".md5($projectUUID);
+		  if(!$cache_result = $cache->load($cacheID)) {
+			   @$projJSON_string = file_get_contents($host."/projects/".$projectUUID.".json");
+			   if($projJSON_string != false){
+					 @$projJSON = Zend_Json::decode($projJSON_string);
+					 if(is_array($projJSON)){
+						  $cache->save($projJSON, $cacheID ); //save result to the cache, only if valid JSON
+					 }
+			   }
+		  }
+		  else{
+			   $projJSON = $cache_result;
+		  }
+		  return $projJSON;
 	 }
 	 
 	 
