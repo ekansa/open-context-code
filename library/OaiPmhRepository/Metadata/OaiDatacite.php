@@ -33,6 +33,7 @@ class OaiPmhRepository_Metadata_OaiDatacite extends OaiPmhRepository_Metadata_Ab
     const datacite_schema_version = "3.1";
     const datacite_schema_ns = "http://datacite.org/schema/kernel-3";
     const datacite_schema_schema_loc = "http://schema.datacite.org/meta/kernel-3/metadata.xsd";
+    public $doi = false;
     /**
      * Appends Data Cite metadata. 
      *
@@ -80,6 +81,7 @@ class OaiPmhRepository_Metadata_OaiDatacite extends OaiPmhRepository_Metadata_Ab
                 $text = $this->document->createTextNode($meta->value);
                 $id->appendChild($text);
                 $resource->appendChild($id);
+                $doi = $meta->value;
                 break;
             }
         }

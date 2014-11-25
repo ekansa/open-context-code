@@ -476,9 +476,17 @@ class OaiPmhRepository_ResponseGenerator extends OaiPmhRepository_OaiXmlGenerato
         elseif($metadataPrefix == "oai_datacite"){ 
             $all_itentifiers = new AllIdentifiers();
             $all_itentifiers->get_projects_categories($set, $from, $until);
-            $items = $all_itentifiers->Records;
-            $rows = count($items);
-            
+            $raw_items = $all_itentifiers->Records;
+            $items = array();
+            foreach($raw_items as $item){
+                foreach($item->dc_metadata as $meta){
+                    if ($meta->element == "doi" && $meta->value != false){
+                        $items[] = $item;
+                        break;
+                    }
+                }
+            }
+            $rows = count($items);    
             if(count($items) == 0)
                 $this->throwError(self::OAI_ERR_NO_RECORDS_MATCH, 'No records match the given criteria');
     
