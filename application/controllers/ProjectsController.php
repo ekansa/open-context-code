@@ -239,6 +239,41 @@ class projectsController extends Zend_Controller_Action
 	}//end atom function
 	
 
+	
+	//make the Datacite XML representation
+	public function dataciteAction() {
+                
+		$this->_helper->viewRenderer->setNoRender();
+                // get the project uuid from the uri
+		$itemUUID = $this->_request->getParam('proj_uuid');
+      
+		if($itemUUID == "0"){
+			$itemUUID = false;
+		}
+		
+		if(strlen($itemUUID)>0){
+			$proj = new Project ;
+			$itemFound = $proj->getByID($itemUUID);
+			if($itemFound){
+				
+				$datacite = new Datacite;
+				$xml_string = $datacite->make_datacite_record($itemUUID, $proj->createdTime);
+				header('Content-type: application/xml; charset=UTF-8'); 
+				echo $xml_string;
+			}
+			else{
+				$this->view->requestURI = $this->_request->getRequestUri(); 
+				return $this->render('404error');
+			}
+		}//end case with an id requested
+		else{
+			return $this->render('index');
+		}//end case with no id requested
+	   
+	}//end atom function
+	
+	
+	
 	//make the JSON representation
    public function jsonAction() {
       $this->_helper->viewRenderer->setNoRender();

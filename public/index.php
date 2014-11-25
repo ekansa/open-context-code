@@ -156,6 +156,13 @@ $projXMLRoute = new Zend_Controller_Router_Route_Regex('projects/(.*)\.xml',
 // add it to the router
 $router->addRoute('projectXML', $projXMLRoute);
 
+// project Datacite
+$projDataciteRoute = new Zend_Controller_Router_Route_Regex('projects/(.*)\.datacite-xml',
+                                                array('controller' => 'projects', 'action' => 'datacite'),
+                                                array(1 => 'proj_uuid'), 'projects/%s.datacite-xml');
+
+// add it to the router
+$router->addRoute('projDatacite', $projDataciteRoute);
 
 
 $SubprojViewRoute = new Zend_Controller_Router_Route('projects/:proj_uuid/:class_name', array('controller' => 'projects', 'action' => 'subproj'));
