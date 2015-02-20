@@ -257,7 +257,7 @@ $GoogleAPIkey = OpenContext_OCConfig::get_google_api();
                             ?>
                             
                             <div style="margin-left: 10px; top: 20px; margin-top:20px; border: thin solid #CCCCCC; width:100%;" class="bodyText">
-                                <p class="tinyText" style="margin-left:4px;">Content in <a href="<?php echo "http://core.tdar.org/search/search.action?query=".urlencode($requestParams["q"])?>">tDAR</a> related to your search.</p>
+                                <p class="tinyText" style="margin-left:4px;">Content in <a href="<?php echo "http://core.tdar.org/search/search?query=".urlencode($requestParams["q"])?>">tDAR</a> related to your search.</p>
                                 <div style="background-color:#F9F7F5; margin-left:auto; margin-right:auto; padding:4px;">
                                     <div style="background-color:#E1D7BC; padding:4px;"><strong>tDAR Results</strong>: <span id="osCount"></span></div>
                                     <div id="feed" style="padding:4px;">
