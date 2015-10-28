@@ -1,12 +1,12 @@
 open-context-code
 =================
 
-Source code for Open Context (http://opencontext.org)
+OLD DEFUNCT Source code for Open Context (http://opencontext.org)
 
 The project is discussed in detail here:
 http://opencontext.org/about
 
-The project is evolving rapidly and we are planning a major refactoring for 2014. But it's available here for inspection (and for the brave, reuse) for all.
+The project is evolving rapidly. Begining in 2014, we started a major refactoring and abandoned this old code for a wholly fresh start using Python and Django (see: https://github.com/ekansa/open-context-py). This code is no long supported and it is only available here for inspection (and for the brave, reuse) for all.
 
 
 
